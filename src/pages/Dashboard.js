@@ -95,7 +95,7 @@ const Dashboard = () => {
             />
             <use
               xlinkHref="#gentle-wave"
-              x="48"
+              x="20"
               y="7"
               fill="rgb(243, 97, 0)"
               style={{ transform: `translateX(${mouseX / 5 - 125}px)` }}

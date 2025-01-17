@@ -1,12 +1,16 @@
+
+
 .dashboard {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  /* height: calc(100vh - 59px); Hauteur totale moins 59px */
+  min-height: calc(100vh - 59px); /* Remplit toute la hauteur de la fenêtre */
   transition: background-color 0.3s, color 0.3s;
   background-color: #1a1a1a;
+  position: relative;
 }
+
 
 .cards-container {
   display: flex;
@@ -181,25 +185,38 @@
 
 
 
+
+
 .wave-container {
-  position: relative; /* Ou absolute selon vos besoins */
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 7.2vw; /* Adapte dynamiquement en fonction de la largeur */
-  margin: 0;
-  padding: 0;
+  height: 7.2vw; /* Ajustable selon tes besoins */
+  
+  overflow: hidden;
 }
 
+
 .waves {
-  display: block;
+  display: absolute;
   width: 100%;
   height: 100%; /* Remplit toujours le conteneur */
+  margin-top: 10px;
+
 }
 
 
 .parallax > use {
   will-change: transform;
-  transition: transform 10s linear;
+  transition: transform 20s linear;
 }
+
+
+
+
+
+
 
 
 /* Media query pour les écrans 1720x1080 */
@@ -245,8 +262,9 @@
 }
 
 
+@media (max-height: 1000px) {
 
-
+}
 
 
 
