@@ -1,0 +1,36 @@
+/* Supprimer les marges et paddings par défaut */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  body {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  body.light-mode {
+    --header-bg: #ffffff;
+    --header-color: #000000;
+    --header-hover-color: #0059b8;
+  }
+  
+  body.dark-mode {
+    --header-bg: #1a1a1a;
+    --header-color: #ffffff;
+    --header-hover-color: #e07c0a;
+    background-color: #1a1a1a;
+  }
+  
+  /* Icône du mode clair/sombre */
+  .mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    color: inherit;
+  }
+
+
+  

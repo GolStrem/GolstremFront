@@ -1,0 +1,47 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    background-color: var(--header-bg);
+    color: var(--header-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    margin-left: 20px;
+  }
+  
+  .header-logo {
+    height: 50px;
+    margin-right: 15px;
+    cursor: pointer;
+  }
+  
+  .header-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacement entre les icônes */
+    margin-top: 5px;
+    margin-right: 20px;
+  }
+  
+  .icon {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon:hover {
+    color: var(--header-hover-color); /* Couleur au survol */
+  }
+  

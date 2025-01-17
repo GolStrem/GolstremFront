@@ -1,0 +1,87 @@
+
+  .login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  
+    width: 100%;
+    height: 100vh; /* Hauteur de la fenêtre */
+    background-color: #1a1a1a;
+  }
+  
+  .login input {
+    margin: 10px 0;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  .login button {
+    padding: 10px 20px;
+    background-color: #574041;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .login button:hover {
+    background-color: #5f5353;
+  }
+  .input-password {
+    text-align: center; /* Centre le texte et le placeholder */
+  }
+  .input-password::placeholder {
+    opacity: 0.5; /* Centre le texte et le placeholder */
+  }
+
+  .login h1{
+    color: rgb(204, 204, 204);
+    margin: 0;
+    margin-top: 15px;
+  }
+  
+
+
+
+
+
+
+
+
+  /* Version claire */
+body.light-mode {
+    background-color: #f9f9f9;
+    color: #000000;
+  }
+  
+  .login.light {
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .login.light input {
+    border: 1px solid #cccccc;
+    background-color: #f2f2f2;
+    color: #000000;
+  }
+  
+  .login.light input::placeholder {
+    color: #999999;
+  }
+  
+  .login.light button {
+    background-color: #5f5353;
+    color: #ffffff;
+  }
+  
+  .login.light button:hover {
+    background-color: #574041;
+  }
+  
+  .login.light h1 {
+    color: #333333;
+  }
+  
+
+  
