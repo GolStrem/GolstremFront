@@ -1,7 +1,9 @@
 import React from 'react';
+import { persistor } from '../store/store'; // Import du persistor
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleTheme } from '../store/themeSlice'; // Import de l'action Redux
+import { toggleTheme } from '../store/themeSlice';
+import { logout } from '../store/authSlice';
 import "./Header.css";
 import logo from '../assets/logo.png';
 import { FaSun, FaMoon, FaSignOutAlt } from 'react-icons/fa';
@@ -32,7 +34,8 @@ const Header = () => {
 
   // Fonction de déconnexion
   const handleLogout = () => {
-    // Ajoutez ici une logique de déconnexion si nécessaire (exemple : suppression du token)
+    dispatch(logout()); // Réinitialise l'état Redux
+    persistor.purge(); // Supprime les données persistées
     navigate("/"); // Redirige vers la page de connexion
   };
 

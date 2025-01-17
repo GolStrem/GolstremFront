@@ -12,12 +12,12 @@ const Login = () => {
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const mode = useSelector((state) => state.theme.mode); // Récupère le mode depuis Redux
+  const mode = useSelector((state) => state.theme.mode);
 
   const handleLogin = () => {
     if (code === '1234') {
-      dispatch(login(code));
-      navigate('/dashboard');
+      dispatch(login(code)); // Enregistre l'utilisateur comme connecté
+      navigate('/dashboard'); // Redirige vers le tableau de bord
     } else {
       setError('Code invalide. Veuillez réessayer.');
     }
@@ -34,6 +34,7 @@ const Login = () => {
       <div className="mode-toggle" onClick={() => dispatch(toggleTheme())}>
         {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}
       </div>
+      
       <img src={logo} alt="Mon logo" width="200" />
       <h1>Henel</h1>
       <input

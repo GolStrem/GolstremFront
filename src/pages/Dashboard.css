@@ -157,35 +157,6 @@
   color: #d66f1b;
 }
 
-@keyframes button-anim {
-  0% {
-    transform: translate(0);
-  }
-
-  20% {
-    transform: translate(-2px, 2px);
-  }
-
-  40% {
-    transform: translate(-2px, -2px);
-  }
-
-  60% {
-    transform: translate(2px, 2px);
-  }
-
-  80% {
-    transform: translate(2px, -2px);
-  }
-
-  100% {
-    transform: translate(0);
-  }
-}
-
-
-
-
 
 .wave-container {
   position: absolute;
@@ -197,7 +168,6 @@
   overflow: hidden;
 }
 
-
 .waves {
   display: absolute;
   width: 100%;
@@ -206,17 +176,10 @@
 
 }
 
-
 .parallax > use {
   will-change: transform;
   transition: transform 20s linear;
 }
-
-
-
-
-
-
 
 
 /* Media query pour les écrans 1720x1080 */
@@ -262,15 +225,29 @@
 }
 
 
-@media (max-height: 1000px) {
 
+@keyframes button-anim {
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+  }
+
+  40% {
+    transform: translate(-2px, -2px);
+  }
+
+  60% {
+    transform: translate(2px, 2px);
+  }
+
+  80% {
+    transform: translate(2px, -2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
 }
-
-
-
-
-
-
-
-
-

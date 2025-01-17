@@ -1,5 +1,6 @@
 import React, { lazy } from 'react';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Non-lazy components
 import Login from './pages/Login';
@@ -13,64 +14,74 @@ const ExpenseTracker = lazy(() => import('./modules/expense-tracker/ExpenseTrack
 const SocialNetwork = lazy(() => import('./modules/social-network/SocialNetwork'));
 const AppointmentScheduler = lazy(() => import('./modules/appointment-scheduler/AppointmentScheduler'));
 
-
-
 const routes = [
   {
     path: '/',
-    element: <Login />, // Sans Header
+    element: <Login />, // Accessible sans authentification
   },
   {
     path: '*',
-    element: <Error />, 
+    element: <Error />,
   },
   {
     path: '/dashboard',
     element: (
-      <Layout>
-        <Dashboard />
-      </Layout>
-    ), 
+      <ProtectedRoute>
+        <Layout>
+          <Dashboard />
+        </Layout>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/task-manager',
     element: (
-      <Layout>
-        <TaskManager />
-      </Layout>
-    ), 
+      <ProtectedRoute>
+        <Layout>
+          <TaskManager />
+        </Layout>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/portfolio',
     element: (
-      <Layout>
-        <Portfolio />
-      </Layout>
-    ), 
+      <ProtectedRoute>
+        <Layout>
+          <Portfolio />
+        </Layout>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/expense-tracker',
     element: (
-      <Layout>
-        <ExpenseTracker />
-      </Layout>
-    ), 
+      <ProtectedRoute>
+        <Layout>
+          <ExpenseTracker />
+        </Layout>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/social-network',
     element: (
-      <Layout>
-        <SocialNetwork />
-      </Layout>
-    ), 
+      <ProtectedRoute>
+        <Layout>
+          <SocialNetwork />
+        </Layout>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/appointment-scheduler',
     element: (
-      <Layout>
-        <AppointmentScheduler />
-      </Layout>
-    ), 
+      <ProtectedRoute>
+        <Layout>
+          <AppointmentScheduler />
+        </Layout>
+      </ProtectedRoute>
+    ),
   },
 ];
 
