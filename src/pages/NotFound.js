@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../store/themeSlice';
 import { FaSun, FaMoon } from 'react-icons/fa';
 
+
+
 const NotFound = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,15 +31,21 @@ const NotFound = () => {
         }}
       >
         {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}
+
       </div>
 
       <div className='number'>404</div>
       <h1 className='error'>Page introuvable</h1>
 
       {/* Bouton unique avec condition */}
-      <button className="redirect-button" onClick={handleRedirect}>
+      <button className= {`redirect-button ${mode}`} onClick={handleRedirect} >
         {isAuthenticated ? 'Retourner au Dashboard' : 'Retourner à l\'accueil'}
       </button>
+
+      <div className={`circle ${mode}`}></div>
+      <div className={`circleD ${mode}`}></div>
+
+
     </div>
   );
 };
