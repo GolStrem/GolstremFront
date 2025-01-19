@@ -1,103 +1,131 @@
-.TaskManager {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .boards {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  .board {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    width: 300px;
-    background-color: #f8f9fa;
-    min-height: 200px;
-  }
-  
-  .board:hover {
-    background-color: #e9ecef;
-  }
-  
-  .cards {
-    margin-bottom: 10px;
-  }
-  
-  .card {
-    background: #ffffff;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: grab;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-  }
-  
-  .card:active {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  }
-  
+/* Global */
+.tm-task-manager {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.tm-boards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start; /* Assure l'alignement en haut */
+}
+
+/* Board Container */
+.tm-board-container {
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  width: 300px; /* Largeur fixe pour tous les tableaux */
+  min-height: 80px; /* Hauteur minimale pour un tableau vide */
+  transition: min-height 0.3s ease, background-color 0.3s ease; /* Animations */
+  box-sizing: border-box; /* Inclut les bordures et paddings dans la taille */
+}
+
+.tm-board-container:hover {
+  background-color: #e9ecef; /* Surlignage au survol */
+}
+
+/* Header du tableau */
+.tm-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.tm-board-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.tm-add-card-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tm-add-card-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Contenu des tableaux */
+.tm-board {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
+  max-height: calc(100vh - 100px); /* Limite la hauteur maximale à la vue utilisateur */
+  box-sizing: border-box;
+}
+
+.tm-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 
 
+/* Style des cartes */
+.tm-cards .card {
+  display: flex;
+  flex-direction: column; /* Empile les éléments verticalement */
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative; /* Nécessaire pour positionner les éléments enfants */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Animation au clic */
+}
 
+.tm-card:active {
+  transform: scale(1.05); /* Zoom au clic */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+}
 
+.tm-card-actions {
+  position: absolute; /* Permet de positionner l'élément par rapport à la carte */
+  bottom: 5px; /* Positionne à 5px du bas */
+  right: 5px; /* Positionne à 5px de la droite */
+  display: flex;
+  gap: 5px; /* Ajoute un espace entre les boutons d'action */
+}
 
+.tm-card-actions button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
 
+.tm-card-actions button:hover {
+  background-color: #0056b3;
+}
 
+/* Placeholder pour les tableaux vides */
+.tm-empty-board-placeholder {
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  padding: 20px 10px;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+}
 
-
-
-
-
-
-  .board-container {
-    margin: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-  }
-  
-  .board-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    background-color: #fff;
-  }
-  
-  .board-header h2 {
-    margin: 0;
-    font-size: 18px;
-  }
-  
-  .add-card-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .add-card-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .board {
-    padding: 10px;
-    min-height: 100px;
-  }
-  
-  .cards {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  

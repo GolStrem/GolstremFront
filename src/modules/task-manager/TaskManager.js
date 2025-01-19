@@ -28,21 +28,12 @@ const TaskManager = () => {
   });
 
   const openModal = (boardId, card = null) => {
-    if (card) {
-      setModalData({
-        boardId,
-        cardId: card.id,
-        text: card.text,
-        color: card.color,
-      });
-    } else {
-      setModalData({
-        boardId,
-        cardId: null,
-        text: "",
-        color: "#ffffff",
-      });
-    }
+    setModalData({
+      boardId,
+      cardId: card?.id || null,
+      text: card?.text || "",
+      color: card?.color || "#ffffff",
+    });
     setShowModal(true);
   };
 
@@ -58,6 +49,7 @@ const TaskManager = () => {
       prevBoards.map((board) => {
         if (board.id === boardId) {
           if (cardId) {
+            // Mise à jour de la carte existante
             return {
               ...board,
               cards: board.cards.map((card) =>
@@ -65,6 +57,7 @@ const TaskManager = () => {
               ),
             };
           } else {
+            // Création d'une nouvelle carte
             const newCard = { id: Date.now(), text, color };
             return { ...board, cards: [...board.cards, newCard] };
           }
@@ -74,6 +67,17 @@ const TaskManager = () => {
     );
 
     closeModal();
+  };
+
+  const handleDeleteCard = (boardId, cardId) => {
+    // Suppression d'une carte spécifique
+    setBoards((prevBoards) =>
+      prevBoards.map((board) =>
+        board.id === boardId
+          ? { ...board, cards: board.cards.filter((card) => card.id !== cardId) }
+          : board
+      )
+    );
   };
 
   const handleDrop = (sourceBoardId, targetBoardId, cardId, targetIndex) => {
@@ -87,12 +91,9 @@ const TaskManager = () => {
             const updatedCards = [...board.cards];
             const cardIndex = updatedCards.findIndex((card) => card.id === cardId);
 
-            if (cardIndex === -1) return board;
+            if (cardIndex === -1 || cardIndex === targetIndex) return board;
 
-            // Retirer la carte de sa position d'origine
             const [movedCard] = updatedCards.splice(cardIndex, 1);
-
-            // Insérer la carte à la nouvelle position
             updatedCards.splice(targetIndex, 0, movedCard);
 
             return { ...board, cards: updatedCards };
@@ -135,9 +136,9 @@ const TaskManager = () => {
   };
 
   return (
-    <div className="TaskManager">
+    <div className="tm-task-manager">
       <h1>Task Manager ⭐</h1>
-      <div className="boards">
+      <div className="tm-boards">
         {boards.map((board) => (
           <Board
             key={board.id}
@@ -145,6 +146,7 @@ const TaskManager = () => {
             handleDrop={handleDrop}
             setDraggingCardInfo={setDraggingCardInfo}
             openModal={openModal}
+            handleDeleteCard={handleDeleteCard} // Passe la fonction de suppression
           />
         ))}
       </div>
@@ -153,6 +155,7 @@ const TaskManager = () => {
           modalData={modalData}
           closeModal={closeModal}
           handleCreateOrUpdateCard={handleCreateOrUpdateCard}
+          handleDeleteCard={handleDeleteCard}
         />
       )}
     </div>

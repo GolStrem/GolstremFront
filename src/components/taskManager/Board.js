@@ -1,7 +1,31 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Card from "./Card";
 
-const Board = ({ board, handleDrop, setDraggingCardInfo, openModal }) => {
+const Board = ({ board, handleDrop, setDraggingCardInfo, openModal, handleDeleteCard }) => {
+  const cardsContainerRef = useRef(null); // Référence pour le conteneur des cartes
+  const [calculatedHeight, setCalculatedHeight] = useState(80); // Hauteur initiale minimale du tableau
+
+  // Fonction pour calculer la hauteur totale des cartes
+  useEffect(() => {
+    if (cardsContainerRef.current) {
+      const cards = cardsContainerRef.current.children;
+      let totalHeight = 0;
+
+      for (let card of cards) {
+        totalHeight += card.offsetHeight + 10; // Ajoute la hauteur de la carte + l'espace entre cartes
+      }
+
+      // Ajoute 10px supplémentaires après la dernière carte
+      totalHeight += 10;
+
+      const screenHeight = window.innerHeight;
+      const maxBoardHeight = screenHeight * 0.7;
+
+      // Met à jour la hauteur du tableau en respectant la limite
+      setCalculatedHeight(Math.min(Math.max(80, totalHeight), maxBoardHeight));
+    }
+  }, [board.cards]); // Recalcul à chaque mise à jour des cartes
+
   const handleDropCard = (e, targetIndex) => {
     e.preventDefault();
     const draggingCard = JSON.parse(e.dataTransfer.getData("draggingCard") || "{}");
@@ -19,22 +43,27 @@ const Board = ({ board, handleDrop, setDraggingCardInfo, openModal }) => {
   };
 
   return (
-    <div className="board-container">
-      <div className="board-header">
+    <div className="tm-board-container">
+      <div className="tm-board-header">
         <h2>{board.title}</h2>
         <button
-          className="add-card-btn"
-          onClick={() => openModal(board.id)} // Ouvre la modal pour créer une nouvelle carte
+          className="tm-add-card-btn"
+          onClick={() => openModal(board.id)}
         >
           + Add Card
         </button>
       </div>
       <div
-        className="board"
+        className="tm-board"
         onDragOver={(e) => e.preventDefault()}
-        onDrop={handleBoardDrop} // Gère les drop dans le tableau
+        onDrop={handleBoardDrop}
+        style={{
+          height: `${calculatedHeight}px`,
+          transition: "height 0.3s ease",
+          overflowY: "auto",
+        }}
       >
-        <div className="cards">
+        <div className="tm-cards" ref={cardsContainerRef}>
           {board.cards.map((card, index) => (
             <Card
               key={card.id}
@@ -44,6 +73,7 @@ const Board = ({ board, handleDrop, setDraggingCardInfo, openModal }) => {
               handleDrop={handleDropCard}
               setDraggingCardInfo={setDraggingCardInfo}
               openModal={openModal}
+              handleDeleteCard={handleDeleteCard} // Passe la fonction de suppression
             />
           ))}
         </div>

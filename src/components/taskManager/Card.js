@@ -28,9 +28,7 @@ const Card = ({ card, index, boardId, handleDrop, setDraggingCardInfo, openModal
     >
       <p>{card.text}</p>
       <div className="card-actions">
-        <button className="edit-btn" onClick={() => openModal(boardId, card)}>
-          ✏️
-        </button>
+        <button className="edit-btn" onClick={() => openModal(boardId, card)}>✏️</button>
       </div>
     </div>
   );
