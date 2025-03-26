@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Modal.css"; 
+import "./Modal.css";
 
 const Modal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCard }) => {
   const [formData, setFormData] = useState({
@@ -25,12 +25,10 @@ const Modal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCa
 
   const handleSubmit = () => {
     const { boardId, cardId, text, color } = formData;
-
     if (!text.trim()) {
       alert("Le texte ne peut pas être vide.");
       return;
     }
-
     handleCreateOrUpdateCard(boardId, cardId, text, color);
     closeModal();
   };
@@ -42,13 +40,15 @@ const Modal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCa
     }
   };
 
+  const isEdit = !!formData.cardId;
+
   return (
     <div className="tm-modal-overlay" onClick={closeModal}>
       <div
         className="tm-modal-popup"
-        onClick={(e) => e.stopPropagation()} // Empêche la fermeture si on clique sur la popup
+        onClick={(e) => e.stopPropagation()}
       >
-        <h3>{formData.cardId ? "Modifier une carte" : "Créer une carte"}</h3>
+        <h3>{isEdit ? "Modifier une carte" : "Créer une carte"}</h3>
 
         <label>
           Texte :
@@ -72,14 +72,16 @@ const Modal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCa
 
         <div className="tm-modal-buttons">
           <button onClick={handleSubmit}>
-            {formData.cardId ? "Modifier" : "Créer"}
+            {isEdit ? "Modifier" : "Créer"}
           </button>
-          {formData.cardId && (
+          {isEdit && (
             <button className="tm-delete-btn" onClick={handleDelete}>
               Supprimer
             </button>
           )}
-          <button className="tm-cancel-btn" onClick={closeModal}>Annuler</button>
+          <button className="tm-cancel-btn" onClick={closeModal}>
+            Annuler
+          </button>
         </div>
       </div>
     </div>

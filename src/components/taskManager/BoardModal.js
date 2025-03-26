@@ -1,20 +1,19 @@
-// BoardModal.jsx
 import React, { useState } from "react";
-import "./Modal.css";  // Vous pouvez réutiliser le même style que votre modal de cartes
+import "./Modal.css";
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
   const [title, setTitle] = useState("");
 
   const handleSubmit = () => {
     handleCreateBoard(title);
-    closeModal(); 
+    closeModal();
   };
 
   return (
     <div className="tm-modal-overlay" onClick={closeModal}>
       <div
         className="tm-modal-popup"
-        onClick={(e) => e.stopPropagation()} // Empêche la fermeture en cliquant dans la popup
+        onClick={(e) => e.stopPropagation()}
       >
         <h3>Créer un tableau</h3>
 

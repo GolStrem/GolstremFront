@@ -1,0 +1,114 @@
+/* 
+   Overlay en plein écran, fondu semi-transparent
+   pour mettre l'accent sur la fenêtre modale
+*/
+.tm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Devant le reste du contenu */
+}
+
+/* 
+   Contenant principal de la pop-up 
+   (fenêtre blanche centrée)
+*/
+.tm-modal-popup {
+  background: #fff;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;  /* S'adapte sur mobile si l'écran est étroit */
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+  /* Animation légère pour l'apparition */
+  animation: fadeInDown 0.3s forwards ease-in-out;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* Animation pour l'apparition du pop-up */
+@keyframes fadeInDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Titre de la pop-up */
+.tm-modal-popup h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Label + input */
+.tm-modal-popup label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.tm-modal-popup label input[type="text"],
+.tm-modal-popup label input[type="color"] {
+  display: block;
+  margin-top: 0.25rem;
+  padding: 0.4rem;
+  width: 100%;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Conteneur de boutons en bas du pop-up */
+.tm-modal-buttons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end; /* Aligne les boutons à droite */
+}
+
+/* Boutons standards (créer / confirmer...) */
+.tm-modal-buttons button {
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 0.45rem 1rem;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+/* Bouton de suppression (typiquement rouge) */
+.tm-delete-btn {
+  background: #ff4d4f;
+  color: #fff;
+}
+.tm-delete-btn:hover {
+  background: #ff3d3f;
+}
+
+/* Bouton annuler (typiquement gris clair) */
+.tm-cancel-btn {
+  background: #f2f2f2;
+  color: #333;
+}
+.tm-cancel-btn:hover {
+  background: #e2e2e2;
+}
+
+/* Bouton principal (ex: valider, créer...) */
+.tm-modal-buttons button:not(.tm-delete-btn):not(.tm-cancel-btn) {
+  background: #2196f3;
+  color: #fff;
+}
+.tm-modal-buttons button:not(.tm-delete-btn):not(.tm-cancel-btn):hover {
+  background: #1976d2;
+}

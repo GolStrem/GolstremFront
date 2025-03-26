@@ -1,30 +1,32 @@
 import React, { useRef, useEffect, useState } from "react";
 import Card from "./Card";
 
-const Board = ({ board, handleDrop, setDraggingCardInfo, openModal, handleDeleteCard }) => {
-  const cardsContainerRef = useRef(null); // Référence pour le conteneur des cartes
-  const [calculatedHeight, setCalculatedHeight] = useState(80); // Hauteur initiale minimale du tableau
+const Board = ({
+  board,
+  handleDrop,
+  setDraggingCardInfo,
+  openModal,
+  handleUpdateBoard,
+  handleDeleteBoard,
+}) => {
+  const cardsContainerRef = useRef(null);
+  const [calculatedHeight, setCalculatedHeight] = useState(80);
 
-  // Fonction pour calculer la hauteur totale des cartes
   useEffect(() => {
     if (cardsContainerRef.current) {
       const cards = cardsContainerRef.current.children;
       let totalHeight = 0;
 
       for (let card of cards) {
-        totalHeight += card.offsetHeight + 10; // Ajoute la hauteur de la carte + l'espace entre cartes
+        totalHeight += card.offsetHeight + 10;
       }
-
-      // Ajoute 10px supplémentaires après la dernière carte
       totalHeight += 10;
 
       const screenHeight = window.innerHeight;
       const maxBoardHeight = screenHeight * 0.7;
-
-      // Met à jour la hauteur du tableau en respectant la limite
       setCalculatedHeight(Math.min(Math.max(80, totalHeight), maxBoardHeight));
     }
-  }, [board.cards]); // Recalcul à chaque mise à jour des cartes
+  }, [board.cards]);
 
   const handleDropCard = (e, targetIndex) => {
     e.preventDefault();
@@ -39,20 +41,43 @@ const Board = ({ board, handleDrop, setDraggingCardInfo, openModal, handleDelete
     const draggingCard = JSON.parse(e.dataTransfer.getData("draggingCard") || "{}");
     if (!draggingCard || !draggingCard.id) return;
 
-    handleDrop(draggingCard.sourceBoardId, board.id, draggingCard.id, null); // Drop à la fin
+    handleDrop(draggingCard.sourceBoardId, board.id, draggingCard.id, null);
+  };
+
+  const editBoardTitle = () => {
+    const newTitle = prompt("Nouveau nom du tableau :", board.title);
+    if (newTitle !== null) {
+      handleUpdateBoard(board.id, newTitle);
+    }
+  };
+
+  const deleteBoard = () => {
+    const confirmDelete = window.confirm(
+      `Voulez-vous vraiment supprimer le tableau "${board.title}" ?`
+    );
+    if (confirmDelete) {
+      handleDeleteBoard(board.id);
+    }
   };
 
   return (
     <div className="tm-board-container">
       <div className="tm-board-header">
         <h2>{board.title}</h2>
-        <button
-          className="tm-add-card-btn"
-          onClick={() => openModal(board.id)}
-        >
+
+        <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
           + Add Card
         </button>
+
+        <button onClick={editBoardTitle} style={{ marginLeft: "8px" }}>
+        ✏️ 
+        </button>
+
+        <button onClick={deleteBoard} style={{ marginLeft: "8px" }}>
+        🗑️ 
+        </button>
       </div>
+
       <div
         className="tm-board"
         onDragOver={(e) => e.preventDefault()}
@@ -73,7 +98,6 @@ const Board = ({ board, handleDrop, setDraggingCardInfo, openModal, handleDelete
               handleDrop={handleDropCard}
               setDraggingCardInfo={setDraggingCardInfo}
               openModal={openModal}
-              handleDeleteCard={handleDeleteCard} // Passe la fonction de suppression
             />
           ))}
         </div>

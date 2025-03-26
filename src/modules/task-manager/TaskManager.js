@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import Board from "../../components/taskManager/Board";
 import Modal from "../../components/taskManager/Modal";
-import BoardModal from "../../components/taskManager/BoardModal";  // <-- Import du nouveau composant
+import BoardModal from "../../components/taskManager/BoardModal";
 import "./TaskManager.css";
 
 const TaskManager = () => {
-  // État pour le Drag & Drop (si nécessaire)
   const [draggingCardInfo, setDraggingCardInfo] = useState(null);
 
-  // État et data du Modal de cartes
+  // Modal de cartes
   const [showModal, setShowModal] = useState(false);
   const closeModal = () => setShowModal(false);
 
@@ -19,10 +18,10 @@ const TaskManager = () => {
     color: "#ffffff",
   });
 
-  // État et data du Modal pour création de tableau
+  // Modal de création de tableau
   const [showBoardModal, setShowBoardModal] = useState(false);
 
-  // Votre state de tableaux et cartes
+  // State des tableaux et cartes
   const [boards, setBoards] = useState([
     {
       id: 1,
@@ -37,9 +36,7 @@ const TaskManager = () => {
     { id: 4, title: "Fuck", cards: [] },
   ]);
 
-  /**
-   * Ouvre le modal dédié aux cartes (création/édition) 
-   */
+  // Ouvre le modal pour créer / éditer une carte
   const openModal = (boardId, card = null) => {
     setModalData({
       boardId,
@@ -50,9 +47,7 @@ const TaskManager = () => {
     setShowModal(true);
   };
 
-  /**
-   * Crée ou met à jour une carte dans un tableau
-   */
+  // Crée ou met à jour une carte
   const handleCreateOrUpdateCard = (boardId, cardId, text, color) => {
     if (!text.trim()) {
       alert("Text cannot be empty.");
@@ -61,31 +56,28 @@ const TaskManager = () => {
 
     setBoards((prevBoards) =>
       prevBoards.map((board) => {
-        if (board.id === boardId) {
-          if (cardId) {
-            // Mise à jour de la carte existante
-            return {
-              ...board,
-              cards: board.cards.map((card) =>
-                card.id === cardId ? { ...card, text, color } : card
-              ),
-            };
-          } else {
-            // Création d'une nouvelle carte
-            const newCard = { id: Date.now(), text, color };
-            return { ...board, cards: [...board.cards, newCard] };
-          }
+        if (board.id !== boardId) return board;
+
+        if (cardId) {
+          // Mise à jour
+          return {
+            ...board,
+            cards: board.cards.map((card) =>
+              card.id === cardId ? { ...card, text, color } : card
+            ),
+          };
+        } else {
+          // Création
+          const newCard = { id: Date.now(), text, color };
+          return { ...board, cards: [...board.cards, newCard] };
         }
-        return board;
       })
     );
 
     closeModal();
   };
 
-  /**
-   * Supprime une carte
-   */
+  // Supprime une carte
   const handleDeleteCard = (boardId, cardId) => {
     setBoards((prevBoards) =>
       prevBoards.map((board) =>
@@ -99,9 +91,27 @@ const TaskManager = () => {
     );
   };
 
-  /**
-   * Crée un nouveau tableau
-   */
+  // Renomme un tableau
+  const handleUpdateBoard = (boardId, newTitle) => {
+    const trimmed = newTitle.trim();
+    if (!trimmed) {
+      alert("Le nom du tableau ne peut pas être vide !");
+      return;
+    }
+
+    setBoards((prev) =>
+      prev.map((board) =>
+        board.id === boardId ? { ...board, title: trimmed } : board
+      )
+    );
+  };
+
+  // Supprime un tableau
+  const handleDeleteBoard = (boardId) => {
+    setBoards((prev) => prev.filter((board) => board.id !== boardId));
+  };
+
+  // Crée un nouveau tableau
   const handleCreateBoard = (title) => {
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
@@ -116,32 +126,29 @@ const TaskManager = () => {
     setBoards((prev) => [...prev, newBoard]);
   };
 
-  /**
-   * Gère le drag & drop des cartes
-   */
+  // Gestion du drag & drop
   const handleDrop = (sourceBoardId, targetBoardId, cardId, targetIndex) => {
     if (!sourceBoardId || !targetBoardId || !cardId) return;
 
     if (sourceBoardId === targetBoardId) {
-      // Réordonner les cartes dans le même tableau
+      // Réordonne dans le même tableau
       setBoards((prevBoards) =>
         prevBoards.map((board) => {
-          if (board.id === sourceBoardId) {
-            const updatedCards = [...board.cards];
-            const cardIndex = updatedCards.findIndex((card) => card.id === cardId);
+          if (board.id !== sourceBoardId) return board;
 
-            if (cardIndex === -1 || cardIndex === targetIndex) return board;
+          const updatedCards = [...board.cards];
+          const cardIndex = updatedCards.findIndex((card) => card.id === cardId);
 
-            const [movedCard] = updatedCards.splice(cardIndex, 1);
-            updatedCards.splice(targetIndex, 0, movedCard);
+          if (cardIndex === -1 || cardIndex === targetIndex) return board;
 
-            return { ...board, cards: updatedCards };
-          }
-          return board;
+          const [movedCard] = updatedCards.splice(cardIndex, 1);
+          updatedCards.splice(targetIndex, 0, movedCard);
+
+          return { ...board, cards: updatedCards };
         })
       );
     } else {
-      // Déplacer la carte vers un autre tableau
+      // Déplace vers un autre tableau
       setBoards((prevBoards) =>
         prevBoards.map((board) => {
           if (board.id === sourceBoardId) {
@@ -177,9 +184,6 @@ const TaskManager = () => {
     <div className="tm-task-manager">
       <h1>Task Manager ⭐</h1>
 
-      {/**
-       * Bouton pour ouvrir le modal de création de tableau
-       */}
       <button onClick={() => setShowBoardModal(true)}>+ Créer un tableau</button>
 
       <div className="tm-boards">
@@ -190,13 +194,12 @@ const TaskManager = () => {
             handleDrop={handleDrop}
             setDraggingCardInfo={setDraggingCardInfo}
             openModal={openModal}
+            handleUpdateBoard={handleUpdateBoard}
+            handleDeleteBoard={handleDeleteBoard}
           />
         ))}
       </div>
 
-      {/**
-       * Modal pour créer/modifier les CARTES (existant déjà)
-       */}
       {showModal && (
         <Modal
           modalData={modalData}
@@ -206,9 +209,6 @@ const TaskManager = () => {
         />
       )}
 
-      {/**
-       * Modal pour créer un NOUVEAU TABLEAU
-       */}
       {showBoardModal && (
         <BoardModal
           closeModal={() => setShowBoardModal(false)}
