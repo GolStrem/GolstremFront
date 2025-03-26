@@ -4,6 +4,11 @@ import Modal from "../../components/taskManager/Modal";
 import "./TaskManager.css";
 
 const TaskManager = () => {
+  
+  const [draggingCardInfo, setDraggingCardInfo] = useState(null);
+  const closeModal = () => setShowModal(false);
+  const [showModal, setShowModal] = useState(false);
+
   const [boards, setBoards] = useState([
     {
       id: 1,
@@ -15,11 +20,10 @@ const TaskManager = () => {
     },
     { id: 2, title: "In Progress", cards: [] },
     { id: 3, title: "Done", cards: [] },
+    { id: 4, title: "Fuck", cards: [] },
+    //const [boards, setBoards] = useState(getCardData(mettre l'api))
   ]);
 
-  const [draggingCardInfo, setDraggingCardInfo] = useState(null);
-
-  const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({
     boardId: null,
     cardId: null,
@@ -36,8 +40,6 @@ const TaskManager = () => {
     });
     setShowModal(true);
   };
-
-  const closeModal = () => setShowModal(false);
 
   const handleCreateOrUpdateCard = (boardId, cardId, text, color) => {
     if (!text.trim()) {
@@ -146,7 +148,6 @@ const TaskManager = () => {
             handleDrop={handleDrop}
             setDraggingCardInfo={setDraggingCardInfo}
             openModal={openModal}
-            handleDeleteCard={handleDeleteCard} // Passe la fonction de suppression
           />
         ))}
       </div>

@@ -57,7 +57,7 @@
 }
 
 .card-overlay {
-  background-image: linear-gradient(0deg, #0fdae9, #3c14ac);
+  background-image: linear-gradient(0deg, #562C2C, #3a2f2f);
   border-radius: 30px;
   position: absolute;
   top: 55%;
@@ -69,14 +69,14 @@
 }
 
 .secondary .card-overlay {
-  background-image: linear-gradient(-20deg, #dff13a, #f03131);
+  background-image: linear-gradient(-20deg, #463739, #562C2C);
 }
 
 .card-icon {
   height: 80px;
   width: 80px;
   border-radius: 20px;
-  background-color: #32579b;
+  background-color: #562C2C;
   opacity: 0.8;
   display: flex;
   align-items: center;
@@ -132,7 +132,7 @@
 }
 
 .dashboard.light h1 {
-  color: rgb(9, 17, 129);
+  color: black ;
 }
 
 .dashboard.light .projects {
@@ -145,7 +145,7 @@
 }
 
 .secondary .card-icon svg {
-  color: #b95300;
+  color: #562C2C;
 }
 
 .pboard {
@@ -154,7 +154,7 @@
 
 .dashboard h1{
   font-size: 50px;
-  color: #d66f1b;
+  color: white;
 }
 
 
@@ -216,11 +216,29 @@
   .dashboard h1 {
     font-size: 40px; /* Réduction de 20% */
   }
+
 }
+
+@media (max-width: 1341px) {
+  .wave-container {
+    height: auto; /* Gère les petits écrans dynamiquement */
+  }
+
+  .cards-container{
+    width: 90%;
+  }
+}
+
+
+
 
 @media (max-width: 768px) {
   .wave-container {
     height: auto; /* Gère les petits écrans dynamiquement */
+  }
+
+  .cards-container{
+    width: 85%;
   }
 }
 

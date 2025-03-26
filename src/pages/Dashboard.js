@@ -76,28 +76,28 @@ const Dashboard = () => {
               xlinkHref="#gentle-wave"
               x="48"
               y="0"
-              fill="rgba(207, 96, 21, 0.7)"
+              fill="rgba(51, 31, 31, 0.5)"
               style={{ transform: `translateX(${mouseX / 20 - 50}px)` }}
             />
             <use
               xlinkHref="#gentle-wave"
               x="48"
               y="3"
-              fill="rgba(240, 85, 13, 0.5)"
+              fill="rgba(51, 31, 31, 0.2)"
               style={{ transform: `translateX(${mouseX / 15 - 75}px)` }}
             />
             <use
               xlinkHref="#gentle-wave"
               x="48"
               y="5"
-              fill="rgba(243, 97, 0, 0.52)"
+              fill="rgba(51, 31, 31, 0.32)"
               style={{ transform: `translateX(${mouseX / 10 - 100}px)` }}
             />
             <use
               xlinkHref="#gentle-wave"
               x="20"
               y="7"
-              fill="rgb(243, 97, 0)"
+              fill="rgba(51, 31, 31, 0)"
               style={{ transform: `translateX(${mouseX / 5 - 125}px)` }}
             />
           </g>

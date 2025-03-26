@@ -27,10 +27,9 @@
 }
 
 .tm-board-container:hover {
-  background-color: #e9ecef; /* Surlignage au survol */
+  background-color: #e9ecef; 
 }
 
-/* Header du tableau */
 .tm-board-header {
   display: flex;
   justify-content: space-between;
