@@ -1,14 +1,28 @@
 import React, { useState } from "react";
 import Board from "../../components/taskManager/Board";
 import Modal from "../../components/taskManager/Modal";
+import BoardModal from "../../components/taskManager/BoardModal";  // <-- Import du nouveau composant
 import "./TaskManager.css";
 
 const TaskManager = () => {
-  
+  // État pour le Drag & Drop (si nécessaire)
   const [draggingCardInfo, setDraggingCardInfo] = useState(null);
-  const closeModal = () => setShowModal(false);
-  const [showModal, setShowModal] = useState(false);
 
+  // État et data du Modal de cartes
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => setShowModal(false);
+
+  const [modalData, setModalData] = useState({
+    boardId: null,
+    cardId: null,
+    text: "",
+    color: "#ffffff",
+  });
+
+  // État et data du Modal pour création de tableau
+  const [showBoardModal, setShowBoardModal] = useState(false);
+
+  // Votre state de tableaux et cartes
   const [boards, setBoards] = useState([
     {
       id: 1,
@@ -21,16 +35,11 @@ const TaskManager = () => {
     { id: 2, title: "In Progress", cards: [] },
     { id: 3, title: "Done", cards: [] },
     { id: 4, title: "Fuck", cards: [] },
-    //const [boards, setBoards] = useState(getCardData(mettre l'api))
   ]);
 
-  const [modalData, setModalData] = useState({
-    boardId: null,
-    cardId: null,
-    text: "",
-    color: "#ffffff",
-  });
-
+  /**
+   * Ouvre le modal dédié aux cartes (création/édition) 
+   */
   const openModal = (boardId, card = null) => {
     setModalData({
       boardId,
@@ -41,6 +50,9 @@ const TaskManager = () => {
     setShowModal(true);
   };
 
+  /**
+   * Crée ou met à jour une carte dans un tableau
+   */
   const handleCreateOrUpdateCard = (boardId, cardId, text, color) => {
     if (!text.trim()) {
       alert("Text cannot be empty.");
@@ -71,17 +83,42 @@ const TaskManager = () => {
     closeModal();
   };
 
+  /**
+   * Supprime une carte
+   */
   const handleDeleteCard = (boardId, cardId) => {
-    // Suppression d'une carte spécifique
     setBoards((prevBoards) =>
       prevBoards.map((board) =>
         board.id === boardId
-          ? { ...board, cards: board.cards.filter((card) => card.id !== cardId) }
+          ? {
+              ...board,
+              cards: board.cards.filter((card) => card.id !== cardId),
+            }
           : board
       )
     );
   };
 
+  /**
+   * Crée un nouveau tableau
+   */
+  const handleCreateBoard = (title) => {
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) {
+      alert("Le nom du tableau ne peut pas être vide !");
+      return;
+    }
+    const newBoard = {
+      id: Date.now(),
+      title: trimmedTitle,
+      cards: [],
+    };
+    setBoards((prev) => [...prev, newBoard]);
+  };
+
+  /**
+   * Gère le drag & drop des cartes
+   */
   const handleDrop = (sourceBoardId, targetBoardId, cardId, targetIndex) => {
     if (!sourceBoardId || !targetBoardId || !cardId) return;
 
@@ -126,7 +163,6 @@ const TaskManager = () => {
                 updatedCards.splice(targetIndex, 0, draggedCard);
               }
             }
-
             return { ...board, cards: updatedCards };
           }
           return board;
@@ -140,6 +176,12 @@ const TaskManager = () => {
   return (
     <div className="tm-task-manager">
       <h1>Task Manager ⭐</h1>
+
+      {/**
+       * Bouton pour ouvrir le modal de création de tableau
+       */}
+      <button onClick={() => setShowBoardModal(true)}>+ Créer un tableau</button>
+
       <div className="tm-boards">
         {boards.map((board) => (
           <Board
@@ -151,12 +193,26 @@ const TaskManager = () => {
           />
         ))}
       </div>
+
+      {/**
+       * Modal pour créer/modifier les CARTES (existant déjà)
+       */}
       {showModal && (
         <Modal
           modalData={modalData}
           closeModal={closeModal}
           handleCreateOrUpdateCard={handleCreateOrUpdateCard}
           handleDeleteCard={handleDeleteCard}
+        />
+      )}
+
+      {/**
+       * Modal pour créer un NOUVEAU TABLEAU
+       */}
+      {showBoardModal && (
+        <BoardModal
+          closeModal={() => setShowBoardModal(false)}
+          handleCreateBoard={handleCreateBoard}
         />
       )}
     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Modal.css"; // Assure-toi que le fichier CSS est importé
+import "./Modal.css"; 
 
 const Modal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCard }) => {
   const [formData, setFormData] = useState({
