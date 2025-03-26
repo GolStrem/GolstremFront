@@ -64,18 +64,17 @@ const Board = ({
     <div className="tm-board-container">
       <div className="tm-board-header">
         <h2>{board.title}</h2>
-
-        <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
-          + Add Card
-        </button>
-
-        <button onClick={editBoardTitle} style={{ marginLeft: "8px" }}>
-        ✏️ 
-        </button>
-
-        <button onClick={deleteBoard} style={{ marginLeft: "8px" }}>
-        🗑️ 
-        </button>
+        <div className="tm-board-header-buttons">
+          <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
+            + Add Card
+          </button>
+          <button onClick={editBoardTitle} className="tm-edit">
+            ✏️
+          </button>
+          <button onClick={deleteBoard} className="tm-delete">
+            🗑️
+          </button>
+        </div>
       </div>
 
       <div

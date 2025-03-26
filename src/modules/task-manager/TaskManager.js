@@ -182,9 +182,9 @@ const TaskManager = () => {
 
   return (
     <div className="tm-task-manager">
-      <h1>Task Manager ⭐</h1>
+      <h1>Gestion des tâches</h1>
 
-      <button onClick={() => setShowBoardModal(true)}>+ Créer un tableau</button>
+      <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">+ Créer un tableau</button>
 
       <div className="tm-boards">
         {boards.map((board) => (

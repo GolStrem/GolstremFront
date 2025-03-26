@@ -106,9 +106,9 @@
 
 /* Bouton principal (ex: valider, créer...) */
 .tm-modal-buttons button:not(.tm-delete-btn):not(.tm-cancel-btn) {
-  background: #2196f3;
+  background: #562C2C;
   color: #fff;
 }
 .tm-modal-buttons button:not(.tm-delete-btn):not(.tm-cancel-btn):hover {
-  background: #1976d2;
+  background: #562C2C;
 }
