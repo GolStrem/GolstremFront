@@ -3,9 +3,12 @@ import Board from "../../components/taskManager/Board";
 import Modal from "../../components/taskManager/Modal";
 import BoardModal from "../../components/taskManager/BoardModal";
 import "./TaskManager.css";
+import { useSelector } from "react-redux"; // Utilisation de Redux
+
 
 const TaskManager = () => {
   const [draggingCardInfo, setDraggingCardInfo] = useState(null);
+  const mode = useSelector((state) => state.theme.mode); // Récupère le mode depuis Redux
 
   // Modal de cartes
   const [showModal, setShowModal] = useState(false);
@@ -33,7 +36,7 @@ const TaskManager = () => {
     },
     { id: 2, title: "In Progress", cards: [] },
     { id: 3, title: "Done", cards: [] },
-    { id: 4, title: "Fuck", cards: [] },
+    { id: 4, title: "Test", cards: [] },
   ]);
 
   // Ouvre le modal pour créer / éditer une carte
@@ -181,7 +184,11 @@ const TaskManager = () => {
   };
 
   return (
-    <div className="tm-task-manager">
+          <div
+      className={`tm-task-manager ${mode === "dark" ? "dark" : "light"}`}>
+
+
+      
       <h1>Gestion des tâches</h1>
 
       <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">+ Créer un tableau</button>

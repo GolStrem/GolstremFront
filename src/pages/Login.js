@@ -31,9 +31,10 @@ const Login = () => {
 
   return (
     <div className={`login ${mode === 'dark' ? 'dark' : 'light'}`}>
-      <div className="mode-toggle" onClick={() => dispatch(toggleTheme())}>
-        {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}
-      </div>
+     <div className={`mode-toggle ${mode === 'dark' ? 'dark' : 'light'}`} onClick={() => dispatch(toggleTheme())}>
+      {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}
+    </div>
+
       
       <img src={logo} alt="Mon logo" width="200" />
       <h1>Henel</h1>

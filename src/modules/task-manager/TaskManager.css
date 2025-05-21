@@ -3,16 +3,36 @@
   font-family: Arial, sans-serif;
   text-align: center;
   padding: 20px;
+  overflow-x: hidden;
 }
 
+/* Thème sombre pour le titre */
+.tm-task-manager.dark h1 {
+  color: white;
+}
+
+/* Bouton créer un tableau */
+.tm-Tabl {
+  height: 30px;
+  width: 150px;
+  background-color: #806161;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+/* Conteneur de tous les tableaux */
 .tm-boards {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  align-items: flex-start; /* Assure l'alignement en haut */
+  align-items: flex-start;
 }
 
-/* Board Container */
+/* Conteneur d'un tableau */
 .tm-board-container {
   margin: 10px;
   border: 1px solid #ccc;
@@ -20,16 +40,17 @@
   background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
-  width: 340px; /* Largeur fixe pour tous les tableaux */
-  min-height: 80px; /* Hauteur minimale pour un tableau vide */
-  transition: min-height 0.3s ease, background-color 0.3s ease; /* Animations */
-  box-sizing: border-box; /* Inclut les bordures et paddings dans la taille */
+  width: 340px;
+  min-height: 80px;
+  transition: min-height 0.3s ease, background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .tm-board-container:hover {
-  background-color: #e9ecef; 
+  background-color: #e9ecef;
 }
 
+/* En-tête d'un tableau */
 .tm-board-header {
   display: flex;
   justify-content: space-between;
@@ -45,6 +66,7 @@
   font-size: 18px;
 }
 
+/* Bouton Ajouter une carte */
 .tm-add-card-btn {
   background-color: #806161;
   color: white;
@@ -58,14 +80,14 @@
   background-color: #3a1d1d;
 }
 
-/* Contenu des tableaux */
+/* Cartes */
 .tm-board {
   padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
-  max-height: calc(100vh - 100px); /* Limite la hauteur maximale à la vue utilisateur */
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
   box-sizing: border-box;
 }
 
@@ -75,33 +97,32 @@
   gap: 10px;
 }
 
-
-
-/* Style des cartes */
+/* Style d'une carte */
 .tm-cards .card {
   display: flex;
-  flex-direction: column; /* Empile les éléments verticalement */
+  flex-direction: column;
   overflow: hidden;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 5px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  position: relative; /* Nécessaire pour positionner les éléments enfants */
-  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Animation au clic */
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tm-card:active {
-  transform: scale(1.05); /* Zoom au clic */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+  transform: scale(1.05);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
+/* Actions sur une carte */
 .tm-card-actions {
-  position: absolute; /* Permet de positionner l'élément par rapport à la carte */
-  bottom: 5px; /* Positionne à 5px du bas */
-  right: 5px; /* Positionne à 5px de la droite */
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
   display: flex;
-  gap: 5px; /* Ajoute un espace entre les boutons d'action */
+  gap: 5px;
 }
 
 .tm-card-actions button {
@@ -118,7 +139,7 @@
   background-color: #0056b3;
 }
 
-/* Placeholder pour les tableaux vides */
+/* Message pour tableau vide */
 .tm-empty-board-placeholder {
   text-align: center;
   color: #888;
@@ -128,17 +149,9 @@
   border-radius: 4px;
 }
 
-.tm-Tabl{
-  height: 30px;
-  width: 150px;
-  background-color: #806161;
-  border-radius: 4px;
-  border: none;
-  color: white;
-}
-
-.tm-edit{ 
-
+/* Boutons d'édition */
+.tm-edit,
+.tm-delete {
   background-color: #806161;
   color: white;
   border: none;
@@ -148,14 +161,49 @@
   margin-left: 4px;
 }
 
-.tm-delete{ 
+/* RESPONSIVE DESIGN */
 
-  background-color: #806161;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 4px;
+/* Tablettes : 2 tableaux par ligne */
+@media (max-width: 1024px) {
+  .tm-boards {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tm-board-container {
+    width: 45%;
+  }
 }
 
+/* Mobiles : 1 tableau par ligne */
+@media (max-width: 768px) {
+  .tm-board-container {
+    width: 90%;
+  }
+
+  .tm-task-manager {
+    padding: 10px;
+  }
+
+  .tm-Tabl {
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+  }
+
+  .tm-card-actions {
+    flex-direction: column;
+    gap: 4px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .tm-card-actions button {
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .tm-board-header h2 {
+    font-size: 16px;
+  }
+}

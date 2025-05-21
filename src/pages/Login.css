@@ -40,8 +40,14 @@
     margin: 0;
     margin-top: 15px;
   }
-  
 
+  .mode-toggle.light{
+    color: black;
+  }
+  
+  .mode-toggle.dark{
+    color: white;
+  }
 
 
 
