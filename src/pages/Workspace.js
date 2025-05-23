@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import TaskManager from "../modules/task-manager/TaskManager";
+import { useSelector } from "react-redux";
 
 const Workspace = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isValid, setIsValid] = useState(false);
+  const mode = useSelector((state) => state.theme.mode);
 
   useEffect(() => {
     let saved = JSON.parse(localStorage.getItem("workspaces"));
@@ -34,7 +36,7 @@ const Workspace = () => {
   if (!isValid) return null;
 
   return (
-    <div className="workspace-page">
+    <div className={`workspace-page ${mode === "dark" ? "dark" : "light"}`}>
       <TaskManager workspaceId={id} />
     </div>
   );

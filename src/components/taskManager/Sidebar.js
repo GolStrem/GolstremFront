@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ const Sidebar = () => {
   const [newName, setNewName] = useState("");
   const [editing, setEditing] = useState(null);
   const [editValue, setEditValue] = useState("");
+    const mode = useSelector((state) => state.theme.mode);
 
   // Charger les workspaces au démarrage
   useEffect(() => {
@@ -64,7 +66,8 @@ const Sidebar = () => {
 
 
   return (
-    <aside className="tm-sidebar">
+    <aside className={`tm-sidebar ${mode === "dark" ? "dark" : "light"}`}>
+      
       <h2 className="sidebarMenu">Menu</h2>
       {workspaces.map((ws) => (
         <div key={ws} style={{ width: "100%" }}>
@@ -83,12 +86,9 @@ const Sidebar = () => {
               />
             </form>
           ) : (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center" }} className={`tm-nav-div ${mode === "dark" ? "dark" : "light"} `}>
               <NavLink
-                to={`/workspace/${ws}`}
-                className="tm-nav-btn"
-                style={{ flexGrow: 1 }}
-              >
+                to={`/workspace/${ws}`} className={`tm-nav-btn ${mode === "dark" ? "dark" : "light"}` } style={{ flexGrow: 1 }}>
                 {ws}
               </NavLink>
               <button
@@ -132,7 +132,7 @@ const Sidebar = () => {
           className="tm-sidebar-input"
         />
         <button onClick={handleAddWorkspace} className="tm-add-btn">
-          ➕ Ajouter
+          + Ajouter
         </button>
       </div>
     </aside>

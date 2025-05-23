@@ -8,7 +8,6 @@ import Error from './pages/NotFound';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
-const TaskManager = lazy(() => import('./modules/task-manager/TaskManager'));
 const Portfolio = lazy(() => import('./modules/portfolio/Portfolio'));
 const ExpenseTracker = lazy(() => import('./modules/expense-tracker/ExpenseTracker'));
 const SocialNetwork = lazy(() => import('./modules/social-network/SocialNetwork'));
