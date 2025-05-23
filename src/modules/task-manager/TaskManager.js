@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Board from "../../components/taskManager/Board";
 import Modal from "../../components/taskManager/Modal";
 import BoardModal from "../../components/taskManager/BoardModal";
 import Sidebar from "../../components/taskManager/Sidebar";
 import "./TaskManager.css";
-import { useSelector } from "react-redux"; // Utilisation de Redux
+import { useSelector } from "react-redux";
 
+// 🧠 Fonctions de persistance
+const loadBoardsFromStorage = (workspaceId) => {
+  const data = localStorage.getItem(`boards_${workspaceId}`);
+  return data ? JSON.parse(data) : [];
+};
 
-const TaskManager = () => {
+const saveBoardsToStorage = (workspaceId, boards) => {
+  localStorage.setItem(`boards_${workspaceId}`, JSON.stringify(boards));
+};
+
+const TaskManager = ({ workspaceId = "default" }) => {
+  const mode = useSelector((state) => state.theme.mode);
+  const [boards, setBoards] = useState([]);
   const [draggingCardInfo, setDraggingCardInfo] = useState(null);
-  const mode = useSelector((state) => state.theme.mode); // Récupère le mode depuis Redux
 
-  // Modal de cartes
   const [showModal, setShowModal] = useState(false);
-  const closeModal = () => setShowModal(false);
-
   const [modalData, setModalData] = useState({
     boardId: null,
     cardId: null,
@@ -22,25 +29,30 @@ const TaskManager = () => {
     color: "#ffffff",
   });
 
-  // Modal de création de tableau
   const [showBoardModal, setShowBoardModal] = useState(false);
 
-  // State des tableaux et cartes
-  const [boards, setBoards] = useState([
-    {
-      id: 1,
-      title: "To Do",
-      cards: [
-        { id: 1, text: "Learn React", color: "#f8d7da" },
-        { id: 2, text: "Build Task Manager", color: "#d4edda" },
-      ],
-    },
-    { id: 2, title: "In Progress", cards: [] },
-    { id: 3, title: "Done", cards: [] },
-    { id: 4, title: "Test", cards: [] },
-  ]);
+ // 🧠 Chargement des boards
+useEffect(() => {
+  const saved = loadBoardsFromStorage(workspaceId);
+  setBoards(saved.length > 0 ? saved : [{
+    id: Date.now(),
+    title: "Nouveau tableau",
+    cards: [],
+  }]);
+}, [workspaceId]);
 
-  // Ouvre le modal pour créer / éditer une carte
+// 💾 Sauvegarde des boards et du workspace courant
+useEffect(() => {
+  saveBoardsToStorage(workspaceId, boards);
+  localStorage.setItem("lastWorkspace", workspaceId);
+}, [boards, workspaceId]);
+
+
+  // 💾 Sauvegarde automatique
+  useEffect(() => {
+    saveBoardsToStorage(workspaceId, boards);
+  }, [boards, workspaceId]);
+
   const openModal = (boardId, card = null) => {
     setModalData({
       boardId,
@@ -51,19 +63,16 @@ const TaskManager = () => {
     setShowModal(true);
   };
 
-  // Crée ou met à jour une carte
+  const closeModal = () => setShowModal(false);
+
   const handleCreateOrUpdateCard = (boardId, cardId, text, color) => {
-    if (!text.trim()) {
-      alert("Text cannot be empty.");
-      return;
-    }
+    if (!text.trim()) return alert("Le texte est requis.");
 
     setBoards((prevBoards) =>
       prevBoards.map((board) => {
         if (board.id !== boardId) return board;
 
         if (cardId) {
-          // Mise à jour
           return {
             ...board,
             cards: board.cards.map((card) =>
@@ -71,38 +80,27 @@ const TaskManager = () => {
             ),
           };
         } else {
-          // Création
           const newCard = { id: Date.now(), text, color };
           return { ...board, cards: [...board.cards, newCard] };
         }
       })
     );
-
     closeModal();
   };
 
-  // Supprime une carte
   const handleDeleteCard = (boardId, cardId) => {
     setBoards((prevBoards) =>
       prevBoards.map((board) =>
         board.id === boardId
-          ? {
-              ...board,
-              cards: board.cards.filter((card) => card.id !== cardId),
-            }
+          ? { ...board, cards: board.cards.filter((card) => card.id !== cardId) }
           : board
       )
     );
   };
 
-  // Renomme un tableau
   const handleUpdateBoard = (boardId, newTitle) => {
     const trimmed = newTitle.trim();
-    if (!trimmed) {
-      alert("Le nom du tableau ne peut pas être vide !");
-      return;
-    }
-
+    if (!trimmed) return alert("Le nom ne peut pas être vide !");
     setBoards((prev) =>
       prev.map((board) =>
         board.id === boardId ? { ...board, title: trimmed } : board
@@ -110,18 +108,13 @@ const TaskManager = () => {
     );
   };
 
-  // Supprime un tableau
   const handleDeleteBoard = (boardId) => {
     setBoards((prev) => prev.filter((board) => board.id !== boardId));
   };
 
-  // Crée un nouveau tableau
   const handleCreateBoard = (title) => {
     const trimmedTitle = title.trim();
-    if (!trimmedTitle) {
-      alert("Le nom du tableau ne peut pas être vide !");
-      return;
-    }
+    if (!trimmedTitle) return alert("Le nom du tableau est requis.");
     const newBoard = {
       id: Date.now(),
       title: trimmedTitle,
@@ -130,12 +123,10 @@ const TaskManager = () => {
     setBoards((prev) => [...prev, newBoard]);
   };
 
-  // Gestion du drag & drop
   const handleDrop = (sourceBoardId, targetBoardId, cardId, targetIndex) => {
     if (!sourceBoardId || !targetBoardId || !cardId) return;
 
     if (sourceBoardId === targetBoardId) {
-      // Réordonne dans le même tableau
       setBoards((prevBoards) =>
         prevBoards.map((board) => {
           if (board.id !== sourceBoardId) return board;
@@ -152,7 +143,6 @@ const TaskManager = () => {
         })
       );
     } else {
-      // Déplace vers un autre tableau
       setBoards((prevBoards) =>
         prevBoards.map((board) => {
           if (board.id === sourceBoardId) {
@@ -168,11 +158,7 @@ const TaskManager = () => {
 
             const updatedCards = [...board.cards];
             if (draggedCard) {
-              if (targetIndex === null || targetIndex === undefined) {
-                updatedCards.push(draggedCard);
-              } else {
-                updatedCards.splice(targetIndex, 0, draggedCard);
-              }
+              updatedCards.splice(targetIndex ?? updatedCards.length, 0, draggedCard);
             }
             return { ...board, cards: updatedCards };
           }
@@ -185,49 +171,48 @@ const TaskManager = () => {
   };
 
   return (
-  <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-    <Sidebar/>
+    <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
+      <Sidebar />
+      <div className="tm-main-content">
+        <h1 className="workSpaceName"> {workspaceId}</h1>
+        <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">
+          + Créer un tableau
+        </button>
 
-    <div className="tm-main-content">
-      <h1>Gestion des tâches</h1>
-      <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">+ Créer un tableau</button>
-
-      <div className="tm-boards-wrapper">
-        <div className="tm-boards">
-          {boards.map((board) => (
-            <Board
-              key={board.id}
-              board={board}
-              handleDrop={handleDrop}
-              setDraggingCardInfo={setDraggingCardInfo}
-              openModal={openModal}
-              handleUpdateBoard={handleUpdateBoard}
-              handleDeleteBoard={handleDeleteBoard}
-            />
-          ))}
+        <div className="tm-boards-wrapper">
+          <div className="tm-boards">
+            {boards.map((board) => (
+              <Board
+                key={board.id}
+                board={board}
+                handleDrop={handleDrop}
+                setDraggingCardInfo={setDraggingCardInfo}
+                openModal={openModal}
+                handleUpdateBoard={handleUpdateBoard}
+                handleDeleteBoard={handleDeleteBoard}
+              />
+            ))}
+          </div>
         </div>
       </div>
+
+      {showModal && (
+        <Modal
+          modalData={modalData}
+          closeModal={closeModal}
+          handleCreateOrUpdateCard={handleCreateOrUpdateCard}
+          handleDeleteCard={handleDeleteCard}
+        />
+      )}
+
+      {showBoardModal && (
+        <BoardModal
+          closeModal={() => setShowBoardModal(false)}
+          handleCreateBoard={handleCreateBoard}
+        />
+      )}
     </div>
-
-    {showModal && (
-      <Modal
-        modalData={modalData}
-        closeModal={closeModal}
-        handleCreateOrUpdateCard={handleCreateOrUpdateCard}
-        handleDeleteCard={handleDeleteCard}
-      />
-    )}
-
-    {showBoardModal && (
-      <BoardModal
-        closeModal={() => setShowBoardModal(false)}
-        handleCreateBoard={handleCreateBoard}
-      />
-    )}
-  </div>
-);
-
-
+  );
 };
 
 export default TaskManager;

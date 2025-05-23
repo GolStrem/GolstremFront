@@ -38,7 +38,6 @@
 
 .tm-main-content {
   flex-grow: 1;
-  padding: 20px;
   box-sizing: border-box;
   text-align: center;
 }
@@ -190,6 +189,13 @@
   cursor: pointer;
   margin-left: 4px;
 }
+
+
+
+.workSpaceName{
+  padding-top: 2em;
+}
+
 
 /* Responsive */
 @media (max-width: 1024px) {

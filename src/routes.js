@@ -13,6 +13,7 @@ const Portfolio = lazy(() => import('./modules/portfolio/Portfolio'));
 const ExpenseTracker = lazy(() => import('./modules/expense-tracker/ExpenseTracker'));
 const SocialNetwork = lazy(() => import('./modules/social-network/SocialNetwork'));
 const AppointmentScheduler = lazy(() => import('./modules/appointment-scheduler/AppointmentScheduler'));
+const Workspace = lazy(() => import('./pages/Workspace'));
 
 const routes = [
   {
@@ -29,16 +30,6 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <Dashboard />
-        </Layout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/task-manager',
-    element: (
-      <ProtectedRoute>
-        <Layout>
-          <TaskManager />
         </Layout>
       </ProtectedRoute>
     ),
@@ -83,6 +74,19 @@ const routes = [
       </ProtectedRoute>
     ),
   },
+  {
+  path: '/workspace/:id',
+  element: (
+    <ProtectedRoute>
+      <Layout>
+        <React.Suspense fallback={<div>Chargement du workspace...</div>}>
+          <Workspace />
+        </React.Suspense>
+      </Layout>
+    </ProtectedRoute>
+  ),
+},
+
 ];
 
 export default routes;
