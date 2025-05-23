@@ -6,7 +6,6 @@ import Sidebar from "../../components/taskManager/Sidebar";
 import "./TaskManager.css";
 import { useSelector } from "react-redux";
 
-// 🧠 Fonctions de persistance
 const loadBoardsFromStorage = (workspaceId) => {
   const data = localStorage.getItem(`boards_${workspaceId}`);
   return data ? JSON.parse(data) : [];
@@ -20,7 +19,6 @@ const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const [boards, setBoards] = useState([]);
   const [draggingCardInfo, setDraggingCardInfo] = useState(null);
-
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({
     boardId: null,
@@ -28,29 +26,21 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     text: "",
     color: "#ffffff",
   });
-
   const [showBoardModal, setShowBoardModal] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
- // 🧠 Chargement des boards
-useEffect(() => {
-  const saved = loadBoardsFromStorage(workspaceId);
-  setBoards(saved.length > 0 ? saved : [{
-    id: Date.now(),
-    title: "Nouveau tableau",
-    cards: [],
-  }]);
-}, [workspaceId]);
+  useEffect(() => {
+    const saved = loadBoardsFromStorage(workspaceId);
+    setBoards(saved.length > 0 ? saved : [{
+      id: Date.now(),
+      title: "Nouveau tableau",
+      cards: [],
+    }]);
+  }, [workspaceId]);
 
-// 💾 Sauvegarde des boards et du workspace courant
-useEffect(() => {
-  saveBoardsToStorage(workspaceId, boards);
-  localStorage.setItem("lastWorkspace", workspaceId);
-}, [boards, workspaceId]);
-
-
-  // 💾 Sauvegarde automatique
   useEffect(() => {
     saveBoardsToStorage(workspaceId, boards);
+    localStorage.setItem("lastWorkspace", workspaceId);
   }, [boards, workspaceId]);
 
   const openModal = (boardId, card = null) => {
@@ -67,11 +57,9 @@ useEffect(() => {
 
   const handleCreateOrUpdateCard = (boardId, cardId, text, color) => {
     if (!text.trim()) return alert("Le texte est requis.");
-
     setBoards((prevBoards) =>
       prevBoards.map((board) => {
         if (board.id !== boardId) return board;
-
         if (cardId) {
           return {
             ...board,
@@ -130,15 +118,11 @@ useEffect(() => {
       setBoards((prevBoards) =>
         prevBoards.map((board) => {
           if (board.id !== sourceBoardId) return board;
-
           const updatedCards = [...board.cards];
           const cardIndex = updatedCards.findIndex((card) => card.id === cardId);
-
           if (cardIndex === -1 || cardIndex === targetIndex) return board;
-
           const [movedCard] = updatedCards.splice(cardIndex, 1);
           updatedCards.splice(targetIndex, 0, movedCard);
-
           return { ...board, cards: updatedCards };
         })
       );
@@ -155,7 +139,6 @@ useEffect(() => {
             const draggedCard = boards
               .find((b) => b.id === sourceBoardId)
               ?.cards.find((card) => card.id === cardId);
-
             const updatedCards = [...board.cards];
             if (draggedCard) {
               updatedCards.splice(targetIndex ?? updatedCards.length, 0, draggedCard);
@@ -172,9 +155,15 @@ useEffect(() => {
 
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-      <Sidebar />
-      <div className="tm-main-content">
-        <h1 className={`workSpaceName ${mode === "dark" ? "dark" : "light"}`}> {workspaceId}</h1>
+      <button className={`hamburger-btn ${mode === "dark" ? "dark" : "light"}`} onClick={() => setSidebarVisible(!sidebarVisible)}
+      style={{ left: sidebarVisible ? "300px" : "0" }}>
+        ☰
+      </button>
+
+      {sidebarVisible && <Sidebar />}
+
+      <div className="tm-main-content" style={{ marginLeft: sidebarVisible ? "300px" : "0" }}>
+        <h1 className={`workSpaceName ${mode === "dark" ? "dark" : "light"}`}>{workspaceId}</h1>
         <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">
           + Créer un tableau
         </button>
