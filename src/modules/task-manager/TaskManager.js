@@ -184,46 +184,54 @@ const TaskManager = () => {
   };
 
   return (
-          <div
-      className={`tm-task-manager ${mode === "dark" ? "dark" : "light"}`}>
+  <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
+    <aside className="tm-sidebar">
+      <h2>Menu</h2>
+      <button className="tm-nav-btn">🏠 Accueil</button>
+      <button className="tm-nav-btn">📝 Tâches</button>
+      <button className="tm-nav-btn">➕ Ajouter une page</button>
+    </aside>
 
-
-      
+    <div className="tm-main-content">
       <h1>Gestion des tâches</h1>
-
       <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">+ Créer un tableau</button>
 
-      <div className="tm-boards">
-        {boards.map((board) => (
-          <Board
-            key={board.id}
-            board={board}
-            handleDrop={handleDrop}
-            setDraggingCardInfo={setDraggingCardInfo}
-            openModal={openModal}
-            handleUpdateBoard={handleUpdateBoard}
-            handleDeleteBoard={handleDeleteBoard}
-          />
-        ))}
+      <div className="tm-boards-wrapper">
+        <div className="tm-boards">
+          {boards.map((board) => (
+            <Board
+              key={board.id}
+              board={board}
+              handleDrop={handleDrop}
+              setDraggingCardInfo={setDraggingCardInfo}
+              openModal={openModal}
+              handleUpdateBoard={handleUpdateBoard}
+              handleDeleteBoard={handleDeleteBoard}
+            />
+          ))}
+        </div>
       </div>
-
-      {showModal && (
-        <Modal
-          modalData={modalData}
-          closeModal={closeModal}
-          handleCreateOrUpdateCard={handleCreateOrUpdateCard}
-          handleDeleteCard={handleDeleteCard}
-        />
-      )}
-
-      {showBoardModal && (
-        <BoardModal
-          closeModal={() => setShowBoardModal(false)}
-          handleCreateBoard={handleCreateBoard}
-        />
-      )}
     </div>
-  );
+
+    {showModal && (
+      <Modal
+        modalData={modalData}
+        closeModal={closeModal}
+        handleCreateOrUpdateCard={handleCreateOrUpdateCard}
+        handleDeleteCard={handleDeleteCard}
+      />
+    )}
+
+    {showBoardModal && (
+      <BoardModal
+        closeModal={() => setShowBoardModal(false)}
+        handleCreateBoard={handleCreateBoard}
+      />
+    )}
+  </div>
+);
+
+
 };
 
 export default TaskManager;

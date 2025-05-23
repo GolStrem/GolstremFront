@@ -17,7 +17,7 @@
   flex-wrap: wrap; /* Permet aux cartes de passer à la ligne */
   justify-content: center; /* Centre les cartes horizontalement */
   gap: 20px; /* Espacement entre les cartes */
-  margin-top: 20px;
+  margin-top: 1px;
   width: 100%;
   max-width: 1300px;
   padding: 20px;
@@ -239,6 +239,10 @@
 
   .cards-container{
     width: 85%;
+  }
+  h1{
+
+    text-align: center;
   }
 }
 
