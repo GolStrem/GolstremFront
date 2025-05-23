@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Board from "../../components/taskManager/Board";
 import Modal from "../../components/taskManager/Modal";
 import BoardModal from "../../components/taskManager/BoardModal";
+import Sidebar from "../../components/taskManager/Sidebar";
 import "./TaskManager.css";
 import { useSelector } from "react-redux"; // Utilisation de Redux
 
@@ -185,12 +186,7 @@ const TaskManager = () => {
 
   return (
   <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-    <aside className="tm-sidebar">
-      <h2>Menu</h2>
-      <button className="tm-nav-btn">🏠 Accueil</button>
-      <button className="tm-nav-btn">📝 Tâches</button>
-      <button className="tm-nav-btn">➕ Ajouter une page</button>
-    </aside>
+    <Sidebar/>
 
     <div className="tm-main-content">
       <h1>Gestion des tâches</h1>
