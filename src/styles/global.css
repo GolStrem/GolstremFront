@@ -15,6 +15,10 @@ html, body {
     --header-bg: #ffffff;
     --header-color: #000000;
     --header-hover-color: #0059b8;
+    background-image: url('../assets/fondwhite.svg') ;
+    background-size: cover;  
+    background-repeat: no-repeat;   
+    background-position: center;  
   }
   
   body.dark-mode {
@@ -22,6 +26,10 @@ html, body {
     --header-color: #ffffff;
     --header-hover-color: #e07c0a;
     background-color: #1a1a1a;
+    background-image: url('../assets/fondblack.svg');
+    background-size: cover;  
+    background-repeat: no-repeat;
+    background-position: center;  
 
   }
   

@@ -29,7 +29,7 @@ const Dashboard = () => {
 
   return (
     <div className={`dashboard ${mode === "dark" ? "dark" : "light"}`} onMouseMove={handleMouseMove}>
-      <h1>Bienvenue sur votre Dashboard</h1>
+      <h1 className="dashboardh1">Bienvenue sur votre Dashboard</h1>
       <p className="projects">Liste des projets en cours</p>
       <div className="cards-container">
         {links.map((link, index) => (

@@ -12,7 +12,7 @@ const Sidebar = () => {
   const mode = useSelector((state) => state.theme.mode);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("workspaces")) || ["default"];
+    const saved = JSON.parse(localStorage.getItem("workspaces")) || ["Default"];
     setWorkspaces(saved);
   }, []);
 
@@ -57,10 +57,10 @@ const Sidebar = () => {
       const updated = workspaces.filter((w) => w !== name);
 
       if (updated.length === 0) {
-        updated.push("default");
+        updated.push("Default");
         localStorage.setItem("boards_default", JSON.stringify([]));
-        localStorage.setItem("lastWorkspace", "default");
-        navigate(`/workspace/default`);
+        localStorage.setItem("lastWorkspace", "Default");
+        navigate(`/workspace/Default`);
       } else if (window.location.pathname.includes(name)) {
         navigate(`/workspace/${updated[0]}`);
         localStorage.setItem("lastWorkspace", updated[0]);

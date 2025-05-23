@@ -16,7 +16,7 @@ const saveBoardsToStorage = (workspaceId, boards) => {
   localStorage.setItem(`boards_${workspaceId}`, JSON.stringify(boards));
 };
 
-const TaskManager = ({ workspaceId = "default" }) => {
+const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const [boards, setBoards] = useState([]);
   const [draggingCardInfo, setDraggingCardInfo] = useState(null);
