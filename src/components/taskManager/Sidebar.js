@@ -58,7 +58,7 @@ const Sidebar = () => {
 
       if (updated.length === 0) {
         updated.push("Default");
-        localStorage.setItem("boards_default", JSON.stringify([]));
+        localStorage.setItem("boards_Default", JSON.stringify([]));
         localStorage.setItem("lastWorkspace", "Default");
         navigate(`/workspace/Default`);
       } else if (window.location.pathname.includes(name)) {

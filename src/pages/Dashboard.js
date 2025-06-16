@@ -7,7 +7,7 @@ import backgroundImage from "../assets/abstrait.webp";
 
 const Dashboard = () => {
   const mode = useSelector((state) => state.theme.mode);
-  const lastWorkspace = localStorage.getItem("lastWorkspace") || "Default";
+  const lastWorkspace = localStorage.getItem("lastWorkspace") || "default";
 
   const links = [
     {
