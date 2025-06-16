@@ -3,11 +3,14 @@ import Card from "./Card";
 
 const Board = ({
   board,
+  index,
   handleDrop,
   setDraggingCardInfo,
   openModal,
   handleUpdateBoard,
   handleDeleteBoard,
+  onBoardDragStart,
+  onBoardDrop,
 }) => {
   const cardsContainerRef = useRef(null);
   const [calculatedHeight, setCalculatedHeight] = useState(80);
@@ -61,7 +64,13 @@ const Board = ({
   };
 
   return (
-    <div className="tm-board-container">
+    <div
+      className="tm-board-container"
+      draggable
+      onDragStart={(e) => onBoardDragStart(e, index)}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => onBoardDrop(e, index)}
+    >
       <div className="tm-board-header">
         <h2>{board.title}</h2>
         <div className="tm-board-header-buttons">

@@ -5,6 +5,7 @@ import BoardModal from "../../components/taskManager/BoardModal";
 import Sidebar from "../../components/taskManager/Sidebar";
 import "./TaskManager.css";
 import { useSelector } from "react-redux";
+import Masonry from "react-masonry-css";
 
 const loadBoardsFromStorage = (workspaceId) => {
   const data = localStorage.getItem(`boards_${workspaceId}`);
@@ -19,6 +20,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const [boards, setBoards] = useState([]);
   const [draggingCardInfo, setDraggingCardInfo] = useState(null);
+  const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({
     boardId: null,
@@ -28,6 +30,23 @@ const TaskManager = ({ workspaceId = "Default" }) => {
   });
   const [showBoardModal, setShowBoardModal] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
+
+  // Masonry dynamic columns
+  const [columns, setColumns] = useState(3);
+  const COLUMN_WIDTH = 340;
+  const GUTTER = 16;
+
+  const calculateColumns = () => {
+    const width = window.innerWidth - (sidebarVisible ? 300 : 0);
+    const possibleColumns = Math.floor(width / (COLUMN_WIDTH + GUTTER));
+    setColumns(Math.max(possibleColumns, 1));
+  };
+
+  useEffect(() => {
+    calculateColumns();
+    window.addEventListener("resize", calculateColumns);
+    return () => window.removeEventListener("resize", calculateColumns);
+  }, [sidebarVisible]);
 
   useEffect(() => {
     const saved = loadBoardsFromStorage(workspaceId);
@@ -153,10 +172,28 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     setDraggingCardInfo(null);
   };
 
+  const onBoardDragStart = (e, index) => {
+    setDraggingBoardIndex(index);
+  };
+
+  const onBoardDrop = (e, targetIndex) => {
+    if (draggingBoardIndex === null || draggingBoardIndex === targetIndex) return;
+    setBoards((prevBoards) => {
+      const newBoards = [...prevBoards];
+      const [movedBoard] = newBoards.splice(draggingBoardIndex, 1);
+      newBoards.splice(targetIndex, 0, movedBoard);
+      return newBoards;
+    });
+    setDraggingBoardIndex(null);
+  };
+
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-      <button className={`hamburger-btn ${mode === "dark" ? "dark" : "light"}`} onClick={() => setSidebarVisible(!sidebarVisible)}
-      style={{ left: sidebarVisible ? "300px" : "0" }}>
+      <button
+        className={`hamburger-btn ${mode === "dark" ? "dark" : "light"}`}
+        onClick={() => setSidebarVisible(!sidebarVisible)}
+        style={{ left: sidebarVisible ? "300px" : "0" }}
+      >
         ☰
       </button>
 
@@ -169,19 +206,26 @@ const TaskManager = ({ workspaceId = "Default" }) => {
         </button>
 
         <div className="tm-boards-wrapper">
-          <div className="tm-boards">
-            {boards.map((board) => (
+          <Masonry
+            breakpointCols={columns}
+            className="tm-boards-masonry"
+            columnClassName="tm-boards-masonry-column"
+          >
+            {boards.map((board, index) => (
               <Board
                 key={board.id}
                 board={board}
+                index={index}
                 handleDrop={handleDrop}
                 setDraggingCardInfo={setDraggingCardInfo}
                 openModal={openModal}
                 handleUpdateBoard={handleUpdateBoard}
                 handleDeleteBoard={handleDeleteBoard}
+                onBoardDragStart={onBoardDragStart}
+                onBoardDrop={onBoardDrop}
               />
             ))}
-          </div>
+          </Masonry>
         </div>
       </div>
 
