@@ -57,6 +57,7 @@
 .tm-boards-masonry-column {
   padding-left: 1rem;
   background-clip: padding-box;
+  margin-right: 5px;
 }
 
 .tm-boards-masonry-column > .tm-board-container {
