@@ -20,10 +20,10 @@ const Workspace = () => {
     if (!saved.includes(id)) {
       if (saved.length === 0) {
         // Aucun workspace existant → créer "default"
-        saved.push("default");
+        saved.push("Default");
         localStorage.setItem("workspaces", JSON.stringify(saved));
-        localStorage.setItem("boards_default", JSON.stringify([]));
-        navigate("/workspace/default");
+        localStorage.setItem("boards_Default", JSON.stringify([]));
+        navigate("/workspace/Default");
       } else {
         // Redirige vers le premier workspace existant
         navigate(`/workspace/${saved[0]}`);
