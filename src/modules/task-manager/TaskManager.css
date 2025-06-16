@@ -44,8 +44,6 @@
   width: 100%;
   padding: 1rem;
   overflow-x: hidden;
-  display: flex;
-  justify-content: center; /* 🟢 pour centrer le contenu */
 }
 
 /* === Styles react-masonry-css === */
@@ -53,6 +51,7 @@
   display: flex;
   margin-left: -1rem; /* Gutter négatif pour aligner */
   width: auto;
+  margin-right: 1rem;
 }
 
 .tm-boards-masonry-column {
@@ -70,12 +69,15 @@
   flex-direction: column;
   width: 100%;
   max-width: 340px;
+  min-width: 240px; /* ➕ largeur minimale pour éviter les "crushed boards" */
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
   break-inside: avoid;
+  word-break: break-word;
 }
+
 
 .tm-board-container:hover {
   background-color: #e9ecef;
@@ -90,12 +92,18 @@
   border-bottom: 1px solid #ccc;
   background-color: #fff;
   box-sizing: border-box;
+  border-radius: 5px;
 }
 
 .tm-board-header h2 {
   margin: 0;
   font-size: 18px;
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%; /* évite qu'il déborde */
 }
+
 
 /* === Cards === */
 .tm-board {
@@ -179,6 +187,11 @@
   margin-left: 4px;
 }
 
+.tm-edit{
+    margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 /* === Bouton hamburger (menu latéral) === */
 .hamburger-btn {
   position: fixed;
@@ -214,6 +227,11 @@
   .tm-main-content {
     margin-left: 0;
     padding: 10px;
+  }
+
+  .tm-boards-wrapper {
+    display: flex;
+    justify-content: center;
   }
 
   .tm-board-container {
