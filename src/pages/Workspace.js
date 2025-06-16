@@ -12,40 +12,25 @@ const Workspace = () => {
   useEffect(() => {
     let saved = JSON.parse(localStorage.getItem("workspaces"));
 
+    // Si pas encore initialisé du tout
     if (!saved || !Array.isArray(saved)) {
       saved = [];
     }
 
-    if (!id) {
-      // Aucun ID dans l'URL → redirige vers le premier workspace ou crée un nouveau
-      if (saved.length > 0) {
-        navigate(`/workspace/${saved[0]}`);
-      } else {
-        const defaultId = "Default";
-        saved.push(defaultId);
-        localStorage.setItem("workspaces", JSON.stringify(saved));
-        localStorage.setItem("boards_Default", JSON.stringify([]));
-        navigate(`/workspace/${defaultId}`);
-      }
-      return;
-    }
-
     if (!saved.includes(id)) {
-      // L'ID n'existe pas dans la liste → redirige vers le premier existant ou crée un nouveau
-      if (saved.length > 0) {
-        navigate(`/workspace/${saved[0]}`);
-      } else {
-        const defaultId = "Default";
-        saved.push(defaultId);
+      if (saved.length === 0) {
+        // Aucun workspace existant → créer "default"
+        saved.push("Default");
         localStorage.setItem("workspaces", JSON.stringify(saved));
         localStorage.setItem("boards_Default", JSON.stringify([]));
-        navigate(`/workspace/${defaultId}`);
+        navigate("/workspace/Default");
+      } else {
+        // Redirige vers le premier workspace existant
+        navigate(`/workspace/${saved[0]}`);
       }
-      return;
+    } else {
+      setIsValid(true);
     }
-
-    // L'ID est valide
-    setIsValid(true);
   }, [id, navigate]);
 
   if (!isValid) return null;
