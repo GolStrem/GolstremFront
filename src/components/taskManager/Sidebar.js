@@ -12,8 +12,12 @@ const Sidebar = () => {
   const mode = useSelector((state) => state.theme.mode);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("workspaces")) || ["Default"];
-    setWorkspaces(saved);
+    try {
+      const saved = JSON.parse(localStorage.getItem("workspaces"));
+      setWorkspaces(Array.isArray(saved) && saved.length > 0 ? saved : ["Default"]);
+    } catch {
+      setWorkspaces(["Default"]);
+    }
   }, []);
 
   useEffect(() => {
@@ -47,7 +51,22 @@ const Sidebar = () => {
     const updated = workspaces.map((w) => (w === oldName ? trimmed : w));
     setWorkspaces(updated);
     setEditing(null);
-    localStorage.setItem(`boards_${trimmed}`, localStorage.getItem(`boards_${oldName}`));
+
+    // Transfert des boards ou création d’un tableau vide
+    const oldBoards = localStorage.getItem(`boards_${oldName}`);
+    localStorage.setItem(
+      `boards_${trimmed}`,
+      oldBoards && oldBoards !== "null"
+        ? oldBoards
+        : JSON.stringify([
+            {
+              id: Date.now(),
+              title: "Nouveau tableau",
+              cards: [],
+            },
+          ])
+    );
+
     localStorage.removeItem(`boards_${oldName}`);
     navigate(`/workspace/${trimmed}`);
   };
@@ -58,7 +77,16 @@ const Sidebar = () => {
 
       if (updated.length === 0) {
         updated.push("Default");
-        localStorage.setItem("boards_Default", JSON.stringify([]));
+        localStorage.setItem(
+          "boards_Default",
+          JSON.stringify([
+            {
+              id: Date.now(),
+              title: "Nouveau tableau",
+              cards: [],
+            },
+          ])
+        );
         localStorage.setItem("lastWorkspace", "Default");
         navigate(`/workspace/Default`);
       } else if (window.location.pathname.includes(name)) {

@@ -66,12 +66,14 @@ const Board = ({
   return (
     <div
       className="tm-board-container"
-      draggable
-      onDragStart={(e) => onBoardDragStart(e, index)}
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => onBoardDrop(e, index)}
     >
-      <div className="tm-board-header">
+      <div
+        className="tm-board-header"
+        draggable
+        onDragStart={(e) => onBoardDragStart(e, index)}
+      >
         <h2>{board.title}</h2>
         <div className="tm-board-header-buttons">
           <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
