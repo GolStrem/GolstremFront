@@ -44,6 +44,8 @@
   width: 100%;
   padding: 1rem;
   overflow-x: hidden;
+  display: flex;
+  justify-content: center; /* 🟢 pour centrer le contenu */
 }
 
 /* === Styles react-masonry-css === */
@@ -209,8 +211,14 @@
 }
 
 @media (max-width: 768px) {
+  .tm-main-content {
+    margin-left: 0;
+    padding: 10px;
+  }
+
   .tm-board-container {
     width: 100%;
+    max-width: 340px;
   }
 
   .tm-Tabl {
@@ -233,5 +241,9 @@
 
   .tm-board-header h2 {
     font-size: 16px;
+  }
+
+  .tm-boards-masonry-column {
+    padding-left: 0;
   }
 }
