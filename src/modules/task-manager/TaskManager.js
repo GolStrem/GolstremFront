@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Board from "../../components/taskManager/Board";
 import Modal from "../../components/taskManager/Modal";
 import BoardModal from "../../components/taskManager/BoardModal";
@@ -19,7 +19,7 @@ const saveBoardsToStorage = (workspaceId, boards) => {
 const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const [boards, setBoards] = useState([]);
-  const [draggingCardInfo, setDraggingCardInfo] = useState(null);
+  const [, setDraggingCardInfo] = useState(null); // ✅ valeur inutilisée retirée
   const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({
@@ -36,25 +36,31 @@ const TaskManager = ({ workspaceId = "Default" }) => {
   const COLUMN_WIDTH = 340;
   const GUTTER = 16;
 
-  const calculateColumns = () => {
+  const calculateColumns = useCallback(() => {
     const width = window.innerWidth - (sidebarVisible ? 300 : 0);
     const possibleColumns = Math.floor(width / (COLUMN_WIDTH + GUTTER));
     setColumns(Math.max(possibleColumns, 1));
-  };
+  }, [sidebarVisible]); // ✅ useCallback avec dépendance
 
   useEffect(() => {
     calculateColumns();
     window.addEventListener("resize", calculateColumns);
     return () => window.removeEventListener("resize", calculateColumns);
-  }, [sidebarVisible]);
+  }, [calculateColumns]); // ✅ clean dependency
 
   useEffect(() => {
     const saved = loadBoardsFromStorage(workspaceId);
-    setBoards(saved.length > 0 ? saved : [{
-      id: Date.now(),
-      title: "Nouveau tableau",
-      cards: [],
-    }]);
+    setBoards(
+      saved.length > 0
+        ? saved
+        : [
+            {
+              id: Date.now(),
+              title: "Nouveau tableau",
+              cards: [],
+            },
+          ]
+    );
   }, [workspaceId]);
 
   useEffect(() => {
