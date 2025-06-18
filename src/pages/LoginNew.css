@@ -1,0 +1,262 @@
+/* ==================== Variables de base ==================== */
+:root {
+  --noir: #181818;
+  --jaune: #b5ad21;
+  --blanc: #ffffff;
+}
+
+/* ==================== Structure générale ==================== */
+.loginNew {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--noir);
+}
+
+.loginNew.light {
+  background-color: #fff;
+}
+
+.loginNew.dark {
+  background-color: #444;
+}
+
+/* ==================== Interrupteur thème ==================== */
+.mode-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+  z-index: 30;
+}
+
+/* ==================== Carrés “Connexion / Créer” ==================== */
+.ln-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  z-index: 2;
+}
+
+
+.ln-connexion,
+.ln-create {
+  width: 300px;
+  height: 350px;
+  background: var(--noir);
+  border: none;
+  border-radius: 12px;
+  color: var(--blanc);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ln-connexion:hover,
+.ln-create:hover {
+  transform: translateY(-6px);
+}
+
+.ln-ico {
+  color: var(--jaune);
+}
+
+.ln-connexion span,
+.ln-create span {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ==================== Pop-up générique ==================== */
+.ln-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ln-modal-box {
+  width: 320px;
+  background: var(--noir);
+  border-radius: 12px;
+  padding: 2rem 1.5rem 2.5rem;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.loginNew.light .ln-modal-box {
+  background: #fff;
+}
+
+.ln-modal-box h2 {
+  margin-bottom: 1.5rem;
+  color: var(--blanc);
+  text-transform: uppercase;
+  font-size: 1.3rem;
+}
+
+.loginNew.light .ln-modal-box h2 {
+  color: #000;
+}
+
+.ln-modal-box label {
+  color: var(--blanc);
+  font-size: 0.9rem;
+  display: block;
+  margin: 0.9rem 0 0.4rem;
+}
+
+.loginNew.light .ln-modal-box label {
+  color: #000;
+}
+
+.ln-modal-box input {
+  width: 100%;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--jaune);
+  font-weight: bold;
+}
+
+.ln-modal-box button[type='submit'] {
+  margin-top: 1.4rem;
+  width: 100%;
+  padding: 0.7rem;
+  background: none;
+  border: 1px solid var(--jaune);
+  border-radius: 6px;
+  color: var(--blanc);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.loginNew.light .ln-modal-box button[type='submit'] {
+  color: #000;
+}
+
+.ln-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 1.4rem;
+  color: var(--jaune);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ==================== Header (mobile) ==================== */
+.ln-header {
+  display: none;
+}
+
+.ln-logor {
+  height: 40px;
+  width: 100%;
+}
+
+/* ==================== Fond graphique ==================== */
+.ln-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 0;
+  pointer-events: none; /* évite que ça gêne les interactions */
+}
+
+/* — aside gauche — */
+.ln-aside {
+  width: clamp(5rem, 15vw, 20rem);
+  background-color: var(--jaune);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ln-logo {
+  width: clamp(1rem, 4vw, 6rem);
+  max-width: 6rem;
+  object-fit: contain;
+}
+
+/* — zone centrale de fond — */
+.ln-background {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.ln-character {
+  position: absolute;
+  bottom: 0;
+  left: -17%;
+  top: -5%;
+  height: 137%;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.ln-text {
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rem;
+}
+
+.ln-textlogo {
+  width: clamp(12rem, 81vw, 200rem);
+  height: auto;
+}
+
+.ln-connect {
+  font: 900 clamp(1.5rem, 3vw, 3rem) 'Orbiton', sans-serif;
+  color: var(--jaune);
+  margin-top: -3rem;
+}
+
+/* ==================== Responsive ==================== */
+@media (max-width: 768px) {
+  .ln-back {
+    display: none;
+  }
+
+  .ln-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    background-color: var(--jaune);
+    z-index: 0;
+  }
+
+  .ln-form {
+    position: static;
+    transform: none;
+    margin-top: 2rem;
+    align-items: center;
+  }
+}

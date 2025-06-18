@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Non-lazy components
 import Login from './pages/Login';
 import Error from './pages/NotFound';
+import LoginNew from './pages/LoginNew';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -18,6 +19,10 @@ const routes = [
   {
     path: '/',
     element: <Login />, // Accessible sans authentification
+  },
+    {
+    path: '/login',
+    element: <LoginNew />, // Accessible sans authentification
   },
   {
     path: '*',
