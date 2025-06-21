@@ -126,7 +126,7 @@
 }
 
 .ln-modal-box input {
-  width: 100%;
+  width: 95%;
   padding: 0.6rem;
   border: none;
   border-radius: 6px;
@@ -237,6 +237,95 @@
   margin-top: -3rem;
 }
 
+.ln-password-field{
+  display: flex;
+}
+
+.ln-error{
+  color: red;
+}
+
+/* LoginNew.css (ou un fichier séparé) */
+.ln-eye-toggle {
+  /* on enlève tout le style « bouton » natif */
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 8px;
+  color :var(--jaune);
+
+  /* on garde le curseur “main” et le centrage de l’icône */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* accessibilité : garder un focus visible */
+.ln-eye-toggle:focus-visible {
+  outline: 2px solid var(--primary-color, #0077ff);
+  outline-offset: 2px;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/*Mot de passe oublié bouton*/
+.ln-link-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  padding: 0;
+  margin-top: 0.5rem;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.ln-link-button:hover {
+  color: #0056b3;
+}
+
+
+.ln-ModalStyle {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 50%;
+  max-width: 150px;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+.ln-ModalStyle.b {
+  top: auto;
+  bottom: 0.5rem;
+  left: auto;
+  right: 0.5rem;
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.ln-ModalWarning {
+  position: absolute;
+  top: 8px;              
+  /* décale à gauche de la croix :*/
+  right: calc(2px + 1.8rem); /* 12 px = marge de la croix, 1.8 rem ≈ largeur de la croix */
+  /* dimension :  ~80 px maxi, 25 % de la largeur de la boîte sinon */
+  width: 25%;
+  max-width: 80px;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+
 /* ==================== Responsive ==================== */
 @media (max-width: 768px) {
   .ln-back {
@@ -258,5 +347,47 @@
     transform: none;
     margin-top: 2rem;
     align-items: center;
+  }
+}
+
+
+/* ==================== Animation ouverture modal ==================== */
+.ln-modal-fade-in {
+  animation: fadeIn 0.3s ease;
+}
+.ln-modal-slide-in {
+  animation: slideIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideIn {
+  from { transform: translateY(-40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+
+/* ==================== Animation modal décor ==================== */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }

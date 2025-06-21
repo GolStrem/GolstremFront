@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../store/themeSlice';
 import { FaSun, FaMoon, FaUserAlt, FaPlus } from 'react-icons/fa';
+import LnModal from '../components/LnModal.js'; // adapte le chemin si besoin
+
 
 import './LoginNew.css';
 
@@ -20,16 +22,6 @@ const LoginNew = () => {
   const openLogin    = () => setModal('login');
   const openRegister = () => setModal('register');
   const closeModal   = () => setModal(null);
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -58,55 +50,8 @@ const LoginNew = () => {
         </button>
       </div>
 
-      {/* ---------- POP-UP « Connexion » ---------- */}
-      {modal === 'login' && (
-        <div className="ln-modal" onClick={closeModal}>
-          <div className="ln-modal-box" onClick={e => e.stopPropagation()}>
-            <button className="ln-modal-close" onClick={closeModal}>
-              &#x2715;
-            </button>
+      {modal && <LnModal type={modal} onClose={closeModal} />}
 
-            <h2>Connexion</h2>
-            <form>
-              <label>Pseudo</label>
-              <input type="text" required />
-
-              <label>Mot de passe</label>
-              <input type="password" required />
-
-              <button type="submit">Se connecter</button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ---------- POP-UP « Créer un compte » ---------- */}
-      {modal === 'register' && (
-        <div className="ln-modal" onClick={closeModal}>
-          <div className="ln-modal-box" onClick={e => e.stopPropagation()}>
-            <button className="ln-modal-close" onClick={closeModal}>
-              &#x2715;
-            </button>
-
-            <h2>Nouveau&nbsp;compte</h2>
-            <form>
-              <label>Pseudo</label>
-              <input type="text" required />
-
-              <label>Mot de passe</label>
-              <input type="password" required />
-
-              <label>Confirmez le mot&nbsp;de&nbsp;passe</label>
-              <input type="password" required />
-
-              <label>Adresse e-mail</label>
-              <input type="email" required />
-
-              <button type="submit">Valider la création</button>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* — aside + background décoratif — */}
       <div className="ln-back">
