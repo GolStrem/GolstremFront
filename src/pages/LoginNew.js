@@ -51,7 +51,9 @@ const LoginNew = () => {
       </div>
 
       {modal && <LnModal type={modal} onClose={closeModal} />}
-
+      <div className='ln-backText'>
+        <p className='ln-tgold e'>GOLDTREM</p>
+      </div>
 
       {/* — aside + background décoratif — */}
       <div className="ln-back">
