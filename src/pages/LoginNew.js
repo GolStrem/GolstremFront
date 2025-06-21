@@ -39,18 +39,21 @@ const LoginNew = () => {
 
       {/* — carré “Connexion” & “Créer un compte” — */}
       <div className="ln-form">
-        <button className="ln-connexion" onClick={openLogin}>
+        <button className={`ln-connexion ${mode}`} onClick={openLogin}>
           <FaUserAlt size={80} className="ln-ico" />
           <span>Connexion</span>
         </button>
 
-        <button className="ln-create" onClick={openRegister}>
+        <button className={`ln-create ${mode}`} onClick={openRegister}>
           <FaPlus size={80} className="ln-ico" />
           <span>Créer&nbsp;un&nbsp;compte</span>
         </button>
+
       </div>
 
-      {modal && <LnModal type={modal} onClose={closeModal} />}
+      {modal && <LnModal type={modal} onClose={closeModal} mode={mode} />}
+
+
       <div className='ln-backText'>
         <p className='ln-tgold e'>GOLDTREM</p>
       </div>

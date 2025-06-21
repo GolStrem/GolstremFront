@@ -32,6 +32,25 @@
   z-index: 30;
 }
 
+/* === Thème clair === */
+.ln-connexion.light,
+.ln-create.light {
+  background: var(--blanc);
+  color: var(--noir);
+  box-shadow: 0 0 10px 3px rgba(181, 173, 33, 0.4); /* Jaune avec transparence */
+}
+
+/* === Thème sombre === */
+.ln-connexion.dark,
+.ln-create.dark {
+  background: var(--noir);
+  color: var(--blanc);
+  box-shadow: 0 0 10px 3px rgba(181, 173, 33, 0.4); /* Même effet dans le thème sombre */
+}
+
+
+
+
 /* ==================== Carrés “Connexion / Créer” ==================== */
 .ln-form {
   position: absolute;
@@ -77,6 +96,8 @@
   font-size: 1rem;
   text-align: center;
 }
+
+
 
 /* ==================== Pop-up générique ==================== */
 .ln-modal {
@@ -364,16 +385,6 @@ input:focus {
     line-height: 0.8;
   opacity: 0.5;
 }
-
-
-
-.ln-tgold.e {
-
-}
-
-
-
-
 
 
   .ln-header {

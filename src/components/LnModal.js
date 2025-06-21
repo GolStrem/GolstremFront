@@ -3,6 +3,10 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import LnForgotModal from './LnForgotModal';
 import styleModal from '../assets/styleModal.svg';
 import warningModal from '../assets/warningModal.svg';
+import { useSelector } from 'react-redux';
+
+
+
 
 // --- Regex & règles ---
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -17,6 +21,7 @@ const passwordRules = {
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';
+  const mode = useSelector(state => state.theme.mode); // light | dark
 
   const [form, setForm] = useState({
     username: '',
@@ -113,7 +118,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
 
   return (
     <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
-      <div className="ln-modal-box ln-modal-slide-in" onClick={(e) => e.stopPropagation()}>
+    <div className={`ln-modal-box ln-modal-slide-in ${mode}`} onClick={(e) => e.stopPropagation()}>
         <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">×</button>
         <h2>{isLogin ? 'Connexion' : 'Nouveau compte'}</h2>
         <form onSubmit={handleSubmit} noValidate>
