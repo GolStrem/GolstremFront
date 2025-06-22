@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styleModal from '../assets/styleModal.svg';
-import warningModal from '../assets/warningModal.svg';
+import styleModal from '../../assets/styleModal.svg';
+import warningModal from '../../assets/warningModal.svg';
+
 const LnForgotModal = ({ onClose, onSubmit }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -24,10 +26,10 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
       setError("Adresse e-mail invalide");
       return;
     }
+
     setError('');
+    setSubmitted(true);
     onSubmit?.(email);
-    alert("Lien de réinitialisation envoyé (fictif)");
-    onClose();
   };
 
   return (
@@ -35,10 +37,11 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
       <div className="ln-modal-box ln-modal-slide-in" onClick={(e) => e.stopPropagation()}>
         <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">×</button>
 
-        <img src={styleModal}   alt="DecorationModal" className="ln-ModalStyle" />
-        <img src={warningModal}   alt="DecorationModal" className="ln-ModalWarning" />
+        <img src={styleModal} alt="Décoration" className="ln-ModalStyle" />
+        <img src={warningModal} alt="Avertissement" className="ln-ModalWarning" />
 
         <h2>Mot de passe oublié</h2>
+
         <form onSubmit={handleSubmit} noValidate>
           <label>
             <p>Adresse e-mail</p>
@@ -48,14 +51,25 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+              pattern="^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
               aria-invalid={!!error}
+              disabled={submitted}
             />
             {error && <span className="ln-error">{error}</span>}
           </label>
-          <button type="submit" className="ln-submit">Envoyer</button>
+
+          <button type="submit" className="ln-submit" disabled={submitted}>
+            Envoyer
+          </button>
+
+          {submitted && (
+            <p className="ln-success-message">
+              Si l'adresse correspond à un compte, un e-mail a été envoyé.
+            </p>
+          )}
         </form>
-        <img src={styleModal}   alt="DecorationModal" className="ln-ModalStyle b" />
+
+        <img src={styleModal} alt="Décoration" className="ln-ModalStyle b" />
       </div>
     </div>
   );

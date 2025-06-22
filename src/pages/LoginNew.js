@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../store/themeSlice';
 import { FaSun, FaMoon, FaUserAlt, FaPlus } from 'react-icons/fa';
-import LnModal from '../components/LnModal.js'; // adapte le chemin si besoin
+import LnModal from '../components/login/LnModal.js'; // adapte le chemin si besoin
 
 
 import './LoginNew.css';
@@ -19,14 +19,10 @@ const LoginNew = () => {
   const dispatch  = useDispatch();
   const mode      = useSelector(state => state.theme.mode);
 
-
   const [modal, setModal] = useState(null);        // 'login' | 'register' | null
   const openLogin    = () => setModal('login');
   const openRegister = () => setModal('register');
   const closeModal   = () => setModal(null);
-
-
-
 
 
   return (

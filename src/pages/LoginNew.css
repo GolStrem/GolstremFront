@@ -198,7 +198,7 @@
 
 .loginNew.light .ln-submit {
   color: #000;
-  border-color: transparent;
+  border-color: var(--jaune);
 }
 
 .ln-submit.dark:hover {
@@ -422,6 +422,56 @@ input:focus {
   width: 80px;
 }
 
+/* ---- Thème Light & Dark pour la modale de succès ---- */
+
+.ln-modal-box.light {
+  background-color: #ffffff;
+  color: #111111;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ln-modal-box.dark {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+}
+
+/* ---- Contenu spécifique ---- */
+.ln-success-message {
+  margin: 1rem auto;
+  font-size: 1.2rem;
+  text-align: center;
+  color: var(--white);
+}
+.ln-success-message.dark{
+  color: var(--white);
+}
+.ln-success-message.light{
+  color: var(--dark);
+}
+/* Appliquer à l'icône */
+.ln-ModalSuccessIcon {
+  display: block;
+  margin: 1rem auto;
+  width: 80px;
+  height: auto;
+  animation: spin-back-forth 1.2s ease-in-out;
+}
+
+/* Réutilisable pour tous les thèmes */
+.ln-submit.light {
+  background-color: var(--jaune);;
+  color: white;
+  border: none;
+}
+
+.ln-submit.dark {
+  background-color: #f1c40f; 
+  color: #1f1f1f;           
+  border: none;
+}
+
+
 /* ==================== Responsive ==================== */
 @media (max-width: 930px) {
   .ln-aside {
@@ -568,3 +618,26 @@ input:focus {
     transform: translateX(0);
   }
 }
+
+
+/* Animation rotation aller-retour check */
+@keyframes spin-back-forth {
+  0% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(360deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  80% {
+    transform: rotate(-20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+
+
