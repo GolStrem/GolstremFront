@@ -42,12 +42,12 @@ const LoginNew = () => {
       {/* — carré “Connexion” & “Créer un compte” — */}
       <div className="ln-form">
         <button className={`ln-connexion ${mode}`} onClick={openLogin}>
-          <FaUserAlt size={80} className="ln-ico" />
+          <FaUserAlt className="ln-ico" />
           <span>Connexion</span>
         </button>
 
         <button className={`ln-create ${mode}`} onClick={openRegister}>
-          <FaPlus size={80} className="ln-ico" />
+          <FaPlus className="ln-ico" />
           <span>Créer&nbsp;un&nbsp;compte</span>
         </button>
 

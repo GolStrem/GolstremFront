@@ -4,7 +4,7 @@
   --jaune: #b5ad21;
   --blanc: #ffffff;
   --btn-hover-bg-dark: rgba(250, 250, 250, 0.18); /* pour fond sombre */
-  --btn-hover-bg-light: rgba(0, 0, 0, 0.06);     /* pour fond clair */
+  --btn-hover-bg-light: rgba(0, 0, 0, 0.2);       /* pour fond clair */
 }
 
 
@@ -122,7 +122,7 @@
   padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 3vw, 1.5rem) clamp(2rem, 6vw, 2.5rem);
   position: relative;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-   margin: 0 1rem;
+  margin: 0 1rem;
 }
 
 .loginNew.light .ln-modal-box {
@@ -181,7 +181,7 @@
   color: #000;
 }
 
-/* Bouton principal */
+/* ==================== Bouton de soumission ==================== */
 .ln-submit {
   margin-top: 1.4rem;
   width: 100%;
@@ -196,27 +196,21 @@
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
-/* ✅ Mode clair : suppression du contour noir, meilleure visibilité au hover */
 .loginNew.light .ln-submit {
   color: #000;
-
+  border-color: transparent;
 }
 
-
-/* ✅ Hover en mode sombre */
-.ln-submit.dark:hover{
+.ln-submit.dark:hover {
   background-color: var(--btn-hover-bg-dark);
   transform: translateY(-2px);
 }
 
-/* ✅ Hover en mode clair — couleur plus foncée maintenant */
 .loginNew.light .ln-submit:hover {
-  background-color: rgba(0, 0, 0, 0.2); /* Gris visible */
+  background-color: var(--btn-hover-bg-light);
   color: #000;
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
-
-
 
 .ln-modal-close {
   position: absolute;
@@ -232,7 +226,6 @@
 /* ==================== Header (mobile) ==================== */
 .ln-header {
   display: none;
-  
 }
 
 .ln-logor {
@@ -249,10 +242,9 @@
   height: 100%;
   display: flex;
   z-index: 0;
-  pointer-events: none; /* évite que ça gêne les interactions */
+  pointer-events: none;
 }
 
-/* — aside gauche — */
 .ln-aside {
   width: clamp(5rem, 15vw, 20rem);
   background-color: var(--jaune);
@@ -267,7 +259,6 @@
   object-fit: contain;
 }
 
-/* — zone centrale de fond — */
 .ln-background {
   flex: 1;
   position: relative;
@@ -315,7 +306,6 @@
   color: red;
 }
 
-/* LoginNew.css (ou un fichier séparé) */
 .ln-eye-toggle {
   background: none;
   border: none;
@@ -328,7 +318,6 @@
   justify-content: center;
 }
 
-/* accessibilité : garder un focus visible */
 .ln-eye-toggle:focus-visible {
   outline: 2px solid var(--primary-color, #0077ff);
   outline-offset: 2px;
@@ -339,7 +328,6 @@ input:focus {
   box-shadow: none;
 }
 
-/*Mot de passe oublié bouton*/
 .ln-link-button {
   background: none;
   border: none;
@@ -408,8 +396,6 @@ input:focus {
   font-weight: bold;
 }
 
-
-
 .ln-ModalWarning {
   position: absolute;
   top: 8px;
@@ -423,74 +409,24 @@ input:focus {
   animation: slideInRight 0.5s ease-out forwards;
 }
 
-.ln-BackText{
+.ln-BackText {
   display: none;
 }
-.ln-tgold{
+
+.ln-tgold {
   display: none;
+}
+
+.ln-ico {
+  height: 80px;
+  width: 80px;
 }
 
 /* ==================== Responsive ==================== */
-
-
 @media (max-width: 930px) {
-  .ln-aside{
+  .ln-aside {
     display: none;
   }
-
-  .ln-header{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 80px;
-    background-color: var(--jaune);
-    z-index: 1;
-  }
-  .ln-character{
-    left: -30%;
-  }
-
-
-
-}
-
-
-
-
-@media (max-width: 810px) {
-  .ln-character{
-    top: 11%;
-    height: 95%;
-    left: -30%;
-  }
-
-
-.ln-backText {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  z-index: 0;
-
-  /* Empêche le contenu de dépasser le header */
-  padding-top: 80px; /* hauteur du header */
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-
-.ln-tgold {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  opacity: 0.5;
-  margin-bottom: 30px;
-}
 
   .ln-header {
     display: flex;
@@ -502,7 +438,56 @@ input:focus {
     z-index: 1;
   }
 
-.mode-toggle {
+  .ln-character {
+    left: -30%;
+  }
+}
+
+@media (max-width: 810px) {
+  .ln-character {
+    top: 11%;
+    height: 95%;
+    left: -30%;
+  }
+
+  .ln-text {
+    display: none;
+  }
+
+  .ln-backText {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 0;
+    padding-top: 80px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .ln-tgold {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0.5;
+    margin-bottom: 30px;
+  }
+
+  .ln-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 80px;
+    background-color: var(--jaune);
+    z-index: 1;
+  }
+
+  .mode-toggle {
     position: fixed !important;
     top: auto !important;
     bottom: 1rem !important;
@@ -512,27 +497,32 @@ input:focus {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .ln-form {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     flex-direction: column;
-    gap: 1.2rem;
-    width: 100%;
-    padding: 0 1rem;
-    box-sizing: border-box;
     align-items: center;
-    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
   }
 
   .ln-connexion,
   .ln-create {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-    padding: 2rem 1rem;
+    width: clamp(110px, 35vw, 150px);
+    height: clamp(110px, 35vw, 150px);
+    border-radius: 50%;
+    padding: 0;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+.ln-ico {
+  height: 40px;
+  width: 40px;
+}
+
+  .ln-connexion span,
+  .ln-create span {
+    font-size: 0.75rem;
   }
 }
 
