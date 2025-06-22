@@ -116,139 +116,166 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     onClose();
   };
 
-  return (
-    <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
+    return (
+  <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
     <div className={`ln-modal-box ln-modal-slide-in ${mode}`} onClick={(e) => e.stopPropagation()}>
-        <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">×</button>
-        <h2>{isLogin ? 'Connexion' : 'Nouveau compte'}</h2>
-        <form onSubmit={handleSubmit} noValidate>
-            <img src={styleModal}   alt="DecorationModal" className="ln-ModalStyle" />
-            <img src={warningModal}   alt="DecorationModal" className="ln-ModalWarning" />
-          <label>
-            Pseudo
-            <input
-              ref={firstInputRef}
-              type="text"
-              name="username"
-              value={form.username}
-              onChange={handleChange}
-              onFocus={() => setFocusedField('username')}
-              onBlur={() => setFocusedField('')}
-              required
-              maxLength={20}
-              pattern="^[a-zA-Z0-9_]{3,20}$"
-              aria-invalid={!!errors.username}
-              title="3 à 20 caractères, sans espace ni caractères spéciaux"
-            />
-            {focusedField === 'username' && <small>Entre 3 et 20 caractères, lettres, chiffres ou underscore uniquement.</small>}
-            {errors.username && <span className="ln-error">{errors.username}</span>}
-          </label>
+      <img src={styleModal} alt="DecorationModal" className="ln-ModalStyle" />
+      <img src={warningModal} alt="DecorationModal" className="ln-ModalWarning" />
+      <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">×</button>
+      <h2>{isLogin ? 'Connexion' : 'Nouveau compte'}</h2>
+      <form onSubmit={handleSubmit} noValidate>
 
-          <label>
-            Mot de passe
-            <div className="ln-password-field">
-              <input
-                type={visiblePassword ? 'text' : 'password'}
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                onFocus={() => setFocusedField('password')}
-                onBlur={() => setFocusedField('')}
-                required
-                maxLength={64}
-                aria-invalid={!!errors.password}
-              />
-              <button
-                type="button"
-                className="ln-eye-toggle"
-                onClick={() => setVisiblePassword(!visiblePassword)}
-                aria-label="Afficher / masquer le mot de passe"
-              >
-                {visiblePassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-            {focusedField === 'password' && <small>Au moins 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre.</small>}
-            {!isLogin && passwordStrength && (
-              <div className="ln-password-strength" style={{ color: getStrengthColor() }}>
-                Force : {passwordStrength}
-              </div>
-            )}
-            {errors.password && <span className="ln-error">{errors.password}</span>}
-          </label>
-           
-          {isLogin && (
-            <div className="ln-forgot-password">
-              <button
-                type="button"
-                className="ln-link-button"
-                onClick={() => setShowForgotModal(true)}
-              >
-                Mot de passe oublié ?
-              </button>
-            </div>
-          )}
+        {/* --- Pseudo --- */}
+        <label>
+          Pseudo
+          <input
+            ref={firstInputRef}
+            type="text"
+            name="username"
+            value={form.username}
+            onChange={handleChange}
+            onFocus={() => setFocusedField('username')}
+            onBlur={() => setFocusedField('')}
+            required
+            maxLength={20}
+            pattern="^[a-zA-Z0-9_]{3,20}$"
+            aria-invalid={!!errors.username}
+            title="3 à 20 caractères, sans espace ni caractères spéciaux"
+          />
+          <span className={`ln-error ${errors.username ? 'ln-visible' : 'ln-hidden'}`}>
+            {errors.username || 'Erreur pseudo'}
+          </span>
+        </label>
 
-          {!isLogin && (
-            <>
-                <img src={styleModal}   alt="DecorationModal" className="ln-ModalStyle" />
-                <img src={warningModal}   alt="DecorationModal" className="ln-ModalWarning" />
-              <label>
-                Confirmez le mot de passe
-                <div className="ln-password-field">
-                  <input
-                    type={visibleConfirm ? 'text' : 'password'}
-                    name="confirm"
-                    value={form.confirm}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField('confirm')}
-                    onBlur={() => setFocusedField('')}
-                    required
-                    maxLength={64}
-                    aria-invalid={!!errors.confirm}
-                  />
-                  <button
-                    type="button"
-                    className="ln-eye-toggle"
-                    onClick={() => setVisibleConfirm(!visibleConfirm)}
-                    aria-label="Afficher / masquer le mot de passe"
-                  >
-                    {visibleConfirm ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-                {errors.confirm && <span className="ln-error">{errors.confirm}</span>}
-              </label>
-              <label>
-                Adresse e-mail
+        {/* --- Mot de passe --- */}
+        <label>
+  Mot de passe
+  <div className="ln-password-field">
+    <input
+      type={visiblePassword ? 'text' : 'password'}
+      name="password"
+      value={form.password}
+      onChange={handleChange}
+      onFocus={() => setFocusedField('password')}
+      onBlur={() => setFocusedField('')}
+      required
+      maxLength={64}
+      aria-invalid={!!errors.password}
+    />
+    <button
+      type="button"
+      className="ln-eye-toggle"
+      onClick={() => setVisiblePassword(!visiblePassword)}
+      aria-label="Afficher / masquer le mot de passe"
+    >
+      {visiblePassword ? <FaEyeSlash /> : <FaEye />}
+    </button>
+  </div>
+
+  <div className="ln-help">
+    Au moins 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre.
+  </div>
+
+  <div className="ln-password-info">
+    <span className={`ln-error ${errors.password ? 'ln-visible' : 'ln-hidden'}`}>
+      {errors.password || ' '}
+    </span>
+    <span
+      className={`ln-password-strength ${!isLogin && passwordStrength ? 'ln-visible' : 'ln-hidden'}`}
+      style={{ color: getStrengthColor() }}
+    >
+      Force : {passwordStrength || '---'}
+    </span>
+  </div>
+</label>
+
+
+        {/* --- Lien "mot de passe oublié" --- */}
+        {isLogin && (
+          <div className="ln-forgot-password">
+            <button
+              type="button"
+              className="ln-link-button"
+              onClick={() => setShowForgotModal(true)}
+            >
+              Mot de passe oublié ?
+            </button>
+          </div>
+        )}
+
+        {/* --- Champs supplémentaires pour la création de compte --- */}
+        {!isLogin && (
+          <>
+            <label>
+              Confirmez le mot de passe
+              <div className="ln-password-field">
                 <input
-                  type="email"
-                  name="email"
-                  value={form.email}
+                  type={visibleConfirm ? 'text' : 'password'}
+                  name="confirm"
+                  value={form.confirm}
                   onChange={handleChange}
-                  onFocus={() => setFocusedField('email')}
+                  onFocus={() => setFocusedField('confirm')}
                   onBlur={() => setFocusedField('')}
                   required
-                  aria-invalid={!!errors.email}
-                  pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                  maxLength={64}
+                  aria-invalid={!!errors.confirm}
                 />
-                {errors.email && <span className="ln-error">{errors.email}</span>}
-              </label>
-            </>
-          )}
+                <button
+                  type="button"
+                  className="ln-eye-toggle"
+                  onClick={() => setVisibleConfirm(!visibleConfirm)}
+                  aria-label="Afficher / masquer le mot de passe"
+                >
+                  {visibleConfirm ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              <div className="ln-help" />
+              <span className={`ln-error ${errors.confirm ? 'ln-visible' : 'ln-hidden'}`}>
+                {errors.confirm || 'Erreur confirmation'}
+              </span>
+            </label>
 
-          <button type="submit" className="ln-submit">
-            {isLogin ? 'Se connecter' : 'Valider la création'}
-          </button>
-          <img src={styleModal}   alt="DecorationModal" className="ln-ModalStyle b" />
-        </form>
-
-        {/* ✅ Modal "Mot de passe oublié" */}
-        {showForgotModal && (
-          <LnForgotModal onClose={() => setShowForgotModal(false)} />
+            <label>
+              Adresse e-mail
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField('')}
+                required
+                aria-invalid={!!errors.email}
+                pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+              />
+              <div className="ln-help" />
+              <span className={`ln-error ${errors.email ? 'ln-visible' : 'ln-hidden'}`}>
+                {errors.email || 'Erreur email'}
+              </span>
+            </label>
+          </>
         )}
-      </div>
-      
+
+        {/* --- Bouton de soumission --- */}
+        <button
+        type="submit"
+        className={`ln-submit ${mode === 'light' ? 'light' : 'dark'}`}
+        >
+        {isLogin ? 'Se connecter' : 'Valider la création'}
+        </button>
+
+
+        <img src={styleModal} alt="DecorationModal" className="ln-ModalStyle b" />
+      </form>
+
+      {/* --- Modal "Mot de passe oublié" --- */}
+      {showForgotModal && (
+        <LnForgotModal onClose={() => setShowForgotModal(false)} />
+      )}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default LnModal;

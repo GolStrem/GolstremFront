@@ -3,7 +3,10 @@
   --noir: #181818;
   --jaune: #b5ad21;
   --blanc: #ffffff;
+  --btn-hover-bg-dark: rgba(250, 250, 250, 0.18); /* pour fond sombre */
+  --btn-hover-bg-light: rgba(0, 0, 0, 0.06);     /* pour fond clair */
 }
+
 
 /* ==================== Structure générale ==================== */
 .loginNew {
@@ -35,9 +38,9 @@
 /* === Thème clair === */
 .ln-connexion.light,
 .ln-create.light {
-  background: var(--blanc);
+  background: #dbdbdb;;
   color: var(--noir);
-  box-shadow: 0 0 10px 3px rgba(181, 173, 33, 0.4); /* Jaune avec transparence */
+  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.4); /* Jaune avec transparence */
 }
 
 /* === Thème sombre === */
@@ -166,7 +169,7 @@
   width: 100%;
   padding: clamp(0.55rem, 2.5vw, 0.7rem);
   background: none;
-  border: 1px solid var(--jaune);
+  border: 2px solid var(--jaune);
   border-radius: 6px;
   color: var(--blanc);
   text-transform: uppercase;
@@ -177,6 +180,43 @@
 .loginNew.light .ln-modal-box button[type='submit'] {
   color: #000;
 }
+
+/* Bouton principal */
+.ln-submit {
+  margin-top: 1.4rem;
+  width: 100%;
+  padding: clamp(0.55rem, 2.5vw, 0.7rem);
+  background: none;
+  border: 3px solid var(--jaune);
+  border-radius: 6px;
+  color: var(--blanc);
+  text-transform: uppercase;
+  cursor: pointer;
+  font-size: clamp(0.8rem, 3.6vw, 0.9rem);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+/* ✅ Mode clair : suppression du contour noir, meilleure visibilité au hover */
+.loginNew.light .ln-submit {
+  color: #000;
+
+}
+
+
+/* ✅ Hover en mode sombre */
+.ln-submit.dark:hover{
+  background-color: var(--btn-hover-bg-dark);
+  transform: translateY(-2px);
+}
+
+/* ✅ Hover en mode clair — couleur plus foncée maintenant */
+.loginNew.light .ln-submit:hover {
+  background-color: rgba(0, 0, 0, 0.2); /* Gris visible */
+  color: #000;
+    transform: translateY(-2px);
+}
+
+
 
 .ln-modal-close {
   position: absolute;
@@ -335,6 +375,40 @@ input:focus {
   right: 0.5rem;
   animation: slideInLeft 0.6s ease-out forwards;
 }
+
+.ln-help {
+  font-size: 0.8rem;
+  color: #999;
+  display: block;
+}
+
+.ln-hidden {
+  visibility: hidden;
+  min-height: 1.5em;
+  display: block;
+}
+
+.ln-visible {
+  visibility: visible;
+}
+
+.ln-password-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 1.5em;
+  font-size: 0.8rem;
+}
+
+.ln-password-info .ln-error {
+  margin: 0;
+}
+
+.ln-password-strength {
+  font-weight: bold;
+}
+
+
 
 .ln-ModalWarning {
   position: absolute;
