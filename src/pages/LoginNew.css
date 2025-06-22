@@ -192,14 +192,12 @@
 /* ==================== Header (mobile) ==================== */
 .ln-header {
   display: none;
+  
 }
 
 .ln-logor {
   height: 40px;
   width: 100%;
-}
-.ln-tgold{
-  display: none;
 }
 
 /* ==================== Fond graphique ==================== */
@@ -351,41 +349,74 @@ input:focus {
   animation: slideInRight 0.5s ease-out forwards;
 }
 
+.ln-BackText{
+  display: none;
+}
+.ln-tgold{
+  display: none;
+}
+
 /* ==================== Responsive ==================== */
-@media (max-width: 768px) {
-  .ln-back {
+
+
+@media (max-width: 930px) {
+  .ln-aside{
     display: none;
+  }
+
+  .ln-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 80px;
+    background-color: var(--jaune);
+    z-index: 1;
+  }
+  .ln-character{
+    left: -30%;
+  }
+
+
+
+}
+
+
+
+
+@media (max-width: 810px) {
+  .ln-character{
+    top: 11%;
+    height: 95%;
+    left: -30%;
   }
 
 
 .ln-backText {
   position: absolute;
-  inset: 0;   
+  inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;        
-  align-items: center;            
-  pointer-events: none;           
-  z-index: 0;                     
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 0;
+
+  /* Empêche le contenu de dépasser le header */
+  padding-top: 80px; /* hauteur du header */
+  box-sizing: border-box;
+  overflow: hidden;
 }
+
 
 .ln-tgold {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--jaune);
-  font-weight: bold;
-  font-family: 'Orbiton', sans-serif;
-  text-align: center;
-  font-size: clamp(100px, 32vw, 250px); /* ✅ valeur calculée */
-  word-break: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-  padding: 0 1rem;
-    line-height: 0.8;
+  flex-direction: column;
   opacity: 0.5;
+  margin-bottom: 30px;
 }
-
 
   .ln-header {
     display: flex;
@@ -409,27 +440,28 @@ input:focus {
 
 @media (max-width: 600px) {
   .ln-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     flex-direction: column;
     gap: 1.2rem;
-    position: static;
-    transform: none;
-    margin: 3rem auto 0;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
   }
 
   .ln-connexion,
   .ln-create {
-    width: 260px;
-    height: 280px;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    padding: 2rem 1rem;
   }
 }
 
-@media (max-width: 350px) {
-  .ln-ModalWarning,
-  .ln-ModalStyle,
-  .ln-ModalStyle.b {
-    display: none;
-  }
-}
 
 /* ==================== Animation ouverture modal ==================== */
 .ln-modal-fade-in {

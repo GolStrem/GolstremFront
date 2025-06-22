@@ -12,6 +12,8 @@ import personp    from '../assets/Fichier6.png';
 import golstremp  from '../assets/golstremp_1.svg';
 import golstremc  from '../assets/golstremc.svg';
 import golden     from '../assets/golden.svg';
+import golstremE     from '../assets/golstremE.svg';
+import golstremV     from '../assets/goldstremV.svg';
 
 const LoginNew = () => {
   const dispatch  = useDispatch();
@@ -55,7 +57,9 @@ const LoginNew = () => {
 
 
       <div className='ln-backText'>
-        <p className='ln-tgold e'>GOLDTREM</p>
+            <img src={golstremE} alt="texte logo 1" className="ln-tgold" />
+            <img src={golstremV} alt="texte logo 2" className="ln-tgold" />
+            <img src={golstremV} alt="texte logo 3" className="ln-tgold" />
       </div>
 
       {/* — aside + background décoratif — */}
