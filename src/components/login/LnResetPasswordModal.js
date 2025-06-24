@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 import LnPasswordField from './LnPasswordField';
 import LnSuccessModal from './LnSuccessModal';
 
-import styleModal from '../../assets/styleModal.svg';
-import warningModal from '../../assets/warningModal.svg';
+import { warningModal, styleModal, } from '@assets';
 
 import {
   evaluatePasswordStrength,

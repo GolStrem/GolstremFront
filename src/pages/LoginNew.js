@@ -6,14 +6,8 @@ import LnModal from '../components/login/LnModal.js'; // adapte le chemin si bes
 
 
 import './LoginNew.css';
+import { golstremb, personp, golstremp, golstremc, golden, golstremE, golstremV } from '@assets';
 
-import golstremb  from '../assets/golstremb.svg';
-import personp    from '../assets/Fichier6.png';
-import golstremp  from '../assets/golstremp_1.svg';
-import golstremc  from '../assets/golstremc.svg';
-import golden     from '../assets/golden.svg';
-import golstremE     from '../assets/golstremE.svg';
-import golstremV     from '../assets/goldstremV.svg';
 
 const LoginNew = () => {
   const dispatch  = useDispatch();

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styleModal from '../../assets/styleModal.svg';
-import warningModal from '../../assets/warningModal.svg';
+import {warningModal, styleModal } from '@assets';
 
 const LnForgotModal = ({ onClose, onSubmit }) => {
   const [email, setEmail] = useState('');

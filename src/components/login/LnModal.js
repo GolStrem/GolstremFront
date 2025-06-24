@@ -3,20 +3,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { warningModal, styleModal, } from '@assets';
+
 import LnForgotModal from './LnForgotModal';
 import LnSuccessModal from './LnSuccessModal';
 import LnInput from './LnInput';
 import LnPasswordField from './LnPasswordField';
-
-import styleModal from '../../assets/styleModal.svg';
-import warningModal from '../../assets/warningModal.svg';
 
 import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 import { UseLnFormValidator } from './UseLnFormValidator';
 import { fields } from './fieldsConfig';
 
 import apiService from '../../services/ApiService';
-import { login as loginAction } from '../../store/authSlice'; // ⚠️ adapte le chemin si besoin
+import { login as loginAction } from '../../store/authSlice';
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';

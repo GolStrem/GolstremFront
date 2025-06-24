@@ -1,8 +1,7 @@
 // LnSuccessModal.js
 import React from 'react';
 import { useSelector } from 'react-redux';
-import styleModal from '../../assets/styleModal.svg';
-import checkIcon from '../../assets/checkIcon.svg';
+import { checkIcon, styleModal, } from '@assets';
 
 const LnSuccessModal = ({ message = "Compte créé avec succès ! Un mail vous a été envoyé pour valider votre compte", onClose }) => {
   const mode = useSelector(state => state.theme.mode); // light | dark
