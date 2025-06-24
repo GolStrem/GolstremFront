@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Board from "../../components/taskManager/Board";
-import Modal from "../../components/taskManager/Modal";
-import BoardModal from "../../components/taskManager/BoardModal";
-import Sidebar from "../../components/taskManager/Sidebar";
+
 import "./TaskManager.css";
 import { useSelector } from "react-redux";
 import Masonry from "react-masonry-css";
+import {Sidebar,BoardModal,Modal,Board} from "@components";
 
 const loadBoardsFromStorage = (workspaceId) => {
   const data = localStorage.getItem(`boards_${workspaceId}`);

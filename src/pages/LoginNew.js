@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleTheme } from '../store/themeSlice';
 import { FaSun, FaMoon, FaUserAlt, FaPlus } from 'react-icons/fa';
-import LnModal from '../components/login/LnModal.js'; // adapte le chemin si besoin
+import {LnModal} from '@components';
+import { toggleTheme } from '@store/index';
 
 
 import './LoginNew.css';

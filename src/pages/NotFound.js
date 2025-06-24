@@ -2,7 +2,7 @@ import './NotFound.css';
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleTheme } from '../store/themeSlice';
+import { toggleTheme } from '@store/index';
 import { FaSun, FaMoon } from 'react-icons/fa';
 
 
