@@ -1,6 +1,7 @@
 // LnModal.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import LnForgotModal from './LnForgotModal';
 import LnSuccessModal from './LnSuccessModal';
@@ -14,9 +15,12 @@ import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 import { UseLnFormValidator } from './UseLnFormValidator';
 import { fields } from './fieldsConfig';
 
+import apiService from '../../services/ApiService'; // Service API
+
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';
   const mode = useSelector(state => state.theme.mode); // light | dark
+  const navigate = useNavigate(); // Pour redirection après succès
 
   const [form, setForm] = useState({
     username: '',
@@ -51,21 +55,28 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    onSubmit?.(form);
-    setForm({ username: '', password: '', confirm: '', email: '' });
-    setPasswordStrength('');
-    setPasswordScore(0);
+    try {
+      if (isLogin) {
+        await apiService.login(form.username, form.password);
+        onClose();               // ferme la modale
+        navigate('/dashboard'); // redirige après connexion
+      } else {
+        await apiService.createUser(form.username, form.password, form.email);
+        setShowSuccessModal(true); // affiche modale succès
+      }
 
-    if (!isLogin) {
-      setShowSuccessModal(true); // Affiche la modale "compte créé"
-    } else {
-      onClose(); // Si c’est juste une connexion
+      setForm({ username: '', password: '', confirm: '', email: '' });
+      setPasswordStrength('');
+      setPasswordScore(0);
+    } catch (err) {
+      console.error(err);
+      setErrors({ global: 'Erreur : identifiants invalides ou compte existant.' });
     }
   };
 
@@ -123,6 +134,10 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
         <form onSubmit={handleSubmit} noValidate>
           {fields.map(renderField)}
 
+          {errors.global && (
+            <div className="ln-error-global">{errors.global}</div>
+          )}
+
           {isLogin && (
             <div className="ln-forgot-password">
               <button
@@ -153,7 +168,8 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
           <LnSuccessModal
             onClose={() => {
               setShowSuccessModal(false);
-              onClose(); // ferme la modale principale après succès
+              onClose();
+              navigate('/dashboard'); // redirection après inscription réussie
             }}
           />
         )}
