@@ -1,21 +1,23 @@
-// LnModal.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { warningModal, styleModal, } from '@assets';
+import { warningModal, styleModal } from '@assets';
 
 import LnForgotModal from './LnForgotModal';
-import LnSuccessModal from './LnSuccessModal';
 import LnInput from './LnInput';
 import LnPasswordField from './LnPasswordField';
-
-import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
+import LnSuccessModal from './LnSuccessModal';
 import { UseLnFormValidator } from './UseLnFormValidator';
-import { fields } from './fieldsConfig';
+import { fieldsConfigLogin } from './fieldsConfigLogin';
+import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 
-import apiService from '../../services/ApiService';
-import { login as loginAction } from '../../store/authSlice';
+import apiService from '@service/ApiService';
+import { login as loginAction } from '@store/authSlice';
+
+const fields = fieldsConfigLogin.login; 
+
+
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';

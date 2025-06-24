@@ -27,3 +27,5 @@ export const UseLnFormValidator = (form, isLogin) => {
 
   return { validate };
 };
+
+export default UseLnFormValidator;

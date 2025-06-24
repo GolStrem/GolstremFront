@@ -39,3 +39,13 @@ export function getStrengthColor(score) {
   if (score === 2) return 'orange';
   return 'green';
 }
+
+const lnFormUtils = {
+  emailRegex,
+  usernameRegex,
+  passwordRules,
+  evaluatePasswordStrength,
+  getStrengthColor,
+};
+
+export default lnFormUtils;
