@@ -9,13 +9,14 @@ import LnInput from './LnInput';
 import LnPasswordField from './LnPasswordField';
 import LnSuccessModal from './LnSuccessModal';
 import { UseLnFormValidator } from './UseLnFormValidator';
-import { fieldsConfigLogin } from './fieldsConfigLogin';
+import fields from './fieldsConfigLogin';
 import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 
 import apiService from '@service/ApiService';
 import { login as loginAction } from '@store/authSlice';
 
-const fields = fieldsConfigLogin.login; 
+
+
 
 
 
