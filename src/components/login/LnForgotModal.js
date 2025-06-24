@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {warningModal, styleModal } from '@assets';
+import apiService from '@service/ApiService';
 
 const LnForgotModal = ({ onClose, onSubmit }) => {
   const [email, setEmail] = useState('');
@@ -19,16 +20,22 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
     return emailRegex.test(value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateEmail(email)) {
       setError("Adresse e-mail invalide");
       return;
     }
 
-    setError('');
-    setSubmitted(true);
-    onSubmit?.(email);
+    try {
+      setError('');
+      await apiService.sendResetPasswordEmail(email);
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+      setError("Une erreur s'est produite. Vérifiez l'adresse ou réessayez.");
+    }
   };
 
   return (

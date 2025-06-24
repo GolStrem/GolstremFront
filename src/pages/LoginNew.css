@@ -180,7 +180,9 @@
 .loginNew.light .ln-modal-box button[type='submit'] {
   color: #000;
 }
-
+.resetmdp{
+  display: flex;
+}
 /* ==================== Bouton de soumission ==================== */
 .ln-submit {
   margin-top: 1.4rem;

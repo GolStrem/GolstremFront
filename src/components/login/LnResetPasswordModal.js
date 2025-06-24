@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import LnPasswordField from './LnPasswordField';
 import LnSuccessModal from './LnSuccessModal';
-
-import { warningModal, styleModal, } from '@assets';
+import apiService from '@service/ApiService';
+import { warningModal, styleModal } from '@assets';
 
 import {
   evaluatePasswordStrength,
@@ -12,17 +12,17 @@ import {
   passwordRules,
 } from './lnFormUtils';
 
-const LnResetPasswordModal = ({ onClose, onSubmit }) => {
-  const mode = useSelector((state) => state.theme.mode); // light | dark
+const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
+  const mode = useSelector((state) => state.theme.mode);
   const [form, setForm] = useState({ password: '', confirm: '' });
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState('');
   const [passwordScore, setPasswordScore] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-
   const firstInputRef = useRef(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate(); // 🔁 Pour redirection
 
-  /* -- Focus et ESC -- */
   useEffect(() => {
     firstInputRef.current?.focus();
     const handleEsc = (e) => e.key === 'Escape' && onClose();
@@ -30,10 +30,8 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  /* -- Handlers -- */
   const handleChange = ({ target: { name, value } }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
-
     if (name === 'password') {
       const { score, label } = evaluatePasswordStrength(value);
       setPasswordScore(score);
@@ -43,8 +41,6 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
 
   const validate = () => {
     const errs = {};
-
-    /* Mot de passe */
     if (form.password.length < passwordRules.minLength)
       errs.password = 'Au moins 8 caractères';
     else if (form.password.length > passwordRules.maxLength)
@@ -55,8 +51,6 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
       errs.password = 'Inclure une minuscule';
     else if (!passwordRules.number.test(form.password))
       errs.password = 'Inclure un chiffre';
-
-    /* Confirmation */
     if (form.password !== form.confirm)
       errs.confirm = 'Les mots de passe ne correspondent pas';
 
@@ -64,15 +58,27 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    onSubmit?.(form.password); // appelle ton handler parent
-    setSubmitted(true);
+    const token = searchParams.get('token');
+    const userId = searchParams.get('userId');
+
+    try {
+      await apiService.changePasswordByToken(userId, token, form.password);
+      setSubmitted(true);
+
+      // ⏳ Petite pause avant redirection
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      setErrors({ global: 'Une erreur est survenue. Lien invalide ou expiré.' });
+    }
   };
 
-  /* -- Rendu -- */
   return (
     <>
       <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
@@ -82,15 +88,13 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
         >
           <img src={styleModal} alt="Décoration" className="ln-ModalStyle" />
           <img src={warningModal} alt="Avertissement" className="ln-ModalWarning" />
-
           <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">
             ×
           </button>
 
-          <h2>Nouveau mot de passe</h2>
+          <h2 className="resetmdp">Nouveau mot de passe</h2>
 
           <form onSubmit={handleSubmit} noValidate>
-            {/* Nouveau mot de passe */}
             <LnPasswordField
               ref={firstInputRef}
               name="password"
@@ -104,7 +108,6 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
               getStrengthColor={getStrengthColor}
             />
 
-            {/* Confirmation */}
             <LnPasswordField
               name="confirm"
               label="Confirmez le mot de passe"
@@ -113,6 +116,8 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
               error={errors.confirm}
               getStrengthColor={getStrengthColor}
             />
+
+            {errors.global && <p className="ln-error-global">{errors.global}</p>}
 
             <button
               type="submit"
@@ -124,7 +129,7 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
 
             {submitted && (
               <p className="ln-success-message">
-                Mot de passe modifié avec succès !
+                Mot de passe modifié avec succès ! Redirection...
               </p>
             )}
 
@@ -133,14 +138,10 @@ const LnResetPasswordModal = ({ onClose, onSubmit }) => {
         </div>
       </div>
 
-      {/* Petite modale de succès réutilisable (facultatif) */}
       {submitted && (
         <LnSuccessModal
           message="Mot de passe modifié avec succès !"
-          onClose={() => {
-            setSubmitted(false);
-            onClose();
-          }}
+          onClose={() => navigate('/login')}
         />
       )}
     </>

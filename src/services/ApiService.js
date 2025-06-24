@@ -112,8 +112,8 @@ export const updateUserInfo = (payload) => api.put('/userInfo', payload);
 /**
  * Change le mot de passe de l'utilisateur.
  */
-export const changePassword = (userId, oldPassword, newPassword) =>
-  api.put('/user/changePassword', { userId, oldPassword, newPassword });
+export const changePasswordByToken = (userId, token, newPassword) =>
+  api.put('/user/changePassword', { userId, token, newPassword });
 
 /**
  * Déconnecte l'utilisateur côté client.
@@ -122,6 +122,14 @@ export const logout = () => {
   clearToken();
   // Ici vous pouvez aussi notifier votre store (Redux, Zustand, ...)
 };
+
+/**
+ * Envoie un e-mail de réinitialisation de mot de passe.
+ * @param {string} email
+ */
+export const sendResetPasswordEmail = (email) =>
+  api.get(`/user/sendMailPassword/${encodeURIComponent(email)}`);
+
 
 // ------------------------------------------------------------
 // Export par défaut : toutes les méthodes regroupées
@@ -132,8 +140,9 @@ export default {
   createUser,
   getUserInfo,
   updateUserInfo,
-  changePassword,
+  changePasswordByToken,
   logout,
+  sendResetPasswordEmail,
   // helpers
   getToken,
   setToken,
