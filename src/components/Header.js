@@ -46,7 +46,7 @@ const Header = () => {
   const handleLogout = () => {
     dispatch(logout());
     persistor.purge();
-    navigate("/");
+    navigate("/login");
   };
 
   return (

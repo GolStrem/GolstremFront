@@ -1,6 +1,6 @@
 // LnModal.js
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import LnForgotModal from './LnForgotModal';
@@ -15,12 +15,14 @@ import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 import { UseLnFormValidator } from './UseLnFormValidator';
 import { fields } from './fieldsConfig';
 
-import apiService from '../../services/ApiService'; // Service API
+import apiService from '../../services/ApiService';
+import { login as loginAction } from '../../store/authSlice'; // ⚠️ adapte le chemin si besoin
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';
-  const mode = useSelector(state => state.theme.mode); // light | dark
-  const navigate = useNavigate(); // Pour redirection après succès
+  const mode = useSelector(state => state.theme.mode);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [form, setForm] = useState({
     username: '',
@@ -64,11 +66,20 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     try {
       if (isLogin) {
         await apiService.login(form.username, form.password);
-        onClose();               // ferme la modale
-        navigate('/dashboard'); // redirige après connexion
+
+        // Redux login
+        dispatch(
+          loginAction({
+            token: apiService.getToken(),
+            userCode: form.username,
+          })
+        );
+
+        onClose();
+        navigate('/dashboard');
       } else {
         await apiService.createUser(form.username, form.password, form.email);
-        setShowSuccessModal(true); // affiche modale succès
+        setShowSuccessModal(true);
       }
 
       setForm({ username: '', password: '', confirm: '', email: '' });
@@ -76,7 +87,11 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
       setPasswordScore(0);
     } catch (err) {
       console.error(err);
-      setErrors({ global: 'Erreur : identifiants invalides ou compte existant.' });
+      const message =
+        err.response?.status === 409
+          ? 'Cet utilisateur existe déjà.'
+          : 'Erreur : identifiants invalides ou problème serveur.';
+      setErrors({ global: message });
     }
   };
 
@@ -169,7 +184,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
             onClose={() => {
               setShowSuccessModal(false);
               onClose();
-              navigate('/dashboard'); // redirection après inscription réussie
+              navigate('/dashboard');
             }}
           />
         )}
