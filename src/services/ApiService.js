@@ -1,149 +1,138 @@
-// src/services/apiService.js
-// ------------------------------------------------------------
-// Service d'accès à l'API Node.js existante.
-// Les routes utilisées correspondent à la collection Postman fournie :
-//   • POST   /user/login
-//   • GET    /user/validMail/:email/:tokenMail
-//   • POST   /user/create
-//   • GET    /userInfo
-//   • PUT    /userInfo
-//   • PUT    /user/changePassword
-// ------------------------------------------------------------
-// ➜  Prérequis : `npm i axios`  (ou `yarn add axios`)
-// ➜  Pensez à définir la variable d'environnement REACT_APP_API_ENDPOINT
-//     dans votre fichier .env (ex. http://localhost:3000/)
-// ------------------------------------------------------------
-
 import axios from 'axios';
 
-// Base URL configurable via variable d'env, sinon fallback localhost
+// ==================== CONFIG ====================
+const USE_MOCK = process.env.REACT_APP_USE_MOCK === 'true';
 const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:3000/';
-
-// Instance Axios pré‑configurée
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
-
-// ------------------------------------------------------------
-// Gestion du token
-// ------------------------------------------------------------
 const TOKEN_KEY = 'token';
 
-/** Récupère le token depuis le localStorage (null si absent) */
+// ==================== TOKEN UTILS ====================
 const getToken = () => localStorage.getItem(TOKEN_KEY);
-
-/** Enregistre le token dans le localStorage */
-const setToken = (token) => {
-  if (token) {
-    localStorage.setItem(TOKEN_KEY, token);
-  }
-};
-
-/** Supprime le token (logout) */
+const setToken = (token) => token && localStorage.setItem(TOKEN_KEY, token);
 const clearToken = () => localStorage.removeItem(TOKEN_KEY);
 
-// ------------------------------------------------------------
-// Intercepteur : ajoute automatiquement le header Authorization
-// ------------------------------------------------------------
+// ==================== LOGOUT COMMUN ====================
+const logout = () => {
+  clearToken();
+  // ➜ Optionnel : redirect ou reset store
+  // Exemple : window.location.href = '/login';
+};
+
+// ==================== MOCK MODE ====================
+const mockWait = (ms = 500) => new Promise((res) => setTimeout(res, ms));
+
+const MOCK_USERNAME = 'mockuser';
+const MOCK_PASSWORD = 'Demo1234';
+
+const mockUser = {
+  id: '1',
+  login: MOCK_USERNAME,
+  email: 'mock@demo.com',
+  theme: 'light',
+};
+
+const mockApi = {
+  async login(login, password) {
+    await mockWait();
+
+    if (login !== MOCK_USERNAME || password !== MOCK_PASSWORD) {
+      const error = new Error('Identifiants invalides');
+      error.response = { status: 401 };
+      throw error;
+    }
+
+    const mockToken = 'mock-token-123';
+    setToken(mockToken);
+    return mockToken;
+  },
+
+  async validateMail(email, token) {
+    await mockWait();
+    return { status: 200, data: 'Email validé (mock)' };
+  },
+
+  async createUser(login, password, email) {
+    await mockWait();
+    return { status: 201, data: { message: 'Utilisateur créé (mock)' } };
+  },
+
+  async getUserInfo() {
+    await mockWait();
+    return { data: mockUser };
+  },
+
+  async updateUserInfo(payload) {
+    await mockWait();
+    Object.assign(mockUser, payload);
+    return { data: mockUser };
+  },
+
+  async changePasswordByToken(userId, token, newPassword) {
+    await mockWait();
+    return { status: 200, data: 'Mot de passe changé (mock)' };
+  },
+
+  async sendResetPasswordEmail(email) {
+    await mockWait();
+    return { data: 'Email de réinitialisation envoyé (mock)' };
+  },
+
+  logout,
+  getToken,
+  setToken,
+};
+
+// ==================== REAL API MODE ====================
+const api = axios.create({ baseURL: API_BASE_URL });
+
 api.interceptors.request.use((config) => {
   const token = getToken();
-  if (token) {
-    // L'API attend visiblement le token brut (pas 'Bearer ')
-    // Adaptez ici si votre backend attend un préfixe particulier
-    config.headers.Authorization = token;
-  }
+  if (token) config.headers.Authorization = token;
   return config;
 });
 
-// Intercepteur de réponse (gestion 401)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      clearToken();
-      // 👉 Ici vous pouvez rediriger vers /login ou déclencher une action Redux
-    }
+    if (error.response?.status === 401) clearToken();
     return Promise.reject(error);
   }
 );
 
-// ------------------------------------------------------------
-// Fonctions d'appel aux routes
-// ------------------------------------------------------------
+const realApi = {
+  async login(login, password) {
+    const { data } = await api.post('/user/login', { login, password });
+    setToken(data);
+    return data;
+  },
 
-/**
- * Authentifie l'utilisateur.
- * @param {string} login
- * @param {string} password
- * @returns {Promise<string>} token brut renvoyé par l'API
- */
-export const login = async (login, password) => {
-  const { data } = await api.post('/user/login', { login, password });
-  // Si le backend renvoie le token dans `data`, on le stocke
-  setToken(data);
-  return data;
-};
+  validateMail(email, token) {
+    return api.get(`/user/validMail/${encodeURIComponent(email)}/${token}`);
+  },
 
-/**
- * Valide l'adresse email après clic sur le lien reçu.
- * @param {string} email
- * @param {string} emailToken  token présent dans l'URL du mail
- */
-export const validateMail = (email, emailToken) =>
-  api.get(`/user/validMail/${encodeURIComponent(email)}/${emailToken}`);
+  createUser(login, password, email) {
+    return api.post('/user/create', { login, password, email });
+  },
 
-/**
- * Crée un nouvel utilisateur.
- */
-export const createUser = (login, password, email) =>
-  api.post('/user/create', { login, password, email });
+  getUserInfo() {
+    return api.get('/userInfo');
+  },
 
-/**
- * Récupère les informations du profil.
- */
-export const getUserInfo = () => api.get('/userInfo');
+  updateUserInfo(payload) {
+    return api.put('/userInfo', payload);
+  },
 
-/**
- * Met à jour les informations du profil.
- * @param {object} payload ex. { theme: 'light' }
- */
-export const updateUserInfo = (payload) => api.put('/userInfo', payload);
+  changePasswordByToken(userId, token, newPassword) {
+    return api.put('/user/changePassword', { userId, token, newPassword });
+  },
 
-/**
- * Change le mot de passe de l'utilisateur.
- */
-export const changePasswordByToken = (userId, token, newPassword) =>
-  api.put('/user/changePassword', { userId, token, newPassword });
+  sendResetPasswordEmail(email) {
+    return api.get(`/user/sendMailPassword/${encodeURIComponent(email)}`);
+  },
 
-/**
- * Déconnecte l'utilisateur côté client.
- */
-export const logout = () => {
-  clearToken();
-  // Ici vous pouvez aussi notifier votre store (Redux, Zustand, ...)
-};
-
-/**
- * Envoie un e-mail de réinitialisation de mot de passe.
- * @param {string} email
- */
-export const sendResetPasswordEmail = (email) =>
-  api.get(`/user/sendMailPassword/${encodeURIComponent(email)}`);
-
-
-// ------------------------------------------------------------
-// Export par défaut : toutes les méthodes regroupées
-// ------------------------------------------------------------
-export default {
-  login,
-  validateMail,
-  createUser,
-  getUserInfo,
-  updateUserInfo,
-  changePasswordByToken,
   logout,
-  sendResetPasswordEmail,
-  // helpers
   getToken,
   setToken,
 };
+
+// ==================== EXPORT FINAL ====================
+export default USE_MOCK ? mockApi : realApi;
