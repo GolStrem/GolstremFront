@@ -1,0 +1,141 @@
+/* ==== MODALE VIEWER COMMUNE ==== */
+.tm-modal-popup.viewer {
+  position: relative;
+  max-width: 1000px;
+  width: 100%;
+  padding: 32px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 20;
+  background: var(--blanc);
+  color: var(--noir);
+  border: 2px solid var(--jaune);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* 🌑 DARK MODE appliqué si une classe .dark est présente dans un parent */
+.dark .tm-modal-popup.viewer {
+  background: var(--noir);
+  color: var(--blanc);
+  border-color: var(--jaune);
+}
+
+.dark .tm-viewer-dates {
+  color: #bbb;
+}
+
+/* ==== CONTENU ==== */
+.tm-viewer-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.tm-viewer-left {
+  flex: 1;
+  min-width: 280px;
+}
+
+.tm-viewer-name {
+  font-size: 2rem;
+  margin: 0 0 8px 0;
+}
+
+.tm-viewer-meta {
+  display: flex;
+  gap: 24px;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tm-viewer-state {
+  font-weight: bold;
+  text-transform: lowercase;
+}
+
+.tm-viewer-dates {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.tm-viewer-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-width: 500px;
+}
+
+.tm-image-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  max-width: 240px;
+}
+
+.tm-image-preview img {
+  width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.dark .tm-image-preview img {
+  border-color: #444;
+}
+
+/* ==== BOUTON MODIFIER ==== */
+.tm-edit-btn-container {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 5;
+}
+
+.tm-edit-btn {
+  background: var(--jaune);
+  color: #000;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tm-edit-btn:hover {
+  background: #ffe600;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 768px) {
+  .tm-viewer-grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tm-image-preview {
+    align-items: center;
+    max-width: 100%;
+  }
+
+  .tm-edit-btn-container {
+    position: static;
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .tm-edit-btn {
+    align-self: center;
+  }
+}

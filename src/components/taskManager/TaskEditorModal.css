@@ -23,6 +23,9 @@
   transition: background 0.3s, color 0.3s;
 }
 
+.tmedit{
+  z-index: 20 !important;
+}
 .tm-modal-popup.dark {
   background: var(--noir);
   color: var(--blanc);

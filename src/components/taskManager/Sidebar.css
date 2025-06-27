@@ -24,7 +24,10 @@
 }
 
 .tm-sidebar.light {
-  background-color: rgb(73, 44, 44);
+  background-color: white;
+}
+.tm-sidebar.light h2 {
+  color: black;
 }
 
 .tm-sidebar input[type="text"],

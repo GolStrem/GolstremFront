@@ -1,10 +1,11 @@
+// TaskEditorModal.jsx
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./TaskEditorModal.css";
 
 const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCard }) => {
   const isEdit = !!modalData.cardId;
-  const themeMode = useSelector((state) => state.theme.mode); // "dark" or "light"
+  const themeMode = useSelector((state) => state.theme.mode);
 
   const [formData, setFormData] = useState({
     boardId: null,
@@ -18,8 +19,14 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
     image: ""
   });
 
+  const [isEditing, setIsEditing] = useState(isEdit);
+
   useEffect(() => {
-    if (isEdit && modalData.card) {
+    // on est en mode création si pas de cardId
+    const editing = !modalData.cardId || isEdit;
+    setIsEditing(editing);
+
+    if (modalData.card) {
       setFormData({
         boardId: modalData.boardId || null,
         cardId: modalData.cardId || null,
@@ -32,7 +39,9 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
         image: modalData.card.image || ""
       });
     } else {
-      setFormData({
+      // reset du formulaire en mode création
+      setFormData((prev) => ({
+        ...prev,
         boardId: modalData.boardId || null,
         cardId: null,
         name: "",
@@ -42,20 +51,28 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
         endAt: "",
         createdAt: new Date().toISOString().split("T")[0],
         image: ""
-      });
+      }));
     }
   }, [modalData, isEdit]);
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Cast en nombre pour le champ "state"
+    const newValue = name === "state" ? parseInt(value, 10) : value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue
+    }));
   };
+
 
   const handleSubmit = () => {
     const { name, description, endAt, createdAt } = formData;
-
-    if (typeof name !== "string" || !name.trim()) return alert("Le nom est requis.");
-    if (typeof description !== "string" || !description.trim()) return alert("La description est requise.");
+    if (!name.trim()) return alert("Le nom est requis.");
+    if (!description.trim()) return alert("La description est requise.");
 
     const sanitizedData = {
       ...formData,
@@ -78,35 +95,37 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
 
   return (
     <div className="tm-modal-overlay" onClick={closeModal}>
-      <div
-        className={`tm-modal-popup ${themeMode}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={`tm-modal-popup tmedit ${themeMode}`} onClick={(e) => e.stopPropagation()}>
         <button className="tm-close-btn" onClick={closeModal}>×</button>
-        <h3>{isEdit ? "Modifier une tâche" : "Créer une tâche"}</h3>
+          {isEdit && !isEditing && (
+            <button className="tm-edit-btn" onClick={() => setIsEditing(true)}>✏️ Modifier</button>
+          )}
+
+
+        <h3>{isEdit ? (isEditing ? "Modifier une tâche" : "Détail de la tâche") : "Créer une tâche"}</h3>
 
         <label className="tm-label">Nom :
           <div className="tm-label-field">
-            <input type="text" name="name" value={formData.name} onChange={handleChange} />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} disabled={!isEditing} />
           </div>
         </label>
 
         <label className="tm-label">Description :
           <div className="tm-label-field">
-            <textarea name="description" value={formData.description} onChange={handleChange} />
+            <textarea name="description" value={formData.description} onChange={handleChange} disabled={!isEditing} />
           </div>
         </label>
 
         <div className="tm-color-state-fields">
           <label className="tm-label tm-color-picker">Couleur :
             <div className="tm-label-field">
-              <input type="color" name="color" value={formData.color} onChange={handleChange} />
+              <input type="color" name="color" value={formData.color} onChange={handleChange} disabled={!isEditing} />
             </div>
           </label>
 
           <label className="tm-label tm-state-select">État :
             <div className="tm-label-field">
-              <select name="state" value={formData.state} onChange={handleChange}>
+              <select name="state" value={formData.state} onChange={handleChange} disabled={!isEditing}>
                 <option value={0}>À faire</option>
                 <option value={1}>En cours</option>
                 <option value={2}>Fait</option>
@@ -119,32 +138,31 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
         <div className="tm-date-fields">
           <label className="tm-label">Échéance :
             <div className="tm-label-field">
-              <input type="date" name="endAt" value={formData.endAt} onChange={handleChange} />
+              <input type="date" name="endAt" value={formData.endAt} onChange={handleChange} disabled={!isEditing} />
             </div>
           </label>
 
           <label className="tm-label">Date de création :
             <div className="tm-label-field">
-              <input type="date" name="createdAt" value={formData.createdAt} onChange={handleChange} />
+              <input type="date" name="createdAt" value={formData.createdAt} onChange={handleChange} disabled={!isEditing} />
             </div>
           </label>
         </div>
 
         <label className="tm-label">Image (URL) :
           <div className="tm-label-field">
-            <input type="text" name="image" value={formData.image} onChange={handleChange} />
+            <input type="text" name="image" value={formData.image} onChange={handleChange} disabled={!isEditing} />
           </div>
         </label>
 
         <div className="tm-modal-buttons">
           <button onClick={handleSubmit}>{isEdit ? "Modifier" : "Créer"}</button>
-          {isEdit && (
-            <button className="tm-delete-btn" onClick={handleDelete}>
-              Supprimer
-            </button>
+          {isEdit && isEditing && (
+            <button className="tm-delete-btn" onClick={handleDelete}>Supprimer</button>
           )}
           <button className="tm-cancel-btn" onClick={closeModal}>Annuler</button>
         </div>
+
       </div>
     </div>
   );
