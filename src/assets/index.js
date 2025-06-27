@@ -15,6 +15,8 @@ import golstremw from './golstremw.svg';
 import logo from './logo.png';
 import styleModal from './styleModal.svg';
 import warningModal from './warningModal.svg';
+import avatar from './avatar.png';
+import banner from './banner.jpg'
 
 export {
   abstrait,
@@ -34,4 +36,6 @@ export {
   logo,
   styleModal,
   warningModal,
+  avatar,
+  banner,
 };

@@ -1,5 +1,4 @@
 // Composants généraux
-
 export { default as ProtectedRoute } from './general/ProtectedRoute';
 
 // Login
@@ -16,6 +15,8 @@ export { default as UseLnFormValidator } from './login/UseLnFormValidator';
 // Task Manager
 export { default as Board } from './taskManager/Board';
 export { default as BoardModal } from './taskManager/BoardModal';
-export { default as Card } from './taskManager/Card';
+export { default as Card } from './taskManager/TaskCard';
 export { default as Sidebar } from './taskManager/Sidebar';
-export { default as Modal } from './taskManager/Modal';
+export { default as Modal } from './taskManager/TaskEditorModal';
+export { default as Banner } from './taskManager/Banner';     
+export { default as useBoards } from './taskManager/useBoards'; 

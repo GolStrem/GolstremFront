@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Modal.css";
+import "./TaskEditorModal.css";
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
   const [title, setTitle] = useState("");

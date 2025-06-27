@@ -1,0 +1,189 @@
+.tm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.tm-modal-popup {
+  background: var(--blanc);
+  border: 2px solid var(--jaune);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s, color 0.3s;
+}
+
+.tm-modal-popup.dark {
+  background: var(--noir);
+  color: var(--blanc);
+}
+
+.tm-modal-popup.light {
+  background: var(--blanc);
+  color: var(--noir);
+}
+
+.tm-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  color: var(--jaune);
+  cursor: pointer;
+}
+
+/* Label */
+.tm-label {
+  display: block;
+  margin-bottom: 16px;
+  font-weight: bold;
+  color: inherit;
+}
+
+/* Champ conteneur (light) */
+.tm-modal-popup.light .tm-label .tm-label-field {
+  background-color: #f3f3f3;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+
+/* Champ conteneur (dark) */
+.tm-modal-popup.dark .tm-label .tm-label-field {
+  background-color: #2c2c2c;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+
+/* Champs internes */
+.tm-label input,
+.tm-label textarea,
+.tm-label select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.089);
+  color: inherit;
+  border: none;
+  box-sizing: border-box;
+}
+
+/* Enlève le fond dans les champs en dark */
+.tm-modal-popup.dark .tm-label input,
+.tm-modal-popup.dark .tm-label textarea,
+.tm-modal-popup.dark .tm-label select {
+  background-color: transparent;
+}
+
+/* Apparence select */
+.tm-modal-popup select {
+  background-color: var(--blanc);
+  color: var(--noir);
+}
+
+.tm-modal-popup.dark select {
+  background-color: #2c2c2c;
+  color: var(--blanc);
+}
+
+.tm-modal-popup.light select {
+  background-color: #f1f1f1;
+  color: var(--noir);
+}
+
+.tm-modal-popup select option {
+  background-color: inherit;
+  color: inherit;
+}
+
+/* Groupes horizontaux */
+.tm-color-state-fields,
+.tm-date-fields {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.tm-color-picker,
+.tm-state-select {
+  flex: 1;
+}
+
+.tm-state-select select {
+  width: 100%;
+}
+
+/* Boutons */
+.tm-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.tm-modal-buttons button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tm-delete-btn {
+  background-color: #c0392b;
+  color: white;
+}
+
+.tm-cancel-btn {
+  background-color: #bdc3c7;
+}
+
+.tm-modal-buttons button:first-child {
+  background-color: var(--color-accent-yellow);
+  color: #181818;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .tm-color-state-fields,
+  .tm-date-fields {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tm-modal-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tm-modal-popup {
+    padding: 20px 16px;
+    max-width: 95%;
+  }
+
+  .tm-close-btn {
+    top: 8px;
+    right: 8px;
+  }
+}
+
+
+.tm-modal-popup.dark select,
+.tm-modal-popup.dark select option {
+  background-color: #2c2c2c !important;
+  color: var(--blanc) !important;
+}
