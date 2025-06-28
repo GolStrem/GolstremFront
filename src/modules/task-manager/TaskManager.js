@@ -256,7 +256,6 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
       <div className="tm-main-content">
-        <h1 className={`workSpaceName ${mode === "dark" ? "dark" : "light"}`}>{workspaceId}</h1>
         <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">
           + Créer un tableau
         </button>
