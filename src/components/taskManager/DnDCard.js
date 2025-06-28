@@ -14,7 +14,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
       duration: 150,
     },
     activationConstraint: {
-      delay: 2000, // 👈 2 secondes avant de permettre le drag
+      delay: 2000,
       tolerance: 5,
     },
   });
@@ -27,7 +27,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
     margin: "8px 0",
     borderRadius: "6px",
     boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-    cursor: "pointer", // pour le clic
+    cursor: "pointer",
   };
 
   const handleMouseDown = () => {
@@ -37,7 +37,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   const handleMouseUp = () => {
     const clickDuration = Date.now() - clickStart.current;
     if (clickDuration < 200) {
-      openViewerModal(boardId, card); // ✅ clic rapide = ouvrir modal
+      openViewerModal(boardId, card);
     }
   };
 
@@ -51,16 +51,21 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
       style={style}
       className={`task-card ${themeMode}`}
     >
-      <h4 className="task-title">{card.name}</h4>
-      <p className="task-preview">
-        {card.description?.slice(0, 80)}
-        {card.description?.length > 80 ? "…" : ""}
-      </p>
+      <h4 className="task-title">{card.text || card.name || "Sans titre"}</h4>
+
+      {card.description && (
+        <p className="task-preview">
+          {card.description.slice(0, 80)}
+          {card.description.length > 80 ? "…" : ""}
+        </p>
+      )}
+
       {card.image && (
         <div className="task-attachment-icon" title="Pièce jointe">
           📎
         </div>
       )}
+
       {card.endAt && (
         <div className="task-endat">
           📅 {new Date(card.endAt).toLocaleDateString()}
