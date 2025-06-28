@@ -1,5 +1,3 @@
-// ✅ TaskManager.jsx (fusionné avec Masonry + DnDBoard + @dnd-kit + ViewerModal + fix trim error + DndContext intégré)
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -14,8 +12,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
-import { Sidebar, BoardModal, Modal, TaskViewerModal } from "@components";
-import { DnDBoard }from "@components";
+import { BoardModal, Modal, TaskViewerModal } from "@components";
+import { DnDBoard } from "@components";
 import "./TaskManager.css";
 
 const loadBoardsFromStorage = (workspaceId) => {
@@ -27,8 +25,7 @@ const saveBoardsToStorage = (workspaceId, boards) => {
   localStorage.setItem(`boards_${workspaceId}`, JSON.stringify(boards));
 };
 
-const TaskManager = ({ workspaceId = "Default", sidebarVisible, setSidebarVisible }) => {
-
+const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
   const mode = useSelector((state) => state.theme.mode);
   const [boards, setBoards] = useState([]);
   const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
@@ -40,7 +37,6 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible, setSidebarVisibl
   });
   const [viewingCard, setViewingCard] = useState(null);
   const [showBoardModal, setShowBoardModal] = useState(false);
-
 
   const [columns, setColumns] = useState(3);
   const COLUMN_WIDTH = 340;
@@ -259,8 +255,6 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible, setSidebarVisibl
 
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-      {sidebarVisible && <Sidebar />}
-
       <div className="tm-main-content">
         <h1 className={`workSpaceName ${mode === "dark" ? "dark" : "light"}`}>{workspaceId}</h1>
         <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">
