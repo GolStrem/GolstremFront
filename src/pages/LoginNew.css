@@ -1,11 +1,3 @@
-/* ==================== Variables de base ==================== */
-:root {
-  --noir: #181818;
-  --jaune: #b5ad21;
-  --blanc: #ffffff;
-  --btn-hover-bg-dark: rgba(250, 250, 250, 0.18); /* pour fond sombre */
-  --btn-hover-bg-light: rgba(0, 0, 0, 0.2);       /* pour fond clair */
-}
 
 
 /* ==================== Structure générale ==================== */

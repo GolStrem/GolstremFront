@@ -14,6 +14,7 @@
   flex-shrink: 0;
   z-index: 1;
   overflow: hidden; /* 🔒 empêche débordement horizontal */
+    border-right: 2px solid var(--color-accent-yellow);
 }
 
 .tm-sidebar-scrollable {
@@ -23,7 +24,10 @@
 }
 
 .tm-sidebar.light {
-  background-color: rgb(73, 44, 44);
+  background-color: white;
+}
+.tm-sidebar.light h2 {
+  color: black;
 }
 
 .tm-sidebar input[type="text"],

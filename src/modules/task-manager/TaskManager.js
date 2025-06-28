@@ -1,9 +1,22 @@
-import React, { useState, useEffect, useCallback } from "react";
+// ✅ TaskManager.jsx (fusionné avec Masonry + DnDBoard + @dnd-kit + ViewerModal + fix trim error + DndContext intégré)
 
-import "./TaskManager.css";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
-import {Sidebar,BoardModal,Modal,Board} from "@components";
+import { Sidebar, BoardModal, Modal, TaskViewerModal } from "@components";
+import { DnDBoard } from "@components";
+import "./TaskManager.css";
 
 const loadBoardsFromStorage = (workspaceId) => {
   const data = localStorage.getItem(`boards_${workspaceId}`);
@@ -17,19 +30,17 @@ const saveBoardsToStorage = (workspaceId, boards) => {
 const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const [boards, setBoards] = useState([]);
-  const [, setDraggingCardInfo] = useState(null); // ✅ valeur inutilisée retirée
   const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({
     boardId: null,
     cardId: null,
-    text: "",
-    color: "#ffffff",
+    card: null,
   });
+  const [viewingCard, setViewingCard] = useState(null);
   const [showBoardModal, setShowBoardModal] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  // Masonry dynamic columns
   const [columns, setColumns] = useState(3);
   const COLUMN_WIDTH = 340;
   const GUTTER = 16;
@@ -38,13 +49,13 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     const width = window.innerWidth - (sidebarVisible ? 300 : 0);
     const possibleColumns = Math.floor(width / (COLUMN_WIDTH + GUTTER));
     setColumns(Math.max(possibleColumns, 1));
-  }, [sidebarVisible]); // ✅ useCallback avec dépendance
+  }, [sidebarVisible]);
 
   useEffect(() => {
     calculateColumns();
     window.addEventListener("resize", calculateColumns);
     return () => window.removeEventListener("resize", calculateColumns);
-  }, [calculateColumns]); // ✅ clean dependency
+  }, [calculateColumns]);
 
   useEffect(() => {
     const saved = loadBoardsFromStorage(workspaceId);
@@ -70,29 +81,46 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     setModalData({
       boardId,
       cardId: card?.id || null,
-      text: card?.text || "",
-      color: card?.color || "#ffffff",
+      card: card || null,
     });
     setShowModal(true);
   };
 
-  const closeModal = () => setShowModal(false);
+  const openViewer = (boardId, card) => {
+    setViewingCard({ boardId, card });
+  };
 
-  const handleCreateOrUpdateCard = (boardId, cardId, text, color) => {
-    if (!text.trim()) return alert("Le texte est requis.");
+  const closeModal = () => {
+    setShowModal(false);
+    setViewingCard(null);
+  };
+
+  const handleCreateOrUpdateCard = (boardId, cardId, cardData) => {
+    const { name, description } = cardData;
+    if (typeof name !== "string" || !name.trim()) return alert("Le nom est requis.");
+    if (typeof description !== "string" || !description.trim()) return alert("La description est requise.");
+
     setBoards((prevBoards) =>
       prevBoards.map((board) => {
         if (board.id !== boardId) return board;
+
         if (cardId) {
           return {
             ...board,
-            cards: board.cards.map((card) =>
-              card.id === cardId ? { ...card, text, color } : card
-            ),
+            cards: board.cards.map((c) => (c.id === cardId ? { ...c, ...cardData } : c)),
           };
         } else {
-          const newCard = { id: Date.now(), text, color };
-          return { ...board, cards: [...board.cards, newCard] };
+          return {
+            ...board,
+            cards: [
+              ...board.cards,
+              {
+                ...cardData,
+                id: `card-${Date.now()}`,
+                createdAt: new Date().toISOString().split("T")[0],
+              },
+            ],
+          };
         }
       })
     );
@@ -150,8 +178,12 @@ const TaskManager = ({ workspaceId = "Default" }) => {
         })
       );
     } else {
-      setBoards((prevBoards) =>
-        prevBoards.map((board) => {
+      setBoards((prevBoards) => {
+        const draggedCard = prevBoards
+          .find((b) => b.id === sourceBoardId)
+          ?.cards.find((card) => card.id === cardId);
+
+        return prevBoards.map((board) => {
           if (board.id === sourceBoardId) {
             return {
               ...board,
@@ -159,9 +191,6 @@ const TaskManager = ({ workspaceId = "Default" }) => {
             };
           }
           if (board.id === targetBoardId) {
-            const draggedCard = boards
-              .find((b) => b.id === sourceBoardId)
-              ?.cards.find((card) => card.id === cardId);
             const updatedCards = [...board.cards];
             if (draggedCard) {
               updatedCards.splice(targetIndex ?? updatedCards.length, 0, draggedCard);
@@ -169,11 +198,45 @@ const TaskManager = ({ workspaceId = "Default" }) => {
             return { ...board, cards: updatedCards };
           }
           return board;
-        })
-      );
+        });
+      });
+    }
+  };
+
+  const handleCardDragEnd = (event) => {
+    const { active, over } = event;
+    if (!active?.id || !over?.id || active.id === over.id) return;
+
+    const activeCardId = active.id;
+    const overContainerId = over.id;
+
+    let sourceBoardId = null;
+    let draggedCard = null;
+
+    for (const board of boards) {
+      const card = board.cards.find((c) => c.id === activeCardId);
+      if (card) {
+        sourceBoardId = board.id;
+        draggedCard = card;
+        break;
+      }
     }
 
-    setDraggingCardInfo(null);
+    if (!sourceBoardId || !draggedCard) return;
+
+    const targetBoard = boards.find((b) => b.id === overContainerId);
+    if (targetBoard) {
+      handleDrop(sourceBoardId, overContainerId, draggedCard.id);
+      return;
+    }
+
+    for (const board of boards) {
+      const index = board.cards.findIndex((c) => c.id === over.id);
+      if (index !== -1) {
+        handleDrop(sourceBoardId, board.id, draggedCard.id, index);
+        return;
+      }
+    }
   };
 
   const onBoardDragStart = (e, index) => {
@@ -191,15 +254,11 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     setDraggingBoardIndex(null);
   };
 
+  const sensors = useSensors(useSensor(PointerSensor));
+
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-      <button
-        className={`hamburger-btn ${mode === "dark" ? "dark" : "light"}`}
-        onClick={() => setSidebarVisible(!sidebarVisible)}
-        style={{ left: sidebarVisible ? "300px" : "0" }}
-      >
-        ☰
-      </button>
+
 
       {sidebarVisible && <Sidebar />}
 
@@ -210,26 +269,33 @@ const TaskManager = ({ workspaceId = "Default" }) => {
         </button>
 
         <div className="tm-boards-wrapper">
-          <Masonry
-            breakpointCols={columns}
-            className="tm-boards-masonry"
-            columnClassName="tm-boards-masonry-column"
-          >
-            {boards.map((board, index) => (
-              <Board
-                key={board.id}
-                board={board}
-                index={index}
-                handleDrop={handleDrop}
-                setDraggingCardInfo={setDraggingCardInfo}
-                openModal={openModal}
-                handleUpdateBoard={handleUpdateBoard}
-                handleDeleteBoard={handleDeleteBoard}
-                onBoardDragStart={onBoardDragStart}
-                onBoardDrop={onBoardDrop}
-              />
-            ))}
-          </Masonry>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCardDragEnd}>
+            <Masonry
+              breakpointCols={columns}
+              className="tm-boards-masonry"
+              columnClassName="tm-boards-masonry-column"
+            >
+              {boards.map((board, index) => (
+                <SortableContext
+                  key={board.id}
+                  items={board.cards.map((c) => c.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <DnDBoard
+                    board={board}
+                    index={index}
+                    handleDrop={handleDrop}
+                    openModal={openModal}
+                    openViewerModal={openViewer}
+                    handleUpdateBoard={handleUpdateBoard}
+                    handleDeleteBoard={handleDeleteBoard}
+                    onBoardDragStart={onBoardDragStart}
+                    onBoardDrop={onBoardDrop}
+                  />
+                </SortableContext>
+              ))}
+            </Masonry>
+          </DndContext>
         </div>
       </div>
 
@@ -239,6 +305,15 @@ const TaskManager = ({ workspaceId = "Default" }) => {
           closeModal={closeModal}
           handleCreateOrUpdateCard={handleCreateOrUpdateCard}
           handleDeleteCard={handleDeleteCard}
+        />
+      )}
+
+      {viewingCard && (
+        <TaskViewerModal
+          card={viewingCard.card}
+          boardId={viewingCard.boardId}
+          closeModal={closeModal}
+          openEdit={openModal}
         />
       )}
 

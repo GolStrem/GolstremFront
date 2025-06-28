@@ -1,18 +1,22 @@
 import React, { useState } from "react";
-import "./Modal.css";
+import { useSelector } from "react-redux";
+import "./TaskEditorModal.css";
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
   const [title, setTitle] = useState("");
+  const mode = useSelector((state) => state.theme.mode); // 🔥 récupère le mode
 
   const handleSubmit = () => {
-    handleCreateBoard(title);
-    closeModal();
+    if (title.trim()) {
+      handleCreateBoard(title.trim());
+      closeModal();
+    }
   };
 
   return (
-    <div className="tm-modal-overlay" onClick={closeModal}>
+    <div className={`tm-modal-overlay ${mode}`} onClick={closeModal}>
       <div
-        className="tm-modal-popup"
+        className={`tm-modal-popup ${mode}`}
         onClick={(e) => e.stopPropagation()}
       >
         <h3>Créer un tableau</h3>
