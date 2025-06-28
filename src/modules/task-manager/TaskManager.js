@@ -1,7 +1,7 @@
-// (imports identiques)
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DndContext, closestCorners } from "@dnd-kit/core";
+
 import "./TaskManager.css";
 import {
   DnDBoard,
@@ -50,8 +50,9 @@ const TaskManager = () => {
     if (!over || active.id === over.id) return;
 
     const sourceBoard = boards.find((b) => b.cards.some((c) => c.id === active.id));
-    const targetBoard = boards.find((b) => b.cards.some((c) => c.id === over.id)) ||
-                        boards.find((b) => b.id === over.id);
+    const targetBoard =
+      boards.find((b) => b.cards.some((c) => c.id === over.id)) ||
+      boards.find((b) => b.id === over.id);
     if (!sourceBoard || !targetBoard) return;
 
     const draggedCard = sourceBoard.cards.find((c) => c.id === active.id);
@@ -68,8 +69,8 @@ const TaskManager = () => {
         )
       );
     } else {
-      setBoards((prevBoards) => {
-        const updatedBoards = prevBoards.map((board) => {
+      setBoards((prevBoards) =>
+        prevBoards.map((board) => {
           if (board.id === sourceBoard.id) {
             return { ...board, cards: board.cards.filter((c) => c.id !== active.id) };
           }
@@ -80,9 +81,8 @@ const TaskManager = () => {
             return { ...board, cards: updatedCards };
           }
           return board;
-        });
-        return updatedBoards;
-      });
+        })
+      );
     }
   };
 
@@ -110,7 +110,6 @@ const TaskManager = () => {
         if (board.id !== boardId) return board;
 
         const existingCardIndex = board.cards.findIndex((c) => c.id === cardId);
-
         if (existingCardIndex !== -1) {
           const updatedCards = [...board.cards];
           updatedCards[existingCardIndex] = {
@@ -168,7 +167,7 @@ const TaskManager = () => {
         </button>
 
         <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-          <div className="tm-masonry-native">
+          <div className="tm-grid-board-layout">
             {boards.map((board) => (
               <div key={board.id} className="tm-board-container">
                 <div className="tm-board-header">

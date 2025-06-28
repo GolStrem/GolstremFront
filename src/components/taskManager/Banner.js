@@ -2,6 +2,7 @@ import React from "react";
 import banner from "@assets/banner.jpg";
 import avatar1 from "@assets/avatar.png";
 import avatar2 from "@assets/avatar.png";
+import './Banner.css'
 
 const Banner = ({ workspaceId, sidebarVisible }) => {
   return (

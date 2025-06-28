@@ -1,39 +1,62 @@
-// src/components/taskManager/DnDBoard.jsx
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import DnDCard from "./DnDCard";
+import DnDCard from "./DnDCard"; // adapte le chemin si nécessaire
 
-const DnDBoard = ({ board, openViewerModal }) => {
-  const { setNodeRef } = useDroppable({ id: board.id });
+
+const DnDBoard = ({ board, openCreateCard, openViewerModal }) => {
+  const cardsContainerRef = useRef(null);
+  const [calculatedHeight, setCalculatedHeight] = useState(80);
+
+  const { setNodeRef } = useDroppable({
+    id: board.id,
+  });
+
+  useEffect(() => {
+    if (!cardsContainerRef.current) return;
+
+    const cards = cardsContainerRef.current.children;
+    let totalHeight = 0;
+
+    for (let card of cards) {
+      totalHeight += card.offsetHeight + 10;
+    }
+
+    totalHeight += 10; // padding bas
+
+    const screenHeight = window.innerHeight;
+    const maxHeight = screenHeight * 0.7;
+
+    setCalculatedHeight(Math.min(Math.max(80, totalHeight), maxHeight));
+  }, [board.cards]);
 
   return (
     <div
-      ref={setNodeRef}
       className="tm-board"
+      ref={setNodeRef}
       style={{
-        background: "#f5f5f5",
-        padding: 12,
-        borderRadius: 8,
-        minHeight: 100,
+        height: `${calculatedHeight}px`,
+        transition: "height 0.3s ease",
+        overflowY: "auto",
+        backgroundColor: "#fefefe",
+        borderRadius: "8px",
+        padding: "10px",
+        boxSizing: "border-box",
+        boxShadow: "0 0 5px rgba(0,0,0,0.1)",
       }}
     >
-      <SortableContext items={board.cards.map((c) => c.id)} strategy={verticalListSortingStrategy}>
-        {board.cards.length > 0 ? (
-          board.cards.map((card) => (
-            <DnDCard
-              key={card.id}
-              card={card}
-              boardId={board.id}
-              openViewerModal={openViewerModal}
-            />
-          ))
-        ) : (
-          <div className="tm-empty-board-placeholder">
-            Déposez une carte ici
-          </div>
+      <div className="tm-cards" ref={cardsContainerRef}>
+        {board.cards.length === 0 && (
+          <div className="tm-empty">Déposez une carte ici</div>
         )}
-      </SortableContext>
+        {board.cards.map((card) => (
+          <DnDCard
+            key={card.id}
+            card={card}
+            boardId={board.id}
+            openViewerModal={openViewerModal}
+          />
+        ))}
+      </div>
     </div>
   );
 };
