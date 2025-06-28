@@ -9,10 +9,13 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { Sidebar, BoardModal, Modal, TaskViewerModal } from "@components";
-import { DnDBoard }from "@components";
+import { DnDBoard } from "@components";
 import "./TaskManager.css";
 
 const loadBoardsFromStorage = (workspaceId) => {
@@ -175,8 +178,12 @@ const TaskManager = ({ workspaceId = "Default" }) => {
         })
       );
     } else {
-      setBoards((prevBoards) =>
-        prevBoards.map((board) => {
+      setBoards((prevBoards) => {
+        const draggedCard = prevBoards
+          .find((b) => b.id === sourceBoardId)
+          ?.cards.find((card) => card.id === cardId);
+
+        return prevBoards.map((board) => {
           if (board.id === sourceBoardId) {
             return {
               ...board,
@@ -184,9 +191,6 @@ const TaskManager = ({ workspaceId = "Default" }) => {
             };
           }
           if (board.id === targetBoardId) {
-            const draggedCard = boards
-              .find((b) => b.id === sourceBoardId)
-              ?.cards.find((card) => card.id === cardId);
             const updatedCards = [...board.cards];
             if (draggedCard) {
               updatedCards.splice(targetIndex ?? updatedCards.length, 0, draggedCard);
@@ -194,8 +198,8 @@ const TaskManager = ({ workspaceId = "Default" }) => {
             return { ...board, cards: updatedCards };
           }
           return board;
-        })
-      );
+        });
+      });
     }
   };
 
@@ -203,12 +207,14 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     const { active, over } = event;
     if (!active?.id || !over?.id || active.id === over.id) return;
 
+    const activeCardId = active.id;
+    const overContainerId = over.id;
+
     let sourceBoardId = null;
-    let targetBoardId = null;
     let draggedCard = null;
 
     for (const board of boards) {
-      const card = board.cards.find((c) => c.id === active.id);
+      const card = board.cards.find((c) => c.id === activeCardId);
       if (card) {
         sourceBoardId = board.id;
         draggedCard = card;
@@ -216,17 +222,20 @@ const TaskManager = ({ workspaceId = "Default" }) => {
       }
     }
 
-    for (const board of boards) {
-      if (board.cards.some((c) => c.id === over.id)) {
-        targetBoardId = board.id;
-        break;
-      }
+    if (!sourceBoardId || !draggedCard) return;
+
+    const targetBoard = boards.find((b) => b.id === overContainerId);
+    if (targetBoard) {
+      handleDrop(sourceBoardId, overContainerId, draggedCard.id);
+      return;
     }
 
-    if (sourceBoardId && targetBoardId && draggedCard) {
-      const targetBoard = boards.find((b) => b.id === targetBoardId);
-      const targetIndex = targetBoard.cards.findIndex((c) => c.id === over.id);
-      handleDrop(sourceBoardId, targetBoardId, draggedCard.id, targetIndex);
+    for (const board of boards) {
+      const index = board.cards.findIndex((c) => c.id === over.id);
+      if (index !== -1) {
+        handleDrop(sourceBoardId, board.id, draggedCard.id, index);
+        return;
+      }
     }
   };
 
@@ -249,13 +258,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
 
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-      <button
-        className={`hamburger-btn ${mode === "dark" ? "dark" : "light"}`}
-        onClick={() => setSidebarVisible(!sidebarVisible)}
-        style={{ left: sidebarVisible ? "300px" : "0" }}
-      >
-        ☰
-      </button>
+
 
       {sidebarVisible && <Sidebar />}
 
