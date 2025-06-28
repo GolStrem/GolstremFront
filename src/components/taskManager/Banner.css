@@ -64,7 +64,6 @@
 .hamburger-btn {
   position: fixed;
   top: 5px;
-  left: 300px; /* aligné avec la sidebar */
   z-index: 1001;
   color: white;
   border: none;

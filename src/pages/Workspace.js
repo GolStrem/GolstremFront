@@ -52,7 +52,12 @@ const Workspace = () => {
       {/* CONTENU PRINCIPAL */}
       <div style={{ flexGrow: 1, marginLeft: sidebarVisible ? "300px" : "0", transition: "margin-left 0.3s" }}>
         <Banner workspaceId={workspaceId} />
-        <TaskManager workspaceId={workspaceId} />
+        <TaskManager
+          workspaceId={workspaceId}
+          sidebarVisible={sidebarVisible}
+          setSidebarVisible={setSidebarVisible}
+        />
+
       </div>
     </div>
   );

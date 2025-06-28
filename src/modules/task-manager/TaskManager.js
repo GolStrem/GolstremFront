@@ -15,7 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { Sidebar, BoardModal, Modal, TaskViewerModal } from "@components";
-import { DnDBoard } from "@components";
+import { DnDBoard }from "@components";
 import "./TaskManager.css";
 
 const loadBoardsFromStorage = (workspaceId) => {
@@ -27,7 +27,8 @@ const saveBoardsToStorage = (workspaceId, boards) => {
   localStorage.setItem(`boards_${workspaceId}`, JSON.stringify(boards));
 };
 
-const TaskManager = ({ workspaceId = "Default" }) => {
+const TaskManager = ({ workspaceId = "Default", sidebarVisible, setSidebarVisible }) => {
+
   const mode = useSelector((state) => state.theme.mode);
   const [boards, setBoards] = useState([]);
   const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
@@ -39,7 +40,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
   });
   const [viewingCard, setViewingCard] = useState(null);
   const [showBoardModal, setShowBoardModal] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+
 
   const [columns, setColumns] = useState(3);
   const COLUMN_WIDTH = 340;
@@ -258,11 +259,9 @@ const TaskManager = ({ workspaceId = "Default" }) => {
 
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
-
-
       {sidebarVisible && <Sidebar />}
 
-      <div className="tm-main-content" style={{ marginLeft: sidebarVisible ? "300px" : "0" }}>
+      <div className="tm-main-content">
         <h1 className={`workSpaceName ${mode === "dark" ? "dark" : "light"}`}>{workspaceId}</h1>
         <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">
           + Créer un tableau
