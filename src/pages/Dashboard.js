@@ -11,7 +11,7 @@ const Dashboard = () => {
 
   const links = [
     {
-      to: `/workspace/${lastWorkspace}`,
+      to: `/workspace/${encodeURIComponent(lastWorkspace)}`,
       label: `Gestion des tâches`,
       icon: <FaTasks size={40} />,
     },

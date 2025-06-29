@@ -39,7 +39,7 @@ const Sidebar = () => {
     const updated = [...workspaces, trimmed];
     setWorkspaces(updated);
     setNewName("");
-    navigate(`/workspace/${trimmed}`);
+    navigate(`/workspace/${encodeURIComponent(trimmed)}`);
   };
 
   const handleRename = (oldName, newName) => {
@@ -68,7 +68,7 @@ const Sidebar = () => {
     );
 
     localStorage.removeItem(`boards_${oldName}`);
-    navigate(`/workspace/${trimmed}`);
+    navigate(`/workspace/${encodeURIComponent(trimmed)}`);
   };
 
   const handleDelete = (name) => {
@@ -90,7 +90,7 @@ const Sidebar = () => {
         localStorage.setItem("lastWorkspace", "Default");
         navigate(`/workspace/Default`);
       } else if (window.location.pathname.includes(name)) {
-        navigate(`/workspace/${updated[0]}`);
+        navigate(`/workspace/${encodeURIComponent(updated[0])}`);
         localStorage.setItem("lastWorkspace", updated[0]);
       }
 
@@ -126,7 +126,7 @@ const Sidebar = () => {
                 className={`tm-nav-div ${mode === "dark" ? "dark" : "light"}`}
               >
                 <NavLink
-                  to={`/workspace/${ws}`}
+                  to={`/workspace/${encodeURIComponent(ws)}`}
                   className={`tm-nav-btn ${mode === "dark" ? "dark" : "light"}`}
                   style={{ flexGrow: 1 }}
                   title={ws}
