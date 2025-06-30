@@ -2,27 +2,38 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import { useSelector } from "react-redux";
+import { DeleteWorkspaceModal } from "@components";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const mode = useSelector((state) => state.theme.mode);
+
   const [workspaces, setWorkspaces] = useState([]);
   const [newName, setNewName] = useState("");
   const [editing, setEditing] = useState(null);
   const [editValue, setEditValue] = useState("");
-  const mode = useSelector((state) => state.theme.mode);
+  const [menuOpen, setMenuOpen] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
 
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("workspaces"));
-      setWorkspaces(Array.isArray(saved) && saved.length > 0 ? saved : ["Default"]);
-    } catch {
-      setWorkspaces(["Default"]);
-    }
+    const saved = JSON.parse(localStorage.getItem("workspaces"));
+    setWorkspaces(Array.isArray(saved) && saved.length > 0 ? saved : ["Default"]);
   }, []);
 
   useEffect(() => {
     localStorage.setItem("workspaces", JSON.stringify(workspaces));
   }, [workspaces]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".tm-ws-menu-wrapper")) {
+        setMenuOpen(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const isValidName = (name) => {
     const trimmed = name.trim();
@@ -51,56 +62,44 @@ const Sidebar = () => {
     const updated = workspaces.map((w) => (w === oldName ? trimmed : w));
     setWorkspaces(updated);
     setEditing(null);
-
-    // Transfert des boards ou création d’un tableau vide
     const oldBoards = localStorage.getItem(`boards_${oldName}`);
     localStorage.setItem(
       `boards_${trimmed}`,
       oldBoards && oldBoards !== "null"
         ? oldBoards
-        : JSON.stringify([
-            {
-              id: Date.now(),
-              title: "Nouveau tableau",
-              cards: [],
-            },
-          ])
+        : JSON.stringify([{ id: Date.now(), title: "Nouveau tableau", cards: [] }])
     );
-
     localStorage.removeItem(`boards_${oldName}`);
     navigate(`/workspace/${encodeURIComponent(trimmed)}`);
   };
 
   const handleDelete = (name) => {
-    if (window.confirm(`Supprimer "${name}" ?`)) {
-      const updated = workspaces.filter((w) => w !== name);
+    setWorkspaceToDelete(name);
+    setShowDeleteModal(true);
+    setMenuOpen(null);
+  };
 
-      if (updated.length === 0) {
-        updated.push("Default");
-        localStorage.setItem(
-          "boards_Default",
-          JSON.stringify([
-            {
-              id: Date.now(),
-              title: "Nouveau tableau",
-              cards: [],
-            },
-          ])
-        );
-        localStorage.setItem("lastWorkspace", "Default");
-        navigate(`/workspace/Default`);
-      } else if (window.location.pathname.includes(name)) {
-        navigate(`/workspace/${encodeURIComponent(updated[0])}`);
-        localStorage.setItem("lastWorkspace", updated[0]);
-      }
+  const confirmDelete = () => {
+    const name = workspaceToDelete;
+    const updated = workspaces.filter((w) => w !== name);
 
-      setWorkspaces(updated);
-      localStorage.removeItem(`boards_${name}`);
+    if (updated.length === 0) {
+      updated.push("Default");
+      localStorage.setItem("boards_Default", JSON.stringify([{ id: Date.now(), title: "Nouveau tableau", cards: [] }]));
+      localStorage.setItem("lastWorkspace", "Default");
+      navigate(`/workspace/Default`);
+    } else if (window.location.pathname.includes(name)) {
+      navigate(`/workspace/${encodeURIComponent(updated[0])}`);
+      localStorage.setItem("lastWorkspace", updated[0]);
     }
+
+    setWorkspaces(updated);
+    localStorage.removeItem(`boards_${name}`);
+    setShowDeleteModal(false);
   };
 
   return (
-    <aside className={`tm-sidebar ${mode === "dark" ? "dark" : "light"}`}>
+    <aside className={`tm-sidebar ${mode}`}>
       <h2 className="sidebarMenu">Menu</h2>
 
       <div className="tm-sidebar-scrollable">
@@ -121,45 +120,36 @@ const Sidebar = () => {
                 />
               </form>
             ) : (
-              <div
-                style={{ display: "flex", alignItems: "center" }}
-                className={`tm-nav-div ${mode === "dark" ? "dark" : "light"}`}
-              >
+              <div className={`tm-nav-div ${mode}`}>
                 <NavLink
                   to={`/workspace/${encodeURIComponent(ws)}`}
-                  className={`tm-nav-btn ${mode === "dark" ? "dark" : "light"}`}
+                  className={`tm-nav-btn ${mode}`}
                   style={{ flexGrow: 1 }}
                   title={ws}
                 >
                   {ws}
                 </NavLink>
-                <button
-                  onClick={() => {
-                    setEditing(ws);
-                    setEditValue(ws);
-                  }}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "white",
-                    cursor: "pointer",
-                    marginLeft: "4px",
-                  }}
-                >
-                  ✏️
-                </button>
-                <button
-                  onClick={() => handleDelete(ws)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#ffaaaa",
-                    cursor: "pointer",
-                    marginLeft: "4px",
-                  }}
-                >
-                  🗑️
-                </button>
+
+                <div className="tm-ws-menu-wrapper">
+                  <button
+                    className={`tm-ws-menu-btn ${mode}`}
+                    onClick={() => setMenuOpen(menuOpen === ws ? null : ws)}
+                  >
+                    ⋯
+                  </button>
+
+                  {menuOpen === ws && (
+                    <div className={`tm-ws-menu ${mode}`}>
+                      <button onClick={() => {
+                        setEditing(ws);
+                        setEditValue(ws);
+                        setMenuOpen(null);
+                      }}>✏️ Modifier</button>
+
+                      <button onClick={() => handleDelete(ws)}>🗑️ Supprimer</button>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -174,10 +164,16 @@ const Sidebar = () => {
           placeholder="Nouveau workspace"
           className="tm-sidebar-input"
         />
-        <button onClick={handleAddWorkspace} className="tm-add-btn">
-          + Ajouter
-        </button>
+        <button onClick={handleAddWorkspace} className="tm-add-btn">+ Ajouter</button>
       </div>
+
+      {showDeleteModal && (
+        <DeleteWorkspaceModal
+          name={workspaceToDelete}
+          onConfirm={confirmDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </aside>
   );
 };

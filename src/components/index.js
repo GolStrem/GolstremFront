@@ -24,3 +24,5 @@ export { default as DnDCard } from './taskManager/DnDCard';
 export { default as SortableBoard } from './taskManager/SortableBoard';
 export { default as SortableItem } from './taskManager/SortableItem';
 export { default as useBoardManager } from './taskManager/useBoardManager';
+export { default as DeleteWorkspaceModal } from './taskManager/DeleteWorkspaceModal.js'
+
