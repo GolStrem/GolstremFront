@@ -56,7 +56,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
 
       <div className="task-attachment-icon">
         {card.image ? (
-          <img src={cadre} alt="Image" title="Image liée" className={`icon image-icon ${mode}`} />
+          <img src={cadre} alt="cadre" title="liée" className={`icon image-icon ${mode}`} />
         ) : card.hasAttachment ? (
           <img src={trombone} alt="Pièce jointe" title="Pièce jointe" className={`icon attachment-icon ${mode}`} />
         ) : null}
