@@ -2,33 +2,18 @@ import React, { useRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSelector } from "react-redux";
+import { cadre, trombone } from "@assets";
 import "./TaskCard.css";
 
 const DnDCard = ({ card, boardId, openViewerModal }) => {
-  const themeMode = useSelector((state) => state.theme.mode);
+  const mode = useSelector((state) => state.theme.mode);
   const clickStart = useRef(null);
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: card.id,
-    transition: {
-      duration: 150,
-    },
-    activationConstraint: {
-      delay: 2000,
-      tolerance: 5,
-    },
+    transition: { duration: 150 },
+    activationConstraint: { delay: 2000, tolerance: 5 },
   });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    backgroundColor: card.color || "#ffffff",
-    padding: "8px",
-    margin: "8px 0",
-    borderRadius: "6px",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-    cursor: "pointer",
-  };
 
   const handleMouseDown = () => {
     clickStart.current = Date.now();
@@ -41,6 +26,15 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
     }
   };
 
+  const hasCustomColor = !!card.color && card.color.toLowerCase() !== "#ffffff";
+  const cardClass = `task-card ${mode} ${hasCustomColor ? "custom-color" : ""}`;
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    ...(hasCustomColor ? { backgroundColor: card.color } : {}),
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -49,7 +43,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       style={style}
-      className={`task-card ${themeMode}`}
+      className={cardClass}
     >
       <h4 className="task-title">{card.text || card.name || "Sans titre"}</h4>
 
@@ -60,11 +54,14 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
         </p>
       )}
 
-      {card.image && (
-        <div className="task-attachment-icon" title="Pièce jointe">
-          📎
-        </div>
-      )}
+      <div className="task-attachment-icon">
+        {card.image ? (
+          <img src={cadre} alt="Image" title="Image liée" className={`icon image-icon ${mode}`} />
+        ) : card.hasAttachment ? (
+          <img src={trombone} alt="Pièce jointe" title="Pièce jointe" className={`icon attachment-icon ${mode}`} />
+        ) : null}
+      </div>
+
 
       {card.endAt && (
         <div className="task-endat">

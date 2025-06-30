@@ -23,4 +23,4 @@ export { default as DnDBoard } from './taskManager/DnDBoard';
 export { default as DnDCard } from './taskManager/DnDCard';
 export { default as SortableBoard } from './taskManager/SortableBoard';
 export { default as SortableItem } from './taskManager/SortableItem';
-export { default as useBoardHeights } from './taskManager/useBoardHeights';
+export { default as useBoardManager } from './taskManager/useBoardManager';

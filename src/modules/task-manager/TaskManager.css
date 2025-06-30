@@ -15,15 +15,13 @@
 }
 
 /* === Thème sombre === */
-.tm-task-manager.dark h1 {
+.tm-task-manager.dark h1,
+.workSpaceName.dark {
   color: white;
 }
 
 .workSpaceName {
   padding-top: 2em;
-}
-.workSpaceName.dark {
-  color: white;
 }
 
 /* === Bouton pour créer un tableau === */
@@ -48,7 +46,7 @@
 /* === Styles react-masonry-css === */
 .tm-boards-masonry {
   display: flex;
-  margin-left: -1rem; /* Gutter négatif pour aligner */
+  margin-left: -1rem;
   width: auto;
   margin-right: 1rem;
 }
@@ -61,133 +59,6 @@
 
 .tm-boards-masonry-column > .tm-board-container {
   margin-bottom: 1rem;
-}
-
-/* === Board Container === */
-.tm-board-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 340px;
-  min-width: 240px; /* ➕ largeur minimale pour éviter les "crushed boards" */
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  break-inside: avoid;
-  word-break: break-word;
-}
-
-.tm-board-container:hover {
-  background-color: #e9ecef;
-}
-
-/* === Header du board === */
-.tm-board-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  background-color: #fff;
-  box-sizing: border-box;
-  border-radius: 5px;
-}
-
-.tm-board-header h2 {
-  margin: 0;
-  font-size: 18px;
-  word-break: break-word;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  max-width: 100%; /* évite qu'il déborde */
-}
-
-/* === Cards === */
-.tm-board {
-  height: auto !important;
-  min-height: 80px;
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: none !important;
-}
-
-.tm-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.tm-cards .card {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 5px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tm-card:active {
-  transform: scale(1.05);
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* === Actions sur les cartes === */
-.tm-card-actions {
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  display: flex;
-  gap: 5px;
-}
-
-.tm-card-actions button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.tm-card-actions button:hover {
-  background-color: #0056b3;
-}
-
-/* === Placeholder quand aucun card === */
-.tm-empty-board-placeholder {
-  text-align: center;
-  color: #888;
-  font-size: 14px;
-  padding: 20px 10px;
-  border: 2px dashed #ddd;
-  border-radius: 4px;
-}
-
-/* === Boutons d'action des boards === */
-.tm-edit,
-.tm-delete {
-  background-color: #806161;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 4px;
-}
-
-.tm-edit {
-  margin-top: 2px;
-  margin-bottom: 2px;
 }
 
 /* === Bouton hamburger (menu latéral) === */
@@ -204,22 +75,15 @@
   border-top-right-radius: 4px;
   transition: left 0.3s ease;
 }
-
 .hamburger-btn.light {
-  background: rgb(73, 44, 44);
+  background: var(--blanc);
+  border: 2px solid var(--color-accent-yellow);
 }
 .hamburger-btn.dark {
   background: #2e2e2e;
 }
 
-/* === Responsive === */
-@media (max-width: 1024px) {
-  .tm-board-container {
-    max-width: 100%;
-    width: 100%;
-  }
-}
-
+/* === Responsive général === */
 @media (max-width: 768px) {
   .tm-main-content {
     margin-left: 0;
@@ -231,40 +95,184 @@
     justify-content: center;
   }
 
-  .tm-board-container {
-    width: 100%;
-    max-width: 340px;
-  }
-
   .tm-Tabl {
     width: 100%;
     max-width: 300px;
     margin: 10px auto;
   }
 
-  .tm-card-actions {
-    flex-direction: column;
-    gap: 4px;
-    right: 10px;
-    bottom: 10px;
-  }
-
-  .tm-card-actions button {
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  .tm-board-header h2 {
-    font-size: 16px;
-  }
-
   .tm-boards-masonry-column {
     padding-left: 0;
   }
 }
+
+/* === Grille alternative === */
 .tm-grid-board-layout {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   align-items: start;
+}
+
+/* === Board container === */
+.tm-board-container.light {
+  background-color: var(--blanc);
+  color: var(--noir);
+  border-color: #ccc;
+}
+.tm-board-container.dark {
+  background-color: #444444;
+  color: var(--modal-text);
+  border: none;
+}
+.tm-board-container:hover.dark {
+  background-color: #575757;
+  border: none;
+}
+
+/* === Board header === */
+.tm-board-header.light {
+  background-color: #ffffff;
+  color: var(--noir);
+  border-bottom: 1px solid #ccc;
+}
+.tm-board-header.dark {
+  background-color: #2e2e2e;
+  color: white;
+}
+
+/* === Boutons du header === */
+.tm-board-header-buttons button {
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-left: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  background: none;
+}
+
+.tm-board-header.light .tm-add-card-btn,
+.tm-board-header.light .tm-edit,
+.tm-board-header.light .tm-delete {
+  color: var(--noir);
+}
+
+.tm-board-header.dark .tm-add-card-btn,
+.tm-board-header.dark .tm-edit,
+.tm-board-header.dark .tm-delete {
+  color: var(--blanc);
+}
+
+.tm-board-header-buttons button:hover {
+  opacity: 0.85;
+}
+
+.tm-board-header.dark .tm-add-card-btn:hover,
+.tm-board-header.dark .tm-edit:hover,
+.tm-board-header.dark .tm-delete:hover {
+  color: #6e6e6e;
+  opacity: 50%;
+}
+
+/* === Placeholder "vide" === */
+.tm-empty-board-placeholder.dark {
+  border: 2px dashed #888888;
+  color: #888888;
+}
+
+/* === Liste déroulante bouton "⋯" === */
+.tm-board-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tm-board-menu-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.tm-board-menu-btn:hover {
+  background-color: var(--btn-hover-bg-light);
+}
+.dark .tm-board-menu-btn:hover {
+  background-color: var(--btn-hover-bg-dark);
+}
+
+/* Icône SVG (si utilisée dans le bouton ⋯) */
+.tm-board-menu-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--noir);
+  transition: fill 0.2s ease;
+}
+.dark .tm-board-menu-btn svg {
+  fill: var(--blanc);
+}
+
+/* === Menu déroulant === */
+.tm-board-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  min-width: 140px;
+  background-color: var(--blanc);
+  border: 1px solid var(--jaune);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeSlide 0.2s ease;
+  padding: 4px 0;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tm-board-menu button {
+  all: unset;
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--noir);
+  transition: background 0.2s ease;
+}
+.tm-board-menu button:hover {
+  background-color: var(--btn-hover-bg-light);
+}
+
+.tm-board-menu.dark {
+  background-color: #2e2e2e;
+  border-color: var(--jaune);
+}
+.tm-board-menu.dark button {
+  color: var(--blanc);
+}
+.tm-board-menu.dark button:hover {
+  background-color: var(--btn-hover-bg-dark);
+}
+
+.tm-board-menu-btn.light {
+  color: var(--noir);
+}
+
+.tm-board-menu-btn.dark {
+  color: var(--blanc);
 }

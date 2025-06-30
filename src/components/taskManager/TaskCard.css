@@ -139,3 +139,42 @@
     align-self: center;
   }
 }
+
+
+.task-card {
+  position: relative;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 🌓 Mode clair par défaut */
+.task-card.light {
+  background-color: var(--blanc);
+  color: var(--noir);
+  border-color: #ccc;
+}
+
+/* 🌑 Mode sombre */
+.task-card.dark {
+  background-color: #6b6b6b; /* déjà défini dans tes variables */
+  color: var(--white);
+  border-color: none;
+}
+
+
+.icon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+
+.icon.dark {
+  filter: brightness(0) invert(1);
+}

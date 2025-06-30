@@ -4,7 +4,7 @@ import "./TaskEditorModal.css";
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
   const [title, setTitle] = useState("");
-  const mode = useSelector((state) => state.theme.mode); // 🔥 récupère le mode
+  const mode = useSelector((state) => state.theme.mode);
 
   const handleSubmit = () => {
     if (title.trim()) {
@@ -19,6 +19,11 @@ const BoardModal = ({ closeModal, handleCreateBoard }) => {
         className={`tm-modal-popup ${mode}`}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Croix de fermeture */}
+        <button className="tm-close-button" onClick={closeModal} aria-label="Fermer">
+          ×
+        </button>
+
         <h3>Créer un tableau</h3>
 
         <label>
