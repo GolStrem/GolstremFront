@@ -13,6 +13,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   box-sizing: border-box;
+  border: 2px solid var(--color-accent-yellow);
 }
 
 /* Titre centré */

@@ -14,7 +14,23 @@
   body {
     font-family: 'Roboto', sans-serif;
     overflow-x: hidden;
+
   }
+
+
+.global-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+
+  background-image: url('../assets/fond.svg');
+  background-repeat: no-repeat;
+  background-position: bottom left;
+  opacity: 0.4;
+}
+
   
   body.light-mode {
     --header-bg: #ffffff;
@@ -30,7 +46,6 @@
     --header-color: #ffffff;
     --header-hover-color: #e07c0a;
     background-color: #1a1a1a;
-
     background-size: cover;  
     background-repeat: no-repeat;
     background-position: center;  
@@ -48,4 +63,8 @@
   }
 
 
-  
+  @media (max-width: 768px) {
+    .global-background {
+      display: none;
+    }
+  }
