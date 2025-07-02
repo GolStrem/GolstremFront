@@ -2,8 +2,8 @@ import React, { useRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSelector } from "react-redux";
-import { cadre, trombone } from "@assets";
-import "./TaskCard.css";
+import { FaAlignLeft } from "react-icons/fa";
+import "./DnDCards.css";
 
 const DnDCard = ({ card, boardId, openViewerModal }) => {
   const mode = useSelector((state) => state.theme.mode);
@@ -27,7 +27,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   };
 
   const hasCustomColor = !!card.color && card.color.toLowerCase() !== "#ffffff";
-  const cardClass = `task-card ${mode} ${hasCustomColor ? "custom-color" : ""}`;
+  const cardClass = `dnd-task-card ${mode} ${hasCustomColor ? "custom-color" : ""}`;
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -45,29 +45,29 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
       style={style}
       className={cardClass}
     >
-      <h4 className="task-title">{card.text || card.name || "Sans titre"}</h4>
-
-      {card.description && (
-        <p className="task-preview">
-          {card.description.slice(0, 80)}
-          {card.description.length > 80 ? "…" : ""}
-        </p>
+      {card.image && (
+        <div className="dnd-task-card-image">
+          <img src={card.image} alt="aperçu" />
+        </div>
       )}
 
-      <div className="task-attachment-icon">
-        {card.image ? (
-          <img src={cadre} alt="cadre" title="liée" className={`icon image-icon ${mode}`} />
-        ) : card.hasAttachment ? (
-          <img src={trombone} alt="Pièce jointe" title="Pièce jointe" className={`icon attachment-icon ${mode}`} />
-        ) : null}
+      <h4 className="dnd-task-title">{card.text || card.name || "Sans titre"}</h4>
+
+      {card.description && (
+        <p className="dnd-task-description">{card.description}</p>
+      )}
+
+      <div className="dnd-task-footer">
+      <div className="dnd-task-dates">
+        {card.createdAt && <div> {new Date(card.createdAt).toLocaleDateString()}</div>}
+        {card.endAt && <div> - {new Date(card.endAt).toLocaleDateString()}</div>}
       </div>
 
 
-      {card.endAt && (
-        <div className="task-endat">
-          📅 {new Date(card.endAt).toLocaleDateString()}
-        </div>
-      )}
+        {card.hasAttachment && (
+          <FaAlignLeft className="dnd-attachment-icon" title="Pièce jointe" />
+        )}
+      </div>
     </div>
   );
 };

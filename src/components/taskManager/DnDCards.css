@@ -1,0 +1,96 @@
+.dnd-task-card {
+  position: relative;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s;
+  overflow: hidden;
+}
+
+/* 🌓 Mode clair */
+.dnd-task-card.light {
+  background-color: var(--blanc);
+  color: var(--noir);
+  border-color: #ccc;
+}
+
+/* 🌑 Mode sombre */
+.dnd-task-card.dark {
+  background-color: #6b6b6b;
+  color: var(--white);
+  border-color: transparent;
+}
+
+/* === Titre === */
+.dnd-task-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 6px 0 2px;
+  text-align: left;
+}
+
+/* === Description tronquée === */
+.dnd-task-description {
+  font-size: 0.9rem;
+  margin: 0 0 6px;
+  text-align: left;
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.dark .dnd-task-description {
+  color: #ccc;
+}
+
+/* === Image === */
+.dnd-task-card-image img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+}
+.dark .dnd-task-card-image img {
+  border-color: #444;
+}
+
+/* === Footer : dates + icônes === */
+.dnd-task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  font-size: 0.8rem;
+  color: #555;
+}
+.dark .dnd-task-footer {
+  color: #ccc;
+}
+
+.dnd-task-dates span {
+  margin-right: 4px;
+}
+
+/* Icône pièce jointe React */
+.dnd-attachment-icon {
+  font-size: 1rem;
+  color: #888;
+}
+
+/* Couleur personnalisée */
+.dnd-task-card.custom-color {
+  color: white;
+  border: none;
+}
+.dnd-task-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
