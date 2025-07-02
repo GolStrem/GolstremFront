@@ -7,7 +7,7 @@
   }
   
   html {
-  color-scheme: dark light;
+  color-scheme: light dark;
   }
 
   
@@ -41,6 +41,7 @@
     background-size: cover;  
     background-repeat: no-repeat;   
     background-position: center;  
+    background-color: white;
   }
   
   body.dark-mode {
