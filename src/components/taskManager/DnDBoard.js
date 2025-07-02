@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import DnDCard from "./DnDCard";
 import DeleteBoardModal from "./DeleteBoardModal";
 import EditBoardTitleModal from "./EditBoardTitleModal";
-import BoardMenuPortal from "./BoardMenuPortal"; // ⬅️ nouveau
+import BoardMenuPortal from "./BoardMenuPortal";
 import { FaChevronDown } from "react-icons/fa";
 
 const DnDBoard = ({
@@ -20,7 +20,8 @@ const DnDBoard = ({
 }) => {
   const collapseRef = useRef(null);
   const cardsContainerRef = useRef(null);
-  const buttonRef = useRef(null); // Pour le bouton ⋯
+  const buttonRef = useRef(null); // Bouton ⋯
+  const menuRef = useRef(null);   // Menu contextuel
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -28,24 +29,40 @@ const DnDBoard = ({
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
   const mode = useSelector((state) => state.theme.mode);
-
   const { setNodeRef, isOver } = useDroppable({ id: board.id });
 
-  // Positionne dynamiquement le menu
   useEffect(() => {
     if (menuOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
-      setMenuPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left,
-      });
+      const menuWidth = 160; // largeur estimée de ton menu contextuel
+      const menuHeight = 80; // hauteur estimée
+
+      let left = rect.left;
+      let top = rect.bottom + window.scrollY;
+
+      // Corrige si dépasse la droite
+      if (left + menuWidth > window.innerWidth) {
+        left = window.innerWidth - menuWidth - 10; // 10px de marge
+      }
+
+      // Corrige si dépasse le bas
+      if (top + menuHeight > window.innerHeight + window.scrollY) {
+        top = rect.top + window.scrollY - menuHeight; // s'affiche au-dessus du bouton
+      }
+
+      setMenuPosition({ top, left });
     }
   }, [menuOpen]);
 
-  // Ferme le menu si on clique en dehors
+
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (buttonRef.current && !buttonRef.current.contains(e.target)) {
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target) &&
+        menuRef.current &&
+        !menuRef.current.contains(e.target)
+      ) {
         setMenuOpen(false);
       }
     };
@@ -186,6 +203,7 @@ const DnDBoard = ({
       {menuOpen && (
         <BoardMenuPortal>
           <div
+            ref={menuRef}
             className={`tm-board-menu fixed ${mode}`}
             style={{
               top: `${menuPosition.top}px`,

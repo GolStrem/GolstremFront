@@ -10,17 +10,19 @@ const Workspace = () => {
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const sidebarRef = useRef(null);
   const hamburgerRef = useRef(null);
+  const modalRef = useRef(null); // ✅ Ref pour la modale
 
-  // 👇 Clic en dehors : fermer le sidebar
+  // ✅ Empêche la fermeture auto si on clique dans la modale
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        sidebarVisible &&
-        sidebarRef.current &&
-        !sidebarRef.current.contains(e.target) &&
-        hamburgerRef.current &&
-        !hamburgerRef.current.contains(e.target)
-      ) {
+      const clickedOutsideSidebar =
+        sidebarRef.current && !sidebarRef.current.contains(e.target);
+      const clickedOutsideHamburger =
+        hamburgerRef.current && !hamburgerRef.current.contains(e.target);
+      const clickedInModal =
+        modalRef.current && modalRef.current.contains(e.target);
+
+      if (sidebarVisible && clickedOutsideSidebar && clickedOutsideHamburger && !clickedInModal) {
         setSidebarVisible(false);
       }
     };
@@ -30,7 +32,10 @@ const Workspace = () => {
   }, [sidebarVisible]);
 
   return (
-    <div className={`workspace-page ${mode === "dark" ? "dark" : "light"}`} style={{ display: "flex" }}>
+    <div
+      className={`workspace-page ${mode === "dark" ? "dark" : "light"}`}
+      style={{ display: "flex" }}
+    >
       {/* BOUTON HAMBURGER */}
       <button
         ref={hamburgerRef}
@@ -47,17 +52,26 @@ const Workspace = () => {
       </button>
 
       {/* SIDEBAR AVEC REF */}
-      {sidebarVisible && <div ref={sidebarRef}><Sidebar /></div>}
+      {sidebarVisible && (
+        <div ref={sidebarRef}>
+          <Sidebar modalRef={modalRef} />
+        </div>
+      )}
 
       {/* CONTENU PRINCIPAL */}
-      <div style={{ flexGrow: 1, marginLeft: sidebarVisible ? "300px" : "0", transition: "margin-left 0.3s" }}>
+      <div
+        style={{
+          flexGrow: 1,
+          marginLeft: sidebarVisible ? "300px" : "0",
+          transition: "margin-left 0.3s",
+        }}
+      >
         <Banner workspaceId={workspaceId} />
         <TaskManager
           workspaceId={workspaceId}
           sidebarVisible={sidebarVisible}
           setSidebarVisible={setSidebarVisible}
         />
-
       </div>
     </div>
   );

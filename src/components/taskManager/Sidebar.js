@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import { useSelector } from "react-redux";
 import { DeleteWorkspaceModal } from "@components";
 
-const Sidebar = () => {
+const Sidebar = ({ modalRef }) => {
   const navigate = useNavigate();
   const mode = useSelector((state) => state.theme.mode);
 
@@ -16,6 +16,8 @@ const Sidebar = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
 
+  const menuRef = useRef(null);
+
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("workspaces"));
     setWorkspaces(Array.isArray(saved) && saved.length > 0 ? saved : ["Default"]);
@@ -25,15 +27,20 @@ const Sidebar = () => {
     localStorage.setItem("workspaces", JSON.stringify(workspaces));
   }, [workspaces]);
 
+  // 👉 Fermer le menu contextuel (pas la sidebar) au clic en dehors
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!e.target.closest(".tm-ws-menu-wrapper")) {
+      const clickedMenu = menuRef.current?.contains(e.target);
+      const clickedModal = modalRef?.current?.contains(e.target);
+
+      if (!clickedMenu && !clickedModal) {
         setMenuOpen(null);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [modalRef]);
 
   const isValidName = (name) => {
     const trimmed = name.trim();
@@ -56,19 +63,14 @@ const Sidebar = () => {
   const handleRename = (oldName, newName) => {
     const trimmed = newName.trim();
     if (!isValidName(trimmed)) {
-      alert("Nom invalide. Il doit être non vide et ne pas contenir de \\.");
+      alert("Nom invalide.");
       return;
     }
     const updated = workspaces.map((w) => (w === oldName ? trimmed : w));
     setWorkspaces(updated);
     setEditing(null);
     const oldBoards = localStorage.getItem(`boards_${oldName}`);
-    localStorage.setItem(
-      `boards_${trimmed}`,
-      oldBoards && oldBoards !== "null"
-        ? oldBoards
-        : JSON.stringify([{ id: Date.now(), title: "Nouveau tableau", cards: [] }])
-    );
+    localStorage.setItem(`boards_${trimmed}`, oldBoards || "[]");
     localStorage.removeItem(`boards_${oldName}`);
     navigate(`/workspace/${encodeURIComponent(trimmed)}`);
   };
@@ -79,24 +81,28 @@ const Sidebar = () => {
     setMenuOpen(null);
   };
 
-  const confirmDelete = () => {
-    const name = workspaceToDelete;
-    const updated = workspaces.filter((w) => w !== name);
+  const confirmDelete = useCallback(() => {
+    if (!workspaceToDelete) return;
+
+    const updated = workspaces.filter((w) => w !== workspaceToDelete);
 
     if (updated.length === 0) {
       updated.push("Default");
-      localStorage.setItem("boards_Default", JSON.stringify([{ id: Date.now(), title: "Nouveau tableau", cards: [] }]));
+      localStorage.setItem(
+        "boards_Default",
+        JSON.stringify([{ id: Date.now(), title: "Nouveau tableau", cards: [] }])
+      );
       localStorage.setItem("lastWorkspace", "Default");
       navigate(`/workspace/Default`);
-    } else if (window.location.pathname.includes(name)) {
+    } else if (window.location.pathname.includes(workspaceToDelete)) {
       navigate(`/workspace/${encodeURIComponent(updated[0])}`);
       localStorage.setItem("lastWorkspace", updated[0]);
     }
 
     setWorkspaces(updated);
-    localStorage.removeItem(`boards_${name}`);
+    localStorage.removeItem(`boards_${workspaceToDelete}`);
     setShowDeleteModal(false);
-  };
+  }, [workspaceToDelete, workspaces, navigate]);
 
   return (
     <aside className={`tm-sidebar ${mode}`}>
@@ -130,7 +136,7 @@ const Sidebar = () => {
                   {ws}
                 </NavLink>
 
-                <div className="tm-ws-menu-wrapper">
+                <div className="tm-ws-menu-wrapper" ref={menuRef}>
                   <button
                     className={`tm-ws-menu-btn ${mode}`}
                     onClick={() => setMenuOpen(menuOpen === ws ? null : ws)}
@@ -140,11 +146,15 @@ const Sidebar = () => {
 
                   {menuOpen === ws && (
                     <div className={`tm-ws-menu ${mode}`}>
-                      <button onClick={() => {
-                        setEditing(ws);
-                        setEditValue(ws);
-                        setMenuOpen(null);
-                      }}>✏️ Modifier</button>
+                      <button
+                        onClick={() => {
+                          setEditing(ws);
+                          setEditValue(ws);
+                          setMenuOpen(null);
+                        }}
+                      >
+                        ✏️ Modifier
+                      </button>
 
                       <button onClick={() => handleDelete(ws)}>🗑️ Supprimer</button>
                     </div>
@@ -164,7 +174,9 @@ const Sidebar = () => {
           placeholder="Nouveau workspace"
           className="tm-sidebar-input"
         />
-        <button onClick={handleAddWorkspace} className="tm-add-btn">+ Ajouter</button>
+        <button onClick={handleAddWorkspace} className="tm-add-btn">
+          + Ajouter
+        </button>
       </div>
 
       {showDeleteModal && (
@@ -172,6 +184,7 @@ const Sidebar = () => {
           name={workspaceToDelete}
           onConfirm={confirmDelete}
           onCancel={() => setShowDeleteModal(false)}
+          modalRef={modalRef}
         />
       )}
     </aside>
