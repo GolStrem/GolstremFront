@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import "./DnDCards.css";
 const DnDCard = ({ card, boardId, openViewerModal }) => {
   const mode = useSelector((state) => state.theme.mode);
   const clickStart = useRef(null);
+  const cardRef = useRef(null);
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: card.id,
@@ -26,6 +27,20 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
     }
   };
 
+  useEffect(() => {
+    if (!cardRef.current) return;
+
+    const observer = new ResizeObserver(() => {
+      window.dispatchEvent(new Event("resize")); // Masonry ou layout adaptera la taille
+    });
+
+    observer.observe(cardRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   const hasCustomColor = !!card.color && card.color.toLowerCase() !== "#ffffff";
   const cardClass = `dnd-task-card ${mode}`;
 
@@ -36,7 +51,10 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
 
   return (
     <div
-      ref={setNodeRef}
+      ref={(node) => {
+        setNodeRef(node);
+        cardRef.current = node;
+      }}
       {...attributes}
       {...listeners}
       onMouseDown={handleMouseDown}
