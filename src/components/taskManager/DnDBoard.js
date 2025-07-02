@@ -115,6 +115,7 @@ const DnDBoard = ({
     <>
       <div
         className={`tm-board-container ${mode}`}
+        onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => onBoardDrop(e, index)}
       >
         <div
