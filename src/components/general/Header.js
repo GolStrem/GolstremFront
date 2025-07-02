@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {  useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   FaSun,
@@ -11,7 +11,6 @@ import {
 } from 'react-icons/fa';
 
 import { persistor, toggleTheme, logout } from '@store';
-import { logo } from '@assets';
 import avatarImg from '@assets/avatar.png'; // Ton image avatar
 
 import './Header.css';
