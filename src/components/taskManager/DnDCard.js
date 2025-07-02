@@ -27,12 +27,11 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   };
 
   const hasCustomColor = !!card.color && card.color.toLowerCase() !== "#ffffff";
-  const cardClass = `dnd-task-card ${mode} ${hasCustomColor ? "custom-color" : ""}`;
+  const cardClass = `dnd-task-card ${mode}`;
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    ...(hasCustomColor ? { backgroundColor: card.color } : {}),
   };
 
   return (
@@ -58,14 +57,21 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
       )}
 
       <div className="dnd-task-footer">
-      <div className="dnd-task-dates">
-        {card.createdAt && <div> {new Date(card.createdAt).toLocaleDateString()}</div>}
-        {card.endAt && <div> - {new Date(card.endAt).toLocaleDateString()}</div>}
-      </div>
-
+        <div className="dnd-task-dates">
+          {card.createdAt && <div>{new Date(card.createdAt).toLocaleDateString()}</div>}
+          {card.endAt && <div> - {new Date(card.endAt).toLocaleDateString()}</div>}
+        </div>
 
         {card.hasAttachment && (
           <FaAlignLeft className="dnd-attachment-icon" title="Pièce jointe" />
+        )}
+
+        {hasCustomColor && (
+          <div
+            className="dnd-color-dot"
+            style={{ backgroundColor: card.color }}
+            title="Couleur de la carte"
+          />
         )}
       </div>
     </div>
