@@ -2,7 +2,7 @@
 .tm-layout {
   display: flex;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .tm-main-content {
@@ -40,6 +40,7 @@
   width: 100%;
   padding: 1rem;
   overflow-x: hidden;
+  overflow-y: visible;
 }
 
 /* === Styles react-masonry-css === */
@@ -340,4 +341,5 @@ color: black;
 
 .tm-board-menu.fixed {
   position: fixed;
+  z-index: 9999 !important;
 }

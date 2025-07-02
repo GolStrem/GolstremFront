@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import DnDCard from "./DnDCard";
 import DeleteBoardModal from "./DeleteBoardModal";
 import EditBoardTitleModal from "./EditBoardTitleModal";
+import BoardMenuPortal from "./BoardMenuPortal"; // ⬅️ nouveau
 import { FaChevronDown } from "react-icons/fa";
 
 const DnDBoard = ({
@@ -19,71 +20,53 @@ const DnDBoard = ({
 }) => {
   const collapseRef = useRef(null);
   const cardsContainerRef = useRef(null);
+  const buttonRef = useRef(null); // Pour le bouton ⋯
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const menuRef = useRef(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
   const mode = useSelector((state) => state.theme.mode);
 
   const { setNodeRef, isOver } = useDroppable({ id: board.id });
 
-  // Fermer menu si clic extérieur
-useEffect(() => {
-  const menuEl = menuRef.current?.querySelector(".tm-board-menu");
-  const btnEl = menuRef.current?.querySelector(".tm-board-menu-btn");
-
-  if (menuOpen && btnEl && menuEl) {
-    const rect = btnEl.getBoundingClientRect();
-
-    menuEl.classList.add("fixed");
-    menuEl.style.position = "fixed";
-    menuEl.style.top = `${rect.bottom + window.scrollY}px`;
-    menuEl.style.left = `${rect.right - menuEl.offsetWidth}px`;
-    menuEl.style.zIndex = "9999";
-  } else if (!menuOpen && menuEl) {
-    menuEl.classList.remove("fixed");
-    menuEl.style.position = "";
-    menuEl.style.top = "";
-    menuEl.style.left = "";
-    menuEl.style.zIndex = "";
-  }
-}, [menuOpen]);
-
-useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(e.target)
-    ) {
-      setMenuOpen(false);
+  // Positionne dynamiquement le menu
+  useEffect(() => {
+    if (menuOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left,
+      });
     }
-  };
+  }, [menuOpen]);
 
-  if (menuOpen) {
-    document.addEventListener("mousedown", handleClickOutside);
-  }
-
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, [menuOpen]);
-
+  // Ferme le menu si on clique en dehors
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (buttonRef.current && !buttonRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const el = collapseRef.current;
     const cardsEl = cardsContainerRef.current;
     if (!el || !cardsEl || isCollapsed) return;
 
-    // recalcul de la hauteur réelle
     requestAnimationFrame(() => {
       el.style.maxHeight = cardsEl.scrollHeight + "px";
     });
   }, [board.cards, isCollapsed]);
 
-
-  // Animation ouverture/fermeture
   useEffect(() => {
     const el = collapseRef.current;
     if (!el) return;
@@ -98,7 +81,6 @@ useEffect(() => {
     }
   }, [isCollapsed]);
 
-  // 👉 Ouverture auto si carte survolée
   useEffect(() => {
     if (isOver && isCollapsed) {
       setIsCollapsed(false);
@@ -150,7 +132,6 @@ useEffect(() => {
             )}
           </h2>
 
-
           <div
             className="tm-board-header-buttons"
             onClick={(e) => e.stopPropagation()}
@@ -159,20 +140,14 @@ useEffect(() => {
               + Carte
             </button>
 
-            <div className="tm-board-menu-wrapper" ref={menuRef}>
+            <div className="tm-board-menu-wrapper">
               <button
                 className={`tm-board-menu-btn ${mode}`}
                 onClick={() => setMenuOpen(!menuOpen)}
+                ref={buttonRef}
               >
                 ⋯
               </button>
-
-              {menuOpen && (
-                <div className={`tm-board-menu ${mode}`}>
-                  <button onClick={editBoardTitle}>✏️ Modifier</button>
-                  <button onClick={deleteBoard}>🗑️ Supprimer</button>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -206,6 +181,23 @@ useEffect(() => {
           </div>
         </div>
       </div>
+
+      {menuOpen && (
+        <BoardMenuPortal>
+          <div
+            className={`tm-board-menu fixed ${mode}`}
+            style={{
+              top: `${menuPosition.top}px`,
+              left: `${menuPosition.left}px`,
+              position: "fixed",
+              zIndex: 9999,
+            }}
+          >
+            <button onClick={editBoardTitle}>✏️ Modifier</button>
+            <button onClick={deleteBoard}>🗑️ Supprimer</button>
+          </div>
+        </BoardMenuPortal>
+      )}
 
       {showDeleteModal && (
         <DeleteBoardModal
