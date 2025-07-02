@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import routes from './routes';
+import { useSystemThemeSync }  from '@service'; // ici
 
 function App() {
   const mode = useSelector((state) => state.theme.mode);
+  useSystemThemeSync(); // 👈 synchronisation système
 
   useEffect(() => {
     document.body.className = mode === 'dark' ? 'dark-mode' : 'light-mode';
@@ -12,7 +14,6 @@ function App() {
 
   return (
     <>
-      {/* ✅ Div de fond en dehors du Router */}
       <div className="global-background" />
 
       <Router>
