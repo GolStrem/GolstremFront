@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaSun, FaMoon, FaUserAlt, FaPlus } from 'react-icons/fa';
 import {LnModal} from '@components';
 import { toggleTheme } from '@store/index';
+import { useNavigate } from 'react-router-dom';
+
 
 
 import './LoginNew.css';
@@ -10,6 +12,7 @@ import { golstremb, personp, golstremp, golstremc, golden, golstremE, golstremV 
 
 
 const LoginNew = () => {
+
   const dispatch  = useDispatch();
   const mode      = useSelector(state => state.theme.mode);
 
@@ -17,6 +20,19 @@ const LoginNew = () => {
   const openLogin    = () => setModal('login');
   const openRegister = () => setModal('register');
   const closeModal   = () => setModal(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    
+    const token = localStorage.getItem('token');
+    if (token !== null) {
+      navigate('/dashboard');
+      console.log('Redirection vers dashboard');
+    }
+  }, [navigate]);
+
+
 
 
   return (
