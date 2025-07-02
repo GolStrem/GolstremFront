@@ -3,6 +3,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { useSelector } from "react-redux";
 import DnDCard from "./DnDCard";
 import DeleteBoardModal from "./DeleteBoardModal";
+import EditBoardTitleModal from "./EditBoardTitleModal"; // 🔧 nouveau import
 
 const DnDBoard = ({
   board,
@@ -18,6 +19,7 @@ const DnDBoard = ({
   const cardsContainerRef = useRef(null);
   const [calculatedHeight, setCalculatedHeight] = useState(80);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false); // 🔧 nouvel état
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -41,7 +43,6 @@ const DnDBoard = ({
     setCalculatedHeight(Math.min(Math.max(80, totalHeight), maxHeight));
   }, [board.cards]);
 
-  // Fermer le menu si clic à l'extérieur
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -61,11 +62,13 @@ const DnDBoard = ({
   }, [menuOpen]);
 
   const editBoardTitle = () => {
-    const newTitle = prompt("Nouveau nom du tableau :", board.title);
-    if (newTitle !== null) {
-      handleUpdateBoard(board.id, newTitle);
-      setMenuOpen(false);
-    }
+    setShowEditModal(true); // 🔧 ouvre la modale
+    setMenuOpen(false);
+  };
+
+  const confirmEdit = (newTitle) => {
+    handleUpdateBoard(board.id, newTitle); // 🔧 met à jour
+    setShowEditModal(false);
   };
 
   const deleteBoard = () => {
@@ -148,6 +151,14 @@ const DnDBoard = ({
           title={board.title}
           onConfirm={confirmDelete}
           onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+
+      {showEditModal && (
+        <EditBoardTitleModal
+          currentTitle={board.title}
+          onConfirm={confirmEdit}
+          onCancel={() => setShowEditModal(false)}
         />
       )}
     </>
