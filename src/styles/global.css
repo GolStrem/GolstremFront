@@ -1,5 +1,5 @@
 /* Supprimer les marges et paddings par défaut */
-  html, body #root{
+  html, body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -47,12 +47,11 @@
     --header-bg: #1a1a1a;
     --header-color: #ffffff;
     --header-hover-color: #e07c0a;
-    background-color: #1a1a1a;
     background-size: cover;  
     background-repeat: no-repeat;
     background-position: center;  
     background-attachment: fixed;
-    background-color: #ff00ff !important;
+    background-color: var(--noir) !important;
 
   }
   
