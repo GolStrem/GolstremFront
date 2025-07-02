@@ -1,4 +1,4 @@
-// hooks/useSystemThemeSync.js
+//useSystemThemeSync.js
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setTheme } from '../store/themeSlice'; // adapte à ton path réel
