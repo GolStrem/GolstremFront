@@ -82,9 +82,14 @@
 .hamburger-btn.light {
   background: white;
   color: black;
+  border: 2px solid var(--color-accent-yellow);
+  margin-left: -2px;
+
 }
 
 /* Variante en thème sombre */
 .hamburger-btn.dark {
   background: #2e2e2e;
+  border: 2px solid var(--color-accent-yellow);
+  margin-left: -2px;
 }
