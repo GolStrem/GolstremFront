@@ -3,7 +3,8 @@ import { useDroppable } from "@dnd-kit/core";
 import { useSelector } from "react-redux";
 import DnDCard from "./DnDCard";
 import DeleteBoardModal from "./DeleteBoardModal";
-import EditBoardTitleModal from "./EditBoardTitleModal"; // 🔧 nouveau import
+import EditBoardTitleModal from "./EditBoardTitleModal";
+import { FaChevronDown } from "react-icons/fa";
 
 const DnDBoard = ({
   board,
@@ -16,33 +17,19 @@ const DnDBoard = ({
   onBoardDragStart,
   onBoardDrop,
 }) => {
+  const collapseRef = useRef(null);
   const cardsContainerRef = useRef(null);
-  const [calculatedHeight, setCalculatedHeight] = useState(80);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false); // 🔧 nouvel état
+  const [showEditModal, setShowEditModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const menuRef = useRef(null);
 
   const mode = useSelector((state) => state.theme.mode);
-  const { setNodeRef } = useDroppable({ id: board.id });
 
-  useEffect(() => {
-    if (!cardsContainerRef.current) return;
+  const { setNodeRef, isOver } = useDroppable({ id: board.id });
 
-    const cards = cardsContainerRef.current.children;
-    let totalHeight = 0;
-
-    for (let card of cards) {
-      totalHeight += card.offsetHeight + 10;
-    }
-
-    totalHeight += 10;
-    const screenHeight = window.innerHeight;
-    const maxHeight = screenHeight * 0.7;
-
-    setCalculatedHeight(Math.min(Math.max(80, totalHeight), maxHeight));
-  }, [board.cards]);
-
+  // Fermer menu si clic extérieur
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -61,13 +48,51 @@ const DnDBoard = ({
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    const el = collapseRef.current;
+    const cardsEl = cardsContainerRef.current;
+    if (!el || !cardsEl || isCollapsed) return;
+
+    // recalcul de la hauteur réelle
+    requestAnimationFrame(() => {
+      el.style.maxHeight = cardsEl.scrollHeight + "px";
+    });
+  }, [board.cards, isCollapsed]);
+
+
+  // Animation ouverture/fermeture
+  useEffect(() => {
+    const el = collapseRef.current;
+    if (!el) return;
+
+    if (isCollapsed) {
+      el.style.maxHeight = el.scrollHeight + "px";
+      requestAnimationFrame(() => {
+        el.style.maxHeight = "0px";
+      });
+    } else {
+      el.style.maxHeight = el.scrollHeight + "px";
+    }
+  }, [isCollapsed]);
+
+  // 👉 Ouverture auto si carte survolée
+  useEffect(() => {
+    if (isOver && isCollapsed) {
+      setIsCollapsed(false);
+    }
+  }, [isOver, isCollapsed]);
+
+  const toggleCollapse = () => {
+    setIsCollapsed((prev) => !prev);
+  };
+
   const editBoardTitle = () => {
-    setShowEditModal(true); // 🔧 ouvre la modale
+    setShowEditModal(true);
     setMenuOpen(false);
   };
 
   const confirmEdit = (newTitle) => {
-    handleUpdateBoard(board.id, newTitle); // 🔧 met à jour
+    handleUpdateBoard(board.id, newTitle);
     setShowEditModal(false);
   };
 
@@ -85,17 +110,28 @@ const DnDBoard = ({
     <>
       <div
         className={`tm-board-container ${mode}`}
-        onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => onBoardDrop(e, index)}
       >
         <div
           className={`tm-board-header ${mode}`}
           draggable
           onDragStart={(e) => onBoardDragStart(e, index)}
+          onClick={toggleCollapse}
+          style={{ cursor: "pointer" }}
         >
-          <h2>{board.title}</h2>
+          <h2 className="tm-board-title">
+            <FaChevronDown className={`tm-chevron ${isCollapsed ? "collapsed" : ""}`} />
+            {board.title}
+            {board.cards.length > 0 && (
+              <span className="tm-card-count">({board.cards.length})</span>
+            )}
+          </h2>
 
-          <div className="tm-board-header-buttons">
+
+          <div
+            className="tm-board-header-buttons"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
               + Carte
             </button>
@@ -119,12 +155,14 @@ const DnDBoard = ({
         </div>
 
         <div
-          className="tm-board"
-          ref={setNodeRef}
+          className={`tm-board-collapse ${isCollapsed ? "collapsed" : ""}`}
+          ref={(el) => {
+            collapseRef.current = el;
+            setNodeRef(el);
+          }}
           style={{
-            height: `${calculatedHeight}px`,
-            transition: "height 0.3s ease",
-            overflowY: "auto",
+            overflowY: isCollapsed ? "hidden" : "auto",
+            transition: "max-height 0.3s ease, overflow 0.3s ease",
           }}
         >
           <div className="tm-cards" ref={cardsContainerRef}>

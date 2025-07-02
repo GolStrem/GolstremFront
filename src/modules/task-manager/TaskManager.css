@@ -255,3 +255,83 @@
 .tm-board-menu-btn.dark {
   color: var(--blanc);
 }
+.tm-board-collapse {
+  max-height: 9999px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.tm-board-collapse.collapsed {
+  overflow: hidden;
+}
+
+.tm-board-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tm-chevron {
+  transition: transform 0.3s ease;
+}
+
+.tm-chevron.collapsed {
+  transform: rotate(-90deg); /* tourne vers la droite quand fermé */
+}
+
+
+.tm-board-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tm-card-count {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-left: 4px;
+}
+
+
+.tm-floating-add {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50px;
+  padding: 0.8em 1.2em;
+  font-size: 1.2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--jaune);
+}
+.tm-floating-add.dark{
+background-color: var(--noir);
+color: white;
+}
+.tm-floating-add.light{
+background-color: white;
+color: black;
+}
+
+.tm-add-icon {
+  font-size: 1.4em;
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
+.tm-add-text {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.3s ease, max-width 0.3s ease;
+}
+
+.tm-floating-add:hover .tm-add-text {
+  opacity: 1;
+  max-width: 200px;
+}

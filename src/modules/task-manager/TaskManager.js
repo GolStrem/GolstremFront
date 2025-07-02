@@ -116,9 +116,15 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
       <div className="tm-main-content">
-        <button onClick={() => setShowBoardModal(true)} className="tm-Tabl">
-          + Créer un tableau
+        <button
+        
+          className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}
+          onClick={() => setShowBoardModal(true)}
+        >
+          <span className="tm-add-icon">+</span>
+          <span className="tm-add-text"> Nouveau tableau</span>
         </button>
+
 
         <div className="tm-boards-wrapper">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCardDragEnd}>
