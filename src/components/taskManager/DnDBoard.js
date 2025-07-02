@@ -30,23 +30,46 @@ const DnDBoard = ({
   const { setNodeRef, isOver } = useDroppable({ id: board.id });
 
   // Fermer menu si clic extérieur
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false);
-      }
-    };
+useEffect(() => {
+  const menuEl = menuRef.current?.querySelector(".tm-board-menu");
+  const btnEl = menuRef.current?.querySelector(".tm-board-menu-btn");
 
-    if (menuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+  if (menuOpen && btnEl && menuEl) {
+    const rect = btnEl.getBoundingClientRect();
+
+    menuEl.classList.add("fixed");
+    menuEl.style.position = "fixed";
+    menuEl.style.top = `${rect.bottom + window.scrollY}px`;
+    menuEl.style.left = `${rect.right - menuEl.offsetWidth}px`;
+    menuEl.style.zIndex = "9999";
+  } else if (!menuOpen && menuEl) {
+    menuEl.classList.remove("fixed");
+    menuEl.style.position = "";
+    menuEl.style.top = "";
+    menuEl.style.left = "";
+    menuEl.style.zIndex = "";
+  }
+}, [menuOpen]);
+
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(e.target)
+    ) {
+      setMenuOpen(false);
     }
+  };
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuOpen]);
+  if (menuOpen) {
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [menuOpen]);
+
 
   useEffect(() => {
     const el = collapseRef.current;

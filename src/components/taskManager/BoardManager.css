@@ -25,6 +25,8 @@
   background-color: #6f6f6f;
   box-sizing: border-box;
   border-radius: 5px;
+  position: relative;
+  z-index: 1;
 }
 .tm-board-header h2 {
   margin: 0;

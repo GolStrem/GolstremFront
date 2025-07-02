@@ -201,7 +201,8 @@
   position: absolute;
   top: 120%;
   right: 0;
-  min-width: 140px;
+  width: 140px;
+  max-width: 160px;
   background-color: var(--blanc);
   border: 1px solid var(--jaune);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -335,4 +336,8 @@ color: black;
 .tm-floating-add:hover .tm-add-text {
   opacity: 1;
   max-width: 200px;
+}
+
+.tm-board-menu.fixed {
+  position: fixed;
 }
