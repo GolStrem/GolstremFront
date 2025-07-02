@@ -6,7 +6,8 @@ import {
   FaMoon,
   FaSignOutAlt,
   FaChevronDown,
-  FaTools
+  FaTools,
+  FaHome
 } from 'react-icons/fa';
 
 import { persistor, toggleTheme, logout } from '@store';
@@ -76,6 +77,10 @@ const Header = () => {
 
         {menuOpen && (
           <div className="dropdown-menu">
+            <button className="dropdown-item" onClick={() => navigate('/dashboard')}>
+              <FaHome /> Dashboard
+            </button>
+
             <button className="dropdown-item red" onClick={() => navigate('/settings')}>
               <FaTools /> Paramètres
             </button>
@@ -89,6 +94,7 @@ const Header = () => {
             </button>
           </div>
         )}
+
       </div>
     </header>
   );
