@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import "./Sidebar.css";
 import { useSelector } from "react-redux";
+import { TaskApi } from "@service";
 import { DeleteWorkspaceModal } from "@components";
+import "./Sidebar.css";
 
 const Sidebar = ({ modalRef }) => {
   const navigate = useNavigate();
   const mode = useSelector((state) => state.theme.mode);
-
   const [workspaces, setWorkspaces] = useState([]);
   const [newName, setNewName] = useState("");
   const [editing, setEditing] = useState(null);
@@ -16,93 +16,99 @@ const Sidebar = ({ modalRef }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
 
-  const menuRef = useRef(null);
-
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("workspaces"));
-    setWorkspaces(Array.isArray(saved) && saved.length > 0 ? saved : ["Default"]);
-  }, []);
+    const fetchWorkspaces = async () => {
+      try {
+        const { data } = await TaskApi.getWorkspaces();
+        console.log("Workspaces response:", data);
 
-  useEffect(() => {
-    localStorage.setItem("workspaces", JSON.stringify(workspaces));
-  }, [workspaces]);
+        const workspacesArray = Object.entries(data).map(([id, ws]) => ({
+          id,
+          ...ws,
+        }));
 
-  // 👉 Fermer le menu contextuel (pas la sidebar) au clic en dehors
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      const clickedMenu = menuRef.current?.contains(e.target);
-      const clickedModal = modalRef?.current?.contains(e.target);
-
-      if (!clickedMenu && !clickedModal) {
-        setMenuOpen(null);
+        setWorkspaces(workspacesArray);
+      } catch (err) {
+        console.error("Erreur lors du chargement des workspaces :", err);
       }
     };
 
+    fetchWorkspaces();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const inMenu = e.target.closest(".tm-ws-menu-wrapper");
+      const inModal = modalRef?.current?.contains(e.target);
+
+      if (!inMenu && !inModal) {
+        setMenuOpen(null);
+      }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [modalRef]);
 
-  const isValidName = (name) => {
-    const trimmed = name.trim();
-    return trimmed.length > 0 && !trimmed.includes("\\");
-  };
-
-  const handleAddWorkspace = () => {
+  const handleAddWorkspace = async () => {
     const trimmed = newName.trim();
-    if (!isValidName(trimmed)) {
-      alert("Nom invalide. Il doit être non vide et ne pas contenir de \\.");
+    if (!trimmed) {
+      alert("Le nom du workspace est requis.");
       return;
     }
-    if (workspaces.includes(trimmed)) return;
-    const updated = [...workspaces, trimmed];
-    setWorkspaces(updated);
-    setNewName("");
-    navigate(`/workspace/${encodeURIComponent(trimmed)}`);
+    try {
+      const payload = { name: trimmed };
+      const { data } = await TaskApi.createWorkspace(payload);
+
+      const [id, ws] = Object.entries(data)[0];
+
+      setWorkspaces((prev) => [...prev, { id, ...ws }]);
+      setNewName("");
+      navigate(`/workspace/${id}`);
+    } catch (err) {
+      console.error("Erreur lors de la création du workspace :", err);
+    }
   };
 
-  const handleRename = (oldName, newName) => {
+  const handleRename = async (workspaceId, newName) => {
     const trimmed = newName.trim();
-    if (!isValidName(trimmed)) {
-      alert("Nom invalide.");
+    if (!trimmed) {
+      alert("Le nom ne peut pas être vide.");
       return;
     }
-    const updated = workspaces.map((w) => (w === oldName ? trimmed : w));
-    setWorkspaces(updated);
-    setEditing(null);
-    const oldBoards = localStorage.getItem(`boards_${oldName}`);
-    localStorage.setItem(`boards_${trimmed}`, oldBoards || "[]");
-    localStorage.removeItem(`boards_${oldName}`);
-    navigate(`/workspace/${encodeURIComponent(trimmed)}`);
+    try {
+      await TaskApi.updateWorkspace(workspaceId, { name: trimmed });
+      setWorkspaces((prev) =>
+        prev.map((w) => (w.id === workspaceId ? { ...w, name: trimmed } : w))
+      );
+      setEditing(null);
+    } catch (err) {
+      console.error("Erreur lors du renommage du workspace :", err);
+    }
   };
 
-  const handleDelete = (name) => {
-    setWorkspaceToDelete(name);
+  const handleDelete = (workspace) => {
+    setWorkspaceToDelete(workspace);
     setShowDeleteModal(true);
     setMenuOpen(null);
   };
 
-  const confirmDelete = useCallback(() => {
+  const confirmDelete = async () => {
     if (!workspaceToDelete) return;
+    try {
+      await TaskApi.deleteWorkspace(workspaceToDelete.id);
 
-    const updated = workspaces.filter((w) => w !== workspaceToDelete);
+      const updated = workspaces.filter((w) => w.id !== workspaceToDelete.id);
+      setWorkspaces(updated);
+      setShowDeleteModal(false);
 
-    if (updated.length === 0) {
-      updated.push("Default");
-      localStorage.setItem(
-        "boards_Default",
-        JSON.stringify([{ id: Date.now(), title: "Nouveau tableau", cards: [] }])
-      );
-      localStorage.setItem("lastWorkspace", "Default");
-      navigate(`/workspace/Default`);
-    } else if (window.location.pathname.includes(workspaceToDelete)) {
-      navigate(`/workspace/${encodeURIComponent(updated[0])}`);
-      localStorage.setItem("lastWorkspace", updated[0]);
+      if (window.location.pathname.includes(workspaceToDelete.id)) {
+        const fallbackId = updated[0]?.id;
+        navigate(`/workspace/${fallbackId || ""}`);
+      }
+    } catch (err) {
+      console.error("Erreur lors de la suppression :", err);
     }
-
-    setWorkspaces(updated);
-    localStorage.removeItem(`boards_${workspaceToDelete}`);
-    setShowDeleteModal(false);
-  }, [workspaceToDelete, workspaces, navigate]);
+  };
 
   return (
     <aside className={`tm-sidebar ${mode}`}>
@@ -110,12 +116,12 @@ const Sidebar = ({ modalRef }) => {
 
       <div className="tm-sidebar-scrollable">
         {workspaces.map((ws) => (
-          <div key={ws} style={{ width: "100%" }}>
-            {editing === ws ? (
+          <div key={ws.id} style={{ width: "100%" }}>
+            {editing === ws.id ? (
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  handleRename(ws, editValue);
+                  handleRename(ws.id, editValue);
                 }}
               >
                 <input
@@ -128,34 +134,33 @@ const Sidebar = ({ modalRef }) => {
             ) : (
               <div className={`tm-nav-div ${mode}`}>
                 <NavLink
-                  to={`/workspace/${encodeURIComponent(ws)}`}
+                  to={`/workspace/${ws.id}`}
                   className={`tm-nav-btn ${mode}`}
                   style={{ flexGrow: 1 }}
-                  title={ws}
+                  title={ws.name}
                 >
-                  {ws}
+                  {ws.name}
                 </NavLink>
 
-                <div className="tm-ws-menu-wrapper" ref={menuRef}>
+                <div className="tm-ws-menu-wrapper">
                   <button
                     className={`tm-ws-menu-btn ${mode}`}
-                    onClick={() => setMenuOpen(menuOpen === ws ? null : ws)}
+                    onClick={() => setMenuOpen(menuOpen === ws.id ? null : ws.id)}
                   >
                     ⋯
                   </button>
 
-                  {menuOpen === ws && (
+                  {menuOpen === ws.id && (
                     <div className={`tm-ws-menu ${mode}`}>
                       <button
                         onClick={() => {
-                          setEditing(ws);
-                          setEditValue(ws);
+                          setEditing(ws.id);
+                          setEditValue(ws.name);
                           setMenuOpen(null);
                         }}
                       >
                         ✏️ Modifier
                       </button>
-
                       <button onClick={() => handleDelete(ws)}>🗑️ Supprimer</button>
                     </div>
                   )}
@@ -165,7 +170,6 @@ const Sidebar = ({ modalRef }) => {
           </div>
         ))}
       </div>
-
       <div className="sidebarAddTabl">
         <input
           type="text"
@@ -181,7 +185,7 @@ const Sidebar = ({ modalRef }) => {
 
       {showDeleteModal && (
         <DeleteWorkspaceModal
-          name={workspaceToDelete}
+          name={workspaceToDelete?.name}
           onConfirm={confirmDelete}
           onCancel={() => setShowDeleteModal(false)}
           modalRef={modalRef}
@@ -190,5 +194,4 @@ const Sidebar = ({ modalRef }) => {
     </aside>
   );
 };
-
 export default Sidebar;

@@ -141,12 +141,6 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
               <input type="date" name="endAt" value={formData.endAt} onChange={handleChange} disabled={!isEditing} />
             </div>
           </label>
-
-          <label className="tm-label">Date de création :
-            <div className="tm-label-field">
-              <input type="date" name="createdAt" value={formData.createdAt} onChange={handleChange} disabled={!isEditing} />
-            </div>
-          </label>
         </div>
 
         <label className="tm-label">Image (URL) :
