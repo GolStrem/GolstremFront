@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { TaskApi } from "@service";
 import { DeleteWorkspaceModal } from "@components";
@@ -15,6 +15,7 @@ const Sidebar = ({ modalRef }) => {
   const [menuOpen, setMenuOpen] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
+  const { workspaceId } = useParams();
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
@@ -26,15 +27,22 @@ const Sidebar = ({ modalRef }) => {
           id,
           ...ws,
         }));
+        console.log(workspacesArray);
 
         setWorkspaces(workspacesArray);
+
+        const exists = workspacesArray.some(ws => ws.id === workspaceId);
+        if (!exists && workspacesArray.length > 0) {
+          navigate(`/workspace/${workspacesArray[0].id}`, { replace: true });
+        }
       } catch (err) {
         console.error("Erreur lors du chargement des workspaces :", err);
       }
     };
 
     fetchWorkspaces();
-  }, []);
+  }, [workspaceId, navigate]);
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
