@@ -1,18 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import banner from "@assets/banner.jpg";
 import avatar1 from "@assets/avatar.png";
 import avatar2 from "@assets/avatar.png";
-import './Banner.css'
+import { TaskApi } from "@service";
+import "./Banner.css";
 
 const Banner = ({ workspaceId, sidebarVisible }) => {
+  const [workspace, setWorkspace] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWorkspace = async () => {
+      try {
+        const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
+        setWorkspace(data);
+      } catch (err) {
+        console.error("Erreur lors du chargement du workspace :", err);
+        setWorkspace(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkspace();
+  }, [workspaceId]);
+
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "center",
         transition: "all 0.3s ease",
-        paddingRight: "16px", // ✅ marge droite
-        paddingLeft: sidebarVisible ? "300px" : "0", // ✅ marge gauche quand sidebar visible
+        paddingRight: "16px",
+        paddingLeft: sidebarVisible ? "300px" : "0",
       }}
     >
       <div
@@ -22,15 +42,20 @@ const Banner = ({ workspaceId, sidebarVisible }) => {
           backgroundSize: "cover",
           backgroundPosition: "center",
           width: "100%",
-          maxWidth: "3000px", // optionnel pour limiter sur grand écran
+          maxWidth: "3000px",
           transition: "all 0.3s ease",
-          height:'300px'
+          height: "300px",
         }}
       >
         <div className="tm-banner-search">
           <input type="text" placeholder="Rechercher..." />
         </div>
-        <h1 className="tm-banner-title">{workspaceId}</h1>
+
+        <h1 className="tm-banner-title">
+          {loading && "Chargement..."}
+          {!loading && workspace ? workspace.name : ""}
+        </h1>
+
         <div className="tm-banner-avatars">
           <img src={avatar1} alt="avatar1" />
           <img src={avatar2} alt="avatar2" />
@@ -39,5 +64,4 @@ const Banner = ({ workspaceId, sidebarVisible }) => {
     </div>
   );
 };
-
 export default Banner;

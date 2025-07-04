@@ -27,7 +27,6 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
     updateBoard,
     createOrUpdateCard,
     deleteCard,
-    dropCard,
     dragStartBoard,
     dropBoard,
   } = useBoardManager(workspaceId);
@@ -98,14 +97,14 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
 
     const targetBoard = boards.find((b) => b.id === overContainerId);
     if (targetBoard) {
-      dropCard(sourceBoardId, overContainerId, draggedCard.id);
+
       return;
     }
 
     for (const board of boards) {
       const index = board.cards.findIndex((c) => c.id === over.id);
       if (index !== -1) {
-        dropCard(sourceBoardId, board.id, draggedCard.id, index);
+
         return;
       }
     }
@@ -142,7 +141,6 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
                   <DnDBoard
                     board={board}
                     index={index}
-                    handleDrop={dropCard}
                     openModal={openModal}
                     openViewerModal={openViewer}
                     handleUpdateBoard={updateBoard}

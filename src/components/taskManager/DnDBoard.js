@@ -144,7 +144,7 @@ const DnDBoard = ({
         >
           <h2 className="tm-board-title">
             <FaChevronDown className={`tm-chevron ${isCollapsed ? "collapsed" : ""}`} />
-            {board.title}
+            {board.name}
             {board.cards.length > 0 && (
               <span className="tm-card-count">({board.cards.length})</span>
             )}
@@ -220,7 +220,7 @@ const DnDBoard = ({
 
       {showDeleteModal && (
         <DeleteBoardModal
-          title={board.title}
+          title={board.name}
           onConfirm={confirmDelete}
           onCancel={() => setShowDeleteModal(false)}
         />
@@ -228,7 +228,7 @@ const DnDBoard = ({
 
       {showEditModal && (
         <EditBoardTitleModal
-          currentTitle={board.title}
+          currentTitle={board.name}
           onConfirm={confirmEdit}
           onCancel={() => setShowEditModal(false)}
         />

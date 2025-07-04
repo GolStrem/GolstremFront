@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+
 import { useSelector } from "react-redux";
 import { FaAlignLeft } from "react-icons/fa";
 import "./DnDCards.css";
@@ -10,7 +10,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   const clickStart = useRef(null);
   const cardRef = useRef(null);
 
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+  const { attributes, listeners, setNodeRef,  } = useSortable({
     id: card.id,
     transition: { duration: 150 },
     activationConstraint: { delay: 2000, tolerance: 5 },
@@ -44,10 +44,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   const hasCustomColor = !!card.color && card.color.toLowerCase() !== "#ffffff";
   const cardClass = `dnd-task-card ${mode}`;
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  
 
   return (
     <div
@@ -59,7 +56,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
       {...listeners}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      style={style}
+      
       className={cardClass}
     >
       {card.image && (
