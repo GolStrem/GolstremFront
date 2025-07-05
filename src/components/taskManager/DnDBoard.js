@@ -207,7 +207,6 @@ const DnDBoard = ({
             style={{
               top: `${menuPosition.top}px`,
               left: `${menuPosition.left}px`,
-              position: "fixed",
               zIndex: 9999,
             }}
           >
