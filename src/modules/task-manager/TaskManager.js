@@ -16,6 +16,7 @@ import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
 import { useBoardManager } from "@components"; 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css"
+import { UserInfo } from "@service";
 
 
 const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
@@ -46,7 +47,7 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
 
   useEffect(() => {
   if (workspaceId) {
-    localStorage.setItem("lastWorkspace", workspaceId);
+    UserInfo.set("lastWorkspace", workspaceId)
   }
   }, [workspaceId]);
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { TaskApi } from "@service"; // 🆕 On va appeler l'API
+import { TaskApi, UserInfo } from "@service"; // 🆕 On va appeler l'API
 import "./Dashboard.css";
 import {
   FaTasks,
@@ -9,7 +9,8 @@ import {
   FaMoneyBillWave,
   FaUsers,
   FaCalendarAlt,
-} from "react-icons/fa";
+} from "react-icons/fa"; 
+
 
 const Dashboard = () => {
   const mode = useSelector((state) => state.theme.mode);
@@ -41,26 +42,28 @@ const Dashboard = () => {
 
   useEffect(() => {
     const initWorkspace = async () => {
-      const lastWorkspace = localStorage.getItem("lastWorkspace");
+      
+      const lastWorkspace = await UserInfo.get("lastWorkspace")
 
       if (lastWorkspace) {
-        setWorkspaceId(lastWorkspace);
-      } else {
-        try {
-          const { data } = await TaskApi.getWorkspaces();
-          const workspacesArray = Object.entries(data).map(([id, ws]) => ({
-            id,
-            ...ws,
-          }));
-          if (workspacesArray.length > 0) {
-            const firstId = workspacesArray[0].id;
-            setWorkspaceId(firstId);
-            localStorage.setItem("lastWorkspace", firstId);
-          }
-        } catch (err) {
-          console.error("Erreur lors du chargement des workspaces :", err);
-        }
+        return setWorkspaceId(lastWorkspace);
       }
+
+      try {
+        const { data } = await TaskApi.getWorkspaces();
+        const workspacesArray = Object.entries(data).map(([id, ws]) => ({
+          id,
+          ...ws,
+        }));
+        if (workspacesArray.length > 0) {
+          const firstId = workspacesArray[0].id;
+          setWorkspaceId(firstId);
+          UserInfo.set("lastWorkspace", firstId)
+        }
+      } catch (err) {
+        console.error("Erreur lors du chargement des workspaces :", err);
+      }
+
     };
 
     initWorkspace();
