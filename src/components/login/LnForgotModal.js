@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {warningModal, styleModal } from '@assets';
-import apiService from '@service/ApiService';
+import apiService from '@service/api/ApiService';
 
 const LnForgotModal = ({ onClose, onSubmit }) => {
   const [email, setEmail] = useState('');

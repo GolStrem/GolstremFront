@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import LnPasswordField from './LnPasswordField';
 import LnSuccessModal from './LnSuccessModal';
-import apiService from '@service/ApiService';
+import apiService from '@service/api/ApiService';
 import { warningModal, styleModal } from '@assets';
 
 import {

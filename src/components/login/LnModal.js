@@ -12,7 +12,7 @@ import { UseLnFormValidator } from './UseLnFormValidator';
 import fields from './fieldsConfigLogin';
 import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 
-import apiService from '@service/ApiService';
+import apiService from '@service/api/ApiService';
 import { login as loginAction } from '@store/authSlice';
 
 
