@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import "./TaskEditorModal.css";
+
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
   const [title, setTitle] = useState("");

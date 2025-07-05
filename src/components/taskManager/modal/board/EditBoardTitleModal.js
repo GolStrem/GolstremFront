@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import "./TaskEditorModal.css"; // tu réutilises ce fichier CSS
+
 
 const EditBoardTitleModal = ({ currentTitle, onConfirm, onCancel }) => {
   const [title, setTitle] = useState(currentTitle);

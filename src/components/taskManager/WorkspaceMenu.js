@@ -1,0 +1,180 @@
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { TaskApi } from "@service";
+import { DeleteWorkspaceModal } from "@components";
+import { ModifWorkspaceModal } from "@components";
+import "./WorkspaceMenu.css";
+import "./modal/taskModal.css";
+
+const WorkspaceMenu = ({ setCurrentWorkspace }) => {
+  const mode = useSelector((state) => state.theme.mode);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const containerRef = useRef(null);
+
+  const [open, setOpen] = useState(false);
+  const [menuOpenFor, setMenuOpenFor] = useState(null);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [workspaceToEdit, setWorkspaceToEdit] = useState(null);
+
+  const toggleMenu = () => setOpen((prev) => !prev);
+
+  const fetchWorkspaces = useCallback(async () => {
+    try {
+      const { data } = await TaskApi.getWorkspaces();
+      const wsArray = Object.entries(data).map(([id, ws]) => ({ id, ...ws }));
+      setWorkspaces(wsArray);
+
+      const pathParts = location.pathname.split("/");
+      const currentId = pathParts[pathParts.indexOf("workspace") + 1];
+      const currentWs = wsArray.find(ws => ws.id === currentId);
+
+      if (currentWs) {
+        localStorage.setItem("lastWorkspace", currentId);
+        setCurrentWorkspace?.(currentWs);
+      } else if (wsArray.length > 0) {
+        localStorage.setItem("lastWorkspace", wsArray[0].id);
+        navigate(`/workspace/${wsArray[0].id}`);
+        setCurrentWorkspace?.(wsArray[0]);
+      }
+    } catch (err) {
+      console.error("Erreur lors de la récupération des workspaces:", err);
+    }
+  }, [location.pathname, navigate, setCurrentWorkspace]);
+
+  useEffect(() => {
+    fetchWorkspaces();
+  }, [fetchWorkspaces]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+        setMenuOpenFor(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleDelete = (ws) => {
+    setWorkspaceToDelete(ws);
+    setShowDeleteModal(true);
+    setMenuOpenFor(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!workspaceToDelete) return;
+    try {
+      await TaskApi.deleteWorkspace(workspaceToDelete.id);
+      const updated = workspaces.filter(w => w.id !== workspaceToDelete.id);
+      setWorkspaces(updated);
+      setShowDeleteModal(false);
+
+      if (window.location.pathname.includes(workspaceToDelete.id)) {
+        const fallbackId = updated[0]?.id;
+        navigate(`/workspace/${fallbackId || ""}`);
+      }
+    } catch (err) {
+      console.error("Erreur lors de la suppression :", err);
+    }
+  };
+
+  const confirmEdit = async (form) => {
+    try {
+      await TaskApi.updateWorkspace(workspaceToEdit.id, form);
+      await fetchWorkspaces();
+      setShowEditModal(false);
+    } catch (err) {
+      console.error("Erreur lors de la modification :", err);
+    }
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className={`tmw-menu-container ${mode} ${open ? "open" : ""}`}
+    >
+      <button
+        className={`tmw-toggle ${open ? "active" : ""}`}
+        onClick={toggleMenu}
+      >
+        <span className="tmw-icon">≡</span>
+        <span className="tmw-label">Workspace</span>
+      </button>
+
+      {open && (
+        <div className="tmw-list">
+          <div className="tmw-workspaces">
+            {workspaces.map(ws => (
+              <div key={ws.id} className="tmw-item-container">
+                <NavLink
+                  to={`/workspace/${ws.id}`}
+                  className="tmw-item"
+                  onClick={() => {
+                    localStorage.setItem("lastWorkspace", ws.id);
+                    setCurrentWorkspace?.(ws);
+                    setMenuOpenFor(null);
+                  }}
+                >
+                  {ws.name}
+                </NavLink>
+                <button
+                  className="tmw-item-menu-btn"
+                  onClick={() =>
+                    setMenuOpenFor(menuOpenFor === ws.id ? null : ws.id)
+                  }
+                >
+                  ⋯
+                </button>
+                {menuOpenFor === ws.id && (
+                  <div className="tmw-item-menu">
+                    <button
+                      onClick={() => {
+                        setWorkspaceToEdit(ws);
+                        setShowEditModal(true);
+                        setMenuOpenFor(null);
+                      }}
+                    >
+                      ✏️ Modifier
+                    </button>
+                    <button onClick={() => handleDelete(ws)}>🗑️ Supprimer</button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <button
+            className="tmw-create-btn"
+            onClick={() => alert("Créer workspace non géré ici")}
+          >
+            + Nouveau Workspace
+          </button>
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <DeleteWorkspaceModal
+          name={workspaceToDelete?.name}
+          onConfirm={confirmDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+
+      {showEditModal && (
+        <ModifWorkspaceModal
+          workspace={workspaceToEdit}
+          onConfirm={confirmEdit}
+          onCancel={() => setShowEditModal(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default WorkspaceMenu;

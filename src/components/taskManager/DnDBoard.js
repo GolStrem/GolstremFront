@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { useSelector } from "react-redux";
 import DnDCard from "./DnDCard";
-import DeleteBoardModal from "./DeleteBoardModal";
-import EditBoardTitleModal from "./EditBoardTitleModal";
+import { EditBoardTitleModal, DeleteBoardModal } from "@components";
 import BoardMenuPortal from "./BoardMenuPortal";
 import { FaChevronDown } from "react-icons/fa";
 

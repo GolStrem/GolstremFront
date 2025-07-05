@@ -5,7 +5,7 @@ import avatar2 from "@assets/avatar.png";
 import { TaskApi } from "@service";
 import "./Banner.css";
 
-const Banner = ({ workspaceId, sidebarVisible }) => {
+const Banner = ({ workspaceId }) => {
   const [workspace, setWorkspace] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,6 @@ const Banner = ({ workspaceId, sidebarVisible }) => {
         justifyContent: "center",
         transition: "all 0.3s ease",
         paddingRight: "16px",
-        paddingLeft: sidebarVisible ? "300px" : "0",
       }}
     >
       <div
@@ -64,4 +63,5 @@ const Banner = ({ workspaceId, sidebarVisible }) => {
     </div>
   );
 };
+
 export default Banner;

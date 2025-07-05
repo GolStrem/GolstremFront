@@ -13,24 +13,27 @@ import {
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
-import { useBoardManager } from "@components"; 
+import { useBoardManager, useCardManager } from "@components";
 import "./TaskManager.css";
-import "../../components/taskManager/BoardManager.css"
 import { UserInfo } from "@service";
+import "../../components/taskManager/BoardManager.css";
 
-
-const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
+const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const {
     boards,
     createBoard,
     deleteBoard,
     updateBoard,
-    createOrUpdateCard,
-    deleteCard,
     dragStartBoard,
     dropBoard,
   } = useBoardManager(workspaceId);
+
+   const {
+    createOrUpdateCard,
+    deleteCard,
+
+  } = useCardManager(workspaceId);
 
   const [columns, setColumns] = useState(3);
   const COLUMN_WIDTH = 340;
@@ -46,18 +49,16 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
   const [showBoardModal, setShowBoardModal] = useState(false);
 
   useEffect(() => {
-  if (workspaceId) {
-    UserInfo.set("lastWorkspace", workspaceId)
-  }
+    if (workspaceId) {
+      UserInfo.set("lastWorkspace", workspaceId)
+    }
   }, [workspaceId]);
 
-
-
   const calculateColumns = useCallback(() => {
-    const width = window.innerWidth - (sidebarVisible ? 300 : 0);
+    const width = window.innerWidth;
     const possibleColumns = Math.floor(width / (COLUMN_WIDTH + GUTTER));
     setColumns(Math.max(possibleColumns, 1));
-  }, [sidebarVisible]);
+  }, []);
 
   useEffect(() => {
     calculateColumns();
@@ -106,14 +107,12 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
 
     const targetBoard = boards.find((b) => b.id === overContainerId);
     if (targetBoard) {
-
       return;
     }
 
     for (const board of boards) {
       const index = board.cards.findIndex((c) => c.id === over.id);
       if (index !== -1) {
-
         return;
       }
     }
@@ -125,14 +124,12 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
       <div className="tm-main-content">
         <button
-        
           className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}
           onClick={() => setShowBoardModal(true)}
         >
           <span className="tm-add-icon">+</span>
           <span className="tm-add-text"> Nouveau tableau</span>
         </button>
-
 
         <div className="tm-boards-wrapper">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCardDragEnd}>
