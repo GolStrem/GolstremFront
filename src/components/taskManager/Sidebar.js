@@ -15,7 +15,7 @@ const Sidebar = ({ modalRef }) => {
   const [menuOpen, setMenuOpen] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
-  const { workspaceId } = useParams();
+  const workspaceId  = useParams()['id'];
 
 
   useEffect(() => {
@@ -29,6 +29,11 @@ const Sidebar = ({ modalRef }) => {
       }));
 
       setWorkspaces(workspacesArray);
+
+      const exists = workspacesArray.some(ws => ws.id === workspaceId);
+      if (!exists && workspacesArray.length > 0) {
+        navigate(`/workspace/${workspacesArray[0].id}`, { replace: true });
+      }
     } catch (err) {
       console.error("Erreur lors du chargement des workspaces :", err);
     }
