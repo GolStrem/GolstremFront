@@ -44,6 +44,14 @@ const TaskManager = ({ workspaceId = "Default", sidebarVisible }) => {
   const [viewingCard, setViewingCard] = useState(null);
   const [showBoardModal, setShowBoardModal] = useState(false);
 
+  useEffect(() => {
+  if (workspaceId) {
+    localStorage.setItem("lastWorkspace", workspaceId);
+  }
+  }, [workspaceId]);
+
+
+
   const calculateColumns = useCallback(() => {
     const width = window.innerWidth - (sidebarVisible ? 300 : 0);
     const possibleColumns = Math.floor(width / (COLUMN_WIDTH + GUTTER));

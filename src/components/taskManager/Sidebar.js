@@ -17,31 +17,32 @@ const Sidebar = ({ modalRef }) => {
   const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
   const { workspaceId } = useParams();
 
+
   useEffect(() => {
-    const fetchWorkspaces = async () => {
-      try {
-        const { data } = await TaskApi.getWorkspaces();
-        console.log("Workspaces response:", data);
+  const fetchWorkspaces = async () => {
+    try {
+      const { data } = await TaskApi.getWorkspaces();
 
-        const workspacesArray = Object.entries(data).map(([id, ws]) => ({
-          id,
-          ...ws,
-        }));
-        console.log(workspacesArray);
+      const workspacesArray = Object.entries(data).map(([id, ws]) => ({
+        id,
+        ...ws,
+      }));
 
-        setWorkspaces(workspacesArray);
+      setWorkspaces(workspacesArray);
+    } catch (err) {
+      console.error("Erreur lors du chargement des workspaces :", err);
+    }
+  };
 
-        const exists = workspacesArray.some(ws => ws.id === workspaceId);
-        if (!exists && workspacesArray.length > 0) {
-          navigate(`/workspace/${workspacesArray[0].id}`, { replace: true });
-        }
-      } catch (err) {
-        console.error("Erreur lors du chargement des workspaces :", err);
-      }
-    };
+  fetchWorkspaces();
+}, []); // 👈 pas besoin de [navigate]
 
-    fetchWorkspaces();
-  }, [workspaceId, navigate]);
+
+useEffect(() => {
+  if (workspaceId) {
+    localStorage.setItem("lastWorkspace", workspaceId);
+  }
+}, [workspaceId]);
 
 
   useEffect(() => {
