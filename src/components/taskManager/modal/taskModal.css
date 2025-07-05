@@ -1,0 +1,14 @@
+.tm-modal-form{
+    display: flex;
+    flex-direction: column;
+}
+
+.tm-modal-form-label{
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.tm-modal-form-label input{
+    margin-left: 10px;
+}

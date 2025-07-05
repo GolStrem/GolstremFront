@@ -19,16 +19,23 @@ export { default as DnDBoard } from './taskManager/DnDBoard';
 export { default as DnDCard } from './taskManager/DnDCard';
 export { default as SortableBoard } from './taskManager/SortableBoard';
 export { default as SortableItem } from './taskManager/SortableItem';
-export { default as WorkspaceMenu } from './taskManager/WorkspaceMenu'
+export { default as WorkspaceMenu } from './taskManager/WorkspaceMenu';
 
+// Task Manager/card
+export { default as TaskViewerModal } from './taskManager/modal/card/TaskViewerModal'; 
+export { default as TaskEditorModal } from './taskManager/modal/card/TaskEditorModal'; 
+export { default as Modal } from './taskManager/modal/card/TaskEditorModal';
 
-export { default as DeleteWorkspaceModal } from './taskManager/modal/DeleteWorkspaceModal.js'
-export { default as TaskViewerModal } from './taskManager/modal/TaskViewerModal'; 
-export { default as TaskEditorModal } from './taskManager/modal/TaskEditorModal'; 
-export { default as Modal } from './taskManager/modal/TaskEditorModal';
-export { default as BoardModal } from './taskManager/modal/BoardModal';
-export { default as DeleteBoardModal} from './taskManager/modal/DeleteBoardModal'
-export {default as EditBoardTitleModal} from './taskManager/modal/EditBoardTitleModal'
+// Task Manager/board
+export { default as BoardModal } from './taskManager/modal/board/BoardModal';
+export { default as DeleteBoardModal} from './taskManager/modal/board/DeleteBoardModal';
+export {default as EditBoardTitleModal} from './taskManager/modal/board/EditBoardTitleModal';
 
+// Task Manager/workspace
+export { default as CreateWorkspaceModal} from './taskManager/modal/workspace/createWorkspaceModal';
+export { default as DeleteWorkspaceModal } from './taskManager/modal/workspace/DeleteWorkspaceModal.js';
+export { default as ModifWorkspaceModal} from './taskManager/modal/workspace/ModifWorkspaceModal';
+
+// Task Manager/hook
 export { default as useBoardManager } from './taskManager/hook/useBoardManager';
-export { default as useCardManager} from './taskManager/hook/useCardManager'
+export { default as useCardManager} from './taskManager/hook/useCardManager';

@@ -1,4 +1,10 @@
 /* WorkspaceMenu.css */
+.tmw-workspaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 
 .tmw-menu-container {
   display: flex;
@@ -52,14 +58,15 @@
   background: #1e1e1e;
   border-radius: 10px;
   padding: 1rem;
-  width: 350px;
+  width: 600px;
   display: none;
   flex-direction: column;
   gap: 0.5rem;
   position: absolute;
   bottom: 100%; /* au-dessus du bouton */
   right: 0;
-  border:2px solid var(--jaune)
+  border:2px solid var(--jaune);
+  flex-wrap: wrap;
 }
 
 .tmw-menu-container.open .tmw-list {
@@ -69,9 +76,8 @@
 .tmw-item {
   display: block;
   padding: 0.5rem;
-  border: 1px solid var(--jaune);
   border-radius: 5px;
-  color: var(--jaune);
+  color: white;
   text-decoration: none;
   text-align: center;
   transition: all 0.2s ease;
@@ -79,8 +85,9 @@
 }
 
 .tmw-item:hover {
-  color: #1e1e1e;
-  background: var(--jaune);
+
+  color: #fae25b ;
+
 }
 
 .tmw-create-btn {
@@ -92,4 +99,59 @@
   cursor: pointer;
   font-size: 0.9rem;
   font-family: inherit;
+}
+
+.tmw-item-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  border: 1px solid var(--jaune);
+  height: 40px;
+  margin: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 10px;
+  color: white;
+
+}
+
+.tmw-item-container:hover{
+  color: #fae25b;
+  border-color: #fae25b;
+}
+
+.tmw-item-menu-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--jaune);
+  font-size: 1.2rem;
+}
+
+.tmw-item-menu {
+  position: absolute;
+  top: 20px;
+  right: -100px;
+  transform: translateY(-100%); /* remonte au-dessus de la carte */
+  background: #1e1e1e;
+  border: 1px solid var(--jaune);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  min-width: 120px ;
+}
+
+.tmw-item-menu button {
+  all: unset;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.tmw-item-menu button:hover {
+  background: var(--jaune);
+  color: #1e1e1e;
 }

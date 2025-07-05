@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import "./TaskEditorModal.css"; // Réutilise les styles modales existants
+
 
 const DeleteBoardModal = ({ title, onConfirm, onCancel }) => {
   const mode = useSelector((state) => state.theme.mode);

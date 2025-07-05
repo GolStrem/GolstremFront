@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import "./TaskEditorModal.css";
+
 
 const DeleteWorkspaceModal = ({ name, onConfirm, onCancel }) => {
   const mode = useSelector((state) => state.theme.mode);
