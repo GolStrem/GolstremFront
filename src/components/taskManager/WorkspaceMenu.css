@@ -1,0 +1,95 @@
+/* WorkspaceMenu.css */
+
+.tmw-menu-container {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 0.5rem;
+  z-index: 1000;
+  bottom: 100px;
+  position: fixed;
+  right: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.tmw-toggle {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  border-radius: 50px;
+  padding: 0.8em 1.15em;
+  font-size: 1.4em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--jaune);
+  background-color: var(--noir);
+  color: white;
+}
+
+.tmw-menu-container.open .tmw-toggle {
+  border: none;
+  background: none; /* retire le fond quand ouvert */
+}
+
+.tmw-label {
+  margin-left: 8px;
+  opacity: 1;
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.3s ease, max-width 0.3s ease;
+  font-family: inherit;
+  text-transform: none;
+}
+
+.tmw-list {
+  margin-top: 0.5rem;
+  background: #1e1e1e;
+  border-radius: 10px;
+  padding: 1rem;
+  width: 350px;
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: absolute;
+  bottom: 100%; /* au-dessus du bouton */
+  right: 0;
+  border:2px solid var(--jaune)
+}
+
+.tmw-menu-container.open .tmw-list {
+  display: flex;
+}
+
+.tmw-item {
+  display: block;
+  padding: 0.5rem;
+  border: 1px solid var(--jaune);
+  border-radius: 5px;
+  color: var(--jaune);
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.tmw-item:hover {
+  color: #1e1e1e;
+  background: var(--jaune);
+}
+
+.tmw-create-btn {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: var(--jaune);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
