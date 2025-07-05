@@ -21,6 +21,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const {
     boards,
+    setBoards, // ajoute ceci
     createBoard,
     deleteBoard,
     updateBoard,
@@ -28,11 +29,11 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     dropBoard,
   } = useBoardManager(workspaceId);
 
-   const {
+  const {
     createOrUpdateCard,
     deleteCard,
+  } = useCardManager(workspaceId, boards, setBoards);
 
-  } = useCardManager(workspaceId);
 
   const [columns, setColumns] = useState(3);
   const COLUMN_WIDTH = 340;
