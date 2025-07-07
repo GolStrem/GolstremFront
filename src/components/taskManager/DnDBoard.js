@@ -15,7 +15,7 @@ const DnDBoard = ({
   handleUpdateBoard,
   handleDeleteBoard,
   onBoardDragStart,
-  onBoardDrop,
+  onBoardDrop
 }) => {
   const collapseRef = useRef(null);
   const cardsContainerRef = useRef(null);
@@ -184,15 +184,17 @@ const DnDBoard = ({
               + Carte
             </button>
 
-            <div className="tm-board-menu-wrapper">
-              <button
-                className={`tm-board-menu-btn ${mode}`}
-                onClick={() => setMenuOpen(!menuOpen)}
-                ref={buttonRef}
-              >
-                ⋯
-              </button>
-            </div>
+            {["write", "owner"].includes(board.droit) && (
+              <div className="tm-board-menu-wrapper">
+                <button
+                  className={`tm-board-menu-btn ${mode}`}
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  ref={buttonRef}
+                >
+                  ...
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
