@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { isValidImageUrl } from "@service";
+
 
 
 const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
@@ -17,12 +19,30 @@ const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
   };
 
   const handleSubmit = () => {
-    if (!form.name.trim()) {
+    const trimmed = {
+      name: form.name.trim(),
+      description: form.description.trim(),
+      image: form.image.trim(),
+    };
+
+    if (!trimmed.name) {
       alert("Le nom est obligatoire.");
       return;
     }
-    onConfirm(form);
+
+    if (trimmed.image && !isValidImageUrl(trimmed.image)) {
+      alert("L'URL de l'image n'est pas valide ou son format n'est pas autorisé.");
+      return;
+    }
+
+    // Si vide, force à null
+    if (!trimmed.image) {
+      trimmed.image = null;
+    }
+
+    onConfirm(trimmed);
   };
+
 
   return (
     <div className={`tm-modal-overlay ${mode}`} onClick={onCancel}>

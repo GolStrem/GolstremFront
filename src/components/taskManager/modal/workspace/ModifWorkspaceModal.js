@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { isValidImageUrl } from "@service";
+
 
 const ModifWorkspaceModal = ({ workspace, onConfirm, onCancel }) => {
   const mode = useSelector((state) => state.theme.mode);
@@ -20,14 +22,20 @@ const ModifWorkspaceModal = ({ workspace, onConfirm, onCancel }) => {
       description: form.description.trim(),
       image: form.image.trim(),
     };
+
     if (!trimmed.name) {
       alert("Le nom est requis.");
       return;
     }
 
-    // Appelle le parent
+    if (trimmed.image && !isValidImageUrl(trimmed.image)) {
+      alert("L'URL de l'image n'est pas valide ou son format n'est pas autorisé.");
+      return;
+    }
+
     onConfirm(trimmed);
   };
+
 
   return (
     <div className={`tm-modal-overlay ${mode}`} onClick={onCancel}>

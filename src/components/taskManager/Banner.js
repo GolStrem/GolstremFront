@@ -55,7 +55,7 @@ const Banner = ({ workspaceId }) => {
       <div
         className="tm-header-banner"
         style={{
-          backgroundImage: `url(${banner})`,
+          backgroundImage: `url(${workspace?.image || banner})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           width: "100%",

@@ -87,16 +87,25 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
   };
 
 const confirmEdit = async (form) => {
-  if (!workspaceToEdit) return;
   try {
-    await TaskApi.updateWorkspace(workspaceToEdit.id, form);
+    const payload = { ...form };
+
+    // Si l'image est vide, ne la passe pas à l'API
+    if (!payload.image.trim()) {
+      delete payload.image;
+    }
+
+    await TaskApi.updateWorkspace(workspaceToEdit.id, payload);
 
     // informe la bannière
     window.dispatchEvent(
       new CustomEvent("workspaceUpdated", {
         detail: {
           id: workspaceToEdit.id,
-          updatedFields: form,
+          updatedFields: {
+            ...payload,
+            image: payload.image || null, // pour le front
+          },
         },
       })
     );
@@ -139,41 +148,52 @@ const confirmEdit = async (form) => {
         >
           <div className="tmw-workspaces">
             {workspaces.map(ws => (
-              <div key={ws.id} className="tmw-item-container">
-                <NavLink
-                  to={`/workspace/${ws.id}`}
-                  className="tmw-item"
-                  onClick={() => {
-                    localStorage.setItem("lastWorkspace", ws.id);
-                    setCurrentWorkspace?.(ws);
-                    setMenuOpenFor(null);
-                  }}
-                >
-                  {ws.name}
-                </NavLink>
-                <button
-                  className="tmw-item-menu-btn"
-                  onClick={() =>
-                    setMenuOpenFor(menuOpenFor === ws.id ? null : ws.id)
-                  }
-                >
-                  ⋯
-                </button>
-                {menuOpenFor === ws.id && (
-                  <div className="tmw-item-menu">
-                    <button
-                      onClick={() => {
-                        setWorkspaceToEdit(ws);
-                        setShowEditModal(true);
-                        setMenuOpenFor(null);
-                      }}
-                    >
-                      ✏️ Modifier
-                    </button>
-                    <button onClick={() => handleDelete(ws)}>🗑️ Supprimer</button>
-                  </div>
-                )}
-              </div>
+            <div key={ws.id} className="tmw-item-container">
+              <NavLink
+                to={`/workspace/${ws.id}`}
+                className="tmw-item"
+                onClick={() => {
+                  localStorage.setItem("lastWorkspace", ws.id);
+                  setCurrentWorkspace?.(ws);
+                  setMenuOpenFor(null);
+                }}
+              >
+                {ws.name}
+              </NavLink>
+              <button
+                className="tmw-item-menu-btn"
+                onClick={() =>
+                  setMenuOpenFor(menuOpenFor === ws.id ? null : ws.id)
+                }
+              >
+                ⋯
+              </button>
+              {menuOpenFor === ws.id && (
+                <div className="tmw-item-menu">
+                  <button
+                    onClick={() => {
+                      setWorkspaceToEdit(ws);
+                      setShowEditModal(true);
+                      setMenuOpenFor(null);
+                    }}
+                  >
+                    ✏️ Modifier
+                  </button>
+                  <button onClick={() => handleDelete(ws)}>🗑️ Supprimer</button>
+                </div>
+              )}
+
+              {/* Image de fond */}
+              {ws.image && (
+                <img
+                  src={ws.image}
+                  alt=""
+                  className="tmw-item-bg"
+                />
+              )}
+
+            </div>
+
             ))}
           </div>
           <button
