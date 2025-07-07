@@ -15,6 +15,7 @@ import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
 import { useBoardManager, useCardManager } from "@components";
 import "./TaskManager.css";
+import { UserInfo } from "@service";
 import "../../components/taskManager/BoardManager.css";
 
 const TaskManager = ({ workspaceId = "Default" }) => {
@@ -50,7 +51,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
 
   useEffect(() => {
     if (workspaceId) {
-      localStorage.setItem("lastWorkspace", workspaceId);
+      UserInfo.set("lastWorkspace", workspaceId)
     }
   }, [workspaceId]);
 
