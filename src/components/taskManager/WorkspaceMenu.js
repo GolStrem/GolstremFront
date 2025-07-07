@@ -86,15 +86,29 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
     }
   };
 
-  const confirmEdit = async (form) => {
-    try {
-      await TaskApi.updateWorkspace(workspaceToEdit.id, form);
-      await fetchWorkspaces();
-      setShowEditModal(false);
-    } catch (err) {
-      console.error("Erreur lors de la modification :", err);
-    }
-  };
+const confirmEdit = async (form) => {
+  if (!workspaceToEdit) return;
+  try {
+    await TaskApi.updateWorkspace(workspaceToEdit.id, form);
+
+    // informe la bannière
+    window.dispatchEvent(
+      new CustomEvent("workspaceUpdated", {
+        detail: {
+          id: workspaceToEdit.id,
+          updatedFields: form,
+        },
+      })
+    );
+
+    await fetchWorkspaces(); // pour mettre à jour la liste
+    setShowEditModal(false);
+  } catch (err) {
+    console.error("Erreur lors de la modification :", err);
+  }
+};
+
+
 
   const confirmCreate = async (form) => {
   try {

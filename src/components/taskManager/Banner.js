@@ -25,6 +25,24 @@ const Banner = ({ workspaceId }) => {
     fetchWorkspace();
   }, [workspaceId]);
 
+  useEffect(() => {
+    const handleWorkspaceUpdated = (e) => {
+      if (e.detail.id === workspaceId) {
+        setWorkspace((prev) => ({
+          ...prev,
+          ...e.detail.updatedFields,
+        }));
+      }
+    };
+
+    window.addEventListener("workspaceUpdated", handleWorkspaceUpdated);
+
+    return () => {
+      window.removeEventListener("workspaceUpdated", handleWorkspaceUpdated);
+    };
+  }, [workspaceId]);
+
+
   return (
     <div
       style={{
@@ -50,10 +68,19 @@ const Banner = ({ workspaceId }) => {
           <input type="text" placeholder="Rechercher..." />
         </div>
 
-        <h1 className="tm-banner-title">
-          {loading && "Chargement..."}
-          {!loading && workspace ? workspace.name : ""}
-        </h1>
+        <div className="tm-banner-info">
+          <h1 className="tm-banner-title">
+            {loading && "Chargement..."}
+            {!loading && workspace ? workspace.name : ""}
+          </h1>
+
+          {!loading && workspace?.description && (
+            <p className="tm-banner-description">
+              {workspace.description}
+            </p>
+          )}
+        </div>
+
 
         <div className="tm-banner-avatars">
           <img src={avatar1} alt="avatar1" />

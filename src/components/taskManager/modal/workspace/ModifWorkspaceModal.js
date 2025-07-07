@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-
 const ModifWorkspaceModal = ({ workspace, onConfirm, onCancel }) => {
   const mode = useSelector((state) => state.theme.mode);
 
@@ -25,6 +24,8 @@ const ModifWorkspaceModal = ({ workspace, onConfirm, onCancel }) => {
       alert("Le nom est requis.");
       return;
     }
+
+    // Appelle le parent
     onConfirm(trimmed);
   };
 

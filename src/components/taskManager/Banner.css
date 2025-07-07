@@ -15,7 +15,11 @@
   box-sizing: border-box;
   border: 2px solid var(--color-accent-yellow);
 }
-
+.tm-banner-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 /* Titre centré */
 .tm-banner-title {
   font-size: 2rem;
@@ -24,6 +28,10 @@
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
+  .tm-banner-description{
+    font-size: 1.5rem;
+    color: white;
+  }
 
 /* Barre de recherche en bas à gauche */
 .tm-banner-search {
