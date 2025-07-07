@@ -4,8 +4,8 @@ import MockApiService from './mock/MockApiService';
 
 // ========== REAL API ==========
 const realApi = {
-  async login(login, password) {
-    const { data } = await api.post('/user/login', { login, password });
+  async login(email, password) {
+    const { data } = await api.post('/user/login', { email, password });
     setToken(data);
     return data;
   },

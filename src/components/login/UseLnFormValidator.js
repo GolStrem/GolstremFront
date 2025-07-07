@@ -4,11 +4,9 @@ export const UseLnFormValidator = (form, isLogin) => {
   const validate = () => {
     const errors = {};
 
-    if (!form.username.trim()) errors.username = 'Pseudo requis';
-    else if (!usernameRegex.test(form.username))
-      errors.username = '3-20 caractères, lettres/chiffres/underscore uniquement';
 
     if (!form.password) errors.password = 'Mot de passe requis';
+    if (!emailRegex.test(form.email)) errors.email = 'Adresse e-mail invalide';
     else {
       if (form.password.length < passwordRules.minLength) errors.password = 'Au moins 8 caractères';
       else if (form.password.length > passwordRules.maxLength) errors.password = 'Mot de passe trop long';
@@ -18,7 +16,10 @@ export const UseLnFormValidator = (form, isLogin) => {
     }
 
     if (!isLogin) {
-      if (!emailRegex.test(form.email)) errors.email = 'Adresse e-mail invalide';
+      
+      if (!form.username.trim()) errors.username = 'Pseudo requis';
+      else if (!usernameRegex.test(form.username))
+      errors.username = '3-20 caractères, lettres/chiffres/underscore uniquement';
       if (form.password !== form.confirm) errors.confirm = 'Les mots de passe ne correspondent pas';
     }
 
