@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TaskApi } from "@service";
+import { TaskApi, UserInfo } from "@service";
 
 export default function useBoardManager(workspaceId) {
   const [boards, setBoards] = useState([]);
@@ -9,12 +9,24 @@ export default function useBoardManager(workspaceId) {
     const fetchBoards = async () => {
       try {
         const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
+        const userId = await UserInfo.getId();
+
+        const droit = (data.idOwner == userId)
+          ? "owner"
+          : data.user.find(user => user.id == userId)?.state;
+
+        data.tableau.forEach(table => {
+          table.card.forEach(card => {
+            card.droit = (card.idOwner == userId) ? "owner" : droit;
+          });
+        });
         const boardsArray = (data?.tableau || []).map(b => ({
           id: b.id,
           name: b.name,
           color: b.color,
           image: b.image,
           createdAt: b.createdAt,
+          droit: droit,
           cards: b.card || []
         }));
         setBoards(boardsArray);

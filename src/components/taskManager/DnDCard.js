@@ -6,6 +6,7 @@ import { FaAlignLeft } from "react-icons/fa";
 import "./DnDCards.css";
 
 const DnDCard = ({ card, boardId, openViewerModal }) => {
+  console.log(card.droit) // @todo voilà ton droit.
   const mode = useSelector((state) => state.theme.mode);
   const clickStart = useRef(null);
   const cardRef = useRef(null);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { TaskApi } from "@service";
+import { TaskApi, UserInfo } from "@service";
 import { DeleteWorkspaceModal, ModifWorkspaceModal, CreateWorkspaceModal } from "@components";
 import "./WorkspaceMenu.css";
 import "./modal/taskModal.css";
@@ -21,6 +21,21 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [workspaceToEdit, setWorkspaceToEdit] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const id = await UserInfo.getId();
+        setUserId(id);
+      } catch (err) {
+        console.error("Erreur lors de la récupération de l'id utilisateur :", err);
+      }
+    };
+
+    fetchUserId();
+  }, []);  
 
 
   const toggleMenu = () => setOpen((prev) => !prev);
@@ -160,14 +175,16 @@ const confirmEdit = async (form) => {
               >
                 {ws.name}
               </NavLink>
-              <button
-                className="tmw-item-menu-btn"
-                onClick={() =>
-                  setMenuOpenFor(menuOpenFor === ws.id ? null : ws.id)
-                }
-              >
-                ⋯
-              </button>
+              {String (userId) === String (ws.idOwner) && (
+                <button
+                  className="tmw-item-menu-btn"
+                  onClick={() =>
+                    setMenuOpenFor(menuOpenFor === ws.id ? null : ws.id)
+                  }
+                >
+                  ⋯
+                </button>
+              )}
               {menuOpenFor === ws.id && (
                 <div className="tmw-item-menu">
                   <button

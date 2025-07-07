@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { useSelector } from "react-redux";
 import DnDCard from "./DnDCard";
-import { EditBoardTitleModal, DeleteBoardModal } from "@components";
+import { EditBoardTitleModal, DeleteBoardModal, BoardCardAccess } from "@components";
 import BoardMenuPortal from "./BoardMenuPortal";
 import { FaChevronDown } from "react-icons/fa";
+
 
 const DnDBoard = ({
   board,
@@ -15,7 +16,7 @@ const DnDBoard = ({
   handleUpdateBoard,
   handleDeleteBoard,
   onBoardDragStart,
-  onBoardDrop,
+  onBoardDrop
 }) => {
   const collapseRef = useRef(null);
   const cardsContainerRef = useRef(null);
@@ -175,25 +176,27 @@ const DnDBoard = ({
               <span className="tm-card-count">({board.cards.length})</span>
             )}
           </h2>
-
-          <div
-            className="tm-board-header-buttons"
+          {BoardCardAccess.hasWriteAccess(board.droit) && (
+          <div className="tm-board-header-buttons"
             onClick={(e) => e.stopPropagation()}
           >
             <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
               + Carte
             </button>
 
-            <div className="tm-board-menu-wrapper">
-              <button
-                className={`tm-board-menu-btn ${mode}`}
-                onClick={() => setMenuOpen(!menuOpen)}
-                ref={buttonRef}
-              >
-                ⋯
-              </button>
-            </div>
+            
+              <div className="tm-board-menu-wrapper">
+                <button
+                  className={`tm-board-menu-btn ${mode}`}
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  ref={buttonRef}
+                >
+                  ...
+                </button>
+              </div>
+         
           </div>
+          )}
         </div>
 
         <div
@@ -238,7 +241,9 @@ const DnDBoard = ({
             }}
           >
             <button onClick={editBoardTitle}>✏️ Modifier</button>
-            <button onClick={deleteBoard}>🗑️ Supprimer</button>
+            {BoardCardAccess.isOwner (board.droit) && (
+             <button onClick={deleteBoard}>🗑️ Supprimer</button>
+            )}
           </div>
         </BoardMenuPortal>
       )}

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./TaskEditorModal.css";
+import { BoardCardAccess } from "@components";
 
 const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCard }) => {
   const isEdit = !!modalData.cardId;
@@ -16,7 +17,7 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
     state: 0,
     endAt: "",
     createdAt: new Date().toISOString().split("T")[0],
-    image: ""
+    image: "",
   });
 
   const [isEditing, setIsEditing] = useState(isEdit);
@@ -151,11 +152,14 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
 
         <div className="tm-modal-buttons">
           <button onClick={handleSubmit}>{isEdit ? "Modifier" : "Créer"}</button>
-          {isEdit && isEditing && (
+
+          {BoardCardAccess.isOwner(modalData.card?.droit) && isEdit && isEditing && (
             <button className="tm-delete-btn" onClick={handleDelete}>Supprimer</button>
           )}
+
           <button className="tm-cancel-btn" onClick={closeModal}>Annuler</button>
         </div>
+
 
       </div>
     </div>
