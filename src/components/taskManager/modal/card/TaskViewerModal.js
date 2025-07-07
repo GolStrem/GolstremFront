@@ -2,6 +2,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import "./../../TaskCard.css"
+import { BoardCardAccess } from "@components"
 
 const getStateLabel = (state) => {
   switch (state) {
@@ -41,6 +42,7 @@ const TaskViewerModal = ({ card, boardId, closeModal, openEdit }) => {
 
             <div className="tm-image-preview">
             {card.image && <img src={card.image} alt="Pièce jointe" />}
+            {BoardCardAccess.hasWriteAccess(card.droit) && (
             <div className="tm-edit-btn-container">
                 <button
                     className="tm-edit-btn"
@@ -51,9 +53,9 @@ const TaskViewerModal = ({ card, boardId, closeModal, openEdit }) => {
                     >
                     ✏️
                     </button>
-
+              
             </div>
-
+          )}
 
 
           </div>

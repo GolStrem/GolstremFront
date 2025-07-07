@@ -14,8 +14,8 @@ const realApi = {
     return api.get(`/user/validMail/${encodeURIComponent(email)}/${token}`);
   },
 
-  createUser(login, password, email) {
-    return api.post('/user/create', { login, password, email });
+  createUser(pseudo, password, email) {
+    return api.post('/user/create', { pseudo, password, email });
   },
 
   getUser() {

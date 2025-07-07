@@ -175,7 +175,7 @@ const confirmEdit = async (form) => {
               >
                 {ws.name}
               </NavLink>
-              {userId == ws.idOwner && (
+              {String (userId) === String (ws.idOwner) && (
                 <button
                   className="tmw-item-menu-btn"
                   onClick={() =>
