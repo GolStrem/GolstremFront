@@ -21,6 +21,21 @@
   position: relative;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   transition: background 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.tm-modal-popup label{
+
+  margin: 10px;
+
+}
+
+.tm-modal-popup input{
+  padding-left: 5px;
+  margin-left: 10px;
+  border-radius: 6px;
+  border: none;
+  padding: 10px;
 }
 
 .tmedit{
