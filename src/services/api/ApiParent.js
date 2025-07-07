@@ -24,7 +24,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) clearToken();
-    return Promise.reject(error);
   }
 );
 
