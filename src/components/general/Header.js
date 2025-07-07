@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {  useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   FaSun,
@@ -18,9 +18,7 @@ import './Header.css';
 
 const Header = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
-  const { id } = useParams();
 
   const mode = useSelector((state) => state.theme.mode);
   const userCode = useSelector((state) => state.auth.userCode);
