@@ -15,12 +15,14 @@ import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
 import { useBoardManager, useCardManager } from "@components";
 import "./TaskManager.css";
+import { UserInfo } from "@service";
 import "../../components/taskManager/BoardManager.css";
 
 const TaskManager = ({ workspaceId = "Default" }) => {
   const mode = useSelector((state) => state.theme.mode);
   const {
     boards,
+    setBoards, // ajoute ceci
     createBoard,
     deleteBoard,
     updateBoard,
@@ -28,11 +30,11 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     dropBoard,
   } = useBoardManager(workspaceId);
 
-   const {
+  const {
     createOrUpdateCard,
     deleteCard,
+  } = useCardManager(workspaceId, boards, setBoards);
 
-  } = useCardManager(workspaceId);
 
   const [columns, setColumns] = useState(3);
   const COLUMN_WIDTH = 340;
@@ -49,7 +51,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
 
   useEffect(() => {
     if (workspaceId) {
-      localStorage.setItem("lastWorkspace", workspaceId);
+      UserInfo.set("lastWorkspace", workspaceId)
     }
   }, [workspaceId]);
 

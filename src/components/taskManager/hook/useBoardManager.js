@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { TaskApi } from "@service";
 
-
 export default function useBoardManager(workspaceId) {
   const [boards, setBoards] = useState([]);
   const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
@@ -10,7 +9,6 @@ export default function useBoardManager(workspaceId) {
     const fetchBoards = async () => {
       try {
         const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
-
         const boardsArray = (data?.tableau || []).map(b => ({
           id: b.id,
           name: b.name,
@@ -24,18 +22,14 @@ export default function useBoardManager(workspaceId) {
         console.error("Erreur lors du chargement des boards :", err);
       }
     };
-
     fetchBoards();
   }, [workspaceId]);
 
-
   const createBoard = async ({ name, color }) => {
     const trimmed = (name || "").trim();
-
     try {
       const payload = { name: trimmed, color };
       const { data } = await TaskApi.createTableau(workspaceId, payload);
-
       const [id, board] = Object.entries(data)[0];
       setBoards(prev => [
         ...prev,
@@ -48,10 +42,7 @@ export default function useBoardManager(workspaceId) {
 
   const updateBoard = async (boardId, newTitle) => {
     const trimmed = (newTitle || "").trim();
-    if (!trimmed) {
-      alert("Le nom ne peut pas être vide !");
-      return;
-    }
+    if (!trimmed) return alert("Le nom ne peut pas être vide !");
     try {
       await TaskApi.editTableau(workspaceId, boardId, { name: trimmed });
       setBoards(prev =>
@@ -80,13 +71,11 @@ export default function useBoardManager(workspaceId) {
 
     try {
       const idTableau = boards[draggingBoardIndex].id;
-
       const payload = {
         oldPos: String(draggingBoardIndex),
         newPos: String(targetIndex),
         idTableau
       };
-
       await TaskApi.moveTableau(workspaceId, payload);
 
       setBoards(prevBoards => {
@@ -102,10 +91,9 @@ export default function useBoardManager(workspaceId) {
     setDraggingBoardIndex(null);
   };
 
- 
-
   return {
     boards,
+    setBoards, // <--- expose aussi setBoards pour le hook des cartes
     createBoard,
     deleteBoard,
     updateBoard,

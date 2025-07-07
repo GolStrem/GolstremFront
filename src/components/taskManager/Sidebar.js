@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { TaskApi } from "@service";
+import { TaskApi, UserInfo } from "@service";
 import { DeleteWorkspaceModal } from "@components";
 import "./Sidebar.css";
 
@@ -40,7 +40,7 @@ const Sidebar = ({ modalRef }) => {
 
 useEffect(() => {
   if (workspaceId) {
-    localStorage.setItem("lastWorkspace", workspaceId);
+    UserInfo.set("lastWorkspace", workspaceId)
   }
 }, [workspaceId]);
 
