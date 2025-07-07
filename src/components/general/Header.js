@@ -12,6 +12,7 @@ import {
 
 import { persistor, toggleTheme, logout } from '@store';
 import avatarImg from '@assets/avatar.png'; // Ton image avatar
+import { UserInfo } from '@service'
 
 import './Header.css';
 
@@ -23,23 +24,34 @@ const Header = () => {
 
   const mode = useSelector((state) => state.theme.mode);
   const userCode = useSelector((state) => state.auth.userCode);
+
+  const [avatarSrc, setAvatarSrc] = useState(avatarImg);
+
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const getPageName = () => {
-    const path = location.pathname;
-    if (path.startsWith('/workspace') && id) {
-      return id.charAt(0).toUpperCase() + id.slice(1);
-    }
-    switch (path) {
-      case '/portfolio': return 'Portfolio';
-      case '/expense-tracker': return 'Suivi des Dépenses';
-      case '/social-network': return 'Réseau Social';
-      case '/appointment-scheduler': return 'Gestion des Rendez-vous';
-      case '/dashboard': return 'Dashboard';
-      default: return 'Application';
-    }
-  };
+   useEffect(() => {
+    let isMounted = true;
+
+    (async () => {
+      try {
+        const fetchedAvatar = await UserInfo.getAvatar();
+
+        if (isMounted && fetchedAvatar) {
+          setAvatarSrc(fetchedAvatar);
+        }
+      } catch (err) {
+        console.error('Could not fetch avatar:', err);
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+
+
 
   const handleLogout = () => {
     dispatch(logout());
@@ -67,7 +79,7 @@ const Header = () => {
     <header className="header">
       <div className="header-right" ref={menuRef}>
         <div className="user-menu" onClick={toggleMenu}>
-          <img src={avatarImg} alt="avatar" className="avatar" />
+          <img src={avatarSrc} alt="avatar" className="avatar" />
           <span className="username">
             {userCode ? userCode.charAt(0).toUpperCase() + userCode.slice(1) : 'Profil'}
           </span>

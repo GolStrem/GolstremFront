@@ -18,6 +18,10 @@ const realApi = {
     return api.post('/user/create', { login, password, email });
   },
 
+  getUser() {
+    return api.get('/user');
+  },
+
   getUserInfo() {
     return api.get('/userInfo');
   },
