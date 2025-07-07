@@ -78,10 +78,37 @@ const DnDBoard = ({
     const cardsEl = cardsContainerRef.current;
     if (!el || !cardsEl || isCollapsed) return;
 
-    requestAnimationFrame(() => {
+    const adjustHeight = () => {
       el.style.maxHeight = cardsEl.scrollHeight + "px";
+    };
+
+    // Ajuster une première fois immédiatement
+    adjustHeight();
+
+    // Vérifier si des images sont encore en chargement
+    const images = cardsEl.querySelectorAll("img");
+    let pending = 0;
+
+    images.forEach((img) => {
+      if (!img.complete) {
+        pending++;
+        img.addEventListener("load", () => {
+          pending--;
+          if (pending === 0) {
+            adjustHeight();
+          }
+        });
+      }
     });
+
+    // Cleanup pour retirer les listeners
+    return () => {
+      images.forEach((img) => {
+        img.removeEventListener("load", adjustHeight);
+      });
+    };
   }, [board.cards, isCollapsed]);
+
 
   useEffect(() => {
     const el = collapseRef.current;
