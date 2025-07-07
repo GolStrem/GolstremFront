@@ -1,5 +1,18 @@
 import ApiService from "@service/api/ApiService";
 
+const getAvatar = async () => {
+    const avatar = localStorage.getItem('avatar')
+    if (avatar) {
+        return avatar
+    }
+    const user = (await ApiService.getUser())
+    if (user) {
+        localStorage.setItem('avatar', user.data.image)
+        return user.data.image;
+    }
+    return false
+}
+
 const get = async (infoSearch) => {
     const valueUserInfo = localStorage.getItem(infoSearch)
     if (valueUserInfo) {
@@ -23,6 +36,7 @@ const set = async (infoSearch, value) => {
 const UserInfo = {
     get: (infoSearch) => get(infoSearch),
     set: (infoSearch, value) => set(infoSearch, value),
+    getAvatar: () => getAvatar()
 };
 
 export default UserInfo;
