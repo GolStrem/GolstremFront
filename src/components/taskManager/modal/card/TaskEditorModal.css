@@ -62,7 +62,16 @@
   border-radius: 6px;
   margin-top: 6px;
 }
-
+.tm-modal-popup.light input {
+  background-color: #f3f3f3;
+  color: black;
+  border: none;
+}
+.tm-modal-popup.light textarea {
+  background-color: #f3f3f3;
+  color: black;
+  border: none;
+}
 /* Champ conteneur (dark) */
 .tm-modal-popup.dark .tm-label .tm-label-field {
   background-color: #2c2c2c;

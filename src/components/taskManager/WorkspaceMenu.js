@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { TaskApi } from "@service";
-import { DeleteWorkspaceModal } from "@components";
-import { ModifWorkspaceModal } from "@components";
+import { DeleteWorkspaceModal, ModifWorkspaceModal, CreateWorkspaceModal } from "@components";
 import "./WorkspaceMenu.css";
 import "./modal/taskModal.css";
 
@@ -21,6 +20,8 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [workspaceToEdit, setWorkspaceToEdit] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
 
   const toggleMenu = () => setOpen((prev) => !prev);
 
@@ -95,13 +96,24 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
     }
   };
 
+  const confirmCreate = async (form) => {
+  try {
+    await TaskApi.createWorkspace(form);
+    await fetchWorkspaces();
+    setShowCreateModal(false);
+  } catch (err) {
+    console.error("Erreur lors de la création :", err);
+  }
+};
+
+
   return (
     <div
       ref={containerRef}
       className={`tmw-menu-container ${mode} ${open ? "open" : ""}`}
     >
       <button
-        className={`tmw-toggle ${open ? "active" : ""}`}
+        className={`tmw-toggle ${mode === "dark" ? "dark" : "light"} ${open ? "active" : ""}`}
         onClick={toggleMenu}
       >
         <span className="tmw-icon">≡</span>
@@ -109,7 +121,8 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
       </button>
 
       {open && (
-        <div className="tmw-list">
+        <div className= {`tmw-list ${mode === "dark" ? "dark" : "light"}`}
+        >
           <div className="tmw-workspaces">
             {workspaces.map(ws => (
               <div key={ws.id} className="tmw-item-container">
@@ -151,7 +164,7 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
           </div>
           <button
             className="tmw-create-btn"
-            onClick={() => alert("Créer workspace non géré ici")}
+            onClick={() => setShowCreateModal(true)}
           >
             + Nouveau Workspace
           </button>
@@ -173,6 +186,14 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
           onCancel={() => setShowEditModal(false)}
         />
       )}
+
+      {showCreateModal && (
+        <CreateWorkspaceModal
+          onConfirm={confirmCreate}
+          onCancel={() => setShowCreateModal(false)}
+        />
+      )}
+
     </div>
   );
 };

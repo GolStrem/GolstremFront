@@ -1,4 +1,4 @@
-import ApiService from "@service/ApiService";
+import ApiService from "@service/api/ApiService";
 
 const get = async (infoSearch) => {
     const valueUserInfo = localStorage.getItem(infoSearch)
