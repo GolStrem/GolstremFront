@@ -67,7 +67,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
 
     try {
       if (isLogin) {
-        await apiService.login(form.username, form.password);
+        await apiService.login(form.email, form.password);
 
         // Redux login
         dispatch(
