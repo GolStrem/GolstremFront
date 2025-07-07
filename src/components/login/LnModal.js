@@ -14,6 +14,7 @@ import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 
 import apiService from '@service/api/ApiService';
 import { login as loginAction } from '@store/authSlice';
+import { UserInfo } from '@service'
 
 
 
@@ -68,12 +69,13 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     try {
       if (isLogin) {
         await apiService.login(form.email, form.password);
+        const pseudo = await UserInfo.getPseudo();
 
         // Redux login
         dispatch(
           loginAction({
             token: apiService.getToken(),
-            userCode: form.username,
+            userCode: pseudo,
           })
         );
 
