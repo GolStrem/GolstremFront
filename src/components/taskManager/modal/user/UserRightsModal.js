@@ -13,6 +13,7 @@ const UserRightsModal = ({ workspaceId, onClose, onUpdate }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [userStates, setUserStates] = useState([]);
+  const [initialStates, setInitialStates] = useState([]);
 
   // Charger les utilisateurs à l'ouverture
 useEffect(() => {
@@ -21,9 +22,10 @@ useEffect(() => {
     setError("");
     try {
       const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
-      setUserStates(
-        data.user.map(u => ({ ...u, state: u.state === "write" ? 1 : 0 }))
-      );
+      const user = data.user.filter((user) => user.id !== data.idOwner)
+      const mappedUsers = user.map(u => ({ ...u, state: u.state === "write" ? 1 : 0 }));
+      setUserStates(mappedUsers);
+      setInitialStates(mappedUsers);
     } catch (err) {
       console.error(err);
       setError("Impossible de charger les utilisateurs.");
@@ -46,8 +48,14 @@ useEffect(() => {
     setSaving(true);
     setError("");
     try {
-      const payload = userStates.map(u => ({ idUser: u.id, state: u.state }));
-      await TaskApi.updateWorkspaceUsers(workspaceId, payload);
+      const updates = userStates.filter((user, idx) => {
+        return user.state !== initialStates[idx]?.state;
+      });
+      await Promise.all(
+        updates.map(user =>
+          TaskApi.editWorkspaceUser(workspaceId, user.id, { state: user.state })
+        )
+      );
       onUpdate?.();
       onClose();
     } catch (err) {
