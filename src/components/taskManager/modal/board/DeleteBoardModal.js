@@ -1,16 +1,12 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
+import { BaseModal } from "@components"
 
 const DeleteBoardModal = ({ title, onConfirm, onCancel }) => {
   const mode = useSelector((state) => state.theme.mode);
 
   return (
-    <div className={`tm-modal-overlay ${mode}`} onClick={onCancel}>
-      <div
-        className={`tm-modal-popup ${mode}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+   <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
         <button className="tm-modal-close" onClick={onCancel}>
           ✖
         </button>
@@ -27,8 +23,7 @@ const DeleteBoardModal = ({ title, onConfirm, onCancel }) => {
           <button className="tm-danger" onClick={onConfirm}>Supprimer</button>
           <button onClick={onCancel}>Annuler</button>
         </div>
-      </div>
-    </div>
+      </BaseModal>
   );
 };
 

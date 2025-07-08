@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./TaskEditorModal.css";
-import { BoardCardAccess } from "@components";
+import { BoardCardAccess, BaseModal } from "@components";
 
 const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCard }) => {
   const isEdit = !!modalData.cardId;
@@ -95,8 +95,7 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
   };
 
   return (
-    <div className="tm-modal-overlay" onClick={closeModal}>
-      <div className={`tm-modal-popup tmedit ${themeMode}`} onClick={(e) => e.stopPropagation()}>
+   <BaseModal onClose={closeModal} className={`tmedit ${themeMode}`}>
         <button className="tm-close-btn" onClick={closeModal}>×</button>
           {isEdit && !isEditing && (
             <button className="tm-edit-btn" onClick={() => setIsEditing(true)}>✏️ Modifier</button>
@@ -161,8 +160,7 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
         </div>
 
 
-      </div>
-    </div>
+      </BaseModal>
   );
 };
 

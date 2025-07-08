@@ -2,7 +2,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import "./../../TaskCard.css"
-import { BoardCardAccess } from "@components"
+import { BoardCardAccess, BaseModal } from "@components"
+
 
 const getStateLabel = (state) => {
   switch (state) {
@@ -23,8 +24,7 @@ const TaskViewerModal = ({ card, boardId, closeModal, openEdit }) => {
   };
 
   return (
-    <div className="tm-modal-overlay" onClick={closeModal}>
-      <div className={`tm-modal-popup viewer ${themeMode}`} onClick={(e) => e.stopPropagation()}>
+    <BaseModal onClose={closeModal} className={`tmedit ${themeMode}`}>
         <button className="tm-close-btn" onClick={closeModal}>×</button>
         <div className="tm-viewer-grid">
           <div className="tm-viewer-left">
@@ -60,8 +60,7 @@ const TaskViewerModal = ({ card, boardId, closeModal, openEdit }) => {
 
           </div>
         </div>
-      </div>
-    </div>
+      </BaseModal>
   );
 };
 

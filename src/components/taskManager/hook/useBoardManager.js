@@ -11,13 +11,13 @@ export default function useBoardManager(workspaceId) {
         const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
         const userId = await UserInfo.getId();
 
-        const droit = (data.idOwner == userId)
+        const droit = (String (data.idOwner) === String (userId))
           ? "owner"
-          : data.user.find(user => user.id == userId)?.state;
+          : data.user.find(user =>String (user.id) === String (userId))?.state;
 
         data.tableau.forEach(table => {
           table.card.forEach(card => {
-            card.droit = (card.idOwner == userId) ? "owner" : droit;
+            card.droit = (String (card.idOwner) === String (userId)) ? "owner" : droit;
           });
         });
         const boardsArray = (data?.tableau || []).map(b => ({
@@ -45,7 +45,7 @@ export default function useBoardManager(workspaceId) {
       const [id, board] = Object.entries(data)[0];
       setBoards(prev => [
         ...prev,
-        { id, name: board.name, color: board.color, cards: [] }
+        { id, name: board.name, color: board.color,droit: "owner", cards: [] }
       ]);
     } catch (err) {
       console.error("Erreur lors de la création d’un board :", err);

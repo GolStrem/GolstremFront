@@ -1,16 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { BaseModal } from "@components";
 
 
 const DeleteWorkspaceModal = ({ name, onConfirm, onCancel }) => {
   const mode = useSelector((state) => state.theme.mode);
 
   return (
-    <div className={`tm-modal-overlay ${mode}`} onClick={onCancel}>
-      <div
-        className={`tm-modal-popup ${mode}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
         <button className="tm-modal-close" onClick={onCancel}>
           ✖
         </button>
@@ -30,8 +27,7 @@ const DeleteWorkspaceModal = ({ name, onConfirm, onCancel }) => {
           </button>
           <button onClick={onCancel}>Annuler</button>
         </div>
-      </div>
-    </div>
+    </BaseModal>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { BaseModal } from "@components"
 
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
@@ -15,11 +16,7 @@ const BoardModal = ({ closeModal, handleCreateBoard }) => {
   };
 
   return (
-    <div className={`tm-modal-overlay ${mode}`} onClick={closeModal}>
-      <div
-        className={`tm-modal-popup ${mode}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+   <BaseModal onClose={closeModal} className={`tmedit ${mode}`}>
         {/* Croix de fermeture */}
         <button className="tm-close-button" onClick={closeModal} aria-label="Fermer">
           ×
@@ -49,8 +46,7 @@ const BoardModal = ({ closeModal, handleCreateBoard }) => {
           <button onClick={handleSubmit}>Créer</button>
           <button onClick={closeModal}>Annuler</button>
         </div>
-      </div>
-    </div>
+      </BaseModal>
   );
 };
 

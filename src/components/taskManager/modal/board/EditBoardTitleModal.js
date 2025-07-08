@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { BaseModal } from '@components'
 
 
 const EditBoardTitleModal = ({ currentTitle, onConfirm, onCancel }) => {
@@ -13,11 +14,7 @@ const EditBoardTitleModal = ({ currentTitle, onConfirm, onCancel }) => {
   };
 
   return (
-    <div className={`tm-modal-overlay ${mode}`} onClick={onCancel}>
-      <div
-        className={`tm-modal-popup ${mode}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
         <button className="tm-close-button" onClick={onCancel} aria-label="Fermer">
           ×
         </button>
@@ -37,8 +34,7 @@ const EditBoardTitleModal = ({ currentTitle, onConfirm, onCancel }) => {
           <button onClick={handleSubmit}>Valider</button>
           <button onClick={onCancel}>Annuler</button>
         </div>
-      </div>
-    </div>
+    </BaseModal>
   );
 };
 

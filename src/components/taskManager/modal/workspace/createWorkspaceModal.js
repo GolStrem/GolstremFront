@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { isValidImageUrl } from "@service";
-
+import { BaseModal } from "@components"
 
 
 const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
@@ -45,11 +45,7 @@ const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
 
 
   return (
-    <div className={`tm-modal-overlay ${mode}`} onClick={onCancel}>
-      <div
-        className={`tm-modal-popup ${mode}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
         <button className="tm-modal-close" onClick={onCancel}>
           ✖
         </button>
@@ -96,8 +92,7 @@ const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
           </button>
           <button onClick={onCancel}>Annuler</button>
         </div>
-      </div>
-    </div>
+    </BaseModal>
   );
 };
 
