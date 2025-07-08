@@ -25,6 +25,7 @@ const realApi = {
 
   addWorkspaceUser: (workspaceId, data) => api.post(`/workSpace/${workspaceId}/user`, data),
   removeWorkspaceUser: (workspaceId, userId) => api.delete(`/workSpace/${workspaceId}/user/${userId}`),
+  editWorkspaceUser:(workspaceId, userId, data) => api.put(`/workSpace/${workspaceId}/user/${userId}`, data)
 };
 
 const taskApi = USE_MOCK ? MockTaskApi : realApi;
