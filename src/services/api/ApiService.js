@@ -38,6 +38,10 @@ const realApi = {
     return api.get(`/user/sendMailPassword/${encodeURIComponent(email)}`);
   },
 
+  getUserByPseudo(pseudo) {
+     return api.get(`/user/${encodeURIComponent(pseudo)}`);
+  },
+
   logout,
   getToken,
   setToken,
