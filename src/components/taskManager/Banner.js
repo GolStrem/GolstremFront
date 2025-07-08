@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from "react";
 import banner from "@assets/banner.jpg";
-import avatar1 from "@assets/avatar.png";
-import avatar2 from "@assets/avatar.png";
 import { TaskApi } from "@service";
+import { AddUserModal } from "@components";
+import { FaUserPlus } from "react-icons/fa";
+import avatar1 from "@assets/avatar.png";
 import "./Banner.css";
 
 const Banner = ({ workspaceId }) => {
   const [workspace, setWorkspace] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+
+  const fetchWorkspace = async () => {
+    try {
+      const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
+      const users = data.user || [];
+      setWorkspace({ ...data, users });
+    } catch (err) {
+      console.error("Erreur lors du chargement du workspace :", err);
+      setWorkspace(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchWorkspace = async () => {
-      try {
-        const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
-        setWorkspace(data);
-      } catch (err) {
-        console.error("Erreur lors du chargement du workspace :", err);
-        setWorkspace(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchWorkspace();
   }, [workspaceId]);
 
   useEffect(() => {
     const handleWorkspaceUpdated = (e) => {
       if (e.detail.id === workspaceId) {
-        setWorkspace((prev) => ({
-          ...prev,
-          ...e.detail.updatedFields,
-        }));
+        // Recharger complètement les données pour être sûr d'avoir la dernière liste d'utilisateurs
+        fetchWorkspace();
       }
     };
 
@@ -41,7 +42,6 @@ const Banner = ({ workspaceId }) => {
       window.removeEventListener("workspaceUpdated", handleWorkspaceUpdated);
     };
   }, [workspaceId]);
-
 
   return (
     <div
@@ -81,12 +81,35 @@ const Banner = ({ workspaceId }) => {
           )}
         </div>
 
-
         <div className="tm-banner-avatars">
-          <img src={avatar1} alt="avatar1" />
-          <img src={avatar2} alt="avatar2" />
+          {(workspace?.users || []).map((user) => (
+            <img
+              key={user.id}
+              src={user.image || avatar1}
+              alt={user.pseudo || "Utilisateur"}
+              title={`${user.pseudo || "Utilisateur"} (${user.state})`}
+              className="tm-avatar"
+            />
+          ))}
+          <button
+            className="tm-add-user-btn"
+            onClick={() => setShowAddUserModal(true)}
+            title="Ajouter un utilisateur"
+          >
+            <FaUserPlus size={20} className="userplus" />
+          </button>
         </div>
       </div>
+
+      {showAddUserModal && (
+        <AddUserModal
+          workspaceId={workspaceId}
+          onClose={() => {
+            setShowAddUserModal(false);
+            fetchWorkspace(); // Recharge immédiatement après fermeture pour voir le nouvel utilisateur
+          }}
+        />
+      )}
     </div>
   );
 };

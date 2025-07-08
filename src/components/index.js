@@ -42,3 +42,6 @@ export { default as useCardManager} from './taskManager/hook/useCardManager';
 
 export { default as BoardCardAccess } from './taskManager/utils/BoardCardAccess';
 export { default as BaseModal } from './taskManager/utils/BaseModal';
+
+export { default as AddUserModal } from './taskManager/modal/user/AddUserModal';
+export { default as UserRightsModal } from './taskManager/modal/user/UserRightsModal';

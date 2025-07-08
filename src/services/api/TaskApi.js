@@ -22,6 +22,10 @@ const realApi = {
 
   moveCard: (workspaceId, data) => api.patch(`/workSpace/${workspaceId}/move/card`, data),
   moveTableau: (workspaceId, data) => api.patch(`/workSpace/${workspaceId}/move/tableau`, data),
+
+  addWorkspaceUser: (workspaceId, data) => api.post(`/workSpace/${workspaceId}/user`, data),
+  removeWorkspaceUser: (workspaceId, userId) => api.delete(`/workSpace/${workspaceId}/user/${userId}`),
+  editWorkspaceUser:(workspaceId, userId, data) => api.put(`/workSpace/${workspaceId}/user/${userId}`, data)
 };
 
 const taskApi = USE_MOCK ? MockTaskApi : realApi;

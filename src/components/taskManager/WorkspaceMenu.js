@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { TaskApi, UserInfo } from "@service";
-import { DeleteWorkspaceModal, ModifWorkspaceModal, CreateWorkspaceModal } from "@components";
+import { DeleteWorkspaceModal, ModifWorkspaceModal, CreateWorkspaceModal, UserRightsModal } from "@components";
 import "./WorkspaceMenu.css";
 import "./modal/taskModal.css";
+
+
 
 const WorkspaceMenu = ({ setCurrentWorkspace }) => {
   const mode = useSelector((state) => state.theme.mode);
@@ -23,6 +25,9 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   const [userId, setUserId] = useState(null);
+
+  const [showUserRightsModal, setShowUserRightsModal] = useState(false);
+
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -196,7 +201,22 @@ const confirmEdit = async (form) => {
                   >
                     ✏️ Modifier
                   </button>
-                  <button onClick={() => handleDelete(ws)}>🗑️ Supprimer</button>
+                  <button 
+                    onClick={() => 
+                    handleDelete(ws)}>
+                      🗑️ Supprimer
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setWorkspaceToEdit(ws);
+                      setShowEditModal(false);
+                      setShowUserRightsModal(true);
+                    }}
+                  >
+                    👥 Utilisateurs
+                  </button>
+
                 </div>
               )}
 
@@ -242,6 +262,14 @@ const confirmEdit = async (form) => {
         <CreateWorkspaceModal
           onConfirm={confirmCreate}
           onCancel={() => setShowCreateModal(false)}
+        />
+      )}
+
+      {showUserRightsModal && (
+        <UserRightsModal
+          workspaceId={workspaceToEdit.id}
+          onClose={() => setShowUserRightsModal(false)}
+          onUpdate={fetchWorkspaces}
         />
       )}
 

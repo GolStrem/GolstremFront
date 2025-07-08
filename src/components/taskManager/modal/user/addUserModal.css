@@ -1,0 +1,162 @@
+/* addUserModal.css - harmonisé avec TaskEditorModal */
+
+.tm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.tm-modal-popup {
+  background: var(--blanc);
+  border: 2px solid var(--jaune);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tm-modal-popup.dark {
+  background: var(--noir);
+  color: var(--blanc);
+}
+
+.tm-modal-popup.light {
+  background: var(--blanc);
+  color: var(--noir);
+}
+
+.tm-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: inherit;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.tm-close-btn:hover {
+  opacity: 0.8;
+}
+
+.tm-close-btn::after {
+  content: "×";
+  display: inline-block;
+  line-height: 1;
+}
+
+.tm-label {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.tm-label-field {
+  margin-top: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #f3f3f3;
+}
+
+.tm-modal-popup.dark .tm-label-field {
+  background-color: #2c2c2c;
+}
+
+.tm-label input,
+.tm-label select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.089);
+  color: inherit;
+  box-sizing: border-box;
+}
+
+.tm-modal-popup.dark .tm-label input,
+.tm-modal-popup.dark .tm-label select {
+  background-color: transparent;
+}
+
+.tm-error {
+  color: var(--btn-danger);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.tm-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tm-modal-buttons button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tm-modal-buttons .submit-btn {
+  background-color: var(--color-accent-yellow);
+  color: #181818;
+  font-weight: bold;
+}
+
+.tm-modal-buttons .cancel-btn {
+  background-color: #bdc3c7;
+  color: #000;
+}
+
+@media (max-width: 600px) {
+  .tm-modal-popup {
+    padding: 20px 16px;
+    max-width: 95%;
+  }
+  .tm-modal-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+
+.tm-success {
+  color: green;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.tm-add-user-btn{
+    background: none;
+    border: none;
+    color: var(--jaune);
+}
+
+.tm-add-user-icon path {
+  fill: var(--jaune); /* ou n’importe quelle couleur CSS */
+}
+
+.userplus{
+    color: white;
+    height: 40px;
+    width: auto;
+    
+}
+
+.tm-banner-avatars img {
+    margin-left: -35px;
+}
