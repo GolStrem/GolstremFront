@@ -6,10 +6,11 @@ import { FaUserPlus } from "react-icons/fa";
 import avatar1 from "@assets/avatar.png";
 import "./Banner.css";
 
-const Banner = ({ workspaceId }) => {
+const Banner = ({ workspaceId, onSearch }) => {
   const [workspace, setWorkspace] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [search, setSearch] = useState("");
 
   const fetchWorkspace = async () => {
     try {
@@ -31,7 +32,6 @@ const Banner = ({ workspaceId }) => {
   useEffect(() => {
     const handleWorkspaceUpdated = (e) => {
       if (e.detail.id === workspaceId) {
-        // Recharger complètement les données pour être sûr d'avoir la dernière liste d'utilisateurs
         fetchWorkspace();
       }
     };
@@ -43,15 +43,12 @@ const Banner = ({ workspaceId }) => {
     };
   }, [workspaceId]);
 
+  useEffect(() => {
+    onSearch?.(search);
+  }, [search, onSearch]);
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        transition: "all 0.3s ease",
-        paddingRight: "16px",
-      }}
-    >
+    <div style={{ display: "flex", justifyContent: "center", paddingRight: "16px" }}>
       <div
         className="tm-header-banner"
         style={{
@@ -60,24 +57,25 @@ const Banner = ({ workspaceId }) => {
           backgroundPosition: "center",
           width: "100%",
           maxWidth: "3000px",
-          transition: "all 0.3s ease",
           height: "300px",
         }}
       >
         <div className="tm-banner-search">
-          <input type="text" placeholder="Rechercher..." />
+          <input
+            type="text"
+            placeholder="Rechercher dans tableaux et cartes…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
         <div className="tm-banner-info">
           <h1 className="tm-banner-title">
-            {loading && "Chargement..."}
-            {!loading && workspace ? workspace.name : ""}
+            {loading ? "Chargement..." : workspace?.name || ""}
           </h1>
 
           {!loading && workspace?.description && (
-            <p className="tm-banner-description">
-              {workspace.description}
-            </p>
+            <p className="tm-banner-description">{workspace.description}</p>
           )}
         </div>
 
@@ -106,7 +104,7 @@ const Banner = ({ workspaceId }) => {
           workspaceId={workspaceId}
           onClose={() => {
             setShowAddUserModal(false);
-            fetchWorkspace(); // Recharge immédiatement après fermeture pour voir le nouvel utilisateur
+            fetchWorkspace();
           }}
         />
       )}
