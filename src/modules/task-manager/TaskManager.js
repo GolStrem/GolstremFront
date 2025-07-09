@@ -13,11 +13,13 @@ import {
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
-import { useBoardManager, useCardManager, BoardCardAccess } from "@components";
-import { UserInfo, normalize } from "@service";
+import { useBoardManager, useCardManager, BoardCardAccess, useDomDragAndDrop } from "@components";
+import { UserInfo, normalize, TaskApi } from "@service";
 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css";
+import taskApi from "services/api/TaskApi";
+
 
 const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   const mode = useSelector((state) => state.theme.mode);
@@ -33,7 +35,46 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     droit,
   } = useBoardManager(workspaceId);
 
-  const { createOrUpdateCard, deleteCard } = useCardManager(workspaceId, boards, setBoards);
+  const { createOrUpdateCard, deleteCard } = useCardManager(
+    workspaceId,
+    boards,
+    setBoards
+  );
+
+  useDomDragAndDrop(async (data) => {
+    const newPos = await taskApi.moveCard(workspaceId, data)
+
+    // On part de : boards et newPos.data
+    // 1️⃣ Map globale de toutes les cartes disponibles
+    const allCardsMap = new Map();
+
+    boards.forEach(board => {
+      board.cards.forEach(card => {
+        allCardsMap.set(card.id, card);
+      });
+    });
+
+    const updatedBoards = boards.map(board => {
+      const orderedCardsForBoard = newPos.data?.[board.id];
+
+      if (!orderedCardsForBoard) {
+        // Aucun ordre pour ce board, le laisser vide ou tel quel ?
+        return { ...board };
+      }
+
+      const orderedCards = orderedCardsForBoard
+        .sort((a, b) => a.pos - b.pos)
+        .map(entry => allCardsMap.get(entry.id))
+        .filter(Boolean); // retirer undefined si carte manquante
+
+      return {
+        ...board,
+        cards: orderedCards
+      };
+    });
+
+    setBoards(updatedBoards)
+  });
 
   const filteredBoards = boards
     .map((board) => {
@@ -88,6 +129,24 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     return () => window.removeEventListener("resize", calculateColumns);
   }, [calculateColumns]);
 
+  const refreshBoards = async () => {
+    try {
+      const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
+      const updatedBoards = (data.tableau || []).map(b => ({
+        id: b.id,
+        name: b.name,
+        color: b.color,
+        image: b.image,
+        createdAt: b.createdAt,
+        droit,
+        cards: b.card || []
+      }));
+      setBoards(updatedBoards);
+    } catch (err) {
+      console.error("Erreur lors du rafraîchissement :", err);
+    }
+  };
+
   const openModal = (boardId, card = null) => {
     setModalData({
       boardId,
@@ -106,46 +165,32 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     setViewingCard(null);
   };
 
-  const handleCardDragEnd = (event) => {
-    const { active, over } = event;
-    if (!active?.id || !over?.id || active.id === over.id) return;
-
-    const activeCardId = active.id;
-
-    let sourceBoardId = null;
-    let draggedCard = null;
-
-    for (const board of boards) {
-      const card = board.cards.find((c) => c.id === activeCardId);
-      if (card) {
-        sourceBoardId = board.id;
-        draggedCard = card;
-        break;
-      }
-    }
-
-    if (!sourceBoardId || !draggedCard) return;
-  };
-
   const sensors = useSensors(useSensor(PointerSensor));
+
+  
 
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
       <div className="tm-main-content">
-      
-         {BoardCardAccess.hasWriteAccess(droit) && (
-        <button
-          className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}   
-          onClick={() => setShowBoardModal(true)}
-        >
-          <span className="tm-add-icon">+</span>
-          <span className="tm-add-text"> Nouveau tableau </span>
-        </button>
-         )}
-
+        {BoardCardAccess.hasWriteAccess(droit) && (
+          <button
+            className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}
+            onClick={() => setShowBoardModal(true)}
+          >
+            <span className="tm-add-icon">+</span>
+            <span className="tm-add-text"> Nouveau tableau </span>
+          </button>
+        )}
 
         <div className="tm-boards-wrapper">
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCardDragEnd}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={(event) => {
+
+            }}
+          >
+
             <Masonry
               breakpointCols={columns}
               className="tm-boards-masonry"
@@ -201,5 +246,7 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     </div>
   );
 };
+
+
 
 export default TaskManager;

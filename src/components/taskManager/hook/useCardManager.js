@@ -43,7 +43,7 @@ export default function useCardManager(workspaceId, boards, setBoards) {
         setBoards(prev =>
           prev.map(board =>
             board.id === boardId
-              ? { ...board, cards: [...board.cards, { id,droit: "owner", ...card }] }
+              ? { ...board, cards: [...board.cards, { id:Number(id),droit: "owner", ...card }] }
               : board
           )
         );
