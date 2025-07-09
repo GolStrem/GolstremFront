@@ -96,7 +96,7 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
 
   return (
    <BaseModal onClose={closeModal} className={`tmedit ${themeMode}`}>
-        <button className="tm-close-btn" onClick={closeModal}>×</button>
+        <button className="tm-close-btn" onClick={closeModal}></button>
           {isEdit && !isEditing && (
             <button className="tm-edit-btn" onClick={() => setIsEditing(true)}>✏️ Modifier</button>
           )}

@@ -25,7 +25,7 @@ const TaskViewerModal = ({ card, boardId, closeModal, openEdit }) => {
 
   return (
     <BaseModal onClose={closeModal} className={`tmedit ${themeMode}`}>
-        <button className="tm-close-btn" onClick={closeModal}>×</button>
+        <button className="tm-close-btn" onClick={closeModal}></button>
         <div className="tm-viewer-grid">
           <div className="tm-viewer-left">
             <h2 className="tm-viewer-name">{card.name}</h2>
