@@ -210,7 +210,7 @@ const DnDBoard = ({
             transition: "max-height 0.3s ease, overflow 0.3s ease",
           }}
         >
-          <div className="tm-cards" ref={cardsContainerRef}>
+          <div className="tm-cards" ref={cardsContainerRef} data-id={board.id}>
             {board.cards.length === 0 && (
               <div className={`tm-empty-board-placeholder ${mode}`}>
                 Déposez une carte ici

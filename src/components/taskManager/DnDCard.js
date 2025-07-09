@@ -49,6 +49,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
 
   return (
     <div
+      data-id={card.id}
       ref={(node) => {
         setNodeRef(node);
         cardRef.current = node;
