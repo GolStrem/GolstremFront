@@ -18,6 +18,7 @@ import { UserInfo, normalize, TaskApi } from "@service";
 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css";
+import taskApi from "services/api/TaskApi";
 
 
 const TaskManager = ({ workspaceId = "Default", search = "" }) => {
@@ -40,20 +41,42 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     setBoards
   );
 
-  useDomDragAndDrop(({ idCard, oldPos, newPos, oldTab, newTab }) => {
-    setBoards((prev) => {
-      const updated = [...prev];
+  useDomDragAndDrop(async (data) => {
+    const newPos = await taskApi.moveCard(workspaceId, data)
+    console.log(newPos.data)
+    console.log(boards)
 
-      const sourceBoard = updated.find((b) => b.id === oldTab);
-      const targetBoard = updated.find((b) => b.id === newTab);
+    // On part de : boards et newPos.data
+    // 1️⃣ Map globale de toutes les cartes disponibles
+    const allCardsMap = new Map();
 
-      if (!sourceBoard || !targetBoard) return updated;
-
-      const [movedCard] = sourceBoard.cards.splice(oldPos, 1);
-      targetBoard.cards.splice(newPos, 0, movedCard);
-
-      return updated;
+    boards.forEach(board => {
+      board.cards.forEach(card => {
+        allCardsMap.set(card.id, card);
+      });
     });
+
+    const updatedBoards = boards.map(board => {
+      const orderedCardsForBoard = newPos.data?.[board.id];
+
+      if (!orderedCardsForBoard) {
+        // Aucun ordre pour ce board, le laisser vide ou tel quel ?
+        return { ...board };
+      }
+
+      const orderedCards = orderedCardsForBoard
+        .sort((a, b) => a.pos - b.pos)
+        .map(entry => allCardsMap.get(entry.id))
+        .filter(Boolean); // retirer undefined si carte manquante
+
+      return {
+        ...board,
+        cards: orderedCards
+      };
+    });
+
+    console.log(updatedBoards);
+    setBoards(updatedBoards)
   });
 
   const filteredBoards = boards

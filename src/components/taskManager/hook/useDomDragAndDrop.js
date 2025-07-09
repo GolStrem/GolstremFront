@@ -30,11 +30,9 @@ export default function useGhostDragAndDrop(callback) {
           idCard: firstElement.getAttribute("data-id"),
           oldPos: getChildIndex(firstElement),
           newPos: getChildIndex(secondElement),
-          oldTab: firstElement.parentElement.getAttribute("data-id"),
-          newTab: secondElement.parentElement.getAttribute("data-id"),
+          oldTableau: firstElement.parentElement.getAttribute("data-id"),
+          newTableau: secondElement.parentElement.getAttribute("data-id"),
         };
-
-        console.log("Drag data:", data);
 
         if (typeof callback === "function") {
           callback(data);
