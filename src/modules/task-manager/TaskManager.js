@@ -13,28 +13,49 @@ import {
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
-import { useBoardManager, useCardManager } from "@components";
+import { useBoardManager, useCardManager, BoardCardAccess } from "@components";
+import { UserInfo, normalize } from "@service";
+
 import "./TaskManager.css";
-import { UserInfo } from "@service";
 import "../../components/taskManager/BoardManager.css";
 
-const TaskManager = ({ workspaceId = "Default" }) => {
+const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   const mode = useSelector((state) => state.theme.mode);
+
   const {
     boards,
-    setBoards, // ajoute ceci
+    setBoards,
     createBoard,
     deleteBoard,
     updateBoard,
     dragStartBoard,
     dropBoard,
+    droit,
   } = useBoardManager(workspaceId);
 
-  const {
-    createOrUpdateCard,
-    deleteCard,
-  } = useCardManager(workspaceId, boards, setBoards);
+  const { createOrUpdateCard, deleteCard } = useCardManager(workspaceId, boards, setBoards);
 
+  const filteredBoards = boards
+    .map((board) => {
+      const q = normalize(search.trim());
+      if (!q) return board;
+
+      const boardMatch = normalize(board.name).includes(q);
+      if (boardMatch) return board;
+
+      const cardsMatch = (board.cards || []).filter(
+        (card) =>
+          normalize(card.name).includes(q) ||
+          normalize(card.description).includes(q)
+      );
+
+      if (cardsMatch.length > 0) {
+        return { ...board, cards: cardsMatch };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
 
   const [columns, setColumns] = useState(3);
   const COLUMN_WIDTH = 340;
@@ -51,7 +72,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
 
   useEffect(() => {
     if (workspaceId) {
-      UserInfo.set("lastWorkspace", workspaceId)
+      UserInfo.set("lastWorkspace", workspaceId);
     }
   }, [workspaceId]);
 
@@ -90,7 +111,6 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     if (!active?.id || !over?.id || active.id === over.id) return;
 
     const activeCardId = active.id;
-    const overContainerId = over.id;
 
     let sourceBoardId = null;
     let draggedCard = null;
@@ -105,18 +125,6 @@ const TaskManager = ({ workspaceId = "Default" }) => {
     }
 
     if (!sourceBoardId || !draggedCard) return;
-
-    const targetBoard = boards.find((b) => b.id === overContainerId);
-    if (targetBoard) {
-      return;
-    }
-
-    for (const board of boards) {
-      const index = board.cards.findIndex((c) => c.id === over.id);
-      if (index !== -1) {
-        return;
-      }
-    }
   };
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -124,13 +132,17 @@ const TaskManager = ({ workspaceId = "Default" }) => {
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
       <div className="tm-main-content">
+      
+         {BoardCardAccess.hasWriteAccess(droit) && (
         <button
-          className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}
+          className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}   
           onClick={() => setShowBoardModal(true)}
         >
           <span className="tm-add-icon">+</span>
-          <span className="tm-add-text"> Nouveau tableau</span>
+          <span className="tm-add-text"> Nouveau tableau </span>
         </button>
+         )}
+
 
         <div className="tm-boards-wrapper">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCardDragEnd}>
@@ -139,7 +151,7 @@ const TaskManager = ({ workspaceId = "Default" }) => {
               className="tm-boards-masonry"
               columnClassName="tm-boards-masonry-column"
             >
-              {boards.map((board, index) => (
+              {filteredBoards.map((board, index) => (
                 <SortableContext
                   key={board.id}
                   items={board.cards.map((c) => c.id)}
@@ -152,8 +164,8 @@ const TaskManager = ({ workspaceId = "Default" }) => {
                     openViewerModal={openViewer}
                     handleUpdateBoard={updateBoard}
                     handleDeleteBoard={deleteBoard}
-                    onBoardDragStart={(e) => dragStartBoard(index)}
-                    onBoardDrop={(e) => dropBoard(index)}
+                    onBoardDragStart={() => dragStartBoard(index)}
+                    onBoardDrop={() => dropBoard(index)}
                   />
                 </SortableContext>
               ))}

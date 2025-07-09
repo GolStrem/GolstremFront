@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import TaskManager from "../modules/task-manager/TaskManager";
 import { useSelector } from "react-redux";
@@ -7,6 +7,8 @@ import { Banner, WorkspaceMenu } from "@components";
 const Workspace = () => {
   const { id: workspaceId } = useParams();
   const mode = useSelector((state) => state.theme.mode);
+
+  const [search, setSearch] = useState("");
 
   return (
     <div
@@ -21,8 +23,8 @@ const Workspace = () => {
           position: "relative",
         }}
       >
-        <Banner workspaceId={workspaceId} />
-        <TaskManager workspaceId={workspaceId} />
+        <Banner workspaceId={workspaceId} onSearch={setSearch} />
+        <TaskManager workspaceId={workspaceId} search={search} />
 
         {/* WORKSPACE MENU EN BAS A DROITE */}
         <div style={{ position: "fixed", bottom: "1rem", right: "1rem", zIndex: 1000 }}>

@@ -180,7 +180,7 @@ const confirmEdit = async (form) => {
               >
                 {ws.name}
               </NavLink>
-              {String (userId) === String (ws.idOwner) && (
+              {String(userId) === String(ws.idOwner) ? (
                 <button
                   className="tmw-item-menu-btn"
                   onClick={() =>
@@ -189,7 +189,31 @@ const confirmEdit = async (form) => {
                 >
                   ⋯
                 </button>
+              ) : (
+                <button
+                  className="tmw-item-quit-btn"
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    try {
+                      await TaskApi.removeWorkspaceUser(ws.id, userId);
+                      const updated = workspaces.filter(w => w.id !== ws.id);
+                      setWorkspaces(updated);
+
+                      // Si on était sur ce workspace
+                      if (window.location.pathname.includes(ws.id)) {
+                        const fallbackId = updated[0]?.id;
+                        navigate(`/workspace/${fallbackId || ""}`);
+                      }
+                    } catch (err) {
+                      console.error("Erreur lors de la sortie du workspace :", err);
+                    }
+                  }}
+                  title="Quitter le workspace"
+                >
+                  ×
+                </button>
               )}
+
               {menuOpenFor === ws.id && (
                 <div className="tmw-item-menu">
                   <button

@@ -191,3 +191,18 @@
   background: var(--jaune);
   color: #1e1e1e;
 }
+
+
+.tmw-item-quit-btn{
+  all: unset;
+  cursor: pointer;
+  border: none;
+  background-color: none;
+  z-index: 3;
+}
+
+.tmw-item-quit-btn:hover{
+
+  background-color: none;
+}
+

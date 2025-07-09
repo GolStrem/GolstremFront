@@ -40,6 +40,7 @@ export { default as ModifWorkspaceModal} from './taskManager/modal/workspace/Mod
 export { default as useBoardManager } from './taskManager/hook/useBoardManager';
 export { default as useCardManager} from './taskManager/hook/useCardManager';
 
+
 export { default as BoardCardAccess } from './taskManager/utils/BoardCardAccess';
 export { default as BaseModal } from './taskManager/utils/BaseModal';
 
