@@ -3,6 +3,7 @@ import banner from "@assets/banner.jpg";
 import { TaskApi } from "@service";
 import { AddUserModal } from "@components";
 import { FaUserPlus } from "react-icons/fa";
+import { IoClose } from "react-icons/io5"; // pour la croix
 import avatar1 from "@assets/avatar.png";
 import "./Banner.css";
 
@@ -47,6 +48,8 @@ const Banner = ({ workspaceId, onSearch }) => {
     onSearch?.(search);
   }, [search, onSearch]);
 
+  const clearSearch = () => setSearch("");
+
   return (
     <div style={{ display: "flex", justifyContent: "center", paddingRight: "16px" }}>
       <div
@@ -61,12 +64,19 @@ const Banner = ({ workspaceId, onSearch }) => {
         }}
       >
         <div className="tm-banner-search">
-          <input
-            type="text"
-            placeholder="Rechercher dans tableaux et cartes…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="tm-search-wrapper">
+            <input
+              type="text"
+              placeholder="Rechercher"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && (
+              <button className="tm-search-clear" onClick={clearSearch} title="Effacer">
+                <IoClose size={18} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="tm-banner-info">

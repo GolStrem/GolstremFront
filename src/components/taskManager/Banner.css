@@ -105,3 +105,24 @@
   border: 2px solid var(--color-accent-yellow);
   margin-left: -2px;
 }
+
+
+.tm-search-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+
+
+.tm-search-clear {
+  display: flex;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #888;
+}
