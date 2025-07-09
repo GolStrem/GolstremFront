@@ -14,7 +14,7 @@ import {
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
 import { useBoardManager, useCardManager, BoardCardAccess } from "@components";
-import { UserInfo, normalize } from "@service";
+import { UserInfo, normalize, TaskApi } from "@service";
 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css";
@@ -106,26 +106,95 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     setViewingCard(null);
   };
 
-  const handleCardDragEnd = (event) => {
-    const { active, over } = event;
-    if (!active?.id || !over?.id || active.id === over.id) return;
 
-    const activeCardId = active.id;
+  const moveCardToOtherBoard = ({ active, over }) => {
+  if (!active?.id || !over?.id) return;
 
-    let sourceBoardId = null;
-    let draggedCard = null;
+  const cardId = active.id;
+  const overId = over.id;
 
-    for (const board of boards) {
-      const card = board.cards.find((c) => c.id === activeCardId);
-      if (card) {
-        sourceBoardId = board.id;
-        draggedCard = card;
-        break;
-      }
+  let sourceBoardIndex = null;
+  let targetBoardIndex = null;
+
+  let cardToMove = null;
+
+  boards.forEach((board, boardIdx) => {
+    const card = board.cards.find(c => c.id === cardId);
+    if (card) {
+      sourceBoardIndex = boardIdx;
+      cardToMove = card;
     }
 
-    if (!sourceBoardId || !draggedCard) return;
+    if (board.id === overId || board.cards.some(c => c.id === overId)) {
+      targetBoardIndex = boardIdx;
+    }
+  });
+
+  if (!cardToMove || sourceBoardIndex === null || targetBoardIndex === null) return;
+  if (sourceBoardIndex === targetBoardIndex) return; // ne fait rien si c'est le même board
+
+  setBoards(prev => {
+    const updated = [...prev];
+
+    updated[sourceBoardIndex].cards = updated[sourceBoardIndex].cards.filter(c => c.id !== cardId);
+    updated[targetBoardIndex].cards = [
+      ...updated[targetBoardIndex].cards,
+      cardToMove
+    ];
+
+    return updated;
+  });
+
+  TaskApi.moveCard(workspaceId, {
+    cardId,
+    fromBoardId: boards[sourceBoardIndex].id,
+    toBoardId: boards[targetBoardIndex].id,
+  });
   };
+
+  const reorderCardsInBoard = ({ active, over }) => {
+  if (!active?.id || !over?.id || active.id === over.id) return;
+
+  const cardId = active.id;
+  const overCardId = over.id;
+
+  let boardIndex = null;
+  let sourceIndex = null;
+  let targetIndex = null;
+
+  boards.forEach((board, bIdx) => {
+    board.cards.forEach((card, cIdx) => {
+      if (card.id === cardId) {
+        boardIndex = bIdx;
+        sourceIndex = cIdx;
+      }
+      if (card.id === overCardId) {
+        boardIndex = bIdx;
+        targetIndex = cIdx;
+      }
+    });
+  });
+
+  if (boardIndex === null || sourceIndex === null || targetIndex === null) return;
+
+  setBoards(prev => {
+    const updated = [...prev];
+    const cards = [...updated[boardIndex].cards];
+    const [moved] = cards.splice(sourceIndex, 1);
+    cards.splice(targetIndex, 0, moved);
+    updated[boardIndex].cards = cards;
+    return updated;
+  });
+
+  TaskApi.moveCard(workspaceId, {
+    cardId,
+    fromBoardId: boards[boardIndex].id,
+    toBoardId: boards[boardIndex].id,
+    oldPos: sourceIndex,
+    newPos: targetIndex,
+  });
+  };
+
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -145,7 +214,15 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
 
 
         <div className="tm-boards-wrapper">
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCardDragEnd}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={(event) => {
+            moveCardToOtherBoard(event);
+            reorderCardsInBoard(event);
+          }}
+        >
+
             <Masonry
               breakpointCols={columns}
               className="tm-boards-masonry"
