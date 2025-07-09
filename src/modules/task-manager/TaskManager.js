@@ -13,7 +13,7 @@ import {
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
-import { useBoardManager, useCardManager } from "@components";
+import { useBoardManager, useCardManager, BoardCardAccess } from "@components";
 import { UserInfo, normalize } from "@service";
 
 import "./TaskManager.css";
@@ -30,6 +30,7 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     updateBoard,
     dragStartBoard,
     dropBoard,
+    droit,
   } = useBoardManager(workspaceId);
 
   const { createOrUpdateCard, deleteCard } = useCardManager(workspaceId, boards, setBoards);
@@ -131,13 +132,17 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   return (
     <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
       <div className="tm-main-content">
+      
+         {BoardCardAccess.hasWriteAccess(droit) && (
         <button
-          className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}
+          className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}   
           onClick={() => setShowBoardModal(true)}
         >
           <span className="tm-add-icon">+</span>
-          <span className="tm-add-text"> Nouveau tableau</span>
+          <span className="tm-add-text"> Nouveau tableau </span>
         </button>
+         )}
+
 
         <div className="tm-boards-wrapper">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCardDragEnd}>

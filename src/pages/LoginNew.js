@@ -28,7 +28,6 @@ const LoginNew = () => {
     const token = localStorage.getItem('token');
     if (token !== null) {
       navigate('/dashboard');
-      console.log('Redirection vers dashboard');
     }
   }, [navigate]);
 

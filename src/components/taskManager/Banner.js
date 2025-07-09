@@ -26,13 +26,37 @@ const Banner = ({ workspaceId, onSearch }) => {
     }
   };
 
-  useEffect(() => {
+ useEffect(() => {
+    const fetchWorkspace = async () => {
+      try {
+        const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
+        const users = data.user || [];
+        setWorkspace({ ...data, users });
+      } catch (err) {
+        console.error("Erreur lors du chargement du workspace :", err);
+        setWorkspace(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchWorkspace();
   }, [workspaceId]);
 
   useEffect(() => {
     const handleWorkspaceUpdated = (e) => {
       if (e.detail.id === workspaceId) {
+        const fetchWorkspace = async () => {
+          try {
+            const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
+            const users = data.user || [];
+            setWorkspace({ ...data, users });
+          } catch (err) {
+            console.error("Erreur lors du chargement du workspace :", err);
+            setWorkspace(null);
+          }
+        };
+
         fetchWorkspace();
       }
     };
@@ -43,6 +67,7 @@ const Banner = ({ workspaceId, onSearch }) => {
       window.removeEventListener("workspaceUpdated", handleWorkspaceUpdated);
     };
   }, [workspaceId]);
+
 
   useEffect(() => {
     onSearch?.(search);

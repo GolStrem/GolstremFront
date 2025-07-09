@@ -4,6 +4,7 @@ import { TaskApi, UserInfo } from "@service";
 export default function useBoardManager(workspaceId) {
   const [boards, setBoards] = useState([]);
   const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
+  const [droit, setDroit] = useState(null); 
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -11,13 +12,16 @@ export default function useBoardManager(workspaceId) {
         const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
         const userId = await UserInfo.getId();
 
-        const droit = (String (data.idOwner) === String (userId))
-          ? "owner"
-          : data.user.find(user =>String (user.id) === String (userId))?.state;
+        const computedDroit =
+                String(data.idOwner) === String(userId)
+                  ? "owner"
+                  : data.user.find(user => String(user.id) === String(userId))?.state || null;
+
+              setDroit(computedDroit);
 
         data.tableau.forEach(table => {
           table.card.forEach(card => {
-            card.droit = (String (card.idOwner) === String (userId)) ? "owner" : droit;
+            card.droit = (String (card.idOwner) === String (userId)) ? "owner" : computedDroit;
           });
         });
         const boardsArray = (data?.tableau || []).map(b => ({
@@ -26,7 +30,7 @@ export default function useBoardManager(workspaceId) {
           color: b.color,
           image: b.image,
           createdAt: b.createdAt,
-          droit: droit,
+          droit: computedDroit,
           cards: b.card || []
         }));
         setBoards(boardsArray);
@@ -105,11 +109,12 @@ export default function useBoardManager(workspaceId) {
 
   return {
     boards,
-    setBoards, // <--- expose aussi setBoards pour le hook des cartes
+    setBoards, 
     createBoard,
     deleteBoard,
     updateBoard,
     dragStartBoard,
     dropBoard,
+    droit,
   };
 }
