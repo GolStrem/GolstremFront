@@ -24,20 +24,25 @@ export default function useGhostDragAndDrop(callback) {
 
     const onMouseUp = (e) => {
       const secondElement = e.target.closest(".tm-cards > div");
-
-      if (firstElement && secondElement && firstElement !== secondElement) {
-        const data = {
+      const data = {
           idCard: firstElement.getAttribute("data-id"),
           oldPos: getChildIndex(firstElement),
-          newPos: getChildIndex(secondElement),
-          oldTableau: firstElement.parentElement.getAttribute("data-id"),
-          newTableau: secondElement.parentElement.getAttribute("data-id"),
-        };
+          oldTableau: firstElement.parentElement.getAttribute("data-id")
+      }
 
-        if (typeof callback === "function") {
+      if (secondElement === null && e.target.closest(".tm-board-container") !== null) {
+        data.newPos = 0
+        data.newTableau = e.target.closest(".tm-board-container").querySelector(".tm-cards").getAttribute("data-id")
+      }
+
+      if (firstElement && secondElement && firstElement !== secondElement) {
+        data.newPos =  getChildIndex(secondElement)
+        data.newTableau = secondElement.parentElement.getAttribute("data-id")
+      }
+
+        if (data.newTableau !== undefined && typeof callback === "function") {
           callback(data);
         }
-      }
 
       if (ghostElement) {
         ghostElement.remove();

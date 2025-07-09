@@ -43,8 +43,6 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
 
   useDomDragAndDrop(async (data) => {
     const newPos = await taskApi.moveCard(workspaceId, data)
-    console.log(newPos.data)
-    console.log(boards)
 
     // On part de : boards et newPos.data
     // 1️⃣ Map globale de toutes les cartes disponibles
@@ -75,7 +73,6 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
       };
     });
 
-    console.log(updatedBoards);
     setBoards(updatedBoards)
   });
 

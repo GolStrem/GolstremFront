@@ -54,7 +54,6 @@ document.addEventListener('mouseup', (e) => {
       oldTab: firstElement.parentElement.getAttribute('data-id'),
       newTab: secondElement.parentElement.getAttribute('data-id')
     };
-    console.log(data);
   }
 
   // Nettoyage du fantôme
