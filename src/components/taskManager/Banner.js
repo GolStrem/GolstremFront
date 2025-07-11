@@ -120,7 +120,7 @@ const Banner = ({ workspaceId, onSearch }) => {
           >
             <FaUserPlus size={20} className="userplus" />
           </button>
-          )};
+          )}
         </div>
       </div>
 

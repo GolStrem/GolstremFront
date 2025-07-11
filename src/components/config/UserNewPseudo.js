@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { ApiService } from "@service";
+import { setUserPseudo } from "@store";
 
 const UserNewPseudo = ({ onUpdate }) => {
   const [user, setUser] = useState(null);
@@ -7,6 +9,8 @@ const UserNewPseudo = ({ onUpdate }) => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -17,12 +21,9 @@ const UserNewPseudo = ({ onUpdate }) => {
           throw new Error("Utilisateur non trouvé");
         }
 
-        console.log("Utilisateur connecté :", data);
-
         setUser(data);
         setPseudo(data.pseudo || "");
-      } catch (err) {
-        console.error("Erreur lors de la récupération de l’utilisateur", err);
+      } catch {
         setError("Impossible de récupérer vos informations.");
       }
     };
@@ -36,17 +37,20 @@ const UserNewPseudo = ({ onUpdate }) => {
     setLoading(true);
     setError("");
 
-    try {
-      await ApiService.updateUser(user.id, { pseudo });
+      const responseApi = await ApiService.updateUser(user.id, { pseudo });
+      if (responseApi.status === 409) {
+        setError("Pseudo non disponible");
+        setLoading(false);
+        return
+      }
+      
       setEditing(false);
       setUser((prev) => ({ ...prev, pseudo }));
       onUpdate?.(pseudo);
-    } catch (err) {
-      console.error(err);
-      setError("Erreur lors de la mise à jour");
-    } finally {
+
+      localStorage.setItem("pseudo", pseudo);
+      dispatch(setUserPseudo(pseudo));
       setLoading(false);
-    }
   };
 
   if (error) {

@@ -14,12 +14,6 @@ import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 
 import apiService from '@service/api/ApiService';
 import { login as loginAction } from '@store/authSlice';
-import { UserInfo } from '@service'
-
-
-
-
-
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';
@@ -66,36 +60,38 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    try {
+    
       if (isLogin) {
+        // 1️⃣ login
         await apiService.login(form.email, form.password);
-        const pseudo = await UserInfo.getPseudo();
 
-        // Redux login
+        // 2️⃣ récupérer infos utilisateur
+        const { data } = await apiService.getUser();
+
+        // 3️⃣ mettre à jour Redux
         dispatch(
           loginAction({
             token: apiService.getToken(),
-            userCode: pseudo,
+            userCode: data.pseudo,
+            pseudo: data.pseudo,
+            avatar: data.image || '', // avatar si déjà défini
           })
         );
 
         onClose();
         navigate('/dashboard');
       } else {
-        await apiService.createUser(form.username, form.password, form.email);
+        // inscription
+        const responseApi = await apiService.createUser(form.username, form.password, form.email);
+        if (responseApi.status === 409){
+          const message = 'Pseudo ou email déjà utilisé.';
+        setErrors({ global: message });
+      }else{
         setShowSuccessModal(true);
+        setForm({ username: '', password: '', confirm: '', email: '' });
+        setPasswordStrength('');
+        setPasswordScore(0);
       }
-
-      setForm({ username: '', password: '', confirm: '', email: '' });
-      setPasswordStrength('');
-      setPasswordScore(0);
-    } catch (err) {
-      console.error(err);
-      const message =
-        err.response?.status === 409
-          ? 'Cet utilisateur existe déjà.'
-          : 'Erreur : identifiants invalides ou problème serveur.';
-      setErrors({ global: message });
     }
   };
 

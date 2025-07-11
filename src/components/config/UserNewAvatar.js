@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import avatarPlaceholder from "@assets/avatar.png";
 import { ApiService } from "@service";
+import { setUserAvatar } from "@store";
 
 const UserNewAvatar = ({ onUpdate }) => {
   const [user, setUser] = useState(null);
@@ -8,6 +10,8 @@ const UserNewAvatar = ({ onUpdate }) => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -18,12 +22,9 @@ const UserNewAvatar = ({ onUpdate }) => {
           throw new Error("Utilisateur non trouvé");
         }
 
-        console.log("Utilisateur connecté :", data);
-
         setUser(data);
         setImage(data.image || "");
       } catch (err) {
-        console.error("Erreur lors de la récupération de l’utilisateur", err);
         setError("Impossible de récupérer vos informations.");
       }
     };
@@ -41,10 +42,11 @@ const UserNewAvatar = ({ onUpdate }) => {
       await ApiService.updateUser(user.id, { image });
       setEditing(false);
       setUser((prev) => ({ ...prev, image }));
-      console.log(`Avatar mis à jour en "${image}"`);
       onUpdate?.(image);
+
+      localStorage.setItem("avatar", image);
+      dispatch(setUserAvatar(image));
     } catch (err) {
-      console.error(err);
       setError("Erreur lors de la mise à jour");
     } finally {
       setLoading(false);
