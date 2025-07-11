@@ -206,3 +206,44 @@
   background-color: none;
 }
 
+@media (max-width: 768px) {
+  .tmw-list {
+    width: 90vw;
+    padding: 0.5rem;
+  }
+
+  .tmw-item-container {
+    height: auto;
+    text-align: center;
+    padding: 5px;
+    flex-direction: wrap;
+  }
+
+  .tmw-item-menu {
+    right: 0;
+    top: 100%;
+    transform: translateY(0);
+  }
+
+  .tmw-toggle {
+    font-size: 1.1em;
+    padding: 0.5em 0.9em;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .tmw-list {
+    width: 90vw;
+  }
+
+  .tmw-label {
+    max-width: 120px;
+    font-size: 0.9rem;
+  }
+
+  .tmw-toggle {
+    font-size: 1em;
+    padding: 0.4em 0.8em;
+  }
+}

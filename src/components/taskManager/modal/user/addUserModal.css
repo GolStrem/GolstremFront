@@ -126,6 +126,7 @@
   .tm-modal-popup {
     padding: 20px 16px;
     max-width: 95%;
+    margin: 20px;
   }
   .tm-modal-buttons {
     flex-direction: column;
