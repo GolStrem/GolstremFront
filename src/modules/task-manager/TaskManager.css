@@ -366,5 +366,24 @@ color: black;
   }
 }
 
+@media (max-width: 420px){
+
+  .tm-boards-masonry-column{
+    margin-right: 0;
+  }
+
+  .tm-main-content{
+    margin:0;
+    padding: 0;
+  }
+}
+
+@media (max-width: 3750px){
+
+  .tm-board-container{
+    width: 358px;
+  }
+}
+
 
 
