@@ -11,11 +11,12 @@ import LnResetPasswordModal from './components/login/LnResetPasswordModal';
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Workspace = lazy(() => import('./pages/Workspace'));
+const Config = lazy(() => import('./pages/Config'));
 
 const routes = [
   {
     path: '/',
-    element: <LoginNew />,
+    element: <Accueil/>,
   },
   {
     path: '/login',
@@ -31,6 +32,16 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <Dashboard />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/config',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <Config />
         </Layout>
       </ProtectedRoute>
     ),

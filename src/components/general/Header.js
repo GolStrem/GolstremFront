@@ -90,7 +90,7 @@ const Header = () => {
               <FaHome /> Dashboard
             </button>
 
-            <button className="dropdown-item red" onClick={() => navigate('/settings')}>
+            <button className="dropdown-item red" onClick={() => navigate('/config')}>
               <FaTools /> Paramètres
             </button>
 
