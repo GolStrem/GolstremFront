@@ -1,0 +1,227 @@
+/* Conteneur général */
+.user-new-pseudo,
+.user-settings-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 8px;
+
+}
+
+.user-new-pseudo h3,
+.user-settings-section h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--jaune);
+  order: 1;
+}
+
+/* Image utilisateur */
+.user-new-pseudo-img,
+.user-settings-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+ 
+}
+
+/* Texte pseudo */
+.user-new-pseudo-name {
+  font-weight: bold;
+  font-size: 1.2rem;
+  order: 2;
+}
+
+/* Bouton d'édition */
+.user-new-pseudo-edit,
+.user-settings-edit {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  order: 5;
+}
+
+.user-new-pseudo-edit:hover,
+.user-settings-edit:hover {
+  color: #000;
+}
+
+/* Formulaire d'édition */
+.user-new-pseudo-edit-form,
+.user-settings-edit-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  order: 2;
+}
+
+.user-new-pseudo-edit-form input,
+.user-settings-edit-form input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.user-new-pseudo-save,
+.user-settings-save {
+  background: transparent;
+  border: none;
+  color: green;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.user-new-pseudo-cancel,
+.user-settings-cancel {
+  background: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* Erreurs */
+.user-new-pseudo-error,
+.user-settings-error {
+  color: red;
+  font-size: 0.9rem;
+}
+
+
+.parametre-page {
+  display: flex;
+  min-height: 100vh; /* ✅ toute la hauteur de l'écran */
+
+}
+.parametre-h2{
+    font-size: 35px;
+}
+
+.parametre-page.light {
+  color: black
+}
+
+.parametre-page.dark {
+  color: #ddd;
+}
+
+.parametre-sidebar {
+  background-color: #b8ad1a;
+  color: #222;
+  font-weight: bold;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-align: center;
+  padding: 1rem;
+  font-size: 6.5rem;
+  transform: rotate(-180deg);
+}
+
+.parametre-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.parametre-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parametre-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+
+
+.parametre-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+
+.parametre-style-top {
+  width: 120px;
+  margin-bottom: 0.5rem;
+}
+
+.parametre-style-bottom {
+  width: 120px;
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+.parametre-warning {
+  position: absolute;
+  bottom: 2rem;
+  right: 1rem;
+  width: 100px;
+}
+
+
+.parametre-rectangle{
+    width: 15px;
+    height: 105px;
+    background-color: var(--jaune);
+    margin-top: 5px;
+}
+
+.parametre-general{
+    display: flex;
+    margin-left: 20px;
+}
+
+.param-g{
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--jaune);
+  order: 1;
+  font-weight: bold;
+}
+.param-g-label{
+  color: var(--jaune);
+}
+.param-g-value{
+  color: white;
+}
+.parametre-page.light .param-g-value {
+  color: black; /* ou noir ou une couleur foncée */
+}
+.parametre-page.light .user-new-pseudo-edit {
+  background: transparent;
+  border: none;
+  color: black;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  order: 5;
+}
+
+.param-g.a{
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.parametre-maj{
+    padding: 1rem;
+}
+
+.user-settings-edit{
+    margin-left: -28px;
+    margin-bottom: -55px;
+}
+
+.parametre-page.light .user-settings-edit {
+    color: black;
+
+}

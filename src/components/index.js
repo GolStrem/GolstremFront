@@ -43,3 +43,10 @@ export { default as BaseModal } from './taskManager/utils/BaseModal';
 
 export { default as AddUserModal } from './taskManager/modal/user/AddUserModal';
 export { default as UserRightsModal } from './taskManager/modal/user/UserRightsModal';
+
+
+
+// Config
+
+export {default as UserNewPseudo } from './config/UserNewPseudo';
+export {default as UserNewAvatar } from './config/UserNewAvatar';

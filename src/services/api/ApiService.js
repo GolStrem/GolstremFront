@@ -18,6 +18,7 @@ const realApi = {
     return api.post('/user/create', { pseudo, password, email });
   },
 
+  // recuperer l'user (image pseudo)
   getUser() {
     return api.get('/user');
   },
@@ -28,6 +29,11 @@ const realApi = {
 
   updateUserInfo(payload) {
     return api.put('/userInfo', payload);
+  },
+
+  // mettre a jour l'user ( image pseudo )
+  updateUser(id,payload){
+    return api.put(`/user/${id}`, payload )
   },
 
   changePasswordByToken(userId, token, newPassword) {
