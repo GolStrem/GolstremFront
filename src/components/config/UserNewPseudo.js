@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import  { useDispatch } from "react-redux";
 import { ApiService } from "@service";
+import { setUserPseudo } from "@store"; 
 
 const UserNewPseudo = ({ onUpdate }) => {
   const [user, setUser] = useState(null);
@@ -7,6 +9,8 @@ const UserNewPseudo = ({ onUpdate }) => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+    const dispatch = useDispatch(); 
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -16,8 +20,6 @@ const UserNewPseudo = ({ onUpdate }) => {
         if (!data || !data.id) {
           throw new Error("Utilisateur non trouvé");
         }
-
-        console.log("Utilisateur connecté :", data);
 
         setUser(data);
         setPseudo(data.pseudo || "");
@@ -41,6 +43,10 @@ const UserNewPseudo = ({ onUpdate }) => {
       setEditing(false);
       setUser((prev) => ({ ...prev, pseudo }));
       onUpdate?.(pseudo);
+
+      localStorage.setItem("pseudo", pseudo);
+      dispatch(setUserPseudo(pseudo));
+
     } catch (err) {
       console.error(err);
       setError("Erreur lors de la mise à jour");

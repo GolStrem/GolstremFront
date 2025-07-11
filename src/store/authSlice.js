@@ -1,7 +1,5 @@
-// store/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
-// Récupère le token depuis localStorage au chargement
 const token = localStorage.getItem('token');
 
 const authSlice = createSlice({
@@ -10,22 +8,35 @@ const authSlice = createSlice({
     isAuthenticated: !!token,
     userCode: '',
     token: token || null,
+    pseudo: null,
+    avatar: null,
   },
   reducers: {
     login(state, action) {
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.userCode = action.payload.userCode || '';
+      state.pseudo = action.payload.pseudo || '';
+      state.avatar = action.payload.avatar || '';
       localStorage.setItem('token', state.token);
     },
     logout(state) {
       state.isAuthenticated = false;
       state.token = null;
       state.userCode = '';
+      state.pseudo = null;
+      state.avatar = null;
       localStorage.removeItem('token');
+    },
+    setUserPseudo(state, action) {
+      state.pseudo = action.payload;
+      state.userCode = action.payload;
+    },
+    setUserAvatar(state, action) {
+      state.avatar = action.payload;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, setUserPseudo, setUserAvatar } = authSlice.actions;
 export default authSlice.reducer;
