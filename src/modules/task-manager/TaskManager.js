@@ -18,7 +18,7 @@ import { UserInfo, normalize, TaskApi } from "@service";
 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css";
-import taskApi from "services/api/TaskApi";
+
 
 
 const TaskManager = ({ workspaceId = "Default", search = "" }) => {
@@ -42,7 +42,7 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   );
 
   useDomDragAndDrop(async (data) => {
-    const newPos = await taskApi.moveCard(workspaceId, data)
+    const newPos = await TaskApi.moveCard(workspaceId, data)
 
     // On part de : boards et newPos.data
     // 1️⃣ Map globale de toutes les cartes disponibles
@@ -132,23 +132,7 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     return () => window.removeEventListener("resize", calculateColumns);
   }, [calculateColumns]);
 
-  const refreshBoards = async () => {
-    try {
-      const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
-      const updatedBoards = (data.tableau || []).map(b => ({
-        id: b.id,
-        name: b.name,
-        color: b.color,
-        image: b.image,
-        createdAt: b.createdAt,
-        droit,
-        cards: b.card || []
-      }));
-      setBoards(updatedBoards);
-    } catch (err) {
-      console.error("Erreur lors du rafraîchissement :", err);
-    }
-  };
+
 
   const openModal = (boardId, card = null) => {
     setModalData({
