@@ -126,3 +126,106 @@
   cursor: pointer;
   color: #888;
 }
+
+
+
+@media (max-width: 1024px) {
+  .tm-header-banner {
+    height: 160px;
+  }
+
+  .tm-banner-title {
+    font-size: 1.6rem;
+  }
+
+  .tm-banner-description {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .tm-banner-search input {
+    width: 180px;
+    font-size: 0.9rem;
+  }
+
+  .tm-banner-avatars img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tm-header-banner {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    margin: 10px;
+    width: calc(100vw - 20px);
+  }
+
+  .tm-banner-info {
+    order: 1;
+  }
+
+  .tm-banner-title {
+    font-size: 1.4rem;
+  }
+
+  .tm-banner-description {
+    font-size: 1rem;
+  }
+
+  .tm-banner-search {
+    position: static;
+    margin-top: 10px;
+    order: 4;
+  }
+
+  .tm-banner-avatars {
+    position: absolute;  /* 👈 on garde absolute */
+    bottom: 1rem;        /* 👈 toujours collé en bas */
+    right: 1rem;         /* 👈 toujours à droite */
+    gap: 6px;
+  }
+
+  .tm-banner-avatars img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .userPlus{
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tm-header-banner {
+    height: auto;
+    margin: 5px;
+    width: calc(100vw - 10px);
+  }
+
+  .tm-banner-title {
+    font-size: 1.2rem;
+  }
+
+  .tm-banner-description {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  .tm-banner-search input {
+    width: 160px;
+  }
+
+  .tm-banner-avatars {
+    bottom: 0.5rem;     /* un peu plus haut si besoin */
+    right: 0.5rem;
+    gap: 4px;
+  }
+
+  .tm-banner-avatars img {
+    width: 32px;
+    height: 32px;
+  }
+}
