@@ -23,6 +23,8 @@
   transition: background 0.3s, color 0.3s;
   display: flex;
   flex-direction: column;
+    max-height: 90vh; /* maximum 90% de la hauteur visible */
+  overflow-y: auto; /* active le scroll si besoin */
 }
 .tm-modal-popup label{
 
@@ -259,3 +261,6 @@
 .tm-danger:hover {
   background-color: #b91c1c;
 }
+
+
+
