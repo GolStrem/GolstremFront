@@ -334,8 +334,6 @@ color: black;
     margin: 10px auto;
   }
 
-
-
   .tm-boards-masonry{
     margin-left: -1rem;
   }
@@ -344,9 +342,29 @@ color: black;
     margin: 5px;
 
   }
+
+  .tm-floating-add{
+    font-size: 1em;
+    padding: 0.5em 0.9em;
+    bottom: 65px;
+
+  }
+
+  .tm-add-text{
+    font-size: 1.1em;
+
+  }
+
+  .tm-add-icon{
+    font-size: 1em;
+  }
 }
 
-
+@media (max-width: 480px) {
+  .tm-floating-add{
+    padding: 0.4em 0.8em;
+  }
+}
 
 
 
