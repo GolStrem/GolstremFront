@@ -378,12 +378,7 @@ color: black;
   }
 }
 
-@media (max-width: 375px){
 
-  .tm-board-container{
-    width: 358px;
-  }
-}
 
 
 
