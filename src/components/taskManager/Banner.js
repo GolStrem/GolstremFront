@@ -76,7 +76,7 @@ const Banner = ({ workspaceId, onSearch }) => {
   const clearSearch = () => setSearch("");
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", paddingRight: "16px" }}>
+    <div style={{ display: "flex", justifyContent: "center"}}>
       <div
         className="tm-header-banner"
         style={{
