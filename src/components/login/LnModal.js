@@ -60,7 +60,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    try {
+    
       if (isLogin) {
         // 1️⃣ login
         await apiService.login(form.email, form.password);
@@ -82,19 +82,16 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
         navigate('/dashboard');
       } else {
         // inscription
-        await apiService.createUser(form.username, form.password, form.email);
+        const responseApi = await apiService.createUser(form.username, form.password, form.email);
+        if (responseApi.status === 409){
+          const message = 'Pseudo ou email déjà utilisé.';
+        setErrors({ global: message });
+      }else{
         setShowSuccessModal(true);
+        setForm({ username: '', password: '', confirm: '', email: '' });
+        setPasswordStrength('');
+        setPasswordScore(0);
       }
-
-      setForm({ username: '', password: '', confirm: '', email: '' });
-      setPasswordStrength('');
-      setPasswordScore(0);
-    } catch (err) {
-      const message =
-        err.response?.status === 409
-          ? 'Cet utilisateur existe déjà.'
-          : 'Erreur : identifiants invalides ou problème serveur.';
-      setErrors({ global: message });
     }
   };
 

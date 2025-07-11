@@ -37,19 +37,20 @@ const UserNewPseudo = ({ onUpdate }) => {
     setLoading(true);
     setError("");
 
-    try {
-      await ApiService.updateUser(user.id, { pseudo });
+      const responseApi = await ApiService.updateUser(user.id, { pseudo });
+      if (responseApi.status === 409) {
+        setError("Pseudo non disponible");
+        setLoading(false);
+        return
+      }
+      
       setEditing(false);
       setUser((prev) => ({ ...prev, pseudo }));
       onUpdate?.(pseudo);
 
       localStorage.setItem("pseudo", pseudo);
       dispatch(setUserPseudo(pseudo));
-    } catch {
-      setError("Erreur lors de la mise à jour");
-    } finally {
       setLoading(false);
-    }
   };
 
   if (error) {
