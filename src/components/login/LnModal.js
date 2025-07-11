@@ -14,12 +14,6 @@ import { evaluatePasswordStrength, getStrengthColor } from './lnFormUtils';
 
 import apiService from '@service/api/ApiService';
 import { login as loginAction } from '@store/authSlice';
-import { UserInfo } from '@service'
-
-
-
-
-
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';
@@ -68,20 +62,26 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
 
     try {
       if (isLogin) {
+        // 1️⃣ login
         await apiService.login(form.email, form.password);
-        const pseudo = await UserInfo.getPseudo();
 
-        // Redux login
+        // 2️⃣ récupérer infos utilisateur
+        const { data } = await apiService.getUser();
+
+        // 3️⃣ mettre à jour Redux
         dispatch(
           loginAction({
             token: apiService.getToken(),
-            userCode: pseudo,
+            userCode: data.pseudo,
+            pseudo: data.pseudo,
+            avatar: data.image || '', // avatar si déjà défini
           })
         );
 
         onClose();
         navigate('/dashboard');
       } else {
+        // inscription
         await apiService.createUser(form.username, form.password, form.email);
         setShowSuccessModal(true);
       }
@@ -90,7 +90,6 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
       setPasswordStrength('');
       setPasswordScore(0);
     } catch (err) {
-      console.error(err);
       const message =
         err.response?.status === 409
           ? 'Cet utilisateur existe déjà.'

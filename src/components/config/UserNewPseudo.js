@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import  { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ApiService } from "@service";
-import { setUserPseudo } from "@store"; 
+import { setUserPseudo } from "@store";
 
 const UserNewPseudo = ({ onUpdate }) => {
   const [user, setUser] = useState(null);
@@ -10,7 +10,7 @@ const UserNewPseudo = ({ onUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-    const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,8 +23,7 @@ const UserNewPseudo = ({ onUpdate }) => {
 
         setUser(data);
         setPseudo(data.pseudo || "");
-      } catch (err) {
-        console.error("Erreur lors de la récupération de l’utilisateur", err);
+      } catch {
         setError("Impossible de récupérer vos informations.");
       }
     };
@@ -46,9 +45,7 @@ const UserNewPseudo = ({ onUpdate }) => {
 
       localStorage.setItem("pseudo", pseudo);
       dispatch(setUserPseudo(pseudo));
-
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Erreur lors de la mise à jour");
     } finally {
       setLoading(false);
