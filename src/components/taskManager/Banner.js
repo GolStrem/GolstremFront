@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import banner from "@assets/banner.jpg";
-import { TaskApi } from "@service";
-import { AddUserModal } from "@components";
+import { TaskApi, UserInfo } from "@service";
+import { AddUserModal, BoardCardAccess } from "@components";
 import { FaUserPlus } from "react-icons/fa";
 import { IoClose } from "react-icons/io5"; // pour la croix
 import avatar1 from "@assets/avatar.png";
@@ -12,10 +12,22 @@ const Banner = ({ workspaceId, onSearch }) => {
   const [loading, setLoading] = useState(true);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [search, setSearch] = useState("");
+  const [droit, setDroit] = useState(null);
 
-  const fetchWorkspace = async () => {
+ const fetchWorkspace = useCallback(async () => {
     try {
+      
+      const userId = await UserInfo.getId();
       const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
+
+      const computedDroit =
+        String(data.idOwner) === String(userId)
+          ? "owner"
+          : data.user.find(user => String(user.id) === String(userId))?.state || null;
+
+      setDroit(computedDroit);
+      data.droit = computedDroit;
+
       const users = data.user || [];
       setWorkspace({ ...data, users });
     } catch (err) {
@@ -24,39 +36,15 @@ const Banner = ({ workspaceId, onSearch }) => {
     } finally {
       setLoading(false);
     }
-  };
-
- useEffect(() => {
-    const fetchWorkspace = async () => {
-      try {
-        const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
-        const users = data.user || [];
-        setWorkspace({ ...data, users });
-      } catch (err) {
-        console.error("Erreur lors du chargement du workspace :", err);
-        setWorkspace(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorkspace();
   }, [workspaceId]);
+
+  useEffect(() => {
+    fetchWorkspace();
+  }, [fetchWorkspace]);
 
   useEffect(() => {
     const handleWorkspaceUpdated = (e) => {
       if (e.detail.id === workspaceId) {
-        const fetchWorkspace = async () => {
-          try {
-            const { data } = await TaskApi.getWorkspaceDetail(workspaceId);
-            const users = data.user || [];
-            setWorkspace({ ...data, users });
-          } catch (err) {
-            console.error("Erreur lors du chargement du workspace :", err);
-            setWorkspace(null);
-          }
-        };
-
         fetchWorkspace();
       }
     };
@@ -66,7 +54,7 @@ const Banner = ({ workspaceId, onSearch }) => {
     return () => {
       window.removeEventListener("workspaceUpdated", handleWorkspaceUpdated);
     };
-  }, [workspaceId]);
+  }, [workspaceId, fetchWorkspace]);
 
 
   useEffect(() => {
@@ -124,6 +112,7 @@ const Banner = ({ workspaceId, onSearch }) => {
               className="tm-avatar"
             />
           ))}
+          {BoardCardAccess.hasWriteAccess(droit) && (
           <button
             className="tm-add-user-btn"
             onClick={() => setShowAddUserModal(true)}
@@ -131,6 +120,7 @@ const Banner = ({ workspaceId, onSearch }) => {
           >
             <FaUserPlus size={20} className="userplus" />
           </button>
+          )};
         </div>
       </div>
 

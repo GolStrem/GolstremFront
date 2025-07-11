@@ -13,12 +13,9 @@ export { default as LnSuccessModal } from './login/LnSuccessModal';
 export { default as UseLnFormValidator } from './login/UseLnFormValidator';
 
 // Task Manager
-export { default as Sidebar } from './taskManager/Sidebar';
 export { default as Banner } from './taskManager/Banner';     
 export { default as DnDBoard } from './taskManager/DnDBoard';
 export { default as DnDCard } from './taskManager/DnDCard';
-export { default as SortableBoard } from './taskManager/SortableBoard';
-export { default as SortableItem } from './taskManager/SortableItem';
 export { default as WorkspaceMenu } from './taskManager/WorkspaceMenu';
 
 // Task Manager/card
