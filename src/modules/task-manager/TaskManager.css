@@ -38,7 +38,6 @@
 /* === Wrapper du Masonry === */
 .tm-boards-wrapper {
   width: 100%;
-  padding: 1rem;
   overflow-x: hidden;
   overflow-y: visible;
 }
@@ -48,7 +47,6 @@
   display: flex;
   margin-left: -1rem;
   width: auto;
-  margin-right: 1rem;
 }
 
 .tm-boards-masonry-column {
@@ -59,31 +57,6 @@
 
 .tm-boards-masonry-column > .tm-board-container {
   margin-bottom: 1rem;
-}
-
-
-
-/* === Responsive général === */
-@media (max-width: 768px) {
-  .tm-main-content {
-    margin-left: 0;
-    padding: 10px;
-  }
-
-  .tm-boards-wrapper {
-    display: flex;
-    justify-content: center;
-  }
-
-  .tm-Tabl {
-    width: 100%;
-    max-width: 300px;
-    margin: 10px auto;
-  }
-
-  .tm-boards-masonry-column {
-    padding-left: 0;
-  }
 }
 
 /* === Grille alternative === */
@@ -342,3 +315,38 @@ color: black;
 .tm-board-menu.fixed {
   z-index: 9999 !important;
 }
+
+/* === Responsive général === */
+@media (max-width: 768px) {
+  .tm-main-content {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .tm-boards-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .tm-Tabl {
+    width: 100%;
+    max-width: 400px;
+    margin: 10px auto;
+  }
+
+
+
+  .tm-boards-masonry{
+    margin-left: -1rem;
+  }
+
+  .tm-board-container{
+    margin: 5px;
+
+  }
+}
+
+
+
+
+

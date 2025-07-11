@@ -137,8 +137,10 @@
 @media (max-width: 768px) {
   .tm-board-container {
     width: 100%;
-    max-width: 340px;
+    max-width: 350px;
+    width: 340px;
   }
+  
   .tm-card-actions {
     flex-direction: column;
     gap: 4px;
@@ -151,5 +153,33 @@
   }
   .tm-board-header h2 {
     font-size: 16px;
+  }
+}
+
+@media (max-width: 710px) {
+  .tm-board-container {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 628px) {
+  .tm-board-container {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 587px) {
+  .tm-board-container {
+    width: 100%;
+    max-width: 230px;
+  }
+}
+
+@media (max-width: 532px) {
+  .tm-board-container {
+    width: 400px;
+    max-width: 400px;
   }
 }

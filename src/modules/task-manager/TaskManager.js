@@ -119,9 +119,12 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
 
   const calculateColumns = useCallback(() => {
     const width = window.innerWidth;
-    const possibleColumns = Math.floor(width / (COLUMN_WIDTH + GUTTER));
+    const colUnit = COLUMN_WIDTH + GUTTER;
+    const possibleColumns = Math.round(width / colUnit);
+
     setColumns(Math.max(possibleColumns, 1));
   }, []);
+
 
   useEffect(() => {
     calculateColumns();
