@@ -1,7 +1,6 @@
 // LnSuccessModal.js
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { checkIcon } from '@assets';
 import { StyleModalIcon, CheckIcon } from "@assets";
 
 const LnSuccessModal = ({ message = "Compte créé avec succès ! Un mail vous a été envoyé pour valider votre compte", onClose }) => {

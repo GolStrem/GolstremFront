@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import './LoginNew.css';
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
-import { golstremb, personp, golstremp, golstremc, golden, golstremE, golstremV } from '@assets';
+import { golstremb, personp, golden } from '@assets';
 
 
 const LoginNew = () => {
