@@ -52,9 +52,7 @@ const UserNewPseudo = ({ onUpdate }) => {
       setLoading(false);
   };
 
-  if (error) {
-    return <div className="user-new-pseudo-error">{error}</div>;
-  }
+
 
   if (!user) {
     return <div>Chargement des informations utilisateur…</div>;
@@ -62,6 +60,7 @@ const UserNewPseudo = ({ onUpdate }) => {
 
   return (
     <div className="user-new-pseudo">
+      {error && <div className="user-new-pseudo-error">{error}</div>}
       <h3>Pseudo : </h3>
 
       {!editing ? (
@@ -101,8 +100,6 @@ const UserNewPseudo = ({ onUpdate }) => {
           </button>
         </div>
       )}
-
-      {error && <div className="user-new-pseudo-error">{error}</div>}
     </div>
   );
 };
