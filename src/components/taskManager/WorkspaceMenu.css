@@ -108,11 +108,6 @@
   z-index: 1;
 }
 
-.tmw-item:hover {
-
-  color: #fae25b ;
-
-}
 
 .tmw-create-btn {
   margin-top: 0.5rem;
@@ -151,10 +146,6 @@
   border-radius: 10px;
 }
 
-.tmw-item-container:hover{
-  color: #fae25b;
-  border-color: #fae25b;
-}
 
 .tmw-item-menu-btn {
   background: transparent;
@@ -177,6 +168,8 @@
   flex-direction: column;
   z-index: 1000;
   min-width: 120px ;
+  opacity: inherit;
+
 }
 
 .tmw-item-menu button {
@@ -190,6 +183,10 @@
 .tmw-item-menu button:hover {
   background: var(--jaune);
   color: #1e1e1e;
+  opacity: inherit;
+}
+.tmw-item-menu:hover {
+  color: #1e1e1e;
 }
 
 
@@ -199,6 +196,7 @@
   border: none;
   background-color: none;
   z-index: 3;
+  color: var(--jaune);
 }
 
 .tmw-item-quit-btn:hover{

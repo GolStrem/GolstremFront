@@ -14,8 +14,10 @@ const rootReducer = combineReducers({
 
 const persistConfig = {
   key: 'root',
-  storage, // Définit le stockage (localStorage)
+  storage,
+  whitelist: ['auth', 'theme'],
 };
+
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

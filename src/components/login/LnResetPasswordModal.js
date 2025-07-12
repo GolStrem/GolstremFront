@@ -4,7 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import LnPasswordField from './LnPasswordField';
 import LnSuccessModal from './LnSuccessModal';
 import apiService from '@service/api/ApiService';
-import { warningModal, styleModal } from '@assets';
+import { StyleModalIcon, WarningIcon } from "@assets";
 
 import {
   evaluatePasswordStrength,
@@ -86,8 +86,8 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
           className={`ln-modal-box ln-modal-slide-in ${mode}`}
           onClick={(e) => e.stopPropagation()}
         >
-          <img src={styleModal} alt="Décoration" className="ln-ModalStyle" />
-          <img src={warningModal} alt="Avertissement" className="ln-ModalWarning" />
+          <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
+          <WarningIcon alt="Avertissement" className="ln-ModalWarning" />
           <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">
             ×
           </button>
@@ -133,7 +133,7 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
               </p>
             )}
 
-            <img src={styleModal} alt="Décoration" className="ln-ModalStyle b" />
+            <StyleModalIcon alt="Décoration" className="ln-ModalStyle b" />
           </form>
         </div>
       </div>

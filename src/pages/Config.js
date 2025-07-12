@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./Config.css";
-import { UserNewPseudo, UserNewAvatar } from "@components";
+import { UserNewPseudo, UserNewAvatar, ColorPicker } from "@components";
 import { ApiService } from "@service";
 
-import { styleModal, warningModal } from "@assets";
+import { StyleModalIcon, WarningIcon } from "@assets";
 
 const Parametre = () => {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -29,17 +29,15 @@ const Parametre = () => {
 
   return (
     <div className={`parametre-page ${themeMode}`}>
-      <aside className="parametre-sidebar">
-        PARAMETRE
-      </aside>
+      <aside className="parametre-sidebar">PARAMETRE</aside>
 
       <main className="parametre-main">
         <header className="parametre-header">
           {/* Barres décoratives en haut */}
-          <img src={styleModal} alt="Décoratif" className="parametre-style-top" />
+          <StyleModalIcon className="parametre-style-top" />
         </header>
 
-        <h2 className="parametre-h2">Parametre du compte</h2>
+        <h2 className="parametre-h2">Paramètre du compte</h2>
 
         <section className="parametre-content">
           <div className="parametre-general">
@@ -61,9 +59,15 @@ const Parametre = () => {
           </div>
         </section>
 
+        <h2 className="parametre-h2">Paramètre de couleur</h2>
+        <ColorPicker />
+
         {/* Barres décoratives en bas */}
-        <img src={warningModal} alt="Attention" className="parametre-warning" />
-        <img src={styleModal} alt="Décoratif" className="parametre-style-bottom" />
+        <div className="parametre-warning-wrapper">
+          <WarningIcon className={`parametre-warning`} />
+        </div>
+
+        <StyleModalIcon className="parametre-style-bottom" />
       </main>
     </div>
   );

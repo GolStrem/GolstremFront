@@ -181,7 +181,7 @@
 }
 
 .tm-modal-buttons button:first-child {
-  background-color: var(--color-accent-yellow);
+  background-color: var(--jaune);
   color: #181818;
   font-weight: bold;
 }

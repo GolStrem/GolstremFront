@@ -1,0 +1,72 @@
+/* styles internes du SVG */
+.parametre-warning .cls-1 {
+  fill: none;
+  stroke: currentColor;
+  stroke-miterlimit: 10;
+  stroke-width: 11px;
+}
+
+.parametre-warning .cls-2 {
+  fill: currentColor;
+}
+
+.parametre-style-top .cls-1,
+.parametre-style-bottom .cls-1 {
+  fill: currentColor;
+}
+
+
+.parametre-style-bottom, .parametre-style-top{
+    color: var(--jaune);
+}
+
+.fond-svg{
+    fill: var(--jaune);
+}
+
+.WarningIcon{ 
+    color: var(--jaune);
+}
+
+.StyleModalIcon{
+    color: var(--jaune);
+}
+
+.ln-ModalWarning .cls-1 {
+  fill: none;
+  stroke: currentColor;
+  stroke-miterlimit: 10;
+  stroke-width: 11px;
+  color: var(--jaune);
+}
+
+.ln-ModalWarning .cls-2 {
+  fill: var(--jaune);
+  
+}
+
+.ln-ModalStyle {
+    color: var(--jaune);
+}
+
+.ln-ModalSuccessIcon{
+    fill: var(--jaune);
+}
+
+.GoldenStremC {
+  color: var(--jaune);
+}
+
+.GoldenStremV {
+  color: var(--jaune);
+}
+
+.ln-textlogo{
+    color: var(--jaune);
+    fill: var(--jaune);
+}
+
+.ln-tgold{
+    color: var(--jaune);
+    fill: var(--jaune);
+}

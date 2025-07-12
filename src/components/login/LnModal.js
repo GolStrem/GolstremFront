@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { warningModal, styleModal } from '@assets';
+import { StyleModalIcon, WarningIcon } from "@assets";
 
 import LnForgotModal from './LnForgotModal';
 import LnInput from './LnInput';
@@ -147,8 +147,8 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
         className={`ln-modal-box ln-modal-slide-in ${mode}`}
         onClick={e => e.stopPropagation()}
       >
-        <img src={styleModal} alt="Décoration" className="ln-ModalStyle" />
-        <img src={warningModal} alt="Avertissement" className="ln-ModalWarning" />
+        <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
+        <WarningIcon alt="Avertissement" className="ln-ModalWarning"  />
 
         <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">
           ×
@@ -182,7 +182,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
             {isLogin ? 'Se connecter' : 'Valider la création'}
           </button>
 
-          <img src={styleModal} alt="Décoration" className="ln-ModalStyle b" />
+          <StyleModalIcon alt="Décoration" className="ln-ModalStyle b" />
         </form>
 
         {showForgotModal && (

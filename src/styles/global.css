@@ -17,8 +17,10 @@
 
   }
 
-
-
+  input:-webkit-autofill {
+    background-color: var(--jaune) !important;
+    box-shadow: 0 0 0px 1000px var(--jaune) inset; /* facultatif pour override */
+  }
 
 .global-background {
   position: fixed;
@@ -26,12 +28,17 @@
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-
-  background-image: url('../assets/fond.svg');
-  background-repeat: no-repeat;
-  background-position: bottom left;
   opacity: 0.4;
 }
+
+.global-background .fond-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+
 
   
   body.light-mode {

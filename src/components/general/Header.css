@@ -55,7 +55,7 @@
   align-items: center;
   height: 50px;
   background-color: var(--header-bg);
-  border: 2px solid var(--color-accent-yellow); /* ✅ MAJ ici */
+  border: 2px solid var(--jaune); /* ✅ MAJ ici */
   border-radius: 2rem;
   padding: 0 1rem 0 0.3rem;
   cursor: pointer;
@@ -95,7 +95,7 @@
   right: 0;
   top: calc(100% - 20px);
   background: var(--header-bg);
-  border: 2px solid var(--color-accent-yellow); /* ✅ MAJ ici */
+  border: 2px solid var(--jaune); /* ✅ MAJ ici */
   border-top: none;
   border-radius: 0 0 1rem 1rem;
   padding: 1.8rem 1rem 0.5rem 1rem;
@@ -133,5 +133,5 @@
 
 .dropdown-menu .dropdown-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  color: var(--color-accent-yellow); /* ✅ MAJ ici */
+  color: var(--jaune); /* ✅ MAJ ici */
 }

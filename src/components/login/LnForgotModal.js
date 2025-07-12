@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {warningModal, styleModal } from '@assets';
+
+import { StyleModalIcon, WarningIcon } from "@assets";
 import apiService from '@service/api/ApiService';
 
 const LnForgotModal = ({ onClose, onSubmit }) => {
@@ -43,8 +44,8 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
       <div className="ln-modal-box ln-modal-slide-in" onClick={(e) => e.stopPropagation()}>
         <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">×</button>
 
-        <img src={styleModal} alt="Décoration" className="ln-ModalStyle" />
-        <img src={warningModal} alt="Avertissement" className="ln-ModalWarning" />
+        <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
+        <WarningIcon alt="Avertissement" className="ln-ModalWarning"  />
 
         <h2>Mot de passe oublié</h2>
 
@@ -75,7 +76,7 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
           )}
         </form>
 
-        <img src={styleModal} alt="Décoration" className="ln-ModalStyle b" />
+        <StyleModalIcon alt="Décoration" className="ln-ModalStyle b" />
       </div>
     </div>
   );
