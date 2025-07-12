@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ApiService } from "@service";
-import { setUserPseudo } from "@store";
+import { setUserData } from "@store";
 
 const UserNewPseudo = ({ onUpdate }) => {
   const [user, setUser] = useState(null);
@@ -48,14 +48,11 @@ const UserNewPseudo = ({ onUpdate }) => {
       setUser((prev) => ({ ...prev, pseudo }));
       onUpdate?.(pseudo);
 
-      localStorage.setItem("pseudo", pseudo);
-      dispatch(setUserPseudo(pseudo));
+      dispatch(setUserData({"pseudo": pseudo}));
       setLoading(false);
   };
 
-  if (error) {
-    return <div className="user-new-pseudo-error">{error}</div>;
-  }
+
 
   if (!user) {
     return <div>Chargement des informations utilisateur…</div>;
@@ -63,6 +60,7 @@ const UserNewPseudo = ({ onUpdate }) => {
 
   return (
     <div className="user-new-pseudo">
+      {error && <div className="user-new-pseudo-error">{error}</div>}
       <h3>Pseudo : </h3>
 
       {!editing ? (
@@ -102,8 +100,6 @@ const UserNewPseudo = ({ onUpdate }) => {
           </button>
         </div>
       )}
-
-      {error && <div className="user-new-pseudo-error">{error}</div>}
     </div>
   );
 };
