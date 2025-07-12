@@ -83,6 +83,11 @@ const UserNewAvatar = ({ onUpdate }) => {
             type="text"
             value={image}
             onChange={(e) => setImage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSave();
+              }
+            }}
             disabled={loading}
           />
           <button

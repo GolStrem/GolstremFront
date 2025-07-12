@@ -25,6 +25,7 @@ const Header = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  document.documentElement.style.setProperty("--jaune", localStorage.getItem('color'));
 
   const handleLogout = () => {
     dispatch(logout());

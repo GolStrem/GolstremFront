@@ -79,6 +79,11 @@ const UserNewPseudo = ({ onUpdate }) => {
             type="text"
             value={pseudo}
             onChange={(e) => setPseudo(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSave();
+              }
+            }}
             disabled={loading}
           />
           <button
