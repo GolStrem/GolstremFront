@@ -63,7 +63,12 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     
       if (isLogin) {
         // 1️⃣ login
-        await apiService.login(form.email, form.password);
+        const tryLogin = await apiService.login(form.email, form.password);
+        if (tryLogin === undefined){
+          setErrors({ global: 'Identifiants incorrects' });
+          return
+        }
+        
 
         // 2️⃣ récupérer infos utilisateur
         const { data } = await apiService.getUserDetail();
