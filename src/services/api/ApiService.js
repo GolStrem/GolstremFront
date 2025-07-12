@@ -23,6 +23,15 @@ const realApi = {
     return api.get('/user');
   },
 
+  // mettre a jour l'user ( image pseudo )
+  updateUser(id,payload){
+    return api.put(`/user/${id}`, payload )
+  },
+
+  getUserDetail() {
+    return api.get('/user/detail')
+  },
+
   getUserInfo() {
     return api.get('/userInfo');
   },
@@ -31,10 +40,6 @@ const realApi = {
     return api.put('/userInfo', payload);
   },
 
-  // mettre a jour l'user ( image pseudo )
-  updateUser(id,payload){
-    return api.put(`/user/${id}`, payload )
-  },
 
   changePasswordByToken(userId, token, newPassword) {
     return api.put('/user/changePassword', { userId, token, newPassword });

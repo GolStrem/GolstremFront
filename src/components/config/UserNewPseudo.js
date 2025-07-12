@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ApiService } from "@service";
-import { setUserPseudo } from "@store";
+import { setUserData } from "@store";
 
 const UserNewPseudo = ({ onUpdate }) => {
   const [user, setUser] = useState(null);
@@ -48,8 +48,7 @@ const UserNewPseudo = ({ onUpdate }) => {
       setUser((prev) => ({ ...prev, pseudo }));
       onUpdate?.(pseudo);
 
-      localStorage.setItem("pseudo", pseudo);
-      dispatch(setUserPseudo(pseudo));
+      dispatch(setUserData({"pseudo": pseudo}));
       setLoading(false);
   };
 

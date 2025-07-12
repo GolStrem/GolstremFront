@@ -66,15 +66,20 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
         await apiService.login(form.email, form.password);
 
         // 2️⃣ récupérer infos utilisateur
-        const { data } = await apiService.getUser();
+        const { data } = await apiService.getUserDetail();
+        delete data.friends // Pas encore gêré côté front
+
+        for (const [key, value] of Object.entries(data)) {
+          localStorage.setItem(key, value);
+        }
+
+        
 
         // 3️⃣ mettre à jour Redux
         dispatch(
           loginAction({
             token: apiService.getToken(),
-            userCode: data.pseudo,
-            pseudo: data.pseudo,
-            avatar: data.image || '', // avatar si déjà défini
+            ...data
           })
         );
 

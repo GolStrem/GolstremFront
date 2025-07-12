@@ -20,7 +20,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const mode = useSelector((state) => state.theme.mode);
-  const userCode = useSelector((state) => state.auth.userCode);
+  const pseudo = useSelector((state) => state.auth.pseudo);
   const avatar = useSelector((state) => state.auth.avatar);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -54,7 +54,7 @@ const Header = () => {
         <div className="user-menu" onClick={toggleMenu}>
           <img src={avatar || avatarImg} alt="avatar" className="avatar" />
           <span className="username">
-            {userCode ? userCode.charAt(0).toUpperCase() + userCode.slice(1) : 'Profil'}
+            {pseudo ? pseudo.charAt(0).toUpperCase() + pseudo.slice(1) : 'Profil'}
           </span>
           <FaChevronDown />
         </div>
