@@ -18,6 +18,17 @@ import banner from './banner.jpg'
 import trombone from './icons/trombone.svg'
 import cadre from'./icons/cadre.svg'
 
+
+import StyleModalIcon from './svg/StyleModalIcon';
+import WarningIcon from './svg/WarningIcon';
+import FondBack from './svg/FondBack';
+import CheckIcon from './svg/CheckIcon';
+
+import GoldenStremC from './svg/GoldenStremC';
+import GoldenStremE from './svg/GoldenStremE';
+import GoldenStremP from './svg/GoldenStremP';
+import GoldenStremV from './svg/GoldenStremV';
+
 export {
   abstrait,
   checkIcon,
@@ -38,4 +49,12 @@ export {
   banner,
   cadre,
   trombone,
+  WarningIcon,
+  StyleModalIcon,
+  FondBack,
+  CheckIcon,
+  GoldenStremC,
+  GoldenStremE,
+  GoldenStremV,
+  GoldenStremP,
 };

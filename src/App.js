@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import routes from './routes';
 import { useSystemThemeSync }  from '@service'; // ici
+import { FondBack } from '@assets';
 
 function App() {
   const mode = useSelector((state) => state.theme.mode);
@@ -14,7 +15,9 @@ function App() {
 
   return (
     <>
-      <div className="global-background" />
+      <div className="global-background" >
+        <FondBack className="fond-svg" />
+        </div>
 
       <Router>
         <Routes>

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 import './LoginNew.css';
+import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
 import { golstremb, personp, golstremp, golstremc, golden, golstremE, golstremV } from '@assets';
 
 
@@ -62,9 +63,9 @@ const LoginNew = () => {
 
 
       <div className='ln-backText'>
-            <img src={golstremE} alt="texte logo 1" className="ln-tgold" />
-            <img src={golstremV} alt="texte logo 2" className="ln-tgold" />
-            <img src={golstremV} alt="texte logo 3" className="ln-tgold" />
+            <GoldenStremE alt="texte logo 1" className="ln-tgold" />
+            <GoldenStremV alt="texte logo 2" className="ln-tgold" />
+            <GoldenStremV alt="texte logo 3" className="ln-tgold" />
       </div>
 
       {/* — aside + background décoratif — */}
@@ -77,9 +78,9 @@ const LoginNew = () => {
           <img src={personp}   alt="Fond personnage" className="ln-character" />
 
           <div className="ln-text">
-            <img src={golstremp} alt="texte logo 1" className="ln-textlogo" />
-            <img src={golstremc} alt="texte logo 2" className="ln-textlogo" />
-            <img src={golstremc} alt="texte logo 3" className="ln-textlogo" />
+            <GoldenStremP alt="texte logo 1" className="ln-textlogo" />
+            <GoldenStremC alt="texte logo 2" className="ln-textlogo" />
+            <GoldenStremC alt="texte logo 3" className="ln-textlogo" />
             <p className="ln-connect">CONNEXION</p>
           </div>
         </div>

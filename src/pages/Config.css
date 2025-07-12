@@ -111,7 +111,7 @@
 }
 
 .parametre-sidebar {
-  background-color: #b8ad1a;
+  background-color: var(--jaune);
   color: #222;
   font-weight: bold;
   text-transform: uppercase;
@@ -225,3 +225,16 @@
     color: black;
 
 }
+
+.parametre-style-top {
+  fill: var(--my-color);
+}
+
+
+
+.parametre-warning {
+  width: 100px; /* adapte à tes besoins */
+  height: auto;
+  color: var(--jaune); /* couleur par défaut */
+}
+

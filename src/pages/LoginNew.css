@@ -40,7 +40,7 @@
 .ln-create.dark {
   background: var(--noir);
   color: var(--blanc);
-  box-shadow: 0 0 10px 3px rgba(181, 173, 33, 0.4); /* Même effet dans le thème sombre */
+  box-shadow: 0 0 10px 3px var(--jaune); /* Même effet dans le thème sombre */
 }
 
 
@@ -460,7 +460,7 @@ input:focus {
 }
 
 .ln-submit.dark {
-  background-color: #f1c40f; 
+  background-color: var(--jaune); 
   color: #1f1f1f;           
   border: none;
 }

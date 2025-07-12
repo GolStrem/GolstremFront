@@ -50,3 +50,4 @@ export { default as UserRightsModal } from './taskManager/modal/user/UserRightsM
 
 export {default as UserNewPseudo } from './config/UserNewPseudo';
 export {default as UserNewAvatar } from './config/UserNewAvatar';
+export {default as ColorPicker } from './config/ColorPicker';

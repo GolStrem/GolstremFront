@@ -6,10 +6,10 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     isAuthenticated: !!token,
-    userCode: '',
+    userCode: localStorage.getItem('pseudo') || '',
     token: token || null,
-    pseudo: null,
-    avatar: null,
+    pseudo: localStorage.getItem('pseudo') || null,
+    avatar: localStorage.getItem('avatar') || null,
   },
   reducers: {
     login(state, action) {
