@@ -63,18 +63,28 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     
       if (isLogin) {
         // 1️⃣ login
-        await apiService.login(form.email, form.password);
+        const tryLogin = await apiService.login(form.email, form.password);
+        if (tryLogin === undefined){
+          setErrors({ global: 'Identifiants incorrects' });
+          return
+        }
+        
 
         // 2️⃣ récupérer infos utilisateur
-        const { data } = await apiService.getUser();
+        const { data } = await apiService.getUserDetail();
+        delete data.friends // Pas encore gêré côté front
+
+        for (const [key, value] of Object.entries(data)) {
+          localStorage.setItem(key, value);
+        }
+
+        
 
         // 3️⃣ mettre à jour Redux
         dispatch(
           loginAction({
             token: apiService.getToken(),
-            userCode: data.pseudo,
-            pseudo: data.pseudo,
-            avatar: data.image || '', // avatar si déjà défini
+            ...data
           })
         );
 
