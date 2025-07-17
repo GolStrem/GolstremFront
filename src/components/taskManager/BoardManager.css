@@ -21,7 +21,7 @@
   padding: 10px;
   background-color: var(--color-header);
   box-sizing: border-box;
-  border-radius: 5px;
+  border-radius: 7px;
   position: relative;
   z-index: 1;
 }

@@ -1,104 +1,67 @@
 .notFound {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    position: relative; /* Nécessaire pour positionner le cercle correctement */
-    transition: background-color 0.3s ease, color 0.3s ease;
-    overflow: hidden;
-  }
-  
-  .notFound.dark {
-    color: dark;
-  }
-  
-  .notFound.light {
-    color: white;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow: hidden;
+  color: var(--color-text);
+}
 
-  .notFound.light .number{
-    color: white;
-  }
+.number {
+  font-size: clamp(100px, 10vw, 150px);
+  font-weight: bold;
+  z-index: 3;
+  color: var(--color-text);
+}
 
-  .notFound.light .error{
-    color: white;
-  }
-  
-  .number {
-    font-size: clamp(100px, 10vw, 150px);
-    font-weight: bold;
-    z-index: 3;
-    color: black;
-  }
-  
-  .error {
-    font-size: clamp(50px, 5vw, 70px);
-    margin-top: 10px;
-    z-index: 3;
-    color: black;
-  }
-  
-  .mode-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-  }
-  
-  .circle {
-    position: absolute; /* Positionnement absolu pour le centrer sous le texte */
-    top: 50%; /* Ajuste la position verticale */
-    transform: translateY(-50%) rotate(40deg);
-    background-image: linear-gradient(-20deg, var(--jaune), var(--jaune));
-    height: 500px;
-    width: 500px;
-    z-index: 2; /* Place le cercle sous le texte */
-  }
+.error {
+  font-size: clamp(50px, 5vw, 70px);
+  margin-top: 10px;
+  z-index: 3;
+  color: var(--color-text);
+}
 
-  .circleD {
-    position: absolute; /* Permet de centrer le cercle */
-    top: 50%; /* Centre verticalement */
-    left: 50%; /* Centre horizontalement */
-    transform: translate(-50%, -50%) rotate(40deg); /* Centre précisément */
-    height: 800px; /* Diamètre du cercle */
-    width: 800px; /* Diamètre du cercle */
-    background: linear-gradient(#121212, #121212) padding-box,
-    linear-gradient(to top,  var(--jaune), var(--jaune)) border-box;
-    border: 10px solid transparent;
-    z-index: 1;
-    opacity: 0.69;
-    
-  }
-  
-  .error-text{
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) !important;
-    right: inherit !important;
-  }
-  
-  
-  
-  
-  .circle.light {
-    background-image: linear-gradient(0deg, var(--jaune), var(--jaune));
-  }
+.mode-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
 
-  .circleD.light {
-    position: absolute; /* Permet de centrer le cercle */
-    top: 50%; /* Centre verticalement */
-    left: 50%; /* Centre horizontalement */
-    transform: translate(-50%, -50%) rotate(40deg); /* Centre précisément */
-    height: 800px; /* Diamètre du cercle */
-    width: 800px; /* Diamètre du cercle */
-    background: linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(to top,  var(--jaune), var(--jaune)) border-box;
-    border: 10px solid transparent;
-  }
+.circle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) rotate(40deg);
+  background-image: linear-gradient(-20deg, var(--jaune), var(--jaune));
+  height: 500px;
+  width: 500px;
+  z-index: 2;
+}
 
+.circleD {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(40deg);
+  height: 800px;
+  width: 800px;
+  background: linear-gradient(var(--color-background), var(--color-background)) padding-box,
+              linear-gradient(to top, var(--jaune), var(--jaune)) border-box;
+  border: 10px solid transparent;
+  z-index: 1;
+  opacity: 0.69;
+}
 
-  
+.error-text {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) !important;
+  right: inherit !important;
+}
+
 .redirect-button {
   z-index: 3;
   font-family: 'Roboto', sans-serif;
@@ -108,24 +71,17 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: black;
+  color: var(--color-text);
   background-color: rgba(255, 255, 255, 0);
-  border: none;
+  border: 2px solid var(--color-text);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
-  border: 2px solid black;
-}
-
-.redirect-button.light {
-  background-color: color-mix(in srgb, var(--jaune) 60%, white);
-  color: white;
-  border: 2px solid white;
 }
 
 .redirect-button:hover {
-  background-color: color-mix(in srgb, var(--jaune) 80%, white); /* un jaune un peu plus clair */
+  background-color: color-mix(in srgb, var(--jaune) 80%, white);
   transform: translateY(-2px);
 }
 
