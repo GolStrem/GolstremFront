@@ -77,4 +77,10 @@
     .global-background {
       display: none;
     }
+
+    .header-right{
+    margin-top: 2px;
+    margin-right: 2px;
   }
+  }
+

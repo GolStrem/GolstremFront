@@ -29,13 +29,13 @@ const Parametre = () => {
 
   return (
     <div className={`parametre-page ${themeMode}`}>
-      <aside className="parametre-sidebar">PARAMETRE</aside>
+        <aside className="parametre-sidebar">PARAMETRE</aside>
 
-      <main className="parametre-main">
-        <header className="parametre-header">
-          {/* Barres décoratives en haut */}
-          <StyleModalIcon className="parametre-style-top" />
-        </header>
+        <main className="parametre-main">
+          <header className="parametre-header">
+            {/* Barres décoratives en haut */}
+            <StyleModalIcon className="parametre-style-top" />
+          </header>
 
         <h2 className="parametre-h2">Paramètre du compte</h2>
 
