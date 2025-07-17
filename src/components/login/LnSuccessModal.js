@@ -1,15 +1,13 @@
-// LnSuccessModal.js
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { StyleModalIcon, CheckIcon } from "@assets";
 
 const LnSuccessModal = ({ message = "Compte créé avec succès ! Un mail vous a été envoyé pour valider votre compte", onClose }) => {
-  const mode = useSelector(state => state.theme.mode); // light | dark
+
 
   return (
     <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
       <div
-        className={`ln-modal-box ln-modal-slide-in ${mode}`}
+        className={`ln-modal-box ln-modal-slide-in`}
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -27,7 +25,7 @@ const LnSuccessModal = ({ message = "Compte créé avec succès ! Un mail vous a
         <h2>Succès</h2>
         <p className="ln-success-message">{message}</p>
 
-        <button className={`ln-submit ${mode}`} onClick={onClose}>
+        <button className={`ln-submit`} onClick={onClose}>
           Fermer
         </button>
 

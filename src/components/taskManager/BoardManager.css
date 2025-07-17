@@ -1,4 +1,3 @@
-/* === Container d'un tableau (board) === */
 .tm-board-container {
   display: flex;
   flex-direction: column;
@@ -6,28 +5,27 @@
   max-width: 340px;
   min-width: 240px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: var(--color-backgroundBoard);
   break-inside: avoid;
   word-break: break-word;
 }
-.tm-board-container:hover {
-  background-color: #e9ecef;
-}
 
-/* === En-tête du board === */
+
+
 .tm-board-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #6f6f6f;
+  background-color: var(--color-header);
   box-sizing: border-box;
-  border-radius: 5px;
+  border-radius: 7px;
   position: relative;
   z-index: 1;
 }
+
 .tm-board-header h2 {
   margin: 0;
   font-size: 18px;
@@ -35,9 +33,9 @@
   white-space: normal;
   overflow-wrap: anywhere;
   max-width: 100%;
+  color: var(--color-text);
 }
 
-/* === Contenu du board === */
 .tm-board {
   height: auto !important;
   min-height: 80px;
@@ -50,30 +48,31 @@
   transition: none !important;
 }
 
-/* === Cartes === */
 .tm-cards {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .tm-cards .card {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   padding: 5px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: var(--color-text);
 }
+
 .tm-card:active {
   transform: scale(1.05);
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* === Actions sur les cartes === */
 .tm-card-actions {
   position: absolute;
   bottom: 5px;
@@ -81,45 +80,45 @@
   display: flex;
   gap: 5px;
 }
+
 .tm-card-actions button {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--btn-primary);
+  color: var(--btn-text);
   border: none;
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
 }
+
 .tm-card-actions button:hover {
-  background-color: #0056b3;
+  background-color: var(--btn-hover);
 }
 
-/* === Placeholder vide === */
 .tm-empty-board-placeholder {
-    display: none;
+  display: none;
   text-align: center;
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 14px;
   padding: 20px 10px;
-  border: 2px dashed #ddd;
+  border: 2px dashed var(--color-border);
   border-radius: 4px;
 }
 
-/* === Boutons édition/suppression d'un board === */
 .tm-edit,
 .tm-delete {
-  background-color: none;
-  color: white;
+  background: none;
+  color: var(--color-text);
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
   margin-left: 4px;
-  background: none;
 }
+
 .tm-edit:hover,
 .tm-delete:hover {
-    opacity: 50%;
+  opacity: 50%;
 }
 
 .tm-edit {
@@ -127,30 +126,31 @@
   margin-bottom: 2px;
 }
 
-/* === Responsive spécifique aux boards === */
 @media (max-width: 1024px) {
   .tm-board-container {
     max-width: 100%;
     width: 100%;
   }
 }
+
 @media (max-width: 768px) {
   .tm-board-container {
     width: 100%;
     max-width: 350px;
-    width: 340px;
   }
-  
+
   .tm-card-actions {
     flex-direction: column;
     gap: 4px;
     right: 10px;
     bottom: 10px;
   }
+
   .tm-card-actions button {
     padding: 6px;
     font-size: 14px;
   }
+
   .tm-board-header h2 {
     font-size: 16px;
   }
@@ -158,21 +158,18 @@
 
 @media (max-width: 710px) {
   .tm-board-container {
-    width: 100%;
     max-width: 300px;
   }
 }
 
 @media (max-width: 628px) {
   .tm-board-container {
-    width: 100%;
     max-width: 280px;
   }
 }
 
 @media (max-width: 587px) {
   .tm-board-container {
-    width: 100%;
     max-width: 230px;
   }
 }
@@ -184,9 +181,8 @@
   }
 }
 
-@media (max-width: 375px){
-
-  .tm-board-container{
+@media (max-width: 375px) {
+  .tm-board-container {
     width: 358px;
   }
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import "./Config.css";
 import { UserNewPseudo, UserNewAvatar, ColorPicker } from "@components";
 import { ApiService } from "@service";
@@ -7,7 +6,7 @@ import { ApiService } from "@service";
 import { StyleModalIcon, WarningIcon } from "@assets";
 
 const Parametre = () => {
-  const themeMode = useSelector((state) => state.theme.mode);
+
 
   const [email, setEmail] = useState("");
 
@@ -28,7 +27,7 @@ const Parametre = () => {
   }, []);
 
   return (
-    <div className={`parametre-page ${themeMode}`}>
+    <div className={`parametre-page`}>
         <aside className="parametre-sidebar">PARAMETRE</aside>
 
         <main className="parametre-main">

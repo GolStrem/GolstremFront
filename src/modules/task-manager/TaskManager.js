@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useSelector } from "react-redux";
 import {
   DndContext,
   closestCenter,
@@ -22,7 +21,7 @@ import "../../components/taskManager/BoardManager.css";
 
 
 const TaskManager = ({ workspaceId = "Default", search = "" }) => {
-  const mode = useSelector((state) => state.theme.mode);
+
 
   const {
     boards,
@@ -157,11 +156,11 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   
 
   return (
-    <div className={`tm-layout ${mode === "dark" ? "dark" : "light"}`}>
+    <div className={`tm-layout `}>
       <div className="tm-main-content">
         {BoardCardAccess.hasWriteAccess(droit) && (
           <button
-            className={`tm-floating-add ${mode === "dark" ? "dark" : "light"}`}
+            className={`tm-floating-add`}
             onClick={() => setShowBoardModal(true)}
           >
             <span className="tm-add-icon">+</span>

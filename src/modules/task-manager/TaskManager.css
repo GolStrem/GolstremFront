@@ -1,4 +1,3 @@
-/* === Layout principal === */
 .tm-layout {
   display: flex;
   width: 100%;
@@ -13,36 +12,28 @@
   transition: margin-left 0.3s ease;
 }
 
-/* === Thème sombre === */
-.tm-task-manager.dark h1,
-.workSpaceName.dark {
-  color: white;
-}
-
 .workSpaceName {
   padding-top: 2em;
+  color: var(--color-text);
 }
 
-/* === Bouton pour créer un tableau === */
 .tm-Tabl {
   height: 30px;
   width: 150px;
-  background-color: #806161;
+  background-color: var(--color-primary);
   border-radius: 4px;
   border: none;
-  color: white;
+  color: var(--color-button-text);
   margin: 10px 0;
   cursor: pointer;
 }
 
-/* === Wrapper du Masonry === */
 .tm-boards-wrapper {
   width: 100%;
   overflow-x: hidden;
   overflow-y: visible;
 }
 
-/* === Styles react-masonry-css === */
 .tm-boards-masonry {
   display: flex;
   margin-left: -1rem;
@@ -53,13 +44,13 @@
   padding-left: 1rem;
   background-clip: padding-box;
   margin-right: 5px;
+
 }
 
 .tm-boards-masonry-column > .tm-board-container {
   margin-bottom: 1rem;
 }
 
-/* === Grille alternative === */
 .tm-grid-board-layout {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -67,35 +58,23 @@
   align-items: start;
 }
 
-/* === Board container === */
-.tm-board-container.light {
-  background-color: var(--blanc);
-  color: var(--noir);
-  border-color: #ccc;
+.tm-board-container {
+  background-color: var(--color-background);
+  color: var(--color-text);
+
 }
-.tm-board-container.dark {
-  background-color: #444444;
-  color: var(--modal-text);
-  border: none;
-}
-.tm-board-container:hover.dark {
-  background-color: #575757;
-  border: none;
+.tm-board-container:hover {
+  background-color: var(--color-hover);
 }
 
-/* === Board header === */
-.tm-board-header.light {
-  background-color: #ffffff;
-  color: var(--noir);
-  border-bottom: 1px solid #ccc;
-}
-.tm-board-header.dark {
-  background-color: #2e2e2e;
-  color: white;
+.tm-board-header {
+  background-color: var(--color-header-bg);
+  color: var(--color-header-text);
+  border-bottom: 1px solid var(--color-border);
 }
 
-/* === Boutons du header === */
 .tm-board-header-buttons button {
+  color: var(--color-text);
   border: none;
   border-radius: 4px;
   padding: 4px 8px;
@@ -106,36 +85,15 @@
   background: none;
 }
 
-.tm-board-header.light .tm-add-card-btn,
-.tm-board-header.light .tm-edit,
-.tm-board-header.light .tm-delete {
-  color: var(--noir);
-}
-
-.tm-board-header.dark .tm-add-card-btn,
-.tm-board-header.dark .tm-edit,
-.tm-board-header.dark .tm-delete {
-  color: var(--blanc);
-}
-
 .tm-board-header-buttons button:hover {
   opacity: 0.85;
 }
 
-.tm-board-header.dark .tm-add-card-btn:hover,
-.tm-board-header.dark .tm-edit:hover,
-.tm-board-header.dark .tm-delete:hover {
-  color: #6e6e6e;
-  opacity: 50%;
+.tm-empty-board-placeholder {
+  border: 2px dashed var(--color-border-muted);
+  color: var(--color-text-muted);
 }
 
-/* === Placeholder "vide" === */
-.tm-empty-board-placeholder.dark {
-  border: 2px dashed #888888;
-  color: #888888;
-}
-
-/* === Liste déroulante bouton "⋯" === */
 .tm-board-menu-wrapper {
   position: relative;
   display: inline-block;
@@ -150,34 +108,28 @@
   line-height: 1;
   border-radius: 4px;
   transition: background-color 0.2s ease;
+  color: var(--color-text);
 }
 
 .tm-board-menu-btn:hover {
-  background-color: var(--btn-hover-bg-light);
-}
-.dark .tm-board-menu-btn:hover {
-  background-color: var(--btn-hover-bg-dark);
+  background-color: var(--btn-hover-bg);
 }
 
-/* Icône SVG (si utilisée dans le bouton ⋯) */
 .tm-board-menu-btn svg {
   width: 18px;
   height: 18px;
-  fill: var(--noir);
+  fill: var(--color-text);
   transition: fill 0.2s ease;
 }
-.dark .tm-board-menu-btn svg {
-  fill: var(--blanc);
-}
 
-/* === Menu déroulant === */
 .tm-board-menu {
   position: absolute;
   top: 120%;
   right: 0;
   width: 140px;
   max-width: 160px;
-  background-color: var(--blanc);
+  background-color: var(--color-background);
+  color: var(--color-text);
   border: 1px solid var(--jaune);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 10;
@@ -189,47 +141,19 @@
   padding: 4px 0;
 }
 
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .tm-board-menu button {
   all: unset;
   cursor: pointer;
   padding: 10px 14px;
   font-size: 14px;
-  color: var(--noir);
+  color: var(--color-text);
   transition: background 0.2s ease;
 }
+
 .tm-board-menu button:hover {
-  background-color: var(--btn-hover-bg-light);
+  background-color: var(--color-hover);
 }
 
-.tm-board-menu.dark {
-  background-color: #2e2e2e;
-  border-color: var(--jaune);
-}
-.tm-board-menu.dark button {
-  color: var(--blanc);
-}
-.tm-board-menu.dark button:hover {
-  background-color: var(--btn-hover-bg-dark);
-}
-
-.tm-board-menu-btn.light {
-  color: var(--noir);
-}
-
-.tm-board-menu-btn.dark {
-  color: var(--blanc);
-}
 .tm-board-collapse {
   max-height: 9999px;
   overflow: hidden;
@@ -251,22 +175,14 @@
 }
 
 .tm-chevron.collapsed {
-  transform: rotate(-90deg); /* tourne vers la droite quand fermé */
-}
-
-
-.tm-board-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  transform: rotate(-90deg);
 }
 
 .tm-card-count {
   font-size: 0.85rem;
-  color: #aaa;
+  color: var(--color-text-muted);
   margin-left: 4px;
 }
-
 
 .tm-floating-add {
   position: fixed;
@@ -282,14 +198,8 @@
   z-index: 1000;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border: 2px solid var(--jaune);
-}
-.tm-floating-add.dark{
-background-color: var(--noir);
-color: white;
-}
-.tm-floating-add.light{
-background-color: white;
-color: black;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 .tm-add-icon {
@@ -316,6 +226,17 @@ color: black;
   z-index: 9999 !important;
 }
 
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* === Responsive général === */
 @media (max-width: 768px) {
   .tm-main-content {
@@ -334,51 +255,42 @@ color: black;
     margin: 10px auto;
   }
 
-  .tm-boards-masonry{
+  .tm-boards-masonry {
     margin-left: -1rem;
   }
 
-  .tm-board-container{
+  .tm-board-container {
     margin: 5px;
-
   }
 
-  .tm-floating-add{
+  .tm-floating-add {
     font-size: 1em;
     padding: 0.5em 0.9em;
     bottom: 65px;
-
   }
 
-  .tm-add-text{
+  .tm-add-text {
     font-size: 1.1em;
-
   }
 
-  .tm-add-icon{
+  .tm-add-icon {
     font-size: 1em;
   }
 }
 
 @media (max-width: 480px) {
-  .tm-floating-add{
+  .tm-floating-add {
     padding: 0.4em 0.8em;
   }
 }
 
-@media (max-width: 420px){
-
-  .tm-boards-masonry-column{
+@media (max-width: 420px) {
+  .tm-boards-masonry-column {
     margin-right: 0;
   }
 
-  .tm-main-content{
-    margin:0;
+  .tm-main-content {
+    margin: 0;
     padding: 0;
   }
 }
-
-
-
-
-

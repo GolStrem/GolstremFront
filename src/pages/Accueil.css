@@ -8,8 +8,8 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #121212, #222);
-  color: #fff;
+  background: var(--color-home-gradient);
+  color: var(--color-text);
 }
 
 .home-content {
@@ -47,6 +47,6 @@ html, body {
 }
 
 .home-button:hover {
-  background-color: #ffd700;
+  background-color: color-mix(in srgb, var(--jaune) 40%, rgb(168, 168, 168));
   transform: translateY(-2px);
 }

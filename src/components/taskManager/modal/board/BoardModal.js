@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { BaseModal } from "@components"
 
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
   const [title, setTitle] = useState("");
   const [color, setColor] = useState("#000000");
-  const mode = useSelector((state) => state.theme.mode);
 
   const handleSubmit = () => {
     if (title.trim()) {
@@ -16,7 +14,7 @@ const BoardModal = ({ closeModal, handleCreateBoard }) => {
   };
 
   return (
-   <BaseModal onClose={closeModal} className={`tmedit ${mode}`}>
+   <BaseModal onClose={closeModal} className={`tmedit `}>
         {/* Croix de fermeture */}
         <button className="tm-close-button" onClick={closeModal} aria-label="Fermer">
           ×

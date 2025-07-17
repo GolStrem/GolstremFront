@@ -20,7 +20,7 @@ const NotFound = () => {
   };
 
   return (
-    <div className={`notFound ${mode}`}>
+    <div className={`notFound `}>
       {/* — interrupteur dark / light — */}
       <div className={`mode-toggle ${mode}`} onClick={() => dispatch(toggleTheme())}> {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}</div>
       
@@ -30,12 +30,12 @@ const NotFound = () => {
       <h1 className='error'>Page introuvable</h1>
 
       {/* Bouton unique avec condition */}
-      <button className= {`redirect-button ${mode}`} onClick={handleRedirect} >
+      <button className= {`redirect-button `} onClick={handleRedirect} >
         {isAuthenticated ? 'Retourner au Dashboard' : 'Retourner à l\'accueil'}
       </button>
 
-      <div className={`circle ${mode}`}></div>
-      <div className={`circleD ${mode}`}></div>
+      <div className={`circle `}></div>
+      <div className={`circleD `}></div>
 
       <div className='ln-backText'>
             <GoldenStremE alt="texte logo 1" className="ln-tgold" />

@@ -1,6 +1,6 @@
 // TaskViewerModal.jsx
 import React from "react";
-import { useSelector } from "react-redux";
+
 import "./../../TaskCard.css"
 import { BoardCardAccess, BaseModal } from "@components"
 
@@ -16,7 +16,6 @@ const getStateLabel = (state) => {
 };
 
 const TaskViewerModal = ({ card, boardId, closeModal, openEdit }) => {
-  const themeMode = useSelector((state) => state.theme.mode);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "-";
@@ -24,7 +23,7 @@ const TaskViewerModal = ({ card, boardId, closeModal, openEdit }) => {
   };
 
   return (
-    <BaseModal onClose={closeModal} className={`tmedit ${themeMode}`}>
+    <BaseModal onClose={closeModal} className={`tmedit`}>
         <button className="tm-close-btn" onClick={closeModal}></button>
         <div className="tm-viewer-grid">
           <div className="tm-viewer-left">

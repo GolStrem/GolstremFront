@@ -1,13 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
-
-import { useSelector } from "react-redux";
 import { FaAlignLeft } from "react-icons/fa";
 import "./DnDCards.css";
 
 const DnDCard = ({ card, boardId, openViewerModal }) => {
 
-  const mode = useSelector((state) => state.theme.mode);
+
   const clickStart = useRef(null);
   const cardRef = useRef(null);
 
@@ -43,7 +41,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   }, []);
 
   const hasCustomColor = !!card.color && card.color.toLowerCase() !== "#ffffff";
-  const cardClass = `dnd-task-card ${mode}`;
+  const cardClass = `dnd-task-card`;
 
   
 

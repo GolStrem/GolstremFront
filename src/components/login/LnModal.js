@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { StyleModalIcon, WarningIcon } from "@assets";
@@ -17,7 +17,6 @@ import { login as loginAction } from '@store/authSlice';
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const isLogin = type === 'login';
-  const mode = useSelector(state => state.theme.mode);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -144,7 +143,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   return (
     <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
       <div
-        className={`ln-modal-box ln-modal-slide-in ${mode}`}
+        className={`ln-modal-box ln-modal-slide-in`}
         onClick={e => e.stopPropagation()}
       >
         <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
@@ -177,7 +176,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
 
           <button
             type="submit"
-            className={`ln-submit ${mode === 'light' ? 'light' : 'dark'}`}
+            className={`ln-submit`}
           >
             {isLogin ? 'Se connecter' : 'Valider la création'}
           </button>

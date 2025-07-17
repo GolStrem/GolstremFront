@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { TaskApi } from "@service";
 import { BaseModal } from "@components";
 import "./UserRightsModal.css"
@@ -7,8 +6,6 @@ import { avatar } from "@assets";
 
 
 const UserRightsModal = ({ workspaceId, onClose, onUpdate }) => {
-  const themeMode = useSelector((state) => state.theme.mode);
-
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -67,7 +64,7 @@ useEffect(() => {
   };
 
   return (
-    <BaseModal onClose={onClose} className={`tmedit ${themeMode}`}>
+    <BaseModal onClose={onClose} className={`tmedit`}>
       <button className="tm-close-btn" onClick={onClose}></button>
 
       <h3>Gérer les droits des utilisateurs</h3>

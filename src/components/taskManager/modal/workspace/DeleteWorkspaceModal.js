@@ -1,13 +1,12 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { BaseModal } from "@components";
 
 
 const DeleteWorkspaceModal = ({ name, onConfirm, onCancel }) => {
-  const mode = useSelector((state) => state.theme.mode);
+
 
   return (
-    <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
+    <BaseModal onClose={onCancel} className={`tmedit`}>
         <button className="tm-modal-close" onClick={onCancel}>
           ✖
         </button>

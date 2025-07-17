@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { TaskApi } from "@service";
 import { ApiService } from "@service";
 import "./addUserModal.css";
@@ -11,7 +10,7 @@ const AddUserModal = ({ workspaceId, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const themeMode = useSelector((state) => state.theme.mode);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +49,7 @@ const AddUserModal = ({ workspaceId, onClose }) => {
   };
 
   return (
-    <BaseModal onClose={onClose} className={`tmedit ${themeMode}`}>
+    <BaseModal onClose={onClose} className={`tmedit`}>
       <button className="tm-close-btn" onClick={onClose}></button>
       <h2>Ajouter un utilisateur</h2>
       <label className="tm-label">Pseudo utilisateur :

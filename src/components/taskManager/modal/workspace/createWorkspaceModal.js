@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { isValidImageUrl } from "@service";
 import { BaseModal } from "@components"
 
 
 const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
-  const mode = useSelector((state) => state.theme.mode);
+
 
   const [form, setForm] = useState({
     name: "",
@@ -45,7 +44,7 @@ const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
 
 
   return (
-    <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
+    <BaseModal onClose={onCancel} className={`tmedit`}>
         <button className="tm-modal-close" onClick={onCancel}>
           ✖
         </button>
