@@ -6,28 +6,37 @@
     height: 100vh;
     position: relative; /* Nécessaire pour positionner le cercle correctement */
     transition: background-color 0.3s ease, color 0.3s ease;
+    overflow: hidden;
   }
   
   .notFound.dark {
-    background-color: #121212;
-    color: #ffffff;
+    color: dark;
   }
   
   .notFound.light {
-    background-color: #ffffff;
-    color: #000000;
+    color: white;
+  }
+
+  .notFound.light .number{
+    color: white;
+  }
+
+  .notFound.light .error{
+    color: white;
   }
   
   .number {
     font-size: clamp(100px, 10vw, 150px);
     font-weight: bold;
-    z-index: 2;
+    z-index: 3;
+    color: black;
   }
   
   .error {
-    font-size: clamp(50px, 5vw, 80px);
+    font-size: clamp(50px, 5vw, 70px);
     margin-top: 10px;
-    z-index: 2;
+    z-index: 3;
+    color: black;
   }
   
   .mode-toggle {
@@ -40,81 +49,92 @@
   .circle {
     position: absolute; /* Positionnement absolu pour le centrer sous le texte */
     top: 50%; /* Ajuste la position verticale */
-    transform: translateY(-50%); /* Centre le cercle sous le texte */
-    background-image: linear-gradient(-20deg, #dff13a, #f03131);
-    border-radius: 50%;
+    transform: translateY(-50%) rotate(40deg);
+    background-image: linear-gradient(-20deg, var(--jaune), var(--jaune));
     height: 500px;
     width: 500px;
-    z-index: 1; /* Place le cercle sous le texte */
+    z-index: 2; /* Place le cercle sous le texte */
   }
 
   .circleD {
     position: absolute; /* Permet de centrer le cercle */
     top: 50%; /* Centre verticalement */
     left: 50%; /* Centre horizontalement */
-    transform: translate(-50%, -50%); /* Centre précisément */
+    transform: translate(-50%, -50%) rotate(40deg); /* Centre précisément */
     height: 800px; /* Diamètre du cercle */
     width: 800px; /* Diamètre du cercle */
     background: linear-gradient(#121212, #121212) padding-box,
-    linear-gradient(to top,  #dff13a, #f03131) border-box;
-    border-radius: 50em;
+    linear-gradient(to top,  var(--jaune), var(--jaune)) border-box;
     border: 10px solid transparent;
+    z-index: 1;
+    opacity: 0.69;
+    
+  }
+  
+  .error-text{
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) !important;
+    right: inherit !important;
   }
   
   
   
   
-  
   .circle.light {
-    background-image: linear-gradient(0deg, #0fdae9, #3c14ac);
+    background-image: linear-gradient(0deg, var(--jaune), var(--jaune));
   }
 
   .circleD.light {
     position: absolute; /* Permet de centrer le cercle */
     top: 50%; /* Centre verticalement */
     left: 50%; /* Centre horizontalement */
-    transform: translate(-50%, -50%); /* Centre précisément */
+    transform: translate(-50%, -50%) rotate(40deg); /* Centre précisément */
     height: 800px; /* Diamètre du cercle */
     width: 800px; /* Diamètre du cercle */
     background: linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(to top,  #0fdae9, #3c14ac) border-box;
-    border-radius: 50em;
+    linear-gradient(to top,  var(--jaune), var(--jaune)) border-box;
     border: 10px solid transparent;
   }
 
 
   
-  .redirect-button{
-    z-index: 2;
-    margin-top: 20px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #ffffff;
-    background: linear-gradient(135deg, #1a40eb00, #f89603ec); /* Dégradé moderne */
-    border: none;
-    border-radius: 25px; /* Bordures arrondies */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre douce */
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+.redirect-button {
+  z-index: 3;
+  font-family: 'Roboto', sans-serif;
+  margin-top: 20px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: black;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  border: 2px solid black;
+}
 
-  .redirect-button.light{
-    background: linear-gradient(135deg, #1a40eb, #f1f1f100); /* Dégradé moderne */
-  }
+.redirect-button.light {
+  background-color: color-mix(in srgb, var(--jaune) 60%, white);
+  color: white;
+  border: 2px solid white;
+}
 
-  
 .redirect-button:hover {
-    transform: translateY(-3px); /* Légère élévation au hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Accentuation de l'ombre */
-  }
-  
-  .redirect-button:active {
-    transform: translateY(1px); /* Effet d'appui */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Réduction de l'ombre */
-  }
-  
-  .redirect-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(37, 117, 252, 0.5); /* Anneau de focus */
-  }
+  background-color: color-mix(in srgb, var(--jaune) 80%, white); /* un jaune un peu plus clair */
+  transform: translateY(-2px);
+}
+
+.redirect-button:active {
+  transform: translateY(0);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.redirect-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.5);
+}
