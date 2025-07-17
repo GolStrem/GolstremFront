@@ -5,7 +5,6 @@
   align-items: center;
   gap: 1rem;
   border-radius: 8px;
-
 }
 
 .user-new-pseudo h3,
@@ -23,7 +22,6 @@
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
- 
 }
 
 /* Texte pseudo */
@@ -92,18 +90,17 @@
   font-size: 0.9rem;
 }
 
-
 .parametre-page {
   display: flex;
-  min-height: 100vh; /* ✅ toute la hauteur de l'écran */
-
+  min-height: 100vh;
 }
-.parametre-h2{
-    font-size: 35px;
+
+.parametre-h2 {
+  font-size: 35px;
 }
 
 .parametre-page.light {
-  color: black
+  color: black;
 }
 
 .parametre-page.dark {
@@ -140,8 +137,6 @@
   font-size: 1.2rem;
 }
 
-
-
 .parametre-content {
   display: flex;
   flex-direction: column;
@@ -149,10 +144,10 @@
   margin-top: 1rem;
 }
 
-
 .parametre-style-top {
   width: 120px;
   margin-bottom: 0.5rem;
+  fill: var(--my-color);
 }
 
 .parametre-style-bottom {
@@ -166,37 +161,42 @@
   bottom: 2rem;
   right: 1rem;
   width: 100px;
+  height: auto;
+  color: var(--jaune);
 }
 
-
-.parametre-rectangle{
-    width: 15px;
-    height: 105px;
-    background-color: var(--jaune);
-    margin-top: 5px;
+.parametre-rectangle {
+  width: 15px;
+  height: 105px;
+  background-color: var(--jaune);
+  margin-top: 5px;
 }
 
-.parametre-general{
-    display: flex;
-    margin-left: 20px;
+.parametre-general {
+  display: flex;
+  margin-left: 2px;
 }
 
-.param-g{
+.param-g {
   margin: 0;
   font-size: 1.2rem;
   color: var(--jaune);
   order: 1;
   font-weight: bold;
 }
-.param-g-label{
+
+.param-g-label {
   color: var(--jaune);
 }
-.param-g-value{
+
+.param-g-value {
   color: white;
 }
+
 .parametre-page.light .param-g-value {
-  color: black; /* ou noir ou une couleur foncée */
+  color: black;
 }
+
 .parametre-page.light .user-new-pseudo-edit {
   background: transparent;
   border: none;
@@ -207,34 +207,66 @@
   order: 5;
 }
 
-.param-g.a{
+.param-g.a {
   margin-bottom: 5px;
   margin-top: 5px;
 }
 
-.parametre-maj{
-    padding: 1rem;
+.parametre-maj {
+  padding: 1rem;
 }
 
-.user-settings-edit{
-    margin-left: -28px;
-    margin-bottom: -55px;
+.user-settings-edit {
+  margin-left: -28px;
+  margin-bottom: -55px;
 }
 
 .parametre-page.light .user-settings-edit {
-    color: black;
-
+  color: black;
 }
 
-.parametre-style-top {
-  fill: var(--my-color);
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+  .parametre-page {
+    flex-direction: column;
+  }
+
+  .parametre-sidebar {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 2rem;
+    text-align: left;
+    padding: 0.65rem 1rem;
+    padding-left: 5px;
+    
+  }
+
+  .parametre-main {
+    padding: 0.5rem;
+  }
+
+  .parametre-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .parametre-h2 {
+    font-size: 1.5rem;
+  }
+
+  .parametre-general {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .parametre-rectangle {
+    display: none;
+  }
+
+  .parametre-maj {
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+
 }
-
-
-
-.parametre-warning {
-  width: 100px; /* adapte à tes besoins */
-  height: auto;
-  color: var(--jaune); /* couleur par défaut */
-}
-
