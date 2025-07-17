@@ -60,7 +60,6 @@ const UserNewPseudo = ({ onUpdate }) => {
 
   return (
     <div className="user-new-pseudo">
-      {error && <div className="user-new-pseudo-error">{error}</div>}
       <h3>Pseudo : </h3>
 
       {!editing ? (
@@ -98,6 +97,7 @@ const UserNewPseudo = ({ onUpdate }) => {
           >
             ✖
           </button>
+          {error && <div className="user-new-pseudo-error">{error}</div>}
         </div>
       )}
     </div>
