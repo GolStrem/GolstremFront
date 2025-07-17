@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import avatarPlaceholder from "@assets/avatar.png";
 import { ApiService } from "@service";
-import { setUserAvatar } from "@store";
+import { setUserData } from "@store";
 
 const UserNewAvatar = ({ onUpdate }) => {
   const [user, setUser] = useState(null);
@@ -44,8 +44,7 @@ const UserNewAvatar = ({ onUpdate }) => {
       setUser((prev) => ({ ...prev, image }));
       onUpdate?.(image);
 
-      localStorage.setItem("avatar", image);
-      dispatch(setUserAvatar(image));
+      dispatch(setUserData({avatar: image}));
     } catch (err) {
       setError("Erreur lors de la mise à jour");
     } finally {
