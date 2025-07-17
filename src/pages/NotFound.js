@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '@store/index';
 import { FaSun, FaMoon } from 'react-icons/fa';
+import './LoginNew.css';
+import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
+import { personp} from '@assets';
 
 
 
@@ -19,22 +22,13 @@ const NotFound = () => {
   };
 
   return (
-    <div className={`notFound ${mode === 'dark' ? 'dark' : 'light'}`}>
-      <div
-        className="mode-toggle"
-        onClick={() => dispatch(toggleTheme())}
-        aria-label={`Changer vers le mode ${mode === 'dark' ? 'clair' : 'sombre'}`}
-        role="button"
-        tabIndex={0}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') dispatch(toggleTheme());
-        }}
-      >
-        {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}
+    <div className={`notFound ${mode}`}>
+      {/* — interrupteur dark / light — */}
+      <div className={`mode-toggle ${mode}`} onClick={() => dispatch(toggleTheme())}> {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}</div>
+      
 
-      </div>
 
-      <div className='number'>404</div>
+        <div className='number'>404</div>
       <h1 className='error'>Page introuvable</h1>
 
       {/* Bouton unique avec condition */}
@@ -45,7 +39,23 @@ const NotFound = () => {
       <div className={`circle ${mode}`}></div>
       <div className={`circleD ${mode}`}></div>
 
+      <div className='ln-backText'>
+            <GoldenStremE alt="texte logo 1" className="ln-tgold" />
+            <GoldenStremV alt="texte logo 2" className="ln-tgold" />
+            <GoldenStremV alt="texte logo 3" className="ln-tgold" />
+      </div>
 
+      {/* — aside + background décoratif — */}
+      <div className="ln-back">
+        <div className="ln-background">
+
+          <div className="error-text ln-text ">
+            <GoldenStremP alt="texte logo 1" className="ln-textlogo" />
+            <GoldenStremC alt="texte logo 2" className="ln-textlogo" />
+            <GoldenStremC alt="texte logo 3" className="ln-textlogo" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
