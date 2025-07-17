@@ -6,8 +6,6 @@ import { toggleTheme } from '@store/index';
 import { FaSun, FaMoon } from 'react-icons/fa';
 import './LoginNew.css';
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
-import { personp} from '@assets';
-
 
 
 const NotFound = () => {

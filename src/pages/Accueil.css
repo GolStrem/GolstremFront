@@ -1,0 +1,52 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.home-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #121212, #222);
+  color: #fff;
+}
+
+.home-content {
+  text-align: center;
+}
+
+.home-logo {
+  width: 400px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.home-title {
+  font-size: 3rem;
+  color: var(--jaune);
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.home-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.home-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #222;
+  background-color: var(--jaune);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.home-button:hover {
+  background-color: #ffd700;
+  transform: translateY(-2px);
+}
