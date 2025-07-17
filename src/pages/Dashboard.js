@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { TaskApi, UserInfo } from "@service"; // 🆕 On va appeler l'API
 import "./Dashboard.css";
 import {
@@ -13,7 +12,6 @@ import {
 
 
 const Dashboard = () => {
-  const mode = useSelector((state) => state.theme.mode);
   const [workspaceId, setWorkspaceId] = useState(null);
 
   const links = [
@@ -77,7 +75,7 @@ const Dashboard = () => {
 
   return (
     <div
-      className={`dashboard ${mode === "dark" ? "dark" : "light"}`}
+      className={"dashboard"}
       onMouseMove={handleMouseMove}
     >
       <h1 className="dashboardh1">Bienvenue sur votre Dashboard</h1>

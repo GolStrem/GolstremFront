@@ -16,7 +16,7 @@ const EditBoardTitleModal = ({ currentTitle, onConfirm, onCancel }) => {
   return (
     <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
         <button className="tm-close-button" onClick={onCancel} aria-label="Fermer">
-          ×
+          ✖
         </button>
 
         <h3>Renommer le tableau</h3>

@@ -45,22 +45,21 @@
     --header-bg: #ffffff;
     --header-color: #000000;
     --header-hover-color: #0059b8 ;
-    background-size: cover;  
-    background-repeat: no-repeat;   
-    background-position: center;  
-    background-color: white;
   }
   
   body.dark-mode {
     --header-bg: #1a1a1a;
     --header-color: #ffffff;
-    --header-hover-color: #e07c0a;
+    --header-hover-color: #e07c0a
+
+  }
+
+  body{
     background-size: cover;  
     background-repeat: no-repeat;
     background-position: center;  
     background-attachment: fixed;
-    background-color: var(--noir) !important;
-
+    background-color: var(--color-background) !important;
   }
   
   /* Icône du mode clair/sombre */
@@ -83,4 +82,3 @@
     margin-right: 2px;
   }
   }
-

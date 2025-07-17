@@ -1,4 +1,3 @@
-/* ==== MODALE VIEWER COMMUNE ==== */
 .tm-modal-popup.viewer {
   position: relative;
   max-width: 1000px;
@@ -9,25 +8,17 @@
   flex-direction: column;
   gap: 16px;
   z-index: 20;
-  background: var(--blanc);
-  color: var(--noir);
+  background: var(--color-background);
+  color: var(--color-text);
   border: 2px solid var(--jaune);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* 🌑 DARK MODE appliqué si une classe .dark est présente dans un parent */
-.dark .tm-modal-popup.viewer {
-  background: var(--noir);
-  color: var(--blanc);
-  border-color: var(--jaune);
+.tm-viewer-dates {
+  color: var(--color-text-muted);
 }
 
-.dark .tm-viewer-dates {
-  color: #bbb;
-}
-
-/* ==== CONTENU ==== */
 .tm-viewer-grid {
   display: flex;
   flex-direction: row;
@@ -60,11 +51,6 @@
   text-transform: lowercase;
 }
 
-.tm-viewer-dates {
-  color: #aaa;
-  font-size: 0.9rem;
-}
-
 .tm-viewer-description {
   font-size: 1rem;
   line-height: 1.6;
@@ -85,14 +71,9 @@
   max-height: 240px;
   object-fit: contain;
   border-radius: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
 }
 
-.dark .tm-image-preview img {
-  border-color: #444;
-}
-
-/* ==== BOUTON MODIFIER ==== */
 .tm-edit-btn-container {
   position: absolute;
   bottom: 24px;
@@ -102,7 +83,7 @@
 
 .tm-edit-btn {
   background: var(--jaune);
-  color: #000;
+  color: var(--color-button-text);
   padding: 6px 12px;
   border: none;
   border-radius: 6px;
@@ -115,7 +96,6 @@
   background: #ffe600;
 }
 
-/* ==== RESPONSIVE ==== */
 @media (max-width: 768px) {
   .tm-viewer-grid {
     flex-direction: column;
@@ -140,7 +120,6 @@
   }
 }
 
-
 .task-card {
   position: relative;
   padding: 8px;
@@ -148,24 +127,11 @@
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  border: 1px solid transparent;
+  border: 1px solid var(--color-border);
   transition: background-color 0.3s, color 0.3s;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
-
-/* 🌓 Mode clair par défaut */
-.task-card.light {
-  background-color: var(--blanc);
-  color: var(--noir);
-  border-color: #ccc;
-}
-
-/* 🌑 Mode sombre */
-.task-card.dark {
-  background-color: #6b6b6b; /* déjà défini dans tes variables */
-  color: var(--white);
-  border-color: none;
-}
-
 
 .icon {
   width: 16px;
@@ -173,29 +139,5 @@
   position: absolute;
   bottom: 5px;
   right: 5px;
-}
-
-.icon.dark {
-  filter: brightness(0) invert(1);
-}
-
-
-.tm-image-preview {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
-  max-width: 240px;
-}
-
-.tm-image-preview img {
-  width: 100%;
-  max-height: 240px;
-  object-fit: contain;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
-
-.dark .tm-image-preview img {
-  border-color: #444;
+  filter: var(--icon-filter);
 }

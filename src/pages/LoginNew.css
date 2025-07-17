@@ -1,71 +1,33 @@
-
-
-/* ==================== Structure générale ==================== */
 .loginNew {
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  background-color: var(--noir);
+  background-color: var(--color-background);
 }
 
-.loginNew.light {
-  background-color: #fff;
-}
-
-.loginNew.dark {
-  background-color: #444;
-}
-
-/* ==================== Interrupteur thème ==================== */
 .mode-toggle {
   position: absolute;
   top: 1rem;
   right: 1rem;
   cursor: pointer;
   z-index: 30;
+  color: var(--color-text);
 }
 
-/* === Thème clair === */
-.ln-connexion.light,
-.ln-create.light {
-  background: #dbdbdb;;
-  color: var(--noir);
-  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.4); /* Jaune avec transparence */
-}
-
-/* === Thème sombre === */
-.ln-connexion.dark,
-.ln-create.dark {
-  background: var(--noir);
-  color: var(--blanc);
-  box-shadow: 0 0 10px 3px var(--jaune); /* Même effet dans le thème sombre */
-}
-
-
-
-
-/* ==================== Carrés “Connexion / Créer” ==================== */
-.ln-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  z-index: 2;
+.mode-toggle.light{
+  color: black;
 }
 
 .ln-connexion,
 .ln-create {
   width: 300px;
   height: 350px;
-  background: var(--noir);
+  background: var(--color-background);
   border: none;
   border-radius: 12px;
-  color: var(--blanc);
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,6 +35,7 @@
   gap: 1rem;
   cursor: pointer;
   transition: transform 0.2s;
+  box-shadow: 0 0 10px 3px var(--jaune);
 }
 
 .ln-connexion:hover,
@@ -92,9 +55,17 @@
   text-align: center;
 }
 
+.ln-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  z-index: 2;
+}
 
-
-/* ==================== Pop-up générique ==================== */
 .ln-modal {
   position: fixed;
   inset: 0;
@@ -106,43 +77,32 @@
 }
 
 .ln-modal-box {
-  width: clamp(280px, 90vw, 440px); 
+  width: clamp(280px, 90vw, 440px);
   max-height: 90vh;
   overflow-y: auto;
-  background: var(--noir);
+  background: var(--color-modal);
   border-radius: 12px;
   padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 3vw, 1.5rem) clamp(2rem, 6vw, 2.5rem);
   position: relative;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   margin: 0 1rem;
-}
-
-.loginNew.light .ln-modal-box {
-  background: #fff;
+  color: var(--color-modal-text);
 }
 
 .ln-modal-box h2 {
   margin-bottom: 1.5rem;
-  color: var(--blanc);
+  color: var(--color-modal-text);
   text-transform: uppercase;
   font-size: clamp(1.1rem, 4.2vw, 1.3rem);
   text-align: center;
   word-break: break-word;
 }
 
-.loginNew.light .ln-modal-box h2 {
-  color: #000;
-}
-
 .ln-modal-box label {
-  color: var(--blanc);
+  color: var(--color-modal-text);
   font-size: 0.9rem;
   display: block;
   margin: 0.9rem 0 0.4rem;
-}
-
-.loginNew.light .ln-modal-box label {
-  color: #000;
 }
 
 .ln-modal-box input {
@@ -163,19 +123,12 @@
   background: none;
   border: 2px solid var(--jaune);
   border-radius: 6px;
-  color: var(--blanc);
+  color: var(--color-submit-text);
   text-transform: uppercase;
   cursor: pointer;
   font-size: clamp(0.8rem, 3.6vw, 0.9rem);
 }
 
-.loginNew.light .ln-modal-box button[type='submit'] {
-  color: #000;
-}
-.resetmdp{
-  display: flex;
-}
-/* ==================== Bouton de soumission ==================== */
 .ln-submit {
   margin-top: 1.4rem;
   width: 100%;
@@ -183,26 +136,16 @@
   background: none;
   border: 3px solid var(--jaune);
   border-radius: 6px;
-  color: var(--blanc);
+  color: var(--color-submit-text);
   text-transform: uppercase;
   cursor: pointer;
   font-size: clamp(0.8rem, 3.6vw, 0.9rem);
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
-.loginNew.light .ln-submit {
-  color: #000;
-  border-color: var(--jaune);
-}
-
-.ln-submit.dark:hover {
-  background-color: var(--btn-hover-bg-dark);
-  transform: translateY(-2px);
-}
-
-.loginNew.light .ln-submit:hover {
-  background-color: var(--btn-hover-bg-light);
-  color: #000;
+.ln-submit:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--color-submit-text);
   transform: translateY(-2px);
 }
 
@@ -217,7 +160,23 @@
   cursor: pointer;
 }
 
-/* ==================== Header (mobile) ==================== */
+.ln-success-message {
+  margin: 1rem auto;
+  font-size: 1.2rem;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.ln-submit {
+  background-color: var(--jaune);
+  color: var(--color-button);
+  border: none;
+}
+
+.resetmdp {
+  display: flex;
+}
+
 .ln-header {
   display: none;
 }
@@ -227,7 +186,6 @@
   width: 100%;
 }
 
-/* ==================== Fond graphique ==================== */
 .ln-back {
   position: absolute;
   top: 0;
@@ -291,7 +249,6 @@
   margin-top: -3rem;
 }
 
-/* ==================== Champs mot de passe ==================== */
 .ln-password-field {
   display: flex;
 }
@@ -337,7 +294,6 @@ input:focus {
   color: #0056b3;
 }
 
-/* ==================== Décoration modal ==================== */
 .ln-ModalStyle {
   position: absolute;
   top: 0.5rem;
@@ -416,57 +372,6 @@ input:focus {
   width: 80px;
 }
 
-/* ---- Thème Light & Dark pour la modale de succès ---- */
-
-.ln-modal-box.light {
-  background-color: #ffffff;
-  color: #111111;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.ln-modal-box.dark {
-  background-color: #1f1f1f;
-  color: #f0f0f0;
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
-}
-
-/* ---- Contenu spécifique ---- */
-.ln-success-message {
-  margin: 1rem auto;
-  font-size: 1.2rem;
-  text-align: center;
-  color: var(--white);
-}
-.ln-success-message.dark{
-  color: var(--white);
-}
-.ln-success-message.light{
-  color: var(--dark);
-}
-/* Appliquer à l'icône */
-.ln-ModalSuccessIcon {
-  display: block;
-  margin: 1rem auto;
-  width: 80px;
-  height: auto;
-  animation: spin-back-forth 1.2s ease-in-out;
-}
-
-/* Réutilisable pour tous les thèmes */
-.ln-submit.light {
-  background-color: var(--jaune);;
-  color: white;
-  border: none;
-}
-
-.ln-submit.dark {
-  background-color: var(--jaune); 
-  color: #1f1f1f;           
-  border: none;
-}
-
-
-/* ==================== Responsive ==================== */
 @media (max-width: 930px) {
   .ln-aside {
     display: none;
@@ -521,16 +426,6 @@ input:focus {
     margin-bottom: 30px;
   }
 
-  .ln-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 80px;
-    background-color: var(--jaune);
-    z-index: 1;
-  }
-
   .mode-toggle {
     position: fixed !important;
     top: auto !important;
@@ -559,10 +454,10 @@ input:focus {
     gap: 0.4rem;
   }
 
-.ln-ico {
-  height: 40px;
-  width: 40px;
-}
+  .ln-ico {
+    height: 40px;
+    width: 40px;
+  }
 
   .ln-connexion span,
   .ln-create span {
@@ -570,8 +465,6 @@ input:focus {
   }
 }
 
-
-/* ==================== Animation ouverture modal ==================== */
 .ln-modal-fade-in {
   animation: fadeIn 0.3s ease;
 }
@@ -590,57 +483,26 @@ input:focus {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* ==================== Animation modal décor ==================== */
 @keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
-
-/* Animation rotation aller-retour check */
 @keyframes spin-back-forth {
-  0% {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(360deg);
-  }
-  60% {
-    transform: rotate(0deg);
-  }
-  80% {
-    transform: rotate(-20deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(360deg); }
+  60% { transform: rotate(0deg); }
+  80% { transform: rotate(-20deg); }
+  100% { transform: rotate(0deg); }
 }
-
 
 .ln-error-global {
   color: red;
   margin-bottom: 1rem;
   font-weight: bold;
-}
-
-
-.mode-toggle.light{
-  color: black;
 }

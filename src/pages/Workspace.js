@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import TaskManager from "../modules/task-manager/TaskManager";
-import { useSelector } from "react-redux";
 import { Banner, WorkspaceMenu } from "@components";
 
 const Workspace = () => {
   const { id: workspaceId } = useParams();
-  const mode = useSelector((state) => state.theme.mode);
+
 
   const [search, setSearch] = useState("");
 
   return (
     <div
-      className={`workspace-page ${mode === "dark" ? "dark" : "light"}`}
+      className={`workspace-page `}
       style={{ display: "flex" }}
     >
       {/* CONTENU PRINCIPAL */}

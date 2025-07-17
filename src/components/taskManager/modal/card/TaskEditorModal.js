@@ -1,12 +1,11 @@
-// TaskEditorModal.jsx
+
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import "./TaskEditorModal.css";
 import { BoardCardAccess, BaseModal } from "@components";
 
 const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCard }) => {
   const isEdit = !!modalData.cardId;
-  const themeMode = useSelector((state) => state.theme.mode);
+
 
   const [formData, setFormData] = useState({
     boardId: null,
@@ -95,7 +94,7 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
   };
 
   return (
-   <BaseModal onClose={closeModal} className={`tmedit ${themeMode}`}>
+   <BaseModal onClose={closeModal} className={`tmedit`}>
         <button className="tm-close-btn" onClick={closeModal}></button>
           {isEdit && !isEditing && (
             <button className="tm-edit-btn" onClick={() => setIsEditing(true)}>✏️ Modifier</button>

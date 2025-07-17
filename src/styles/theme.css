@@ -20,7 +20,7 @@
 
   /* Boutons */
   --btn-primary: var(--color-accent-yellow);
-  --btn-danger: #e11d48;
+  --btn-danger: #c0392b;
   --btn-cancel: #ccc;
 }
 

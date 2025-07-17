@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { TaskApi, UserInfo } from "@service";
 import { DeleteWorkspaceModal, ModifWorkspaceModal, CreateWorkspaceModal, UserRightsModal } from "@components";
 import "./WorkspaceMenu.css";
@@ -9,7 +8,7 @@ import "./modal/taskModal.css";
 
 
 const WorkspaceMenu = ({ setCurrentWorkspace }) => {
-  const mode = useSelector((state) => state.theme.mode);
+
   const navigate = useNavigate();
   const location = useLocation();
   const containerRef = useRef(null);
@@ -153,10 +152,10 @@ const confirmEdit = async (form) => {
   return (
     <div
       ref={containerRef}
-      className={`tmw-menu-container ${mode} ${open ? "open" : ""}`}
+      className={`tmw-menu-container  ${open ? "open" : ""}`}
     >
       <button
-        className={`tmw-toggle ${mode === "dark" ? "dark" : "light"} ${open ? "active" : ""}`}
+        className={`tmw-toggle  ${open ? "active" : ""}`}
         onClick={toggleMenu}
       >
         <span className="tmw-icon">≡</span>
@@ -164,7 +163,7 @@ const confirmEdit = async (form) => {
       </button>
 
       {open && (
-        <div className= {`tmw-list ${mode === "dark" ? "dark" : "light"}`}
+        <div className= {`tmw-list`}
         >
           <div className="tmw-workspaces">
             {workspaces.map(ws => (

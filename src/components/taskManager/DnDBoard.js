@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { useSelector } from "react-redux";
 import DnDCard from "./DnDCard";
 import { EditBoardTitleModal, DeleteBoardModal, BoardCardAccess } from "@components";
 import BoardMenuPortal from "./BoardMenuPortal";
@@ -28,7 +27,7 @@ const DnDBoard = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
-  const mode = useSelector((state) => state.theme.mode);
+
   const { setNodeRef, isOver } = useDroppable({ id: board.id });
 
   useEffect(() => {
@@ -158,12 +157,12 @@ const DnDBoard = ({
   return (
     <>
       <div
-        className={`tm-board-container ${mode}`}
+        className={`tm-board-container`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => onBoardDrop(e, index)}
       >
         <div
-          className={`tm-board-header ${mode}`}
+          className={`tm-board-header`}
           draggable
           onDragStart={(e) => onBoardDragStart(e, index)}
           onClick={toggleCollapse}
@@ -187,7 +186,7 @@ const DnDBoard = ({
             
               <div className="tm-board-menu-wrapper">
                 <button
-                  className={`tm-board-menu-btn ${mode}`}
+                  className={`tm-board-menu-btn`}
                   onClick={() => setMenuOpen(!menuOpen)}
                   ref={buttonRef}
                 >
@@ -212,7 +211,7 @@ const DnDBoard = ({
         >
           <div className="tm-cards" ref={cardsContainerRef} data-id={board.id}>
             {board.cards.length === 0 && (
-              <div className={`tm-empty-board-placeholder ${mode}`}>
+              <div className={`tm-empty-board-placeholder`}>
                 Déposez une carte ici
               </div>
             )}
@@ -222,7 +221,6 @@ const DnDBoard = ({
                 card={card}
                 boardId={board.id}
                 openViewerModal={openViewerModal}
-                mode={mode}
               />
             ))}
           </div>
@@ -233,7 +231,7 @@ const DnDBoard = ({
         <BoardMenuPortal>
           <div
             ref={menuRef}
-            className={`tm-board-menu fixed ${mode}`}
+            className={`tm-board-menu fixed`}
             style={{
               top: `${menuPosition.top}px`,
               left: `${menuPosition.left}px`,

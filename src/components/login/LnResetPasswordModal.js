@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import LnPasswordField from './LnPasswordField';
 import LnSuccessModal from './LnSuccessModal';
@@ -13,7 +12,7 @@ import {
 } from './lnFormUtils';
 
 const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
-  const mode = useSelector((state) => state.theme.mode);
+
   const [form, setForm] = useState({ password: '', confirm: '' });
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState('');
@@ -83,7 +82,7 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
     <>
       <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
         <div
-          className={`ln-modal-box ln-modal-slide-in ${mode}`}
+          className={`ln-modal-box ln-modal-slide-in `}
           onClick={(e) => e.stopPropagation()}
         >
           <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
@@ -121,7 +120,7 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
 
             <button
               type="submit"
-              className={`ln-submit ${mode}`}
+              className={`ln-submit`}
               disabled={submitted}
             >
               Valider

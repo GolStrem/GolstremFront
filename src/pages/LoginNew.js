@@ -36,7 +36,7 @@ const LoginNew = () => {
 
 
   return (
-    <div className={`loginNew ${mode}`}>
+    <div className={`loginNew`}>
       {/* — interrupteur dark / light — */}
       <div className={`mode-toggle ${mode}`} onClick={() => dispatch(toggleTheme())}> {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}</div>
       
@@ -47,19 +47,19 @@ const LoginNew = () => {
 
       {/* — carré “Connexion” & “Créer un compte” — */}
       <div className="ln-form">
-        <button className={`ln-connexion ${mode}`} onClick={openLogin}>
+        <button className={`ln-connexion `} onClick={openLogin}>
           <FaUserAlt className="ln-ico" />
           <span>Connexion</span>
         </button>
 
-        <button className={`ln-create ${mode}`} onClick={openRegister}>
+        <button className={`ln-create `} onClick={openRegister}>
           <FaPlus className="ln-ico" />
           <span>Créer&nbsp;un&nbsp;compte</span>
         </button>
 
       </div>
 
-      {modal && <LnModal type={modal} onClose={closeModal} mode={mode} />}
+      {modal && <LnModal type={modal} onClose={closeModal} />}
 
 
       <div className='ln-backText'>
