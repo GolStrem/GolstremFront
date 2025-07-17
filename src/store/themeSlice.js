@@ -37,7 +37,7 @@ function switchColor(theme) {
   document.documentElement.style.setProperty("--color-submit-text", theme === 'dark' ? '#f0f0f0' : '#000');
 
   document.documentElement.style.setProperty("--color-text-muted", theme === 'dark' ? '#bbb' : '#aaa');
-  document.documentElement.style.setProperty("--color-border", theme === 'dark' ? 'none' : '#ccc');
+  document.documentElement.style.setProperty("--color-border", theme === 'dark' ? '#e9ecef00' : '#ccc');
   document.documentElement.style.setProperty("--color-border-muted", theme === 'dark' ? '#666' : '#ddd');
 
   document.documentElement.style.setProperty("--color-button-text", theme === 'dark' ? '#000' : '#000');
