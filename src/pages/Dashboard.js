@@ -1,47 +1,56 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { TaskApi, UserInfo } from "@service"; // 🆕 On va appeler l'API
-import "./Dashboard.css";
+import { Link, useLocation } from "react-router-dom";
+import { TaskApi, UserInfo } from "@service";
 import {
   FaTasks,
-  FaBriefcase,
-  FaMoneyBillWave,
-  FaUsers,
-  FaCalendarAlt,
-} from "react-icons/fa"; 
+  FaBook,
+  FaBoxOpen,
+  FaGlobe,
+  FaCrown,
+} from "react-icons/fa";
 
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const [workspaceId, setWorkspaceId] = useState(null);
+  const location = useLocation();
 
   const links = [
-    ...(workspaceId
-      ? [
-          {
-            to: `/workspace/${encodeURIComponent(workspaceId)}`,
-            label: `Gestion des tâches`,
-            icon: <FaTasks size={40} />,
-          },
-        ]
-      : []),
-    { to: "/portfolio", label: "Portfolio", icon: <FaBriefcase size={40} /> },
     {
-      to: "/expense-tracker",
-      label: "Suivi des Dépenses",
-      icon: <FaMoneyBillWave size={40} />,
+      to: workspaceId ? `/workspace/${encodeURIComponent(workspaceId)}` : "#",
+      label: "Workspace",
+      icon: <FaTasks />,
+      active: location.pathname.includes("/workspace"),
     },
-    { to: "/social-network", label: "Réseau Social", icon: <FaUsers size={40} /> },
     {
-      to: "/appointment-scheduler",
-      label: "Rendez-vous",
-      icon: <FaCalendarAlt size={40} />,
+      to: "/dashboard",
+      label: "Fiche",
+      icon: <FaBook />,
+      active: location.pathname === "/fiches",
+    },
+    {
+      to: "/dashboard",
+      label: "Inventaire",
+      icon: <FaBoxOpen />,
+      active: location.pathname === "/inventaire",
+    },
+    {
+      to: "/dashboard",
+      label: "Univers",
+      icon: <FaGlobe />,
+      active: location.pathname === "/univers",
+    },
+    {
+      to: "/dashboard",
+      label: "Maître du jeu",
+      icon: <FaCrown />,
+      active: location.pathname === "/maitre",
     },
   ];
 
   useEffect(() => {
     const initWorkspace = async () => {
-      
-      const lastWorkspace = await UserInfo.get("lastWorkspace")
+      const lastWorkspace = await UserInfo.get("lastWorkspace");
 
       if (lastWorkspace) {
         return setWorkspaceId(lastWorkspace);
@@ -56,94 +65,44 @@ const Dashboard = () => {
         if (workspacesArray.length > 0) {
           const firstId = workspacesArray[0].id;
           setWorkspaceId(firstId);
-          UserInfo.set("lastWorkspace", firstId)
+          UserInfo.set("lastWorkspace", firstId);
         }
       } catch (err) {
         console.error("Erreur lors du chargement des workspaces :", err);
       }
-
     };
 
     initWorkspace();
   }, []);
 
-  const [mouseX, setMouseX] = useState(0);
-
-  const handleMouseMove = (event) => {
-    setMouseX(event.clientX);
-  };
-
   return (
-    <div
-      className={"dashboard"}
-      onMouseMove={handleMouseMove}
-    >
-      <h1 className="dashboardh1">Bienvenue sur votre Dashboard</h1>
-      <p className="projects">Liste des projets en cours</p>
-      <div className="cards-container">
+    <div className="dashboard">
+      <div className="background-blur"></div>
+
+      <header className="dashboard-header">
+        <h1>Bienvenue </h1>
+        <p>Vos espaces de travail, organisés et accessibles</p>
+      </header>
+
+      <section className="workspace-section">
+        <p>Contenu principal à venir…</p>
+      </section>
+
+      {/* Barre de navigation */}
+      <nav className="bottom-nav">
         {links.map((link, index) => (
           <Link
             to={link.to}
-            className={`card item ${index % 2 === 0 ? "primary" : "secondary"}`}
             key={index}
+            className={`nav-item ${link.active ? "active" : ""}`}
           >
-            <div className="card-icon">{link.icon}</div>
-            <div className="card-overlay"></div>
-            <div className="main-text">
-              <p className="pboard">{link.label}</p>
+            <div className="icon-wrapper">
+              {link.icon}
             </div>
-            <div className="card-btn">
-              <p>Ouvrir</p>
-            </div>
+            <span>{link.label}</span>
           </Link>
         ))}
-      </div>
-
-      <div className="wave-container">
-        <svg
-          className="waves"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 24 150 28"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <path
-              id="gentle-wave"
-              d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
-            />
-          </defs>
-          <g className="parallax">
-            <use
-              xlinkHref="#gentle-wave"
-              x="48"
-              y="0"
-              fill="rgba(51, 31, 31, 0.5)"
-              style={{ transform: `translateX(${mouseX / 20 - 50}px)` }}
-            />
-            <use
-              xlinkHref="#gentle-wave"
-              x="48"
-              y="3"
-              fill="rgba(51, 31, 31, 0.2)"
-              style={{ transform: `translateX(${mouseX / 15 - 75}px)` }}
-            />
-            <use
-              xlinkHref="#gentle-wave"
-              x="48"
-              y="5"
-              fill="rgba(51, 31, 31, 0.32)"
-              style={{ transform: `translateX(${mouseX / 10 - 100}px)` }}
-            />
-            <use
-              xlinkHref="#gentle-wave"
-              x="20"
-              y="7"
-              fill="rgba(51, 31, 31, 0)"
-              style={{ transform: `translateX(${mouseX / 5 - 125}px)` }}
-            />
-          </g>
-        </svg>
-      </div>
+      </nav>
     </div>
   );
 };
