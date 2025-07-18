@@ -1,271 +1,168 @@
-
-
 .dashboard {
-  display: flex;
-  height: 100vh;
-  flex-direction: column;
-  color: var(--color-text);
-  align-items: center;
-  justify-content: flex-start;
-  min-height: calc(100vh - 59px); /* Remplit toute la hauteur de la fenêtre */
-  transition: background-color 0.3s, color 0.3s;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1rem;
+  gap: 2rem;
 }
 
 
-.cards-container {
-  display: flex;
-  flex-wrap: wrap; /* Permet aux cartes de passer à la ligne */
-  justify-content: center; /* Centre les cartes horizontalement */
-  gap: 20px; /* Espacement entre les cartes */
-  margin-top: 1px;
-  width: 100%;
-  max-width: 1300px;
-  padding: 20px;
+.dashboard-header {
+  text-align: center;
+  max-width: 600px;
   z-index: 1;
 }
 
-.dashboard p {
-  color: white;
-  font-size: 25px;
-  margin-top: 0;
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
 }
 
-.item {
+.dashboard-header p {
+  color: #ccc;
+  font-size: 1.1rem;
+}
+
+.workspace-section {
+  z-index: 1;
   display: flex;
-  flex-direction: column; /* Organise les enfants en colonne */
-  justify-content: flex-end; /* Positionne le contenu vers le bas */
-  align-items: flex-start; /* Positionne les enfants à gauche */
-  position: relative;
-  width: 400px; /* Taille fixe pour chaque carte */
-  height: 400px; /* Hauteur fixe */
-  border-radius: 30px;
-  overflow: hidden;
-  box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
-  background: #222; /* Couleur de fond en cas d'absence d'image */
-}
-
-.card-background {
-  position: absolute;
-  top: 0;
-  left: 0;
+  flex-direction: column;
+  gap: 1.5rem;
   width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  z-index: 0; /* Derrière tout */
-  border-radius: 30px; /* Même bordure que la carte */
+  max-width: 700px;
 }
 
-.card-overlay {
-  background-image: linear-gradient(0deg, #562C2C, #3a2f2f);
-  border-radius: 30px;
-  position: absolute;
-  top: 55%;
-  left: -5px;
-  height: 65%;
-  width: 108%;
-  transform: skew(19deg, -9deg);
-  z-index: 1; /* Au-dessus du fond, mais sous le reste */
-}
-
-.secondary .card-overlay {
-  background-image: linear-gradient(-20deg, #463739, #562C2C);
-}
-
-.card-icon {
-  height: 80px;
-  width: 80px;
-  border-radius: 20px;
-  background-color: #562C2C;
-  opacity: 0.8;
+.workspace-card {
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: absolute;
-  bottom: 27%;
-  left: 30px;
-  overflow: hidden;
-  box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.7);
-  z-index: 2; /* Par-dessus le fond et l'overlay */
-}
-
-.card-icon svg {
-  font-size: 40px;
-  color: #cfcfcf;
-}
-
-.main-text {
-  position: absolute;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  text-decoration: none;
   color: #fff;
-  font-weight: 900;
-  left: 135px;
-  bottom: 26%; /* Ajusté pour correspondre à l'emplacement précédent */
-  z-index: 3; /* Par-dessus l'overlay */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.card-btn {
-  position: absolute;
-  color: #fff;
-  right: 30px;
-  bottom: 10%;
-  padding: 0px 30px;
-  border: 1px solid #fff;
-  animation: button-anim 2s ease 0s infinite normal forwards;
-  z-index: 3; /* Par-dessus l'overlay */
+.workspace-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 40px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.card-btn:hover {
-  animation: none;
-  background-color: #ffffff21;
-  color: white;
-  border: 1px solid #ffffff;
+.workspace-icon {
+  flex-shrink: 0;
+  font-size: 2.2rem;
+  color: #4fc3f7;
 }
 
-.card-btn p {
-  color: #fff;
-  margin: 5px;
+.workspace-content h2 {
+  margin: 0;
+  font-size: 1.3rem;
 }
 
-.dashboard .projects {
-  color: var(--color-text);
+.workspace-content p {
+  margin: 0;
+  color: #bbb;
+  font-size: 0.9rem;
 }
 
-.secondary .card-icon {
-  background-color: #d4d4d4;
-  opacity: 0.8;
+.workspace-action {
+  font-weight: bold;
+  color: #4fc3f7;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
 }
 
-.secondary .card-icon svg {
-  color: #562C2C;
+.workspace-card:hover .workspace-action {
+  transform: translateX(4px);
 }
 
-.pboard {
-  font-size: 25px;
+.no-workspace {
+  text-align: center;
+  color: #bbb;
+  font-style: italic;
 }
 
-.dashboard h1{
-  font-size: 50px;
-  color: var(--color-text);
-}
-
-
-.wave-container {
-  position: absolute;
+.bottom-nav {
+  position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%;
-  height: 7.2vw; /* Ajustable selon tes besoins */
-  
-  overflow: hidden;
+  right: 0;
+  background: var(--color-background);
+  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 3.4rem;
+  z-index: 100;
+  box-shadow: 0 -2px 8px var(--jaune);
 }
 
-.waves {
-  display: absolute;
-  width: 100%;
-  height: 100%; /* Remplit toujours le conteneur */
-  margin-top: 10px;
-
+.nav-item {
+  position: relative;
+  color: #888;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
 }
 
-.parallax > use {
-  will-change: transform;
-  transition: transform 20s linear;
+.nav-item .icon-wrapper {
+  position: relative;
+  font-size: 1.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  line-height: 1;
+  background: transparent;
 }
 
-.dashboardh1{
-  padding-top: 2em;
+.nav-item span {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
-
-/* Media query pour les écrans 1720x1080 */
-@media (max-width: 1920px) and (max-height: 1080px) {
-  .wave-container {
-    height: 5.76vw; /* 20% plus petit */
-  }
-
-  .item {
-    width: 320px; /* Réduction de 20% */
-    height: 320px;
-  }
-
-  .card-icon {
-    height: 64px; /* Réduction de 20% */
-    width: 64px;
-  }
-
-  .main-text {
-    left: 108px; /* Réduction de 20% */
-    bottom: 20.8%;
-  }
-
-  .card-btn {
-    right: 24px; /* Réduction de 20% */
-    bottom: 8%;
-    padding: 0px 24px;
-  }
-
-  .pboard {
-    font-size: 20px; /* Réduction de 20% */
-  }
-
-  .dashboard h1 {
-    font-size: 40px; /* Réduction de 20% */
-  }
-
+.nav-item span:hover {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1;
+  font-weight: bold;
 }
 
-@media (max-width: 1341px) {
-  .wave-container {
-    height: auto; /* Gère les petits écrans dynamiquement */
-  }
-
-  .cards-container{
-    width: 90%;
-  }
+.nav-item:hover {
+  z-index: 2;
 }
 
-
-
-
-@media (max-width: 768px) {
-  .wave-container {
-    height: auto; /* Gère les petits écrans dynamiquement */
-  }
-
-  .cards-container{
-    width: 85%;
-  }
-  h1{
-
-    text-align: center;
-  }
+.nav-item:hover .icon-wrapper {
+  background: var(--jaune);
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transform: translateY(-20px);
 }
 
-
-
-@keyframes button-anim {
-  0% {
-    transform: translate(0);
-  }
-
-  20% {
-    transform: translate(-2px, 2px);
-  }
-
-  40% {
-    transform: translate(-2px, -2px);
-  }
-
-  60% {
-    transform: translate(2px, 2px);
-  }
-
-  80% {
-    transform: translate(2px, -2px);
-  }
-
-  100% {
-    transform: translate(0);
-  }
+/* ✅ contour externe épais */
+.nav-item:hover .icon-wrapper::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: -6px;
+  width: calc(100% + 14px);
+  height: calc(100% + 14px);
+  border: 9px solid var(--color-background);
+  border-radius: 50%;
+  box-sizing: border-box;
 }
