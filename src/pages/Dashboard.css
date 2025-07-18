@@ -7,7 +7,6 @@
   gap: 2rem;
 }
 
-
 .dashboard-header {
   text-align: center;
   max-width: 600px;
@@ -137,9 +136,6 @@
 }
 
 .nav-item span:hover {
-  display: block;
-  font-size: 0.9rem;
-  line-height: 1;
   font-weight: bold;
 }
 
@@ -154,7 +150,6 @@
   transform: translateY(-20px);
 }
 
-/* ✅ contour externe épais */
 .nav-item:hover .icon-wrapper::after {
   content: "";
   position: absolute;
@@ -165,4 +160,76 @@
   border: 9px solid var(--color-background);
   border-radius: 50%;
   box-sizing: border-box;
+}
+
+/* ==================== Responsive ==================== */
+
+/* Tablette */
+@media (max-width: 768px) {
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .dashboard-header p {
+    font-size: 1rem;
+  }
+
+  .workspace-content h2 {
+    font-size: 1.1rem;
+  }
+
+  .workspace-content p {
+    font-size: 0.85rem;
+  }
+
+  .bottom-nav {
+    gap: 2rem;
+  }
+
+  .nav-item .icon-wrapper {
+    font-size: 1.5rem;
+    width: 44px;
+    height: 44px;
+  }
+
+  .nav-item span {
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .dashboard-header p {
+    font-size: 0.9rem;
+  }
+
+  .workspace-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .bottom-nav {
+    gap: 1.5rem;
+    padding-bottom: 0.3rem;
+  }
+
+  .nav-item {
+    height: 60px;
+  }
+
+  .nav-item .icon-wrapper {
+    font-size: 1.3rem;
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-item span {
+    font-size: 0.75rem;
+  }
 }
