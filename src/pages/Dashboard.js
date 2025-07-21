@@ -80,7 +80,7 @@ const Dashboard = () => {
       <div className="background-blur"></div>
 
       <header className="dashboard-header">
-        <h1>Bienvenue </h1>
+        <h1 className="helloPlayer">Bienvenue </h1>
         <p>Vos espaces de travail, organisés et accessibles</p>
       </header>
 
