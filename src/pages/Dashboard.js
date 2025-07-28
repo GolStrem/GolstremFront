@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { TaskApi, UserInfo } from "@service";
+import { TaskApi } from "@service";
+import apiService from "@service/api/ApiService";
 import {
   FaTasks,
   FaBook,
@@ -9,10 +10,15 @@ import {
   FaCrown,
 } from "react-icons/fa";
 
+import banner from "@assets/banner.jpg";
+import avatarDefault from "@assets/avatar.png";
+
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const [workspaceId, setWorkspaceId] = useState(null);
+  const [avatar, setAvatar] = useState(avatarDefault);
+  const [pseudo, setPseudo] = useState("joueur");
   const location = useLocation();
 
   const links = [
@@ -23,25 +29,25 @@ const Dashboard = () => {
       active: location.pathname.includes("/workspace"),
     },
     {
-      to: "/dashboard",
+      to: "/fiches",
       label: "Fiche",
       icon: <FaBook />,
       active: location.pathname === "/fiches",
     },
     {
-      to: "/dashboard",
+      to: "/inventaire",
       label: "Inventaire",
       icon: <FaBoxOpen />,
       active: location.pathname === "/inventaire",
     },
     {
-      to: "/dashboard",
+      to: "/univers",
       label: "Univers",
       icon: <FaGlobe />,
       active: location.pathname === "/univers",
     },
     {
-      to: "/dashboard",
+      to: "/maitre",
       label: "Maître du jeu",
       icon: <FaCrown />,
       active: location.pathname === "/maitre",
@@ -49,14 +55,19 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
-    const initWorkspace = async () => {
-      const lastWorkspace = await UserInfo.get("lastWorkspace");
-
-      if (lastWorkspace) {
-        return setWorkspaceId(lastWorkspace);
+    const initDashboard = async () => {
+      try {
+        // ✅ Récupération des infos utilisateur
+        const { data: user } = await apiService.getUser();
+        if (user?.image) setAvatar(user.image);
+        if (user?.pseudo) setPseudo(user.pseudo);
+      } catch (err) {
+        console.error("Erreur utilisateur :", err);
+        setAvatar(avatarDefault);
       }
 
       try {
+        // ✅ Récupération du premier workspace
         const { data } = await TaskApi.getWorkspaces();
         const workspacesArray = Object.entries(data).map(([id, ws]) => ({
           id,
@@ -65,22 +76,31 @@ const Dashboard = () => {
         if (workspacesArray.length > 0) {
           const firstId = workspacesArray[0].id;
           setWorkspaceId(firstId);
-          UserInfo.set("lastWorkspace", firstId);
         }
       } catch (err) {
-        console.error("Erreur lors du chargement des workspaces :", err);
+        console.error("Erreur workspaces :", err);
       }
     };
 
-    initWorkspace();
+    initDashboard();
   }, []);
 
   return (
     <div className="dashboard">
       <div className="background-blur"></div>
 
+      {/* Bannière */}
+      <div className="dashboard-banner">
+        <img src={banner} alt="Banner" className="banner-img" />
+
+        <div className="banner-content">
+          <img src={avatar} alt="Avatar" className="banner-avatar" />
+          <h1 className="helloPlayer">{pseudo}</h1>
+        </div>
+      </div>
+
+
       <header className="dashboard-header">
-        <h1 className="helloPlayer">Bienvenue </h1>
         <p>Vos espaces de travail, organisés et accessibles</p>
       </header>
 
@@ -88,7 +108,6 @@ const Dashboard = () => {
         <p>Contenu principal à venir…</p>
       </section>
 
-      {/* Barre de navigation */}
       <nav className="bottom-nav">
         {links.map((link, index) => (
           <Link
@@ -96,9 +115,7 @@ const Dashboard = () => {
             key={index}
             className={`nav-item ${link.active ? "active" : ""}`}
           >
-            <div className="icon-wrapper">
-              {link.icon}
-            </div>
+            <div className="icon-wrapper">{link.icon}</div>
             <span>{link.label}</span>
           </Link>
         ))}
