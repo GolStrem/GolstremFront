@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   DndContext,
   closestCenter,
@@ -12,7 +12,7 @@ import {
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
-import { useBoardManager, useCardManager, BoardCardAccess, useDomDragAndDrop } from "@components";
+import { useBoardManager, useCardManager, BoardCardAccess, useDomDragAndDrop, useSocketWorkspace } from "@components";
 import { UserInfo, normalize, TaskApi } from "@service";
 
 import "./TaskManager.css";
@@ -109,6 +109,8 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   });
   const [viewingCard, setViewingCard] = useState(null);
   const [showBoardModal, setShowBoardModal] = useState(false);
+  const fctSocket = useSocketWorkspace(); // ✅ appel du hook
+  const socketRef = useRef(null);
 
   useEffect(() => {
     if (workspaceId) {
@@ -130,6 +132,75 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     window.addEventListener("resize", calculateColumns);
     return () => window.removeEventListener("resize", calculateColumns);
   }, [calculateColumns]);
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
+  if (!workspaceId || workspaceId === "Default") return;
+
+  const socket = new WebSocket("wss://apigolstrem.fr/ws/");
+  socketRef.current = socket;
+
+  console.log("🧩 Connexion WebSocket pour workspace :", workspaceId);
+
+  socket.onopen = () => {
+    console.log("🟢 WebSocket connecté !");
+    setTimeout(() => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ subscribe: `workSpace-${workspaceId}` }));
+      }
+    }, 100);
+  };
+
+  socket.onmessage = (event) => {
+    try {
+      const payload = JSON.parse(event.data);
+      console.log("📨 Message WebSocket JSON :", payload);
+
+      setBoards((prevBoards) => {
+        let updatedBoards = prevBoards;
+        if (payload.updateCard) {
+          updatedBoards = fctSocket.handleUpdateCard(prevBoards, payload.updateCard);
+        }
+        if (payload.newCard) {
+          updatedBoards = fctSocket.handleCreateCard(updatedBoards, payload.newCard);
+        }
+        if (payload.deleteCard) {
+          updatedBoards = fctSocket.handleDeleteCard(updatedBoards, payload.deleteCard);
+        }
+        if (payload.moveCard) {
+          updatedBoards = fctSocket.handleMoveCard(updatedBoards, payload.moveCard);
+        }
+        if (payload.newTableau) {
+          updatedBoards = fctSocket.handleCreateBoard(updatedBoards, payload.newTableau);
+        }
+        if (payload.updateTableau) {
+          updatedBoards = fctSocket.handleUpdateBoard(updatedBoards, payload.updateTableau); 
+        }
+        if (payload.deleteTableau) {
+          updatedBoards = fctSocket.handleDeleteBoard(updatedBoards, payload.deleteTableau);
+        }
+
+        return updatedBoards;
+      });
+    } catch (e) {
+      console.error("❌ Erreur JSON WebSocket :", e);
+    }
+  };
+
+  socket.onerror = (error) => {
+    console.error("❌ Erreur WebSocket :", error);
+  };
+
+  socket.onclose = () => {
+    console.log("🔴 WebSocket déconnecté.");
+  };
+
+  return () => {
+    if (socketRef.current) {
+      socketRef.current.close();
+    }
+  };
+}, [workspaceId]); 
 
 
 
