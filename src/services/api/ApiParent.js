@@ -1,7 +1,17 @@
 import axios from 'axios';
 
 export const USE_MOCK = process.env.REACT_APP_USE_MOCK === 'true';
-export const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:3000/';
+
+const getApiBaseUrl = () => {
+  if (window.location.protocol === 'https:') {
+    return process.env.REACT_APP_API_ENDPOINT_SECURE;
+  }
+  return process.env.REACT_APP_API_ENDPOINT;
+};
+
+export const API_BASE_URL = getApiBaseUrl() || 'http://localhost:3000/';
+console.log(API_BASE_URL)
+
 export const TOKEN_KEY = 'token';
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY);

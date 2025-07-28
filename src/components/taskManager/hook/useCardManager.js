@@ -23,16 +23,6 @@ export default function useCardManager(workspaceId, boards, setBoards) {
         if (Object.keys(updates).length === 0) return;
 
         await TaskApi.editCard(workspaceId, boardId, cardId, updates);
-        setBoards(prev =>
-          prev.map(board =>
-            board.id === boardId
-              ? {
-                  ...board,
-                  cards: board.cards.map(c => (c.id === cardId ? { ...c, ...updates } : c))
-                }
-              : board
-          )
-        );
       } catch (err) {
         console.error("Erreur mise à jour carte :", err);
       }
@@ -40,13 +30,6 @@ export default function useCardManager(workspaceId, boards, setBoards) {
       try {
         const { data } = await TaskApi.createCard(workspaceId, boardId, { ...cardData });
         const [id, card] = Object.entries(data)[0];
-        setBoards(prev =>
-          prev.map(board =>
-            board.id === boardId
-              ? { ...board, cards: [...board.cards, { id:Number(id),droit: "owner", ...card }] }
-              : board
-          )
-        );
       } catch (err) {
         console.error("Erreur création carte :", err);
       }
@@ -56,13 +39,6 @@ export default function useCardManager(workspaceId, boards, setBoards) {
   const deleteCard = async (boardId, cardId) => {
     try {
       await TaskApi.deleteCard(workspaceId, boardId, cardId);
-      setBoards(prev =>
-        prev.map(board =>
-          board.id === boardId
-            ? { ...board, cards: board.cards.filter(c => c.id !== cardId) }
-            : board
-        )
-      );
     } catch (err) {
       console.error("Erreur suppression carte :", err);
     }
@@ -70,27 +46,6 @@ export default function useCardManager(workspaceId, boards, setBoards) {
 
   const dropCard = (sourceBoardId, targetBoardId, cardId, targetIndex) => {
     if (!sourceBoardId || !targetBoardId || !cardId) return;
-
-    setBoards(prevBoards => {
-      let draggedCard = null;
-
-      const newBoards = prevBoards.map(board => {
-        if (board.id === sourceBoardId) {
-          draggedCard = board.cards.find(c => c.id === cardId);
-          return { ...board, cards: board.cards.filter(c => c.id !== cardId) };
-        }
-        return board;
-      }).map(board => {
-        if (board.id === targetBoardId && draggedCard) {
-          const updatedCards = [...board.cards];
-          updatedCards.splice(targetIndex ?? updatedCards.length, 0, draggedCard);
-          return { ...board, cards: updatedCards };
-        }
-        return board;
-      });
-
-      return newBoards;
-    });
   };
 
   return {

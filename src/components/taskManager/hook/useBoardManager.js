@@ -46,11 +46,6 @@ export default function useBoardManager(workspaceId) {
     try {
       const payload = { name: trimmed, color };
       const { data } = await TaskApi.createTableau(workspaceId, payload);
-      const [id, board] = Object.entries(data)[0];
-      setBoards(prev => [
-        ...prev,
-        { id, name: board.name, color: board.color,droit: "owner", cards: [] }
-      ]);
     } catch (err) {
       console.error("Erreur lors de la création d’un board :", err);
     }
@@ -61,11 +56,6 @@ export default function useBoardManager(workspaceId) {
     if (!trimmed) return alert("Le nom ne peut pas être vide !");
     try {
       await TaskApi.editTableau(workspaceId, boardId, { name: trimmed });
-      setBoards(prev =>
-        prev.map(board =>
-          board.id === boardId ? { ...board, name: trimmed } : board
-        )
-      );
     } catch (err) {
       console.error("Erreur lors de la mise à jour d’un board :", err);
     }
@@ -74,7 +64,6 @@ export default function useBoardManager(workspaceId) {
   const deleteBoard = async boardId => {
     try {
       await TaskApi.deleteTableau(workspaceId, boardId);
-      setBoards(prev => prev.filter(board => board.id !== boardId));
     } catch (err) {
       console.error("Erreur lors de la suppression d’un board :", err);
     }
