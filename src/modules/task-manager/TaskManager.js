@@ -72,7 +72,6 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
       };
     });
 
-    setBoards(updatedBoards)
   });
 
   const filteredBoards = boards
@@ -137,7 +136,7 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
 useEffect(() => {
   if (!workspaceId || workspaceId === "Default") return;
 
-  const socket = new WebSocket("wss://apigolstrem.fr/ws/");
+  const socket = new WebSocket("ws://localhost:8888");
   socketRef.current = socket;
 
   console.log("🧩 Connexion WebSocket pour workspace :", workspaceId);
@@ -146,7 +145,7 @@ useEffect(() => {
     console.log("🟢 WebSocket connecté !");
     setTimeout(() => {
       if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ subscribe: `workSpace-${workspaceId}` }));
+        socket.send(JSON.stringify({ subscribe: `workSpace-${workspaceId}`}));
       }
     }, 100);
   };
