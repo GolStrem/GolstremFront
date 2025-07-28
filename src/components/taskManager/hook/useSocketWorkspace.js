@@ -30,7 +30,8 @@ export default function useSocketWorkspace() {
         });
     };
 
-    const handleCreateCard = (boards, cardData) => {
+    const handleCreateCard = (boards, cardData, droit) => {
+        const droitUse = Number(localStorage.getItem("id")) === Number(cardData.idOwner) ? 'owner' : droit;
         const boardId = Number(cardData.idTableau || cardData.boardId);
         const newCard = {
             id: Number(cardData.id),
@@ -42,7 +43,7 @@ export default function useSocketWorkspace() {
             state: cardData.state || 0,
             createdAt: cardData.createdAt || new Date().toISOString(),
             endAt: cardData.endAt || null,
-            droit: cardData.droit || "read",
+            droit: cardData.droit || droitUse,
         };
 
         return boards.map((board) => {
@@ -112,14 +113,14 @@ export default function useSocketWorkspace() {
     return updatedBoards;
     };
 
-    const handleCreateBoard = (boards, boardData) => {
+    const handleCreateBoard = (boards, boardData, droit) => {
         const newBoard = {
             id: Number(boardData.id),
             name: boardData.name || "Sans nom",
             color: boardData.color || "#999999",
             image: boardData.image || null,
             cards: [], 
-            droit: "read", 
+            droit: droit, 
             createdAt: boardData.createdAt || new Date().toISOString(),
         };
 

@@ -132,74 +132,82 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     return () => window.removeEventListener("resize", calculateColumns);
   }, [calculateColumns]);
 
+
+// ✅ Reconnexion automatique, avec dépendance minimale
 // eslint-disable-next-line react-hooks/exhaustive-deps
 useEffect(() => {
-  if (!workspaceId || workspaceId === "Default") return;
+  if (!workspaceId || workspaceId === "Default" || droit === null) return;
+  let isUnmounted = false;
+  let reconnectTimeout = null;
 
-  const socket = new WebSocket("ws://localhost:8888");
-  socketRef.current = socket;
+  const connectSocket = () => {
+    const socket = new WebSocket("wss://apigolstrem.fr/ws/");
+    socketRef.current = socket;
 
-  console.log("🧩 Connexion WebSocket pour workspace :", workspaceId);
+    socket.onopen = () => {
+      console.log("🟢 WebSocket connecté !");
+      setTimeout(() => {
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ subscribe: `workSpace-${workspaceId}` }));
+        }
+      }, 100);
+    };
 
-  socket.onopen = () => {
-    console.log("🟢 WebSocket connecté !");
-    setTimeout(() => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ subscribe: `workSpace-${workspaceId}`}));
+    socket.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+
+        setBoards((prevBoards) => {
+          let updatedBoards = prevBoards;
+          if (payload.updateCard) {
+            updatedBoards = fctSocket.handleUpdateCard(prevBoards, payload.updateCard);
+          }
+          if (payload.newCard) {
+            updatedBoards = fctSocket.handleCreateCard(updatedBoards, payload.newCard, droit);
+          }
+          if (payload.deleteCard) {
+            updatedBoards = fctSocket.handleDeleteCard(updatedBoards, payload.deleteCard);
+          }
+          if (payload.moveCard) {
+            updatedBoards = fctSocket.handleMoveCard(updatedBoards, payload.moveCard);
+          }
+          if (payload.newTableau) {
+            updatedBoards = fctSocket.handleCreateBoard(updatedBoards, payload.newTableau, droit);
+          }
+          if (payload.updateTableau) {
+            updatedBoards = fctSocket.handleUpdateBoard(updatedBoards, payload.updateTableau);
+          }
+          if (payload.deleteTableau) {
+            updatedBoards = fctSocket.handleDeleteBoard(updatedBoards, payload.deleteTableau);
+          }
+          return updatedBoards;
+        });
+      } catch (e) {
+        console.error("❌ Erreur JSON WebSocket :", e);
       }
-    }, 100);
+    };
+
+    socket.onerror = (error) => {
+      console.error("❌ Erreur WebSocket :", error);
+    };
+
+    socket.onclose = () => {
+      console.log("🔴 WebSocket déconnecté. Reconnexion dans 3s...");
+      if (!isUnmounted) {
+        reconnectTimeout = setTimeout(connectSocket, 3000);
+      }
+    };
   };
 
-  socket.onmessage = (event) => {
-    try {
-      const payload = JSON.parse(event.data);
-      console.log("📨 Message WebSocket JSON :", payload);
-
-      setBoards((prevBoards) => {
-        let updatedBoards = prevBoards;
-        if (payload.updateCard) {
-          updatedBoards = fctSocket.handleUpdateCard(prevBoards, payload.updateCard);
-        }
-        if (payload.newCard) {
-          updatedBoards = fctSocket.handleCreateCard(updatedBoards, payload.newCard);
-        }
-        if (payload.deleteCard) {
-          updatedBoards = fctSocket.handleDeleteCard(updatedBoards, payload.deleteCard);
-        }
-        if (payload.moveCard) {
-          updatedBoards = fctSocket.handleMoveCard(updatedBoards, payload.moveCard);
-        }
-        if (payload.newTableau) {
-          updatedBoards = fctSocket.handleCreateBoard(updatedBoards, payload.newTableau);
-        }
-        if (payload.updateTableau) {
-          updatedBoards = fctSocket.handleUpdateBoard(updatedBoards, payload.updateTableau); 
-        }
-        if (payload.deleteTableau) {
-          updatedBoards = fctSocket.handleDeleteBoard(updatedBoards, payload.deleteTableau);
-        }
-
-        return updatedBoards;
-      });
-    } catch (e) {
-      console.error("❌ Erreur JSON WebSocket :", e);
-    }
-  };
-
-  socket.onerror = (error) => {
-    console.error("❌ Erreur WebSocket :", error);
-  };
-
-  socket.onclose = () => {
-    console.log("🔴 WebSocket déconnecté.");
-  };
+  connectSocket();
 
   return () => {
-    if (socketRef.current) {
-      socketRef.current.close();
-    }
+    isUnmounted = true;
+    if (socketRef.current) socketRef.current.close();
+    if (reconnectTimeout) clearTimeout(reconnectTimeout);
   };
-}, [workspaceId]); 
+}, [workspaceId, droit]); // ✅ ne pas ajouter droit, fctSocket, setBoards ici
+
 
 
 
