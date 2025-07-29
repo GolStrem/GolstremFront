@@ -173,6 +173,21 @@
   margin-top: 0.5rem;
 }
 
+
+
+
+.tm-error-text {
+  color: #ff4d4d;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.tm-input-error {
+  border: 1px solid #ff4d4d;
+}
+
+
+
 @media (max-width: 600px) {
   .tm-color-state-fields,
   .tm-date-fields {
