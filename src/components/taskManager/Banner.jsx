@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import banner from "@assets/banner.jpg";
-import { TaskApi, UserInfo } from "@service";
+import { TaskApi, UserInfo, Socket } from "@service";
 import { AddUserModal, BoardCardAccess } from "@components";
 import { FaUserPlus } from "react-icons/fa";
 import { IoClose } from "react-icons/io5"; // pour la croix
@@ -60,6 +60,34 @@ const Banner = ({ workspaceId, onSearch }) => {
   useEffect(() => {
     onSearch?.(search);
   }, [search, onSearch]);
+
+  useEffect(() => {
+    if (!workspaceId) return;
+
+    const handleUpdateWorkspace = (data) => {
+      console.log(data)
+      if (!data) return;
+
+      setWorkspace(prev => {
+        if (!prev) return prev;
+        // Met à jour uniquement les champs présents dans data
+        return {
+          ...prev,
+          name: data.name ?? prev.name,
+          description: data.description ?? prev.description,
+          image: data.image ?? prev.image,
+        };
+      });
+    };
+
+    Socket.onMessage("updateWorkspace", handleUpdateWorkspace);
+    Socket.subscribe(`workSpace-${workspaceId}`);
+
+    return () => {
+      Socket.offMessage("updateWorkspace", handleUpdateWorkspace);
+      Socket.unsubscribe(`workSpace-${workspaceId}`);
+    };
+  }, [workspaceId]);
 
   const clearSearch = () => setSearch("");
 
