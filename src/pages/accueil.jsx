@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {  useSelector, useDispatch } from 'react-redux';
-import { ReactComponent as Golden } from "@assets/golden.svg";
+import Golden from '@assets/golden.svg?react';
 import "./Accueil.css";
 import { toggleTheme } from '@store/index';
 import { FaSun, FaMoon } from 'react-icons/fa';
