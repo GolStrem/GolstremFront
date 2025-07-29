@@ -13,7 +13,7 @@ import {
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
 import { useBoardManager, useCardManager, BoardCardAccess, useDomDragAndDrop, useSocketWorkspace } from "@components";
-import { UserInfo, normalize, TaskApi } from "@service";
+import { UserInfo, normalize, TaskApi, Socket } from "@service";
 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css";
@@ -133,80 +133,35 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   }, [calculateColumns]);
 
 
-// ✅ Reconnexion automatique, avec dépendance minimale
-// eslint-disable-next-line react-hooks/exhaustive-deps
-useEffect(() => {
-  if (!workspaceId || workspaceId === "Default" || droit === null) return;
-  let isUnmounted = false;
-  let reconnectTimeout = null;
+  // ✅ Reconnexion automatique, avec dépendance minimale
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!workspaceId || workspaceId === "Default" || droit === null) return;
 
-  const connectSocket = () => {
-    const socket = new WebSocket(import.meta.env.VITE_SOCKET_ENDPOINT);
-    socketRef.current = socket;
+    const channel = `workSpace-${workspaceId}`
+    Socket.subscribe(channel)
 
-    socket.onopen = () => {
-      console.log("🟢 WebSocket connecté !");
-      setTimeout(() => {
-        if (socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify({ subscribe: `workSpace-${workspaceId}` }));
-        }
-      }, 100);
+    const handlersMap = {
+      updateCard: (data) => setBoards(prev => fctSocket.handleUpdateCard(prev, data)),
+      newCard: (data) => setBoards(prev => fctSocket.handleCreateCard(prev, data, droit)),
+      deleteCard: (data) => setBoards(prev => fctSocket.handleDeleteCard(prev, data)),
+      moveCard: (data) => setBoards(prev => fctSocket.handleMoveCard(prev, data)),
+      newTableau: (data) => setBoards(prev => fctSocket.handleCreateBoard(prev, data, droit)),
+      updateTableau: (data) => setBoards(prev => fctSocket.handleUpdateBoard(prev, data)),
+      deleteTableau: (data) => setBoards(prev => fctSocket.handleDeleteBoard(prev, data)),
     };
 
-    socket.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data);
+    Object.entries(handlersMap).forEach(([type, handler]) => {
+      Socket.onMessage(type, handler);
+    });
 
-        setBoards((prevBoards) => {
-          let updatedBoards = prevBoards;
-          if (payload.updateCard) {
-            updatedBoards = fctSocket.handleUpdateCard(prevBoards, payload.updateCard);
-          }
-          if (payload.newCard) {
-            updatedBoards = fctSocket.handleCreateCard(updatedBoards, payload.newCard, droit);
-          }
-          if (payload.deleteCard) {
-            updatedBoards = fctSocket.handleDeleteCard(updatedBoards, payload.deleteCard);
-          }
-          if (payload.moveCard) {
-            updatedBoards = fctSocket.handleMoveCard(updatedBoards, payload.moveCard);
-          }
-          if (payload.newTableau) {
-            updatedBoards = fctSocket.handleCreateBoard(updatedBoards, payload.newTableau, droit);
-          }
-          if (payload.updateTableau) {
-            updatedBoards = fctSocket.handleUpdateBoard(updatedBoards, payload.updateTableau);
-          }
-          if (payload.deleteTableau) {
-            updatedBoards = fctSocket.handleDeleteBoard(updatedBoards, payload.deleteTableau);
-          }
-          return updatedBoards;
-        });
-      } catch (e) {
-        console.error("❌ Erreur JSON WebSocket :", e);
-      }
+    return () => {
+      Object.entries(handlersMap).forEach(([type, handler]) => {
+        Socket.offMessage(type, handler);
+      });
+      Socket.unsubscribe(channel);
     };
-
-    socket.onerror = (error) => {
-      console.error("❌ Erreur WebSocket :", error);
-    };
-
-    socket.onclose = () => {
-      console.log("🔴 WebSocket déconnecté. Reconnexion dans 3s...");
-      if (!isUnmounted) {
-        reconnectTimeout = setTimeout(connectSocket, 3000);
-      }
-    };
-  };
-
-  connectSocket();
-
-  return () => {
-    isUnmounted = true;
-    if (socketRef.current) socketRef.current.close();
-    if (reconnectTimeout) clearTimeout(reconnectTimeout);
-  };
-}, [workspaceId, droit]); // ✅ ne pas ajouter droit, fctSocket, setBoards ici
+  }, [workspaceId, droit]); // ✅ ne pas ajouter droit, fctSocket, setBoards ici
 
 
 
@@ -231,7 +186,7 @@ useEffect(() => {
 
   const sensors = useSensors(useSensor(PointerSensor));
 
-  
+
 
   return (
     <div className={`tm-layout `}>
