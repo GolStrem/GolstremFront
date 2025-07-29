@@ -1,16 +1,17 @@
 import axios from 'axios';
 
-export const USE_MOCK = process.env.REACT_APP_USE_MOCK === 'true';
+// ✅ Utilisation de import.meta.env à la place de process.env
+export const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 
 const getApiBaseUrl = () => {
   if (window.location.protocol === 'https:') {
-    return process.env.REACT_APP_API_ENDPOINT_SECURE;
+    return import.meta.env.VITE_API_ENDPOINT_SECURE;
   }
-  return process.env.REACT_APP_API_ENDPOINT;
+  return import.meta.env.VITE_API_ENDPOINT;
 };
 
 export const API_BASE_URL = getApiBaseUrl() || 'http://localhost:3000/';
-console.log(API_BASE_URL)
+console.log('[API BASE]', API_BASE_URL);
 
 export const TOKEN_KEY = 'token';
 

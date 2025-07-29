@@ -30,7 +30,7 @@ export {default as EditBoardTitleModal} from './taskManager/modal/board/EditBoar
 
 // Task Manager/workspace
 export { default as CreateWorkspaceModal} from './taskManager/modal/workspace/createWorkspaceModal';
-export { default as DeleteWorkspaceModal } from './taskManager/modal/workspace/DeleteWorkspaceModal.js';
+export { default as DeleteWorkspaceModal } from './taskManager/modal/workspace/DeleteWorkspaceModal';
 export { default as ModifWorkspaceModal} from './taskManager/modal/workspace/ModifWorkspaceModal';
 
 // Task Manager/hook
