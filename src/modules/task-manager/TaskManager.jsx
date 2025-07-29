@@ -141,7 +141,7 @@ useEffect(() => {
   let reconnectTimeout = null;
 
   const connectSocket = () => {
-    const socket = new WebSocket("wss://apigolstrem.fr/ws/");
+    const socket = new WebSocket(import.meta.env.VITE_SOCKET_ENDPOINT);
     socketRef.current = socket;
 
     socket.onopen = () => {

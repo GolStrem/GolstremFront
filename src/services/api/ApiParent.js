@@ -11,7 +11,6 @@ const getApiBaseUrl = () => {
 };
 
 export const API_BASE_URL = getApiBaseUrl() || 'http://localhost:3000/';
-console.log('[API BASE]', API_BASE_URL);
 
 export const TOKEN_KEY = 'token';
 
