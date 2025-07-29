@@ -112,7 +112,7 @@ const Banner = ({ workspaceId, onSearch }) => {
               className="tm-avatar"
             />
           ))}
-          {BoardCardAccess.hasWriteAccess(droit) && (
+          {BoardCardAccess.isOwner(droit) && (
           <button
             className="tm-add-user-btn"
             onClick={() => setShowAddUserModal(true)}
