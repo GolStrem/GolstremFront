@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { TaskApi } from "@service";
+import { TaskApi, UserInfo } from "@service";
 import apiService from "@service/api/ApiService";
 import {
   FaTasks,
@@ -9,7 +9,7 @@ import {
   FaGlobe,
   FaCrown,
 } from "react-icons/fa";
-
+import { BannerModal } from "@components"; // ✅ import correct
 import banner from "@assets/banner.jpg";
 import avatarDefault from "@assets/avatar.png";
 
@@ -18,8 +18,9 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const [avatar, setAvatar] = useState(avatarDefault);
   const [pseudo, setPseudo] = useState("joueur");
+  const [showBannerModal, setShowBannerModal] = useState(false);
   const location = useLocation();
-
+  const [bannerDash, setBannerDash] = useState(banner);
   const [workspaceId, setWorkspaceId] = useState(() => {
     return localStorage.getItem("lastWorkspace");
   });
@@ -63,6 +64,8 @@ const Dashboard = () => {
         const { data: user } = await apiService.getUser();
         if (user?.image) setAvatar(user.image);
         if (user?.pseudo) setPseudo(user.pseudo);
+        const bannerUse = await UserInfo.get("banner");
+        if (bannerUse) setBannerDash(bannerUse);
       } catch (err) {
         console.error("Erreur utilisateur :", err);
         setAvatar(avatarDefault);
@@ -78,7 +81,7 @@ const Dashboard = () => {
         if (workspacesArray.length > 0) {
           const localId = localStorage.getItem("lastWorkspace");
 
-          if (!localId || !workspacesArray.find(w => w.id === localId)) {
+          if (!localId || !workspacesArray.find((w) => w.id === localId)) {
             const firstId = workspacesArray[0].id;
             localStorage.setItem("lastWorkspace", firstId);
             setWorkspaceId(firstId);
@@ -94,21 +97,34 @@ const Dashboard = () => {
     initDashboard();
   }, []);
 
-
   return (
     <div className="dashboard">
       <div className="background-blur"></div>
 
       {/* Bannière */}
       <div className="dashboard-banner">
-        <img src={banner} alt="Banner" className="banner-img" />
+        <img src={bannerDash} alt="Banner" className="banner-img" />
 
         <div className="banner-content">
           <img src={avatar} alt="Avatar" className="banner-avatar" />
           <h1 className="helloPlayer">{pseudo}</h1>
         </div>
-      </div>
 
+        <button
+          className="change-banner-btn"
+          onClick={() => setShowBannerModal(true)}
+        >
+          ✎
+        </button>
+
+        {showBannerModal && (
+          <BannerModal
+            onCancel={() => setShowBannerModal(false)}
+            onChangeBanner={setBannerDash}
+            defaultBanner= {banner}
+          />
+        )}
+      </div>
 
       <header className="dashboard-header">
         <p>Vos espaces de travail, organisés et accessibles</p>
