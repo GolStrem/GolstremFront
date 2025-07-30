@@ -137,7 +137,7 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!workspaceId || workspaceId === "Default" || droit === null) return;
-    
+
     const handlersMap = {
       updateCard: (data) => setBoards(prev => fctSocket.handleUpdateCard(prev, data)),
       newCard: (data) => setBoards(prev => fctSocket.handleCreateCard(prev, data, droit)),
@@ -156,7 +156,6 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
       Object.entries(handlersMap).forEach(([type, handler]) => {
         Socket.offMessage(type, handler);
       });
-      Socket.unsubscribe(channel);
     };
   }, [workspaceId, droit]); // ✅ ne pas ajouter droit, fctSocket, setBoards ici
 
