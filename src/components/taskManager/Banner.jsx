@@ -65,7 +65,7 @@ const Banner = ({ workspaceId, onSearch }) => {
     if (!workspaceId) return;
 
     const handleUpdateWorkspace = (data) => {
-      if (!data) return;
+      if (!data || Number(data.id) !== Number(workspaceId)) return;
 
       setWorkspace(prev => {
         if (!prev) return prev;

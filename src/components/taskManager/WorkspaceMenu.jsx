@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { TaskApi, UserInfo } from "@service";
+import { TaskApi, UserInfo, Socket } from "@service";
 import { DeleteWorkspaceModal, ModifWorkspaceModal, CreateWorkspaceModal, UserRightsModal } from "@components";
 import "./WorkspaceMenu.css";
 import "./modal/taskModal.css";
@@ -80,6 +80,46 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (!workspaces.length) return;
+
+    // S'abonner à tous les canaux
+    workspaces.forEach(ws => {
+      Socket.subscribe(`workSpaceOnly-${ws.id}`);
+    });
+
+    // Nettoyage : se désabonner de tous les canaux
+    return () => {
+      workspaces.forEach(ws => {
+        Socket.unsubscribe(`workSpaceOnly-${ws.id}`);
+      });
+    };
+  }, [workspaces]);
+
+  useEffect(() => {
+    const handleUpdateWorkspace = (data) => {
+      if (!data?.id) return;
+
+      setWorkspaces(prev =>
+        prev.map(ws =>
+          ws.id === data.id
+            ? {
+                ...ws,
+                name: data.name ?? ws.name,
+                image: data.image ?? ws.image,
+              }
+            : ws
+        )
+      );
+    };
+
+    Socket.onMessage("updateWorkspace", handleUpdateWorkspace);
+
+    return () => {
+      Socket.offMessage?.("updateWorkspace", handleUpdateWorkspace);
+    };
   }, []);
 
   const handleDelete = (ws) => {
