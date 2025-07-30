@@ -57,3 +57,4 @@ export {default as ColorPicker } from './config/ColorPicker';
 //Dasboard
 
 export {default as BannerModal } from './dashboard/modal/BannerModal';
+export {default as DashboardMock } from './dashboard/DashboardMock';

@@ -1,0 +1,60 @@
+
+
+.parent {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto repeat(3, 1fr);  
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  min-width: 100vw;
+  min-height: 73vh;
+  padding: 10px;
+    padding-bottom: 90px;
+  box-sizing: border-box;
+  color: var(--color-text);
+}
+
+/* Chaque bloc */
+.parent > div {
+  border: 3px solid var(--jaune);
+  border-radius: 12px;
+  padding: 1rem;
+
+  
+}
+
+.div1{
+    max-height: 50px;
+    border: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.dashboard-block {
+  user-select: none;
+  border: 2px solid var(--jaune, #d4af37);
+  padding: 1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.ghost-clone {
+  position: absolute;
+  border-radius: 8px;
+  z-index: 9999;
+}
+
+
+
+
+
+/* Grille précise */
+.div1  { grid-area: 1 / 1 / 2 / 6; }
+.div2  { grid-area: 2 / 1 / 4 / 2; }
+.div3  { grid-area: 2 / 2 / 4 / 4; }
+.div4  { grid-area: 2 / 4 / 3 / 5; }
+.div5  { grid-area: 3 / 4 / 4 / 5; }
+.div6  { grid-area: 2 / 5 / 4 / 6; }
+.div7  { grid-area: 4 / 1 / 5 / 6; }
