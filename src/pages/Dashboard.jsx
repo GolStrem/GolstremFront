@@ -16,10 +16,13 @@ import avatarDefault from "@assets/avatar.png";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  const [workspaceId, setWorkspaceId] = useState(null);
   const [avatar, setAvatar] = useState(avatarDefault);
   const [pseudo, setPseudo] = useState("joueur");
   const location = useLocation();
+
+  const [workspaceId, setWorkspaceId] = useState(() => {
+    return localStorage.getItem("lastWorkspace");
+  });
 
   const links = [
     {
@@ -57,7 +60,6 @@ const Dashboard = () => {
   useEffect(() => {
     const initDashboard = async () => {
       try {
-        // ✅ Récupération des infos utilisateur
         const { data: user } = await apiService.getUser();
         if (user?.image) setAvatar(user.image);
         if (user?.pseudo) setPseudo(user.pseudo);
@@ -67,15 +69,22 @@ const Dashboard = () => {
       }
 
       try {
-        // ✅ Récupération du premier workspace
         const { data } = await TaskApi.getWorkspaces();
         const workspacesArray = Object.entries(data).map(([id, ws]) => ({
           id,
           ...ws,
         }));
+
         if (workspacesArray.length > 0) {
-          const firstId = workspacesArray[0].id;
-          setWorkspaceId(firstId);
+          const localId = localStorage.getItem("lastWorkspace");
+
+          if (!localId || !workspacesArray.find(w => w.id === localId)) {
+            const firstId = workspacesArray[0].id;
+            localStorage.setItem("lastWorkspace", firstId);
+            setWorkspaceId(firstId);
+          } else {
+            setWorkspaceId(localId);
+          }
         }
       } catch (err) {
         console.error("Erreur workspaces :", err);
@@ -84,6 +93,7 @@ const Dashboard = () => {
 
     initDashboard();
   }, []);
+
 
   return (
     <div className="dashboard">
