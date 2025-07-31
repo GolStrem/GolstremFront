@@ -40,11 +40,10 @@ export default function useGhostDragAndDrop({ dragSelector, onMouseUpCallback })
       ghostElement = draggedElement.cloneNode(true);
       ghostElement.style.position = "absolute";
       ghostElement.style.pointerEvents = "none";
-      ghostElement.style.opacity = "0.7";
+      ghostElement.style.opacity = "0.4";
       ghostElement.style.zIndex = "9999";
       ghostElement.style.width = `${draggedElement.offsetWidth}px`;
       ghostElement.style.height = `${draggedElement.offsetHeight}px`;
-      ghostElement.style.border = "2px dashed #ccc";
 
       document.body.appendChild(ghostElement);
       moveGhost(e.pageX, e.pageY);

@@ -150,7 +150,6 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
     setShowDeleteModal(true);
     setMenuOpenFor(null);
   };
-  console.log()
 
   const confirmDelete = async () => {
     if (!workspaceToDelete) return;

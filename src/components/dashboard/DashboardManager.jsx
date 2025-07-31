@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./DashboardManager.css";
 import { ApiService, useGhostDragAndDrop } from "@service";
-import { DashWorkspace, DashEvenement } from "@components"
+import { DashWorkspace, DashEvenement, DashInventaire, DashUnivers, DashNotification,DashFiche } from "@components"
+
 
 const initialBlocks = [
   { id: "div1", content: "Bannière" },
@@ -45,8 +46,8 @@ const DashboardManager = () => {
         const draggedId = draggedElement.dataset.id;
         const targetId = dropTarget.dataset.id;
 
-        const draggedIndex = blocks.findIndex((b) => b.id === draggedId);
-        const targetIndex = blocks.findIndex((b) => b.id === targetId);
+        const draggedIndex = blocks.findIndex((b) => Number(b.id) === Number(draggedId));
+        const targetIndex = blocks.findIndex((b) => Number(b.id) === Number(targetId));
 
         if (draggedIndex === -1 || targetIndex === -1) return;
 
@@ -59,7 +60,11 @@ const DashboardManager = () => {
 
   const componentMap = {
     workspace: DashWorkspace,
-    evenement: DashEvenement
+    evenement: DashEvenement,
+    fiche: DashFiche,
+    notification: DashNotification,
+    univers: DashUnivers,
+    inventaire: DashInventaire,
   };
   
 
