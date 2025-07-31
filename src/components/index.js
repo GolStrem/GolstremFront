@@ -56,4 +56,12 @@ export {default as ColorPicker } from './config/ColorPicker';
 //Dasboard
 
 export {default as BannerModal } from './dashboard/modal/BannerModal';
-export {default as DashboardMock } from './dashboard/DashboardMock';
+
+export {default as DashboardManager } from './dashboard/DashboardManager';
+
+export {default as DashWorkspace } from './dashboard/module/DashWorkspace';
+export {default as DashEvenement } from './dashboard/module/DashEvenement';
+export {default as DashInventaire } from './dashboard/module/DashInventaire';
+export {default as DashFiche } from './dashboard/module/DashFiche';
+export {default as DashNotification } from './dashboard/module/DashNotification';
+export {default as DashUnivers } from './dashboard/module/DashUnivers';

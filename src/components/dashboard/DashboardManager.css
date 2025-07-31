@@ -37,7 +37,7 @@
 
 /* 3. Cartes */
 .dashboard-block.div3 {
-  flex: 1 1 100%;
+  flex: 1 1 30%;
   min-height: 300px;
 }
 
@@ -56,7 +56,7 @@
 
 /* 6. Section basse */
 .dashboard-block.div7 {
-  flex: 1 1 100%;
+  flex: 1 1 50%;
   min-height: 180px;
 }
 .div8{

@@ -9,7 +9,7 @@ import {
   FaGlobe,
   FaCrown,
 } from "react-icons/fa";
-import { BannerModal, DashboardMock } from "@components"; // ✅ import correct
+import { BannerModal, DashboardManager } from "@components"; // ✅ import correct
 import banner from "@assets/banner.jpg";
 import avatarDefault from "@assets/avatar.png";
 
@@ -126,7 +126,7 @@ const Dashboard = () => {
         )}
       </div>
 
-      <DashboardMock/>
+      <DashboardManager/>
 
       <nav className="bottom-nav">
         {links.map((link, index) => (
