@@ -36,7 +36,6 @@ export { default as ModifWorkspaceModal} from './taskManager/modal/workspace/Mod
 // Task Manager/hook
 export { default as useBoardManager } from './taskManager/hook/useBoardManager';
 export { default as useCardManager} from './taskManager/hook/useCardManager';
-export { default as useDomDragAndDrop} from './taskManager/hook/useDomDragAndDrop';
 export { default as useSocketWorkspace} from './taskManager/hook/useSocketWorkspace';
 
 export { default as BoardCardAccess } from './taskManager/utils/BoardCardAccess';
@@ -57,3 +56,13 @@ export {default as ColorPicker } from './config/ColorPicker';
 //Dasboard
 
 export {default as BannerModal } from './dashboard/modal/BannerModal';
+export { default as DashBanner } from './dashboard/DashBanner'
+
+export {default as DashboardManager } from './dashboard/DashboardManager';
+
+export {default as DashWorkspace } from './dashboard/module/DashWorkspace';
+export {default as DashEvenement } from './dashboard/module/DashEvenement';
+export {default as DashInventaire } from './dashboard/module/DashInventaire';
+export {default as DashFiche } from './dashboard/module/DashFiche';
+export {default as DashNotification } from './dashboard/module/DashNotification';
+export {default as DashUnivers } from './dashboard/module/DashUnivers';

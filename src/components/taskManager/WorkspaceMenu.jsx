@@ -83,6 +83,7 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
   }, []);
 
   useEffect(() => {
+    Socket.subscribe(`user-${localStorage.getItem('id')}`);
     if (!workspaces.length) return;
 
     // S'abonner à tous les canaux
@@ -115,10 +116,32 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
       );
     };
 
+    const handleNewWorkspace = (data) => {
+      if (!data?.id) return;
+
+      setWorkspaces(prev => {
+        // éviter les doublons si jamais on a déjà reçu ce workspace
+        if (prev.some(ws => ws.id === data.id)) return prev;
+
+        return [...prev, data];
+      });
+    };
+
+    const handleDeleteWorkspace = (id) => {
+      if (!id) return;
+
+      setWorkspaces(prev => prev.filter(ws => ws.id !== id));
+    };
+
+
     Socket.onMessage("updateWorkspace", handleUpdateWorkspace);
+    Socket.onMessage("newWorkspace", handleNewWorkspace);
+    Socket.onMessage("deleteWorkspace", handleDeleteWorkspace);
 
     return () => {
       Socket.offMessage?.("updateWorkspace", handleUpdateWorkspace);
+      Socket.offMessage("newWorkspace", handleNewWorkspace);
+      Socket.offMessage("deleteWorkspace", handleDeleteWorkspace);
     };
   }, []);
 

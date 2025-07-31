@@ -5,5 +5,6 @@ export { default as useSystemThemeSync } from './useSystemThemeSync';
 export { default as UserInfo } from './UserInfo';
 export { default as Socket } from './Socket';
 export { default as isValidImageUrl} from './validators'
+export { default as useGhostDragAndDrop} from './useGhostDragAndDrop'
 
 export { normalize } from './utils/Normalize'

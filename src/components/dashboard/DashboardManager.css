@@ -1,0 +1,75 @@
+.parent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  padding-bottom: 90px;
+  box-sizing: border-box;
+  color: var(--color-text);
+  width: 100vw;
+}
+
+.dashboard-block {
+  user-select: none;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* 1. Bannière */
+.dashboard-block.div1 {
+  flex: 1 1 100%;
+  max-height: 50px;
+  border: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 2. Workspace */
+.dashboard-block.div2 {
+  flex: 1 1 15%;
+  min-height: 300px;
+}
+
+/* 3. Cartes */
+.dashboard-block.div3 {
+  flex: 1 1 30%;
+  min-height: 300px;
+}
+
+/* 4. Bloc droit haut */
+.dashboard-block.div4,
+.dashboard-block.div5 {
+  flex: 1 1 20%;
+  min-height: 140px;
+}
+
+/* 5. Notifications */
+.dashboard-block.div6 {
+  flex: 1 1 20%;
+  min-height: 300px;
+}
+
+/* 6. Section basse */
+.dashboard-block.div7 {
+  flex: 1 1 50%;
+  min-height: 180px;
+}
+.div8{
+    flex: 1 1 50%;
+    min-height: 180px;
+}
+.div9{
+    flex: 1 1 40%;
+    min-height: 180px;
+}
+
+/* Ghost */
+.ghost-clone {
+  position: absolute;
+  border: 2px dashed #ccc;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  pointer-events: none; 
+  z-index: 9999;
+}

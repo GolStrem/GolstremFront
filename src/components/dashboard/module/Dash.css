@@ -1,0 +1,233 @@
+/* ========== CONTAINERS ========== */
+.dash-container,
+.dash-evenement-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  transform-origin: top center;
+  width: 100%;
+}
+
+/* ========== TITRES ========== */
+.dash-title,
+.dash-banner-title,
+.dash-evenement-title {
+  position: relative;
+  color: #fff;
+  font-size: 1.6rem; /* 20% plus petit */
+  text-align: center;
+  font-weight: bold;
+  z-index: 1;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  margin: 0;
+}
+
+/* ========== BANNIÈRES ========== */
+.dash-banner {
+  width: 400px;
+  max-width: 800px;
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+
+.dash-banev {
+    width: clamp(280px, 90vw, 720px);
+}
+
+.dash-banner::after,
+.dash-evenement-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* ========== LISTES ========== */
+.dash-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+  align-items: center;
+  max-width: 640px;
+}
+
+/* ========== CARTES ========== */
+.dash-card {
+  position: relative;
+  height: 48px;
+  width: 320px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.dash-card:hover {
+  transform: scale(1.01);
+}
+
+.dash-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  box-sizing: border-box;
+}
+
+.dash-info {
+  color: #fff;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.dash-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-description {
+  font-size: 0.72rem;
+  margin: 0;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========== ÉVÉNEMENTS UNIQUES ========== */
+.dash-evenement-card {
+  padding: 0.8rem;
+  border: 2px solid var(--jaune, #d4af37);
+  border-radius: 10px;
+  background-color: var(--color-background, #1a1a1a);
+  color: var(--color-text, #fff);
+  margin: 8px;
+}
+
+.dash-evenement-card h4 {
+  margin: 0 0 0.4rem;
+}
+
+.dash-evenement-empty {
+  color: #999;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ========== CHARGEMENT ========== */
+.dash-loading {
+  text-align: center;
+  padding: 1.6rem;
+  font-style: italic;
+  color: #999;
+}
+/* ========== LAYOUT RESPONSIVE ========== */
+@media screen and (max-width: 768px) {
+  .dash-banev {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dash-banner {
+    height: 160px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .dash-title,
+  .dash-banner-title,
+  .dash-evenement-title {
+    font-size: 1.4rem;
+  }
+
+  .dash-list {
+    width: 100%;
+    max-width: none;
+    
+  }
+
+  .dash-card {
+    
+    max-width: none;
+  }
+
+  .dash-evenement-card {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    margin: 0;
+    margin-bottom: 6px;
+  }
+
+  .dash-container,
+  .dash-evenement-container {
+    padding: 0;
+  }
+
+  
+}
+
+@media screen and (max-width: 449px) {
+  .dash-banev {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+  .dash-work{
+    width: 100% 
+
+    
+  }
+  .dash-banner {
+    height: 140px;
+    width: clamp(280px, 90vw, 430px);
+
+    border-radius: 12px 12px 0 0;
+  }
+
+  .dash-title,
+  .dash-banner-title,
+  .dash-evenement-title {
+    font-size: 1.2rem;
+  }
+
+  .dash-list {
+    width: 100%;
+  }
+
+  .dash-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dash-evenement-card {
+    width: 100%;
+    margin: 0 0 0.5rem;
+    padding: 0.8rem;
+  }
+
+  .dash-container,
+  .dash-evenement-container {
+    padding: 0;
+  }
+}
