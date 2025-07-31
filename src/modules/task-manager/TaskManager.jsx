@@ -12,8 +12,8 @@ import {
 } from "@dnd-kit/sortable";
 import Masonry from "react-masonry-css";
 import { BoardModal, Modal, TaskViewerModal, DnDBoard } from "@components";
-import { useBoardManager, useCardManager, BoardCardAccess, useDomDragAndDrop, useSocketWorkspace } from "@components";
-import { UserInfo, normalize, TaskApi, Socket } from "@service";
+import { useBoardManager, useCardManager, BoardCardAccess, useSocketWorkspace } from "@components";
+import { UserInfo, normalize, TaskApi, Socket, useGhostDragAndDrop } from "@service";
 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css";
@@ -40,39 +40,36 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     setBoards
   );
 
-  useDomDragAndDrop(async (data) => {
-    const newPos = await TaskApi.moveCard(workspaceId, data)
+useGhostDragAndDrop({
+  dragSelector: ".tm-cards > div",
+  onMouseUpCallback: async ({ draggedElement, event }) => {
+    const getIndex = (el) => Array.from(el.parentElement.children).indexOf(el);
 
-    // On part de : boards et newPos.data
-    // 1️⃣ Map globale de toutes les cartes disponibles
-    const allCardsMap = new Map();
+    const secondElement = event.target.closest(".tm-cards > div");
+    const data = {
+      idCard: draggedElement.getAttribute("data-id"),
+      oldPos: getIndex(draggedElement),
+      oldTableau: draggedElement.parentElement.getAttribute("data-id"),
+    };
 
-    boards.forEach(board => {
-      board.cards.forEach(card => {
-        allCardsMap.set(card.id, card);
-      });
-    });
+    if (secondElement === null && event.target.closest(".tm-board-container") !== null) {
+      data.newPos = 0;
+      data.newTableau = event.target
+        .closest(".tm-board-container")
+        .querySelector(".tm-cards")
+        .getAttribute("data-id");
+    }
 
-    const updatedBoards = boards.map(board => {
-      const orderedCardsForBoard = newPos.data?.[board.id];
+    if (draggedElement && secondElement && draggedElement !== secondElement) {
+      data.newPos = getIndex(secondElement);
+      data.newTableau = secondElement.parentElement.getAttribute("data-id");
+    }
 
-      if (!orderedCardsForBoard) {
-        // Aucun ordre pour ce board, le laisser vide ou tel quel ?
-        return { ...board };
-      }
-
-      const orderedCards = orderedCardsForBoard
-        .sort((a, b) => a.pos - b.pos)
-        .map(entry => allCardsMap.get(entry.id))
-        .filter(Boolean); // retirer undefined si carte manquante
-
-      return {
-        ...board,
-        cards: orderedCards
-      };
-    });
-
-  });
+    if (data.newTableau !== undefined) {
+      await TaskApi.moveCard(workspaceId, data);
+    }
+  },
+});
 
   const filteredBoards = boards
     .map((board) => {

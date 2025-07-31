@@ -53,6 +53,10 @@ const realApi = {
      return api.get(`/user/${encodeURIComponent(pseudo)}`);
   },
 
+  getModule(type, targetId) {
+    return api.get(`/module/${type}/${targetId}`);
+  },
+
   logout,
   getToken,
   setToken,

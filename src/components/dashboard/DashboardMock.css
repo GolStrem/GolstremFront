@@ -1,60 +1,79 @@
-
-
 .parent {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: auto repeat(3, 1fr);  
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
-  min-width: 100vw;
-  min-height: 73vh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   padding: 10px;
-    padding-bottom: 90px;
+  padding-bottom: 90px;
+  min-height: 73vh;
   box-sizing: border-box;
   color: var(--color-text);
+  width: 100vw;
 }
-
-/* Chaque bloc */
-.parent > div {
-  border: 3px solid var(--jaune);
-  border-radius: 12px;
-  padding: 1rem;
-
-  
-}
-
-.div1{
-    max-height: 50px;
-    border: none !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 
 .dashboard-block {
   user-select: none;
   border: 2px solid var(--jaune, #d4af37);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: all 0.2s;
+  box-sizing: border-box;
 }
 
+/* 1. Bannière */
+.dashboard-block.div1 {
+  flex: 1 1 100%;
+  max-height: 50px;
+  border: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 2. Workspace */
+.dashboard-block.div2 {
+  flex: 1 1 15%;
+  min-height: 300px;
+}
+
+/* 3. Cartes */
+.dashboard-block.div3 {
+  flex: 1 1 100%;
+  min-height: 300px;
+}
+
+/* 4. Bloc droit haut */
+.dashboard-block.div4,
+.dashboard-block.div5 {
+  flex: 1 1 20%;
+  min-height: 140px;
+}
+
+/* 5. Notifications */
+.dashboard-block.div6 {
+  flex: 1 1 20%;
+  min-height: 300px;
+}
+
+/* 6. Section basse */
+.dashboard-block.div7 {
+  flex: 1 1 100%;
+  min-height: 180px;
+}
+.div8{
+    flex: 1 1 50%;
+    min-height: 180px;
+}
+.div9{
+    flex: 1 1 40%;
+    min-height: 180px;
+}
+
+/* Ghost */
 .ghost-clone {
   position: absolute;
+  border: 2px dashed #ccc;
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
+  pointer-events: none; 
   z-index: 9999;
 }
-
-
-
-
-
-/* Grille précise */
-.div1  { grid-area: 1 / 1 / 2 / 6; }
-.div2  { grid-area: 2 / 1 / 4 / 2; }
-.div3  { grid-area: 2 / 2 / 4 / 4; }
-.div4  { grid-area: 2 / 4 / 3 / 5; }
-.div5  { grid-area: 3 / 4 / 4 / 5; }
-.div6  { grid-area: 2 / 5 / 4 / 6; }
-.div7  { grid-area: 4 / 1 / 5 / 6; }
