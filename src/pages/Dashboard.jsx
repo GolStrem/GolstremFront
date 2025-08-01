@@ -9,7 +9,7 @@ import {
   FaGlobe,
   FaCrown,
 } from "react-icons/fa";
-import { BannerModal, DashboardManager } from "@components"; // ✅ import correct
+import { BannerModal, DashboardManager, ModuleSelectorModal } from "@components";
 import banner from "@assets/banner.jpg";
 import avatarDefault from "@assets/avatar.png";
 
@@ -19,11 +19,15 @@ const Dashboard = () => {
   const [avatar, setAvatar] = useState(avatarDefault);
   const [pseudo, setPseudo] = useState("joueur");
   const [showBannerModal, setShowBannerModal] = useState(false);
-  const location = useLocation();
+  const [showModuleModal, setShowModuleModal] = useState(false);
   const [bannerDash, setBannerDash] = useState(banner);
-  const [workspaceId, setWorkspaceId] = useState(() => {
-    return localStorage.getItem("lastWorkspace");
-  });
+  const [workspaceId, setWorkspaceId] = useState(() => localStorage.getItem("lastWorkspace"));
+  const [selectedModules, setSelectedModules] = useState([
+    "workspace", "evenement", "fiche", "inventaire", "univers", "notification"
+  ]);
+  const [blocks, setBlocks] = useState([]);
+
+  const location = useLocation();
 
   const links = [
     {
@@ -32,30 +36,10 @@ const Dashboard = () => {
       icon: <FaTasks />,
       active: location.pathname.includes("/workspace"),
     },
-    {
-      to: "/fiches",
-      label: "Fiche",
-      icon: <FaBook />,
-      active: location.pathname === "/fiches",
-    },
-    {
-      to: "/inventaire",
-      label: "Inventaire",
-      icon: <FaBoxOpen />,
-      active: location.pathname === "/inventaire",
-    },
-    {
-      to: "/univers",
-      label: "Univers",
-      icon: <FaGlobe />,
-      active: location.pathname === "/univers",
-    },
-    {
-      to: "/maitre",
-      label: "Maître du jeu",
-      icon: <FaCrown />,
-      active: location.pathname === "/maitre",
-    },
+    { to: "/fiches", label: "Fiche", icon: <FaBook />, active: location.pathname === "/fiches" },
+    { to: "/inventaire", label: "Inventaire", icon: <FaBoxOpen />, active: location.pathname === "/inventaire" },
+    { to: "/univers", label: "Univers", icon: <FaGlobe />, active: location.pathname === "/univers" },
+    { to: "/maitre", label: "Maître du jeu", icon: <FaCrown />, active: location.pathname === "/maitre" },
   ];
 
   useEffect(() => {
@@ -80,14 +64,10 @@ const Dashboard = () => {
 
         if (workspacesArray.length > 0) {
           const localId = localStorage.getItem("lastWorkspace");
-
-          if (!localId || !workspacesArray.find((w) => w.id === localId)) {
-            const firstId = workspacesArray[0].id;
-            localStorage.setItem("lastWorkspace", firstId);
-            setWorkspaceId(firstId);
-          } else {
-            setWorkspaceId(localId);
-          }
+          const exists = workspacesArray.find((w) => w.id === localId);
+          const firstId = workspacesArray[0].id;
+          localStorage.setItem("lastWorkspace", exists ? localId : firstId);
+          setWorkspaceId(exists ? localId : firstId);
         }
       } catch (err) {
         console.error("Erreur workspaces :", err);
@@ -101,7 +81,6 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="background-blur"></div>
 
-      {/* Bannière */}
       <div className="dashboard-banner">
         <img src={bannerDash} alt="Banner" className="banner-img" />
 
@@ -110,23 +89,41 @@ const Dashboard = () => {
           <h1 className="helloPlayer">{pseudo}</h1>
         </div>
 
-        <button
-          className="change-banner-btn"
-          onClick={() => setShowBannerModal(true)}
-        >
+        <button className="change-module-btn" onClick={() => setShowModuleModal(true)}>
+          ...
+        </button>
+
+        <button className="change-banner-btn" onClick={() => setShowBannerModal(true)}>
           ✎
         </button>
 
         {showBannerModal && (
           <BannerModal
+            defaultBanner={banner}
+            initialValue={bannerDash}
             onCancel={() => setShowBannerModal(false)}
-            onChangeBanner={setBannerDash}
-            defaultBanner= {banner}
+            onSubmit={async (url) => {
+              await UserInfo.set("banner", url);
+              setBannerDash(url);
+            }}
+          />
+        )}
+
+        {showModuleModal && (
+          <ModuleSelectorModal
+            initialModules={selectedModules}
+            onCancel={() => setShowModuleModal(false)}
+            onSubmit={(modules) => {
+              setSelectedModules(modules);
+              setShowModuleModal(false);
+            }}
+            blocks = {blocks}
+            setBlocks = {setBlocks}
           />
         )}
       </div>
 
-      <DashboardManager/>
+      <DashboardManager blocks = {blocks} setBlocks = {setBlocks} />
 
       <nav className="bottom-nav">
         {links.map((link, index) => (

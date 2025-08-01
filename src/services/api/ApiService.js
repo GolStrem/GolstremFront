@@ -57,6 +57,23 @@ const realApi = {
     return api.get(`/module/${type}/${targetId}`);
   },
 
+  updateModule(id, payload) {
+    return api.put(`/module/${id}`, payload);
+  },
+
+  createModule(type, targetId, name, extra = {}) {
+    extra= JSON.stringify(extra)
+    return api.post('/module', { type, targetId, name, extra });
+  },
+
+  deleteModule(id) {
+    return api.delete(`/module/${id}`);
+  },
+
+  moveModule(idModule, newPos) {
+    return api.patch('/module/move', {idModule, newPos})
+  },
+
   logout,
   getToken,
   setToken,

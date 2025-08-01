@@ -1,12 +1,19 @@
 import React from "react";
+import { EditableBanner } from "@components";
+import "./Dash.css";
 
-
-const DashUnivers = ({ extra }) => {
+const DashUnivers = ({ extra, id }) => {
 
   return (
-    <div className="dash-univers">
-        <h3>Mes Univers</h3>
-    </div>
+      <div className="dash-container">
+          <EditableBanner
+            id={id}
+            extra={extra}
+            title="Mes Univers"
+            className="dash-banev"
+          />
+    
+        </div>
   );
 };
 

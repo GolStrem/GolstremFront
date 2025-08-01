@@ -1,9 +1,8 @@
 import React from "react";
-import { banner } from "@assets"; 
-import { DashBanner } from "@components"
+import { EditableBanner } from "@components";
 import "./Dash.css";
 
-const DashEvenement = () => {
+const DashEvenement = ({ extra, id }) => {
   const events = [
     {
       title: "Tournoi de l'Arène",
@@ -21,11 +20,12 @@ const DashEvenement = () => {
 
   return (
     <div className="dash-container">
-
-      <DashBanner 
-      image={banner} 
-      title="Mes Événements" 
-      className="dash-banev"/>
+      <EditableBanner
+        id={id}
+        extra={extra}
+        title="Mes Événements"
+        className="dash-banev"
+      />
 
       <div className="dash-evenement-list">
         {events.map((evt, index) => (

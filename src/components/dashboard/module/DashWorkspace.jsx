@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { TaskApi, Socket } from "@service";
-import { banner } from "@assets"; // image utilisée en fond
-import { DashBanner } from "@components"
+import { TaskApi, Socket, ApiService } from "@service";
+import { banner as defaultBanner } from "@assets";
+import { BannerModal, EditableBanner } from "@components";
 import "./Dash.css";
 
-const DashWorkspace = () => {
+const DashWorkspace = ({ extra, id }) => {
+  const parsedExtra = typeof extra === "string" ? JSON.parse(extra) : extra || {};
+
+  const [bannerUrl, setBannerUrl] = useState(parsedExtra.banner || defaultBanner);
+  const [showBannerModal, setShowBannerModal] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
-
     const fetchWorkspaces = async () => {
       try {
         const { data } = await TaskApi.getWorkspaces();
@@ -30,27 +32,22 @@ const DashWorkspace = () => {
   }, []);
 
   useEffect(() => {
-    Socket.subscribe(`user-${localStorage.getItem('id')}`);
+    Socket.subscribe(`user-${localStorage.getItem("id")}`);
     if (!workspaces.length) return;
 
-    // S'abonner à tous les canaux
     workspaces.forEach(ws => {
       Socket.subscribe(`workSpaceOnly-${ws.id}`);
     });
 
-    // Nettoyage : se désabonner de tous les canaux
     return () => {
       workspaces.forEach(ws => {
         Socket.unsubscribe(`workSpaceOnly-${ws.id}`);
       });
     };
   }, [workspaces]);
-  useEffect(() => {
-        console.log("✅ workspaces mis à jour :", workspaces);
-      }, [workspaces]);
+
   useEffect(() => {
     const handleUpdateWorkspace = (data) => {
-      console.log(data)
       if (!data?.id) return;
 
       setWorkspaces(prev =>
@@ -66,45 +63,56 @@ const DashWorkspace = () => {
         )
       );
     };
-    
 
     const handleNewWorkspace = (data) => {
       if (!data?.id) return;
-
       setWorkspaces(prev => {
-        // éviter les doublons si jamais on a déjà reçu ce workspace
         if (prev.some(ws => Number(ws.id) === Number(data.id))) return prev;
-
         return [...prev, data];
       });
     };
 
     const handleDeleteWorkspace = (id) => {
       if (!id) return;
-
       setWorkspaces(prev => prev.filter(ws => Number(ws.id) !== Number(id)));
     };
-
 
     Socket.onMessage("updateWorkspace", handleUpdateWorkspace);
     Socket.onMessage("newWorkspace", handleNewWorkspace);
     Socket.onMessage("deleteWorkspace", handleDeleteWorkspace);
 
     return () => {
-      Socket.offMessage?.("updateWorkspace", handleUpdateWorkspace);
+      Socket.offMessage("updateWorkspace", handleUpdateWorkspace);
       Socket.offMessage("newWorkspace", handleNewWorkspace);
       Socket.offMessage("deleteWorkspace", handleDeleteWorkspace);
     };
   }, []);
 
-    if (loading) return <div className="dash-loading">Chargement...</div>;
+  const handleBannerSubmit = async (newUrl) => {
+    try {
+      console.log({ extra: { ...parsedExtra, banner: newUrl } })
+      await ApiService.updateModule(id, { extra: { ...parsedExtra, banner: newUrl } });
+      setBannerUrl(newUrl);
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour de la bannière :", err);
+    }
+  };
+
+  if (loading) return <div className="dash-loading">Chargement...</div>;
 
   return (
     <div className="dash-container">
-      <DashBanner 
-            image={banner} 
-            title="Mes Workspace" 
-            className="dash-work"/>
+    <EditableBanner id={id} extra={extra} title="Mes Workspace" className="dash-work" />
+
+
+      {showBannerModal && (
+        <BannerModal
+          defaultBanner={defaultBanner}
+          initialValue={bannerUrl}
+          onCancel={() => setShowBannerModal(false)}
+          onSubmit={handleBannerSubmit}
+        />
+      )}
 
       <div className="dash-list">
         {workspaces.map((ws) => (
@@ -119,6 +127,9 @@ const DashWorkspace = () => {
                 <p className="dash-description">{ws.description}</p>
               </div>
             </div>
+            {ws.news === 1 && (
+                  <p className="dash-notif">!</p>
+                )}
           </div>
         ))}
       </div>

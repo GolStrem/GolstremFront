@@ -211,7 +211,7 @@
   position: absolute;
   bottom: 12px;
   right: 12px;
-  padding: 10px 12px;
+  padding: 9px 12px;
   background: var(--color-background);
   color: var(--color-text);
   border: 2px solid var(--jaune);
@@ -228,6 +228,29 @@
 .change-banner-btn:hover {
 opacity: 1;
 }
+
+.change-module-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 56px;
+  padding: 10px 12px;
+  background: var(--color-background);
+  color: var(--color-text);
+  border: 2px solid var(--jaune);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px); /* effet de flou léger */
+  opacity: 0.5;
+}
+
+.change-module-btn:hover {
+opacity: 1;
+}
+
 
 /* ==================== Responsive ==================== */
 
