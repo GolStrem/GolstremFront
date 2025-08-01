@@ -73,6 +73,9 @@ const ModuleSelectorModal = ({ onCancel, onSubmit, blocks = [], setBlocks }) => 
 
   return (
     <BaseModal onClose={onCancel}>
+    <button className="tm-modal-close" onClick={onCancel}>
+        ✖
+    </button>
       <h3>Choisissez les modules à afficher</h3>
       <div className="module-selector">
         {MODULES.map((mod) => (
@@ -87,11 +90,14 @@ const ModuleSelectorModal = ({ onCancel, onSubmit, blocks = [], setBlocks }) => 
         ))}
       </div>
 
-      <div className="modal-actions">
-        <button onClick={onCancel}>Annuler</button>
+
+
+
+      <div className="tm-modal-buttons">
         <button className="tm-primary" onClick={handleValidation}>
           Valider
         </button>
+        <button onClick={onCancel}>Annuler</button>
       </div>
     </BaseModal>
   );
