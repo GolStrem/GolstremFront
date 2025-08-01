@@ -140,6 +140,7 @@ useGhostDragAndDrop({
       newCard: (data) => setBoards(prev => fctSocket.handleCreateCard(prev, data, droit)),
       deleteCard: (data) => setBoards(prev => fctSocket.handleDeleteCard(prev, data)),
       moveCard: (data) => setBoards(prev => fctSocket.handleMoveCard(prev, data)),
+      moveTableau: (data) => setBoards(prev => fctSocket.handleMoveTableau(prev, data)),
       newTableau: (data) => setBoards(prev => fctSocket.handleCreateBoard(prev, data, droit)),
       updateTableau: (data) => setBoards(prev => fctSocket.handleUpdateBoard(prev, data)),
       deleteTableau: (data) => setBoards(prev => fctSocket.handleDeleteBoard(prev, data)),
