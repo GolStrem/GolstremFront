@@ -4,20 +4,8 @@ import { ApiService, useGhostDragAndDrop } from "@service";
 import { DashWorkspace, DashEvenement, DashInventaire, DashUnivers, DashNotification,DashFiche } from "@components"
 
 
-const initialBlocks = [
-  { id: "div1", content: "Bannière" },
-  { id: "div2", content: "Workspace" },
-  { id: "div3", content: "Cartes" },
-  { id: "div4", content: "Bloc droit haut" },
-  { id: "div5", content: "Bloc droit bas" },
-  { id: "div6", content: "Notifications" },
-  { id: "div7", content: "Section basse" },
-  { id: "div8", content: "Section baba" },
-  { id: "div9", content: "Section bedou" },
-];
 
-const DashboardManager = () => {
-  const [blocks, setBlocks] = useState(initialBlocks);
+const DashboardManager = ({blocks, setBlocks}) => {
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -48,7 +36,7 @@ const DashboardManager = () => {
 
         const draggedIndex = blocks.findIndex((b) => Number(b.id) === Number(draggedId));
         const targetIndex = blocks.findIndex((b) => Number(b.id) === Number(targetId));
-
+        ApiService.moveModule(draggedId, targetIndex)
         if (draggedIndex === -1 || targetIndex === -1) return;
 
         const updated = [...blocks];
@@ -79,7 +67,7 @@ const DashboardManager = () => {
             data-id={block.id}
             style={{ order: index }}
           >
-            {Component ? <Component extra={block.name} /> : <>{block.content}</>}
+            {Component ? <Component extra={block.extra} id={block.id} /> : <>{block.content}</>}
           </div>
         );
       })}

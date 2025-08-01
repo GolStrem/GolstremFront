@@ -3,26 +3,19 @@ import { UserInfo } from "@service";
 import { BaseModal } from "@components";
 import "./BannerModal.css";
 
-const BannerModal = ({ onChangeBanner, onCancel, defaultBanner }) => {
-  const [bannerUrl, setBannerUrl] = useState("");
+const BannerModal = ({
+  defaultBanner,
+  initialValue = "",
+  onCancel,
+  onSubmit,
+}) => {
+  const [bannerUrl, setBannerUrl] = useState(initialValue || "");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadBanner = async () => {
-      try {
-        const currentBanner = await UserInfo.get("banner");
-        if (currentBanner) {
-          setBannerUrl(currentBanner);
-        } else {
-          setBannerUrl(defaultBanner); // ✅ fallback sur valeur par défaut
-        }
-      } catch (err) {
-        setError("Erreur lors du chargement de la bannière.");
-        setBannerUrl(defaultBanner);
-      }
-    };
-
-    loadBanner();
+    if (!bannerUrl && defaultBanner) {
+      setBannerUrl(defaultBanner);
+    }
   }, [defaultBanner]);
 
   const handleSubmit = async (e) => {
@@ -35,18 +28,16 @@ const BannerModal = ({ onChangeBanner, onCancel, defaultBanner }) => {
     }
 
     try {
-      await UserInfo.set("banner", bannerUrl);
-      onChangeBanner(bannerUrl);
+      await onSubmit(bannerUrl);
       onCancel();
-    } catch {
+    } catch (err) {
       setError("Erreur lors de l'enregistrement.");
     }
   };
 
   const handleReset = async () => {
     try {
-      await UserInfo.set("banner", defaultBanner); // ✅ renvoie vers banner.jpg
-      onChangeBanner(defaultBanner);
+      await onSubmit(defaultBanner);
       onCancel();
     } catch {
       setError("Erreur lors de la réinitialisation.");
@@ -66,7 +57,6 @@ const BannerModal = ({ onChangeBanner, onCancel, defaultBanner }) => {
           URL de la nouvelle image :
           <input
             type="text"
-            name="banner"
             value={bannerUrl}
             onChange={(e) => setBannerUrl(e.target.value)}
             placeholder="https://exemple.com/banner.jpg"
@@ -94,5 +84,6 @@ const BannerModal = ({ onChangeBanner, onCancel, defaultBanner }) => {
     </BaseModal>
   );
 };
+
 
 export default BannerModal;
