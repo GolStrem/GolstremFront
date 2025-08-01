@@ -82,13 +82,6 @@ export default function useBoardManager(workspaceId) {
         idTableau
       };
       await TaskApi.moveTableau(workspaceId, payload);
-
-      setBoards(prevBoards => {
-        const newBoards = [...prevBoards];
-        const [movedBoard] = newBoards.splice(draggingBoardIndex, 1);
-        newBoards.splice(targetIndex, 0, movedBoard);
-        return newBoards;
-      });
     } catch (err) {
       console.error("Erreur lors du déplacement du tableau :", err);
     }

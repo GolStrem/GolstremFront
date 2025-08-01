@@ -113,6 +113,20 @@ export default function useSocketWorkspace() {
     return updatedBoards;
     };
 
+    const handleMoveTableau = (boards, moveData) => {
+        const oldPos = parseInt(moveData.oldPos, 10);
+        const newPos = parseInt(moveData.newPos, 10);
+
+        if (oldPos === newPos) return boards;
+
+        const updated = [...boards];
+        const [moved] = updated.splice(oldPos, 1);
+        updated.splice(newPos, 0, moved);
+
+        return updated;
+    };
+
+
     const handleCreateBoard = (boards, boardData, droit) => {
         const newBoard = {
             id: Number(boardData.id),
@@ -156,7 +170,7 @@ export default function useSocketWorkspace() {
     };
 
 
-    return{ handleUpdateCard, handleCreateCard, handleDeleteCard, handleMoveCard, handleCreateBoard, handleUpdateBoard, handleDeleteBoard};
+    return{ handleUpdateCard, handleCreateCard, handleDeleteCard, handleMoveCard, handleMoveTableau, handleCreateBoard, handleUpdateBoard, handleDeleteBoard};
 }
 
 
