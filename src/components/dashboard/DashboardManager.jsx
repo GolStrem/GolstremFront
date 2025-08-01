@@ -25,6 +25,8 @@ const DashboardManager = ({blocks, setBlocks}) => {
     fetchModules();
   }, []);
 
+  const isMobile = () => /Mobi|Android/i.test(navigator.userAgent);
+  if (!isMobile()) {
     useGhostDragAndDrop({
       dragSelector: ".dashboard-block",
       onMouseUpCallback: ({ draggedElement, event }) => {
@@ -45,6 +47,7 @@ const DashboardManager = ({blocks, setBlocks}) => {
         setBlocks(updated);
       },
     });
+  }
 
   const componentMap = {
     workspace: DashWorkspace,
