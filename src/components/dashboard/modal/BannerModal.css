@@ -1,4 +1,4 @@
-.tm-modal-overlay {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   justify-content: center;
 }
 
-.tm-modal-popup {
+.modal-content{
   background: var(--color-modal, #1f1f1f);
   color: var(--color-modal-text, #f5f5f5);
   padding: 2rem;
@@ -23,7 +23,7 @@
   z-index: 1010;
 }
 
-.tm-modal-popup input {
+.modal-content input {
   width: 100%;
   padding: 0.6rem;
   margin-top: 0.8rem;
@@ -57,7 +57,7 @@
   border-radius: 6px;
 }
 
-.tm-modal-buttons {
+.modal-buttons {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -66,7 +66,7 @@
   z-index: 10;
 }
 
-.tm-modal-buttons button {
+.modal-buttons button {
   padding: 0.5rem 1.2rem;
   border: none;
   border-radius: 6px;
@@ -87,4 +87,9 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
+}
+
+
+.labelCheck{
+    display: flex;
 }

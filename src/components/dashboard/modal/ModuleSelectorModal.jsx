@@ -77,13 +77,15 @@ const ModuleSelectorModal = ({ onCancel, onSubmit, blocks = [], setBlocks }) => 
         ✖
     </button>
       <h3>Choisissez les modules à afficher</h3>
+
       <div className="module-selector">
         {MODULES.map((mod) => (
-          <label key={mod.name}>
+          <label key={mod.name} className="labelCheck">
             <input
               type="checkbox"
               checked={selected.has(mod.name)}
               onChange={() => toggle(mod.name)}
+              className="inputCheck"
             />
             {mod.label}
           </label>
