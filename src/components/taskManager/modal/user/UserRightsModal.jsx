@@ -41,6 +41,20 @@ useEffect(() => {
     ));
   };
 
+    const handleDelete = async (userId) => {
+    if (saving) return;
+
+
+    try {
+      await TaskApi.removeWorkspaceUser(workspaceId, userId);
+      setUserStates(prev => prev.filter(u => u.id !== userId));
+      setInitialStates(prev => prev.filter(u => u.id !== userId));
+    } catch (err) {
+      console.error(err);
+      setError("Échec de la suppression de l’utilisateur.");
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setError("");
@@ -88,7 +102,14 @@ useEffect(() => {
                   <option value={0}>Lecteur</option>
                   <option value={1}>Editeur</option>
                 </select>
+                <button
+                className="delete-user-btn"
+                onClick={() => handleDelete(user.id)}
+                title="Supprimer l'utilisateur">
+                ✖
+              </button>
               </div>
+
             </div>
           ))}
         </div>
