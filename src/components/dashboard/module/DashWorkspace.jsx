@@ -3,8 +3,10 @@ import { TaskApi, Socket, ApiService } from "@service";
 import { banner as defaultBanner } from "@assets";
 import { BannerModal, EditableBanner } from "@components";
 import "./Dash.css";
+import { useNavigate } from "react-router-dom";
 
 const DashWorkspace = ({ extra, id }) => {
+  const navigate = useNavigate();
   const parsedExtra = typeof extra === "string" ? JSON.parse(extra) : extra || {};
 
   const [bannerUrl, setBannerUrl] = useState(parsedExtra.banner || defaultBanner);
@@ -120,6 +122,7 @@ const DashWorkspace = ({ extra, id }) => {
             className="dash-card"
             key={ws.id}
             style={{ backgroundImage: `url(${ws.image})` }}
+            onClick={() => navigate(`/workspace/${ws.id}`)}
           >
             <div className="dash-overlay">
               <div className="dash-info">
