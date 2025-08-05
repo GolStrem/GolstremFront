@@ -31,7 +31,7 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     updateBoard,
     dragStartBoard,
     dropBoard,
-    droit,
+    droit
   } = useBoardManager(workspaceId);
 
   const { createOrUpdateCard, deleteCard } = useCardManager(
@@ -144,6 +144,7 @@ useGhostDragAndDrop({
       newTableau: (data) => setBoards(prev => fctSocket.handleCreateBoard(prev, data, droit)),
       updateTableau: (data) => setBoards(prev => fctSocket.handleUpdateBoard(prev, data)),
       deleteTableau: (data) => setBoards(prev => fctSocket.handleDeleteBoard(prev, data)),
+      updateUserWorkSpace: (data) => setBoards(prev => fctSocket.handleUpdateUserWorkSpace(prev, data, workspaceId)),
     };
 
     Object.entries(handlersMap).forEach(([type, handler]) => {
