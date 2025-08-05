@@ -92,7 +92,6 @@ const DashWorkspace = ({ extra, id }) => {
 
   const handleBannerSubmit = async (newUrl) => {
     try {
-      console.log({ extra: { ...parsedExtra, banner: newUrl } })
       await ApiService.updateModule(id, { extra: { ...parsedExtra, banner: newUrl } });
       setBannerUrl(newUrl);
     } catch (err) {

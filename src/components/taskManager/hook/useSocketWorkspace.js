@@ -169,8 +169,24 @@ export default function useSocketWorkspace() {
         return boards.filter((board) => Number(board.id) !== boardId);
     };
 
+    const handleUpdateUserWorkSpace = (boards, data, workspaceId) => {
+        if (!(Number(data.idWorkSpace) === Number(workspaceId) && localStorage.getItem('id') === data.idUser))
+            return boards;
 
-    return{ handleUpdateCard, handleCreateCard, handleDeleteCard, handleMoveCard, handleMoveTableau, handleCreateBoard, handleUpdateBoard, handleDeleteBoard};
+        
+        const newState = (str) => 
+            {str.droit = str.droit === (data.state === 0 ? 'write' : 'read') ? (data.state === 0 ? 'read' : 'write') : str.droit }
+
+        boards.forEach(board => {
+            newState(board);
+            board.cards.forEach(newState)
+        });
+        return boards
+    };
+
+
+
+    return{ handleUpdateCard, handleCreateCard, handleDeleteCard, handleMoveCard, handleMoveTableau, handleCreateBoard, handleUpdateBoard, handleDeleteBoard, handleUpdateUserWorkSpace};
 }
 
 

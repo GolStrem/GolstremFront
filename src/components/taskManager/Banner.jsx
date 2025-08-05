@@ -6,8 +6,10 @@ import { FaUserPlus } from "react-icons/fa";
 import { IoClose } from "react-icons/io5"; // pour la croix
 import avatar1 from "@assets/avatar.png";
 import "./Banner.css";
+import { useNavigate } from "react-router-dom";
 
 const Banner = ({ workspaceId, onSearch }) => {
+  const navigate = useNavigate();
   const [workspace, setWorkspace] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -28,8 +30,7 @@ const Banner = ({ workspaceId, onSearch }) => {
       setDroit(computedDroit);
       data.droit = computedDroit;
 
-      const users = data.user || [];
-      setWorkspace({ ...data, users });
+      setWorkspace(data);
     } catch (err) {
       console.error("Erreur lors du chargement du workspace :", err);
       setWorkspace(null);
@@ -41,6 +42,21 @@ const Banner = ({ workspaceId, onSearch }) => {
   useEffect(() => {
     fetchWorkspace();
   }, [fetchWorkspace]);
+
+  useEffect(() => {
+    if (!workspace || !workspace.user.length) return;
+
+    workspace.user.forEach(user => {
+      Socket.subscribe(`user-${user.id}`);
+    });
+
+    return () => {
+      workspace.user.forEach(user => {
+        Socket.unsubscribe(`user-${user.id}`);
+      });
+    };
+  }, [workspace]);
+  
 
   useEffect(() => {
     const handleWorkspaceUpdated = (e) => {
@@ -79,11 +95,78 @@ const Banner = ({ workspaceId, onSearch }) => {
       });
     };
 
+    const handleDeleteWorkSpaceUser = (data) => {
+      if (!data || Number(data.idWorkSpace) !== Number(workspaceId)) return;
+
+      const localUserId = Number(localStorage.getItem('id'));
+      if (localUserId === Number(data.idUser)) {
+        return navigate('/dashboard');
+      }
+
+      setWorkspace(prev => {
+        return {
+          ...prev,
+          user: prev.user.filter(u => Number(u.id) !== Number(data.idUser))
+        };
+      });
+    };
+
+    const handleCreateWorkSpaceUser = (data) => {
+      if (!data || Number(data.idWorkSpace) !== Number(workspaceId)) return;
+      setWorkspace(prev => {
+        if (prev.user.some(u => Number(u.id) === Number(data.user.id))) return prev;
+        return {
+          ...prev,
+          user: [...prev.user, data.user]
+        };
+      });
+    };
+
+    const handleUpdateUserWorkSpace = (data) => {
+      if (!data || Number(data.idWorkSpace) !== Number(workspaceId)) return;
+
+      setWorkspace(prev => {
+        const updatedUsers = prev.user.map(user => {
+          if (Number(user.id) !== Number(data.idUser)) return user;
+
+          return {
+            ...user,
+            state: (data.state === 0 ? 'read' : 'write')
+          };
+        });
+
+        return {
+          ...prev,
+          user: updatedUsers
+        };
+      });
+    };
+
+    const handleUpdateUser = (data) => {
+      setWorkspace(prev => ({
+        ...prev,
+        user: prev.user.map(user => 
+          Number(user.id) === Number(data.id)
+            ? { ...user, ...data.user }
+            : user
+        )
+      }));
+    };
+
+
     Socket.onMessage("updateWorkspace", handleUpdateWorkspace);
+    Socket.onMessage("deleteWorkSpaceUser", handleDeleteWorkSpaceUser);
+    Socket.onMessage("createWorkSpaceUser", handleCreateWorkSpaceUser);
+    Socket.onMessage("updateUserWorkSpace", handleUpdateUserWorkSpace);
+    Socket.onMessage("updateUser", handleUpdateUser);
     Socket.subscribe(`workSpace-${workspaceId}`);
 
     return () => {
       Socket.offMessage("updateWorkspace", handleUpdateWorkspace);
+      Socket.offMessage("deleteWorkSpaceUser", handleDeleteWorkSpaceUser);
+      Socket.offMessage("createWorkSpaceUser", handleCreateWorkSpaceUser);
+      Socket.offMessage("updateUserWorkSpace", handleUpdateUserWorkSpace);
+      Socket.offMessage("updateUser", handleUpdateUser);
       Socket.unsubscribe(`workSpace-${workspaceId}`);
     };
   }, [workspaceId]);
@@ -130,7 +213,7 @@ const Banner = ({ workspaceId, onSearch }) => {
         </div>
 
         <div className="tm-banner-avatars">
-          {(workspace?.users || []).map((user) => (
+          {(workspace?.user || []).map((user) => (
             <img
               key={user.id}
               src={user.image || avatar1}
