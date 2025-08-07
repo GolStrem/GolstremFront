@@ -39,9 +39,6 @@ const ModifWorkspaceModal = ({ workspace, onConfirm, onCancel }) => {
 
   return (
     <BaseModal onClose={onCancel} className={`tmedit `}>
-        <button className="tm-modal-close" onClick={onCancel}>
-          ✖
-        </button>
 
         <h3>Modifier le workspace</h3>
 

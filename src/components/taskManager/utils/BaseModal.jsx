@@ -21,6 +21,10 @@ const BaseModal = ({ onClose, className = "", children }) => {
         className={`tm-modal-popup ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
+      <button className="tm-modal-close" onClick={onClose}>
+        ✖
+      </button>
+
         {children}
       </div>
     </div>

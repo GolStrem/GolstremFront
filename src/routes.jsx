@@ -1,12 +1,13 @@
 import React, { lazy } from 'react';
 import Layout from './components/general/Layout';
-import ProtectedRoute from './components/general/ProtectedRoute';
+import { ProtectedRoute } from '@service';
 
 // Non-lazy components
 import Accueil from './pages/accueil';
 import Error from './pages/NotFound';
 import LoginNew from './pages/LoginNew';
 import LnResetPasswordModal from './components/login/LnResetPasswordModal'; 
+import MenuFiche from './pages/MenuFiche';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -42,6 +43,16 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <Config />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+    {
+    path: '/fiches',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <MenuFiche />
         </Layout>
       </ProtectedRoute>
     ),

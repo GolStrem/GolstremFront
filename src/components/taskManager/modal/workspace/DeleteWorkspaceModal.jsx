@@ -7,9 +7,7 @@ const DeleteWorkspaceModal = ({ name, onConfirm, onCancel }) => {
 
   return (
     <BaseModal onClose={onCancel} className={`tmedit`}>
-        <button className="tm-modal-close" onClick={onCancel}>
-          ✖
-        </button>
+
 
         <h3>Supprimer le workspace</h3>
         <p>

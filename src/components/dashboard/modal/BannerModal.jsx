@@ -46,9 +46,6 @@ const BannerModal = ({
 
   return (
     <BaseModal onClose={onCancel} className="tmedit">
-      <button className="tm-modal-close" onClick={onCancel}>
-        ✖
-      </button>
 
       <h3>Changer la bannière</h3>
 
