@@ -45,9 +45,7 @@ const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
 
   return (
     <BaseModal onClose={onCancel} className={`tmedit`}>
-        <button className="tm-modal-close" onClick={onCancel}>
-          ✖
-        </button>
+
 
         <h3>Créer un nouveau workspace</h3>
 

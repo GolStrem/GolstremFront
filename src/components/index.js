@@ -1,5 +1,5 @@
-// Composants généraux
-export { default as ProtectedRoute } from './general/ProtectedRoute';
+export { default as SearchBar } from './general/SearchBar';
+
 
 // Login
 export { default as fieldsConfigLogin } from './login/fieldsConfigLogin';
@@ -69,3 +69,8 @@ export {default as DashFiche } from './dashboard/module/DashFiche';
 export {default as DashNotification } from './dashboard/module/DashNotification';
 export {default as DashUnivers } from './dashboard/module/DashUnivers';
 export {default as EditableBanner } from './dashboard/EditableBanner';
+
+//FICHE 
+
+export {default as FicheCardMenu } from './fiche/FicheCardMenu'
+export {default as FicheCreateCharacterModal } from './fiche/modal/FicheCreateCharacterModal'

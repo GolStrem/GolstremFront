@@ -73,9 +73,7 @@ const ModuleSelectorModal = ({ onCancel, onSubmit, blocks = [], setBlocks }) => 
 
   return (
     <BaseModal onClose={onCancel}>
-    <button className="tm-modal-close" onClick={onCancel}>
-        ✖
-    </button>
+
       <h3>Choisissez les modules à afficher</h3>
 
       <div className="module-selector">

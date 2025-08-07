@@ -1,0 +1,321 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.fiche-page {
+  height: 100vh;
+  width: 100vw;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-header {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.character-selection {
+  display: flex;
+  gap: 1.5rem;
+  padding: 2rem;
+  box-sizing: border-box;
+  width: fit-content;
+  min-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-direction: row;
+}
+
+/* Carte personnage */
+.character-card {
+  position: relative;
+  Width: 370px;
+
+  height: calc(100vh - 4rem);
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: visible;
+  transform: skewX(-10deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  
+
+}
+
+.character-card:hover {
+  transform: skewX(-10deg) scale(1.03);
+}
+
+/* Image personnage */
+.character-img {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 1;
+  border-radius: 12px;
+}
+
+/* Nom */
+.character-name {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-weight: bold;
+  font-size: 3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transform: skewX(0deg);
+  width: 101%;
+  z-index: 3;
+  align-self: flex-start;
+  margin-top: auto;
+  margin-left: -17px;
+}
+
+/* Badge NEW vertical */
+.card-new {
+  position: absolute;
+  top: 2rem;
+  left: -2.2rem;
+  transform: rotate(-90deg);
+  font-size: 4rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* HENEL géant */
+.card-bg-text {
+  position: absolute;
+  top: 40%;
+  left: -4.5rem;
+  font-size: 15rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.5);
+  transform: rotate(-90deg) skewX(10deg);
+  z-index: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Créer une carte */
+.create-card {
+  justify-content: center;
+  align-items: center;
+  background-color: var(--jaune);
+  width: 370px;
+}
+
+.create-card .plus-sign {
+  font-size: 20rem;
+  color: var(--color-text);
+  transform: rotate(-90deg);
+  top: 0;
+  left: 0;
+  position: relative;
+  font-weight: bold;
+  opacity: 50%;
+}
+
+.create-card .create {
+  color: #e63946;
+}
+
+/* Empêche la carte de sortir */
+.sticky-card {
+  left: 0;
+  z-index: 5;
+  border-right: 4px solid rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Menu contextuel sur carte ===== */
+.card-menu-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.card-menu-button {
+  background: var(--color-background);
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.card-menu-dropdown {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  background: var(--color-background);
+  border-radius: 6px;
+  z-index: 100;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.card-menu-dropdown div {
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.card-menu-dropdown div:hover {
+  background: rgba(0, 0, 0, 0.3); 
+}
+
+.menu-header-mobil{
+    display: none;
+}
+
+
+.menu-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filter-button {
+  background: white;             
+  color: #333;                    
+  border: none;
+  width: 38px;
+  height: 32px;
+  border-radius: 50%;             
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, background 0.2s;
+  margin-left: 10px;
+}
+
+.filter-button:hover {
+  transform: scale(1.1);          
+  background: #f0f0f0;
+}
+
+
+/* ===== Responsive mobile ===== */
+@media (max-width: 768px) {
+
+
+    .menu-fichePage{
+    display: flex;
+    flex-direction: column;
+    }
+    .menu-header {
+    position: block;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: 100%;
+    max-width: 100vw;
+    display: none;
+    justify-content: center;
+    padding: 1rem;
+    }
+
+    .card-menu-wrapper{
+        transform:skewX(0deg)
+    }
+
+    .menu-header-mobil{
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.4rem;
+    align-items: start;
+    width: 100%;
+    padding: 0;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    }
+
+    .menu-header-mobil .tm-search-wrapper{
+        margin-left: 0.5rem;
+    }
+
+  .character-selection {
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: visible;
+    width: 100%;
+    min-width: unset;
+    padding: 0;
+
+  }
+
+  .character-card {
+    min-width: 90vw;
+    height: 60px;
+    transform: none;
+
+  }
+
+  .character-card:hover {
+    transform: scale(1.03);
+  }
+
+  .character-name {
+    transform: none;
+    font-size: 1rem;
+    width: auto;
+    margin-left: -12px;
+  }
+
+  .card-bg-text {
+    display: none;
+  }
+
+  .card-new {
+    font-size: 1rem;
+    top: 0.2rem;
+    left: 1rem;
+    transform: rotate(0deg);
+  }
+
+  .create-card {
+    width: 90vw;
+    order: 80;
+  }
+
+  .create-card .plus-sign {
+    font-size: 8rem;
+    transform: none;
+    top: auto;
+    left: auto;
+  }
+
+  .card-menu-dropdown{
+    top: 0px;
+    right: 13px;
+  }
+}
+

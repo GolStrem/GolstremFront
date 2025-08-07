@@ -2,6 +2,7 @@ import abstrait from './abstrait.webp';
 import checkIcon from './checkIcon.svg';
 import Fichier4 from './Fichier4.svg';
 import Fichier5 from './Fichier5.png';
+import Fichier6 from './Fichier6.png';
 import personp from './Fichier6.png';
 import golden from './golden.svg';
 import golstremV from './goldstremV.svg';
@@ -34,6 +35,7 @@ export {
   checkIcon,
   Fichier4,
   Fichier5,
+  Fichier6,
   personp,
   golden,
   golstremV,

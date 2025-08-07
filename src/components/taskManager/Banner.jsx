@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import banner from "@assets/banner.jpg";
 import { TaskApi, UserInfo, Socket } from "@service";
-import { AddUserModal, BoardCardAccess } from "@components";
+import { AddUserModal, BoardCardAccess, SearchBar } from "@components";
 import { FaUserPlus } from "react-icons/fa";
 import { IoClose } from "react-icons/io5"; // pour la croix
 import avatar1 from "@assets/avatar.png";
@@ -186,21 +186,14 @@ const Banner = ({ workspaceId, onSearch }) => {
           height: "300px",
         }}
       >
-        <div className="tm-banner-search">
-          <div className="tm-search-wrapper">
-            <input
-              type="text"
-              placeholder="Rechercher"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {search && (
-              <button className="tm-search-clear" onClick={clearSearch} title="Effacer">
-                <IoClose size={18} />
-              </button>
-            )}
-          </div>
-        </div>
+      <div className="tm-banner-search">
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          onClear={() => setSearch("")}
+        />
+      </div>
+
 
         <div className="tm-banner-info">
           <h1 className="tm-banner-title">

@@ -6,9 +6,7 @@ const DeleteBoardModal = ({ title, onConfirm, onCancel }) => {
 
   return (
    <BaseModal onClose={onCancel} className={`tmedit`}>
-        <button className="tm-modal-close" onClick={onCancel}>
-          ✖
-        </button>
+
 
         <h3>Supprimer le tableau</h3>
         <p>

@@ -1,0 +1,19 @@
+.fiche-select, select{
+    color: red;
+    width: 50% !important;
+    margin-left: 33px;
+
+}
+
+.labelSect{
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
+.label-ficheSect{
+width: 100%;
+
+}

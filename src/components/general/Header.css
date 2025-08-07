@@ -4,10 +4,10 @@
   align-items: center;
   justify-content: end;
   color: var(--header-color);
-  width: 100%;
-  position: fixed;
+  position: absolute;
   top: 0;
-  z-index: 2;
+  right: 0;
+  z-index: 99;
 }
 
 .header-left {
