@@ -35,6 +35,9 @@ export default function useGhostDragAndDrop({ dragSelector, onMouseUpCallback })
 
     const onMouseDown = (e) => {
       if (e.button !== 0) return;
+      if (draggedElement) return; // empeche de commencer un autre drag
+      e.preventDefault(); // empeche le drag natif
+
       draggedElement = e.currentTarget;
 
       ghostElement = draggedElement.cloneNode(true);

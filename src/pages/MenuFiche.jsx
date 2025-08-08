@@ -24,14 +24,33 @@ const MenuFiche = () => {
         const targetIndex = Number(dropTarget.dataset.index);
 
         if (draggedIndex === -1 || targetIndex === -1) return;
-        console.log(characterList[draggedIndex].id)
 
-        const payload = {type:"owner", targetId:localStorage.getItem("id"), pos:targetIndex}
+        const payload = {type:"owner", targetId:localStorage.getItem("id"), pos:characterList[targetIndex].pos}
 
         ApiFiche.moveFiche(characterList[draggedIndex].id, payload)
         const updated = [...characterList];
+
+        const oldPos = updated[draggedIndex].pos;
+        const newPos = updated[targetIndex].pos;
+
         const [moved] = updated.splice(draggedIndex, 1);
         updated.splice(targetIndex, 0, moved);
+
+        if (oldPos < newPos) {
+          updated.forEach(char => {
+            if (char.id !== moved.id && char.pos > oldPos && char.pos <= newPos) {
+              char.pos -= 1;
+            }
+          });
+        } else if (oldPos > newPos) {
+          updated.forEach(char => {
+            if (char.id !== moved.id && char.pos >= newPos && char.pos < oldPos) {
+              char.pos += 1;
+            }
+          });
+        }
+
+        moved.pos = newPos;
         setCharacterList(updated);
       },
     });
