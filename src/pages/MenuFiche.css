@@ -34,6 +34,7 @@ html, body {
   overflow-x: auto;
   overflow-y: hidden;
   flex-direction: row;
+  margin-top: 3rem;
 }
 
 /* Carte personnage */
@@ -41,7 +42,7 @@ html, body {
   position: relative;
   Width: 370px;
 
-  height: calc(100vh - 4rem);
+  height: calc(100vh - 10rem);
   flex-shrink: 0;
   border-radius: 12px;
   overflow: visible;
@@ -127,7 +128,9 @@ html, body {
 }
 
 .create-card .plus-sign {
-  font-size: 20rem;
+  font-size: clamp(1.2rem, 20vmin, 20rem);
+  line-height: 1.1; /* helps avoid spill */
+  white-space: nowrap; /* optional if you want one line */
   color: var(--color-text);
   transform: rotate(-90deg);
   top: 0;

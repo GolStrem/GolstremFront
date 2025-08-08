@@ -7,7 +7,9 @@ export { default as ApiFiche } from './api/ApiFiche';
 
 export { default as useSystemThemeSync } from './useSystemThemeSync';
 export { default as UserInfo } from './UserInfo';
-export { default as Socket } from './Socket';
+export { default as Socket } from './handler/Socket';
+export { default as useFicheHandler } from './handler/useFicheHandler';
+
 
 export { default as ProtectedRoute} from './ProtectedRoute';
 
