@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { TaskApi, UserInfo } from "@service";
 import apiService from "@service/api/ApiService";
 import {
@@ -16,14 +17,22 @@ import avatarDefault from "@assets/avatar.png";
 import "./Dashboard.css";
 
 const Dashboard = () => {
+  const { t } = useTranslation("general"); // ✅ On ne garde que "general"
   const [avatar, setAvatar] = useState(avatarDefault);
   const [pseudo, setPseudo] = useState("joueur");
   const [showBannerModal, setShowBannerModal] = useState(false);
   const [showModuleModal, setShowModuleModal] = useState(false);
   const [bannerDash, setBannerDash] = useState(banner);
-  const [workspaceId, setWorkspaceId] = useState(() => localStorage.getItem("lastWorkspace"));
+  const [workspaceId, setWorkspaceId] = useState(() =>
+    localStorage.getItem("lastWorkspace")
+  );
   const [selectedModules, setSelectedModules] = useState([
-    "workspace", "evenement", "fiche", "inventaire", "univers", "notification"
+    "workspace",
+    "evenement",
+    "fiche",
+    "inventaire",
+    "univers",
+    "notification",
   ]);
   const [blocks, setBlocks] = useState([]);
 
@@ -32,14 +41,34 @@ const Dashboard = () => {
   const links = [
     {
       to: workspaceId ? `/workspace/${encodeURIComponent(workspaceId)}` : "#",
-      label: "Workspace",
+      label: t("general.workspace"),
       icon: <FaTasks />,
       active: location.pathname.includes("/workspace"),
     },
-    { to: "/fiches", label: "Fiche", icon: <FaBook />, active: location.pathname === "/fiches" },
-    { to: "/inventaire", label: "Inventaire", icon: <FaBoxOpen />, active: location.pathname === "/inventaire" },
-    { to: "/univers", label: "Univers", icon: <FaGlobe />, active: location.pathname === "/univers" },
-    { to: "/maitre", label: "Maître du jeu", icon: <FaCrown />, active: location.pathname === "/maitre" },
+    {
+      to: "/fiches",
+      label: t("general.fiche"),
+      icon: <FaBook />,
+      active: location.pathname === "/fiches",
+    },
+    {
+      to: "/inventaire",
+      label: t("general.inventaire"),
+      icon: <FaBoxOpen />,
+      active: location.pathname === "/inventaire",
+    },
+    {
+      to: "/univers",
+      label: t("general.univers"),
+      icon: <FaGlobe />,
+      active: location.pathname === "/univers",
+    },
+    {
+      to: "/maitre",
+      label: t("general.maitre"),
+      icon: <FaCrown />,
+      active: location.pathname === "/maitre",
+    },
   ];
 
   useEffect(() => {
@@ -82,18 +111,28 @@ const Dashboard = () => {
       <div className="background-blur"></div>
 
       <div className="dashboard-banner">
-        <img src={bannerDash} alt="Banner" className="banner-img" />
+        <img src={bannerDash} alt={t("general.bannerAlt")} className="banner-img" />
 
         <div className="banner-content">
-          <img src={avatar} alt="Avatar" className="banner-avatar" />
+          <img src={avatar} alt={t("general.avatarAlt")} className="banner-avatar" />
           <h1 className="helloPlayer">{pseudo}</h1>
         </div>
 
-        <button className="change-module-btn" onClick={() => setShowModuleModal(true)}>
-          ...
+        <button
+          className="change-module-btn"
+          onClick={() => setShowModuleModal(true)}
+          aria-label={t("general.changeModules")}
+          title={t("general.changeModules")}
+        >
+          …
         </button>
 
-        <button className="change-banner-btn" onClick={() => setShowBannerModal(true)}>
+        <button
+          className="change-banner-btn"
+          onClick={() => setShowBannerModal(true)}
+          aria-label={t("general.changeBanner")}
+          title={t("general.changeBanner")}
+        >
           ✎
         </button>
 
@@ -117,13 +156,13 @@ const Dashboard = () => {
               setSelectedModules(modules);
               setShowModuleModal(false);
             }}
-            blocks = {blocks}
-            setBlocks = {setBlocks}
+            blocks={blocks}
+            setBlocks={setBlocks}
           />
         )}
       </div>
 
-      <DashboardManager blocks = {blocks} setBlocks = {setBlocks} />
+      <DashboardManager blocks={blocks} setBlocks={setBlocks} />
 
       <nav className="bottom-nav">
         {links.map((link, index) => (

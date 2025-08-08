@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 // --- Regex & règles ---
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
@@ -10,7 +12,8 @@ export const passwordRules = {
 };
 
 // --- Évaluation de la force du mot de passe ---
-export function evaluatePasswordStrength(password) {
+// Ajout de t pour traduire directement le label
+export function evaluatePasswordStrength(password, t) {
   let score = 0;
   const hasLength = password.length >= passwordRules.minLength;
   const hasUpper = passwordRules.upper.test(password);
@@ -25,10 +28,10 @@ export function evaluatePasswordStrength(password) {
 
   let label = '';
   if (score === 0) label = '';
-  else if (score <= 2) label = 'Faible';
-  else if (score === 3) label = 'Moyen';
-  else if (score === 4 && hasSpecial) label = 'Très fort';
-  else label = 'Fort';
+  else if (score <= 2) label = t('login.passwordWeak');      // Faible
+  else if (score === 3) label = t('login.passwordMedium');   // Moyen
+  else if (score === 4 && hasSpecial) label = t('login.passwordVeryStrong'); // Très fort
+  else label = t('login.passwordStrong');                    // Fort
 
   return { score, label };
 }

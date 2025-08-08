@@ -1,0 +1,26 @@
+{
+  "general": {
+    "notFoundTitle": "Page introuvable",
+    "notFoundDashboard": "Retourner au Dashboard",
+    "notFoundHome": "Retourner à l'accueil",
+
+    "homeTitle": "Bienvenue sur notre plateforme",
+    "homeSubtitle": "Gérez votre compte et vos préférences facilement.",
+    "loginCta": "Se connecter",
+
+    "sidebarTitle": "PARAMÈTRE",
+    "accountSettings": "Paramètre du compte",
+    "colorSettings": "Paramètre de couleur",
+    "errorFetchEmail": "Erreur lors de la récupération",
+
+    "workspace": "Workspace",
+    "fiche": "Fiche",
+    "inventaire": "Inventaire",
+    "univers": "Univers",
+    "maitre": "Maître du jeu",
+    "changeBanner": "Changer la bannière",
+    "changeModules": "Choisir les modules",
+
+    "chooseColor": "Choisir une couleur :"
+  }
+}

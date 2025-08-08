@@ -1,5 +1,6 @@
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const LnPasswordField = ({
   name,
@@ -13,6 +14,7 @@ const LnPasswordField = ({
   getStrengthColor,
 }) => {
   const [visible, setVisible] = useState(false);
+  const { t } = useTranslation('login'); 
 
   return (
     <label>
@@ -31,14 +33,14 @@ const LnPasswordField = ({
           type="button"
           className="ln-eye-toggle"
           onClick={() => setVisible(!visible)}
-          aria-label="Afficher / masquer le mot de passe"
+          aria-label={t('showHidePassword')}
         >
           {visible ? <FaEyeSlash /> : <FaEye />}
         </button>
       </div>
 
       <div className="ln-help">
-        Au moins 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre.
+        {t('login.passwordRules')}
       </div>
 
       <div className="ln-password-info">
@@ -47,10 +49,10 @@ const LnPasswordField = ({
         </span>
         {showStrength && strength && (
           <span
-            className={`ln-password-strength ln-visible`}
+            className="ln-password-strength ln-visible"
             style={{ color: getStrengthColor(score) }}
           >
-            Force : {strength}
+            {t('login.passwordStrength', { strength })}
           </span>
         )}
       </div>

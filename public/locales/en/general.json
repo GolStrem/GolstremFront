@@ -1,0 +1,28 @@
+{
+  "general": {
+    "notFoundTitle": "Page not found",
+    "notFoundDashboard": "Return to Dashboard",
+    "notFoundHome": "Return to Home",
+
+    "homeTitle": "Welcome to our platform",
+    "homeSubtitle": "Manage your account and preferences easily.",
+    "loginCta": "Log in",
+
+    "sidebarTitle": "SETTINGS",
+    "accountSettings": "Account settings",
+    "colorSettings": "Color settings",
+    "errorFetchEmail": "Error while retrieving",
+
+    "workspace": "Workspace",
+    "fiche": "Character sheets",
+    "inventaire": "Inventory",
+    "univers": "World",
+    "maitre": "Game master",
+    "changeBanner": "Change banner",
+    "changeModules": "Choose modules",
+
+    "chooseColor": "Choose a color:"
+    
+
+  }
+}
