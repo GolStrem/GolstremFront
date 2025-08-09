@@ -51,8 +51,17 @@ const Parametre = () => {
             <div className="parametre-maj">
               <UserNewPseudo />
 
+      
+              <p className="param-g a">
+                <span className="param-g-label">{t("email")} :</span>{" "}
+                <span className="param-g-value">{email || "..."}</span>
+              </p>
+              <p className="param-g">
+                <span className="param-g-label">{t("password")} :</span>{" "}
+                <span className="param-g-value">***********</span>
+              </p>
               {/* Sélecteur de langue */}
-              <label className="param-g a">
+              <label className="param-g a tm-label">
                 <span className="param-g-label">{t("language")} :</span>{" "}
                 <select
                   className="param-lang-select"
@@ -64,15 +73,6 @@ const Parametre = () => {
                   <option value="en">{t("languageEn")}</option>
                 </select>
               </label>
-
-              <p className="param-g a">
-                <span className="param-g-label">{t("email")} :</span>{" "}
-                <span className="param-g-value">{email || "..."}</span>
-              </p>
-              <p className="param-g">
-                <span className="param-g-label">{t("password")} :</span>{" "}
-                <span className="param-g-value">***********</span>
-              </p>
             </div>
           </div>
         </section>
