@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FaSun,
   FaMoon,
@@ -8,14 +8,16 @@ import {
   FaChevronDown,
   FaTools,
   FaHome
-} from 'react-icons/fa';
+} from "react-icons/fa";
+import { persistor, toggleTheme, logout } from "@store";
+import avatarImg from "@assets/avatar.png";
+import { useTranslation } from "react-i18next";
 
-import { persistor, toggleTheme, logout } from '@store';
-import avatarImg from '@assets/avatar.png';
-
-import './Header.css';
+import "./Header.css";
 
 const Header = () => {
+  const { t } = useTranslation("general");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ const Header = () => {
   const handleLogout = () => {
     dispatch(logout());
     persistor.purge();
-    navigate('/login');
+    navigate("/login");
   };
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
@@ -41,44 +43,55 @@ const Header = () => {
       }
     };
     if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
   return (
     <header className="header">
       <div className="header-right" ref={menuRef}>
         <div className="user-menu" onClick={toggleMenu}>
-          <img src={avatar || avatarImg} alt="avatar" className="avatar" />
+          <img src={avatar || avatarImg} alt={t("general.avatarAlt")} className="avatar" />
           <span className="username">
-            {pseudo ? pseudo.charAt(0).toUpperCase() + pseudo.slice(1) : 'Profil'}
+            {pseudo
+              ? pseudo.charAt(0).toUpperCase() + pseudo.slice(1)
+              : t("general.profile")}
           </span>
           <FaChevronDown />
         </div>
 
         {menuOpen && (
           <div className="dropdown-menu">
-            <button className="dropdown-item" onClick={() => navigate('/dashboard')}>
-              <FaHome /> Dashboard
+            <button
+              className="dropdown-item"
+              onClick={() => navigate("/dashboard")}
+            >
+              <FaHome /> {t("general.dashboard")}
             </button>
 
-            <button className="dropdown-item red" onClick={() => navigate('/config')}>
-              <FaTools /> Paramètres
+            <button
+              className="dropdown-item red"
+              onClick={() => navigate("/config")}
+            >
+              <FaTools /> {t("general.settings")}
             </button>
 
-            <button className="dropdown-item" onClick={() => dispatch(toggleTheme())}>
-              {mode === 'dark' ? <FaSun /> : <FaMoon />} {mode === 'dark' ? 'Mode clair' : 'Mode sombre'}
+            <button
+              className="dropdown-item"
+              onClick={() => dispatch(toggleTheme())}
+            >
+              {mode === "dark" ? <FaSun /> : <FaMoon />}{" "}
+              {mode === "dark" ? t("general.lightMode") : t("general.darkMode")}
             </button>
 
             <button className="dropdown-item" onClick={handleLogout}>
-              <FaSignOutAlt /> Déconnexion
+              <FaSignOutAlt /> {t("general.logout")}
             </button>
           </div>
         )}
-
       </div>
     </header>
   );

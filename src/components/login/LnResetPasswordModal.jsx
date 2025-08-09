@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import LnPasswordField from './LnPasswordField';
 import LnSuccessModal from './LnSuccessModal';
 import apiService from '@service/api/ApiService';
@@ -12,7 +13,7 @@ import {
 } from './lnFormUtils';
 
 const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
-
+  const { t } = useTranslation('login'); 
   const [form, setForm] = useState({ password: '', confirm: '' });
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState('');
@@ -20,7 +21,7 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
   const [submitted, setSubmitted] = useState(false);
   const firstInputRef = useRef(null);
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate(); // 🔁 Pour redirection
+  const navigate = useNavigate();
 
   useEffect(() => {
     firstInputRef.current?.focus();
@@ -32,7 +33,7 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
   const handleChange = ({ target: { name, value } }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
     if (name === 'password') {
-      const { score, label } = evaluatePasswordStrength(value);
+      const { score, label } = evaluatePasswordStrength(value, t);
       setPasswordScore(score);
       setPasswordStrength(label);
     }
@@ -41,17 +42,18 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
   const validate = () => {
     const errs = {};
     if (form.password.length < passwordRules.minLength)
-      errs.password = 'Au moins 8 caractères';
+      errs.password = t('login.errorMinLength'); // Au moins 8 caractères
     else if (form.password.length > passwordRules.maxLength)
-      errs.password = 'Mot de passe trop long';
+      errs.password = t('login.errorTooLong');
     else if (!passwordRules.upper.test(form.password))
-      errs.password = 'Inclure une majuscule';
+      errs.password = t('login.errorUpper');
     else if (!passwordRules.lower.test(form.password))
-      errs.password = 'Inclure une minuscule';
+      errs.password = t('login.errorLower');
     else if (!passwordRules.number.test(form.password))
-      errs.password = 'Inclure un chiffre';
+      errs.password = t('login.errorNumber');
+
     if (form.password !== form.confirm)
-      errs.confirm = 'Les mots de passe ne correspondent pas';
+      errs.confirm = t('login.errorMismatch');
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -67,14 +69,12 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
     try {
       await apiService.changePasswordByToken(userId, token, form.password);
       setSubmitted(true);
-
-      // ⏳ Petite pause avant redirection
       setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (err) {
       console.error(err);
-      setErrors({ global: 'Une erreur est survenue. Lien invalide ou expiré.' });
+      setErrors({ global: t('login.errorGlobal') });
     }
   };
 
@@ -82,22 +82,27 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
     <>
       <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
         <div
-          className={`ln-modal-box ln-modal-slide-in `}
+          className="ln-modal-box ln-modal-slide-in"
           onClick={(e) => e.stopPropagation()}
         >
-          <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
-          <WarningIcon alt="Avertissement" className="ln-ModalWarning" />
-          <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">
+          <StyleModalIcon alt={t('decorationAlt')} className="ln-ModalStyle" />
+          <WarningIcon alt={t('warningAlt')} className="ln-ModalWarning" />
+
+          <button
+            className="ln-modal-close"
+            onClick={onClose}
+            aria-label={t('close')}
+          >
             ×
           </button>
 
-          <h2 className="resetmdp">Nouveau mot de passe</h2>
+          <h2 className="resetmdp">{t('login.resetTitle')}</h2>
 
           <form onSubmit={handleSubmit} noValidate>
             <LnPasswordField
               ref={firstInputRef}
               name="password"
-              label="Mot de passe"
+              label={t('login.passwordLabel')}
               value={form.password}
               onChange={handleChange}
               error={errors.password}
@@ -109,7 +114,7 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
 
             <LnPasswordField
               name="confirm"
-              label="Confirmez le mot de passe"
+              label={t('login.confirmLabel')}
               value={form.confirm}
               onChange={handleChange}
               error={errors.confirm}
@@ -118,28 +123,25 @@ const LnResetPasswordModal = ({ onClose = () => {}, onSubmit }) => {
 
             {errors.global && <p className="ln-error-global">{errors.global}</p>}
 
-            <button
-              type="submit"
-              className={`ln-submit`}
-              disabled={submitted}
-            >
-              Valider
+            <button type="submit" className="ln-submit" disabled={submitted}>
+              {t('validate')}
             </button>
 
             {submitted && (
               <p className="ln-success-message">
-                Mot de passe modifié avec succès ! Redirection...
+                {t('login.successRedirect')}
               </p>
             )}
 
-            <StyleModalIcon alt="Décoration" className="ln-ModalStyle b" />
+            <StyleModalIcon alt={t('decorationAlt')} className="ln-ModalStyle b" />
           </form>
         </div>
       </div>
 
       {submitted && (
         <LnSuccessModal
-          message="Mot de passe modifié avec succès !"
+          // on garde LnSuccessModal, mais on lui passe la chaîne traduite
+          message={t('login.successShort')}
           onClose={() => navigate('/login')}
         />
       )}

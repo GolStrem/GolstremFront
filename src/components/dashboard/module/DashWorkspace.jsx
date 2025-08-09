@@ -4,8 +4,10 @@ import { banner as defaultBanner } from "@assets";
 import { BannerModal, EditableBanner } from "@components";
 import "./Dash.css";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const DashWorkspace = ({ extra, id }) => {
+  const { t } = useTranslation("general");
   const navigate = useNavigate();
   const parsedExtra = typeof extra === "string" ? JSON.parse(extra) : extra || {};
 
@@ -24,14 +26,14 @@ const DashWorkspace = ({ extra, id }) => {
         }));
         setWorkspaces(parsed);
       } catch (error) {
-        console.error("Erreur lors du chargement des workspaces :", error);
+        console.error(t("general.errorLoadWorkspaces"), error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchWorkspaces();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     Socket.subscribe(`user-${localStorage.getItem("id")}`);
@@ -95,16 +97,15 @@ const DashWorkspace = ({ extra, id }) => {
       await ApiService.updateModule(id, { extra: { ...parsedExtra, banner: newUrl } });
       setBannerUrl(newUrl);
     } catch (err) {
-      console.error("Erreur lors de la mise à jour de la bannière :", err);
+      console.error(t("general.errorUpdateBanner"), err);
     }
   };
 
-  if (loading) return <div className="dash-loading">Chargement...</div>;
+  if (loading) return <div className="dash-loading">{t("general.loading")}</div>;
 
   return (
     <div className="dash-container">
-    <EditableBanner id={id} extra={extra} title="Mes Workspace" className="dash-work" />
-
+      <EditableBanner id={id} extra={extra} title={t("general.myWorkspaces")} className="dash-work" />
 
       {showBannerModal && (
         <BannerModal
@@ -122,6 +123,9 @@ const DashWorkspace = ({ extra, id }) => {
             key={ws.id}
             style={{ backgroundImage: `url(${ws.image})` }}
             onClick={() => navigate(`/workspace/${ws.id}`)}
+            role="button"
+            aria-label={ws.name}
+            title={ws.name}
           >
             <div className="dash-overlay">
               <div className="dash-info">
@@ -129,9 +133,7 @@ const DashWorkspace = ({ extra, id }) => {
                 <p className="dash-description">{ws.description}</p>
               </div>
             </div>
-            {ws.news === 1 && (
-                  <p className="dash-notif">!</p>
-                )}
+            {ws.news === 1 && <p className="dash-notif">!</p>}
           </div>
         ))}
       </div>

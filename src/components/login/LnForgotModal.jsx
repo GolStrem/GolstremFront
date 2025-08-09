@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { StyleModalIcon, WarningIcon } from "@assets";
 import apiService from '@service/api/ApiService';
 
 const LnForgotModal = ({ onClose, onSubmit }) => {
+  const { t } = useTranslation('login');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -25,7 +27,7 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
-      setError("Adresse e-mail invalide");
+      setError(t('login.errorInvalidEmail'));
       return;
     }
 
@@ -35,23 +37,29 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-      setError("Une erreur s'est produite. Vérifiez l'adresse ou réessayez.");
+      setError(t('login.errorForgotGlobal'));
     }
   };
 
   return (
     <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
       <div className="ln-modal-box ln-modal-slide-in" onClick={(e) => e.stopPropagation()}>
-        <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">×</button>
+        <button
+          className="ln-modal-close"
+          onClick={onClose}
+          aria-label={t('close')}
+        >
+          ×
+        </button>
 
-        <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
-        <WarningIcon alt="Avertissement" className="ln-ModalWarning"  />
+        <StyleModalIcon alt={t('decorationAlt')} className="ln-ModalStyle" />
+        <WarningIcon alt={t('warningAlt')} className="ln-ModalWarning" />
 
-        <h2>Mot de passe oublié</h2>
+        <h2>{t('login.forgotTitle')}</h2>
 
         <form onSubmit={handleSubmit} noValidate>
           <label>
-            <p>Adresse e-mail</p>
+            <p>{t('login.emailLabel')}</p>
             <input
               ref={inputRef}
               type="email"
@@ -66,17 +74,17 @@ const LnForgotModal = ({ onClose, onSubmit }) => {
           </label>
 
           <button type="submit" className="ln-submit" disabled={submitted}>
-            Envoyer
+            {t('send')}
           </button>
 
           {submitted && (
             <p className="ln-success-message">
-              Si l'adresse correspond à un compte, un e-mail a été envoyé.
+              {t('login.forgotSuccess')}
             </p>
           )}
         </form>
 
-        <StyleModalIcon alt="Décoration" className="ln-ModalStyle b" />
+        <StyleModalIcon alt={t('decorationAlt')} className="ln-ModalStyle b" />
       </div>
     </div>
   );

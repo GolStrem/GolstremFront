@@ -1,13 +1,18 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { TaskApi, UserInfo, Socket } from "@service";
-import { DeleteWorkspaceModal, ModifWorkspaceModal, CreateWorkspaceModal, UserRightsModal } from "@components";
+import {
+  DeleteWorkspaceModal,
+  ModifWorkspaceModal,
+  CreateWorkspaceModal,
+  UserRightsModal
+} from "@components";
 import "./WorkspaceMenu.css";
 import "./modal/taskModal.css";
-
-
+import { useTranslation } from "react-i18next";
 
 const WorkspaceMenu = ({ setCurrentWorkspace }) => {
+  const { t } = useTranslation("workspace");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,20 +32,17 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
 
   const [showUserRightsModal, setShowUserRightsModal] = useState(false);
 
-
   useEffect(() => {
     const fetchUserId = async () => {
       try {
         const id = await UserInfo.getId();
         setUserId(id);
       } catch (err) {
-        console.error("Erreur lors de la récupération de l'id utilisateur :", err);
+        console.error(t("workspace.errorFetchUserId"), err);
       }
     };
-
     fetchUserId();
-  }, []);  
-
+  }, [t]);
 
   const toggleMenu = () => setOpen((prev) => !prev);
 
@@ -52,7 +54,7 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
 
       const pathParts = location.pathname.split("/");
       const currentId = pathParts[pathParts.indexOf("workspace") + 1];
-      const currentWs = wsArray.find(ws => ws.id === currentId);
+      const currentWs = wsArray.find((ws) => ws.id === currentId);
 
       if (currentWs) {
         localStorage.setItem("lastWorkspace", currentId);
@@ -63,9 +65,9 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
         setCurrentWorkspace?.(wsArray[0]);
       }
     } catch (err) {
-      console.error("Erreur lors de la récupération des workspaces:", err);
+      console.error(t("workspace.errorFetchWorkspaces"), err);
     }
-  }, [location.pathname, navigate, setCurrentWorkspace]);
+  }, [location.pathname, navigate, setCurrentWorkspace, t]);
 
   useEffect(() => {
     fetchWorkspaces();
@@ -83,17 +85,15 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
   }, []);
 
   useEffect(() => {
-    Socket.subscribe(`user-${localStorage.getItem('id')}`);
+    Socket.subscribe(`user-${localStorage.getItem("id")}`);
     if (!workspaces.length) return;
 
-    // S'abonner à tous les canaux
-    workspaces.forEach(ws => {
+    workspaces.forEach((ws) => {
       Socket.subscribe(`workSpaceOnly-${ws.id}`);
     });
 
-    // Nettoyage : se désabonner de tous les canaux
     return () => {
-      workspaces.forEach(ws => {
+      workspaces.forEach((ws) => {
         Socket.unsubscribe(`workSpaceOnly-${ws.id}`);
       });
     };
@@ -103,13 +103,13 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
     const handleUpdateWorkspace = (data) => {
       if (!data?.id) return;
 
-      setWorkspaces(prev =>
-        prev.map(ws =>
+      setWorkspaces((prev) =>
+        prev.map((ws) =>
           ws.id === data.id
             ? {
                 ...ws,
                 name: data.name ?? ws.name,
-                image: data.image ?? ws.image,
+                image: data.image ?? ws.image
               }
             : ws
         )
@@ -119,20 +119,16 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
     const handleNewWorkspace = (data) => {
       if (!data?.id) return;
 
-      setWorkspaces(prev => {
-        // éviter les doublons si jamais on a déjà reçu ce workspace
-        if (prev.some(ws => ws.id === data.id)) return prev;
-
+      setWorkspaces((prev) => {
+        if (prev.some((ws) => ws.id === data.id)) return prev;
         return [...prev, data];
       });
     };
 
     const handleDeleteWorkspace = (id) => {
       if (!id) return;
-
-      setWorkspaces(prev => prev.filter(ws => ws.id !== id));
+      setWorkspaces((prev) => prev.filter((ws) => ws.id !== id));
     };
-
 
     Socket.onMessage("updateWorkspace", handleUpdateWorkspace);
     Socket.onMessage("newWorkspace", handleNewWorkspace);
@@ -155,7 +151,7 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
     if (!workspaceToDelete) return;
     try {
       await TaskApi.deleteWorkspace(workspaceToDelete.id);
-      const updated = workspaces.filter(w => w.id !== workspaceToDelete.id);
+      const updated = workspaces.filter((w) => w.id !== workspaceToDelete.id);
       setWorkspaces(updated);
       setShowDeleteModal(false);
 
@@ -164,166 +160,145 @@ const WorkspaceMenu = ({ setCurrentWorkspace }) => {
         navigate(`/workspace/${fallbackId || ""}`);
       }
     } catch (err) {
-      console.error("Erreur lors de la suppression :", err);
+      console.error(t("workspace.errorDeleteWorkspace"), err);
     }
   };
 
-const confirmEdit = async (form) => {
-  try {
-    const payload = { ...form };
+  const confirmEdit = async (form) => {
+    try {
+      const payload = { ...form };
+      if (!payload.image?.trim()) {
+        delete payload.image;
+      }
 
-    // Si l'image est vide, ne la passe pas à l'API
-    if (!payload.image.trim()) {
-      delete payload.image;
+      await TaskApi.updateWorkspace(workspaceToEdit.id, payload);
+
+      window.dispatchEvent(
+        new CustomEvent("workspaceUpdated", {
+          detail: {
+            id: workspaceToEdit.id,
+            updatedFields: { ...payload, image: payload.image || null }
+          }
+        })
+      );
+
+      await fetchWorkspaces();
+      setShowEditModal(false);
+    } catch (err) {
+      console.error(t("workspace.errorUpdateWorkspace"), err);
     }
-
-    await TaskApi.updateWorkspace(workspaceToEdit.id, payload);
-
-    // informe la bannière
-    window.dispatchEvent(
-      new CustomEvent("workspaceUpdated", {
-        detail: {
-          id: workspaceToEdit.id,
-          updatedFields: {
-            ...payload,
-            image: payload.image || null, // pour le front
-          },
-        },
-      })
-    );
-
-    await fetchWorkspaces(); // pour mettre à jour la liste
-    setShowEditModal(false);
-  } catch (err) {
-    console.error("Erreur lors de la modification :", err);
-  }
-};
-
-
+  };
 
   const confirmCreate = async (form) => {
-  try {
-    await TaskApi.createWorkspace(form);
-    await fetchWorkspaces();
-    setShowCreateModal(false);
-  } catch (err) {
-    console.error("Erreur lors de la création :", err);
-  }
-};
-
+    try {
+      await TaskApi.createWorkspace(form);
+      await fetchWorkspaces();
+      setShowCreateModal(false);
+    } catch (err) {
+      console.error(t("workspace.errorCreateWorkspace"), err);
+    }
+  };
 
   return (
-    <div
-      ref={containerRef}
-      className={`tmw-menu-container  ${open ? "open" : ""}`}
-    >
+    <div ref={containerRef} className={`tmw-menu-container  ${open ? "open" : ""}`}>
       <button
         className={`tmw-toggle  ${open ? "active" : ""}`}
         onClick={toggleMenu}
+        aria-label={t("workspace.toggleMenu")}
+        title={t("workspace.toggleMenu")}
       >
         <span className="tmw-icon">≡</span>
-        <span className="tmw-label">Workspace</span>
+        <span className="tmw-label">{t("workspace.menuTitle")}</span>
       </button>
 
       {open && (
-        <div className= {`tmw-list`}
-        >
+        <div className="tmw-list">
           <div className="tmw-workspaces">
-            {workspaces.map(ws => (
-            <div key={ws.id} className="tmw-item-container">
-              <NavLink
-                to={`/workspace/${ws.id}`}
-                className="tmw-item"
-                onClick={() => {
-                  localStorage.setItem("lastWorkspace", ws.id);
-                  setCurrentWorkspace?.(ws);
-                  setMenuOpenFor(null);
-                }}
-              >
-                {ws.name}
-              </NavLink>
-              {String(userId) === String(ws.idOwner) ? (
-                <button
-                  className="tmw-item-menu-btn"
-                  onClick={() =>
-                    setMenuOpenFor(menuOpenFor === ws.id ? null : ws.id)
-                  }
-                >
-                  ⋯
-                </button>
-              ) : (
-                <button
-                  className="tmw-item-quit-btn"
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    try {
-                      await TaskApi.removeWorkspaceUser(ws.id, userId);
-                      const updated = workspaces.filter(w => w.id !== ws.id);
-                      setWorkspaces(updated);
-
-                      // Si on était sur ce workspace
-                      if (window.location.pathname.includes(ws.id)) {
-                        const fallbackId = updated[0]?.id;
-                        navigate(`/workspace/${fallbackId || ""}`);
-                      }
-                    } catch (err) {
-                      console.error("Erreur lors de la sortie du workspace :", err);
-                    }
+            {workspaces.map((ws) => (
+              <div key={ws.id} className="tmw-item-container">
+                <NavLink
+                  to={`/workspace/${ws.id}`}
+                  className="tmw-item"
+                  onClick={() => {
+                    localStorage.setItem("lastWorkspace", ws.id);
+                    setCurrentWorkspace?.(ws);
+                    setMenuOpenFor(null);
                   }}
-                  title="Quitter le workspace"
                 >
-                  ×
-                </button>
-              )}
+                  {ws.name}
+                </NavLink>
 
-              {menuOpenFor === ws.id && (
-                <div className="tmw-item-menu">
+                {String(userId) === String(ws.idOwner) ? (
                   <button
-                    onClick={() => {
-                      setWorkspaceToEdit(ws);
-                      setShowEditModal(true);
-                      setMenuOpenFor(null);
-                    }}
+                    className="tmw-item-menu-btn"
+                    onClick={() =>
+                      setMenuOpenFor(menuOpenFor === ws.id ? null : ws.id)
+                    }
+                    aria-label={t("workspace.openItemMenu")}
+                    title={t("workspace.openItemMenu")}
                   >
-                    ✏️ Modifier
+                    ⋯
                   </button>
-                  <button 
-                    onClick={() => 
-                    handleDelete(ws)}>
-                      🗑️ Supprimer
-                  </button>
-                  
+                ) : (
                   <button
-                    onClick={() => {
-                      setWorkspaceToEdit(ws);
-                      setShowEditModal(false);
-                      setShowUserRightsModal(true);
+                    className="tmw-item-quit-btn"
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      try {
+                        await TaskApi.removeWorkspaceUser(ws.id, userId);
+                        const updated = workspaces.filter((w) => w.id !== ws.id);
+                        setWorkspaces(updated);
+
+                        if (window.location.pathname.includes(ws.id)) {
+                          const fallbackId = updated[0]?.id;
+                          navigate(`/workspace/${fallbackId || ""}`);
+                        }
+                      } catch (err) {
+                        console.error(t("workspace.errorLeaveWorkspace"), err);
+                      }
                     }}
+                    aria-label={t("workspace.leaveWorkspace")}
+                    title={t("workspace.leaveWorkspace")}
                   >
-                    👥 Utilisateurs
+                    ×
                   </button>
+                )}
 
-                </div>
-              )}
+                {menuOpenFor === ws.id && (
+                  <div className="tmw-item-menu">
+                    <button
+                      onClick={() => {
+                        setWorkspaceToEdit(ws);
+                        setShowEditModal(true);
+                        setMenuOpenFor(null);
+                      }}
+                    >
+                      ✏️ {t("workspace.menuEdit")}
+                    </button>
+                    <button onClick={() => handleDelete(ws)}>
+                      🗑️ {t("delete")}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setWorkspaceToEdit(ws);
+                        setShowEditModal(false);
+                        setShowUserRightsModal(true);
+                      }}
+                    >
+                      👥 {t("workspace.menuUsers")}
+                    </button>
+                  </div>
+                )}
 
-              {/* Image de fond */}
-              {ws.image && (
-                <img
-                  src={ws.image}
-                  alt=""
-                  className="tmw-item-bg"
-                />
-              )}
-
-            </div>
-
+                {ws.image && (
+                  <img src={ws.image} alt="" className="tmw-item-bg" />
+                )}
+              </div>
             ))}
           </div>
-          <button
-            className="tmw-create-btn"
-            onClick={() => setShowCreateModal(true)}
-          >
-            + Nouveau Workspace
+
+          <button className="tmw-create-btn" onClick={() => setShowCreateModal(true)}>
+            {t("workspace.newWorkspaceCta")}
           </button>
         </div>
       )}
@@ -358,7 +333,6 @@ const confirmEdit = async (form) => {
           onUpdate={fetchWorkspaces}
         />
       )}
-
     </div>
   );
 };

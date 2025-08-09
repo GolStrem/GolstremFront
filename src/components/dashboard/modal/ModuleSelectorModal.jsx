@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { BaseModal } from "@components";
 import { ApiService } from "@service";
+import { useTranslation } from "react-i18next";
 
 const MODULES = [
-  { label: "Workspace", name: "workspace" },
-  { label: "Événements", name: "evenement" },
-  { label: "Fiches", name: "fiche" },
-  { label: "Inventaire", name: "inventaire" },
-  { label: "Univers", name: "univers" },
+  { label: "Workspace",   name: "workspace"   },
+  { label: "Événements",  name: "evenement"   },
+  { label: "Fiches",      name: "fiche"       },
+  { label: "Inventaire",  name: "inventaire"  },
+  { label: "Univers",     name: "univers"     },
   { label: "Notifications", name: "notification" },
 ];
 
 const ModuleSelectorModal = ({ onCancel, onSubmit, blocks = [], setBlocks }) => {
+  const { t } = useTranslation("general");
+
   const [selected, setSelected] = useState(() => {
     const names = blocks.map((b) => b.name);
     return new Set(names);
@@ -40,41 +43,46 @@ const ModuleSelectorModal = ({ onCancel, onSubmit, blocks = [], setBlocks }) => 
         await ApiService.deleteModule(block.id);
         newBlocks = newBlocks.filter((b) => b.id !== block.id);
       } catch (err) {
-        console.error(`Erreur suppression module ${block.name} :`, err);
+        console.error(t("errorDeleteModule", { module: block.name }), err);
       }
     }
 
     // Créer les modules cochés mais absents
-   for (const mod of toCreate) {
-  try {
-    const userId = localStorage.getItem("id");
-    const res = await ApiService.createModule(0, userId, mod.name);
+    for (const mod of toCreate) {
+      try {
+        const userId = localStorage.getItem("id");
+        const res = await ApiService.createModule(0, userId, mod.name);
 
-    const entries = Object.entries(res.data || {});
-    if (entries.length > 0) {
-      const [newId, newData] = entries[0];
-      newBlocks.push({
-        id: Number(newId),
-        name: newData.name,
-        extra: newData.extra || "{}",
-        pos: newData.pos ?? newBlocks.length,
-      });
+        const entries = Object.entries(res.data || {});
+        if (entries.length > 0) {
+          const [newId, newData] = entries[0];
+          newBlocks.push({
+            id: Number(newId),
+            name: newData.name,
+            extra: newData.extra || "{}",
+            pos: newData.pos ?? newBlocks.length,
+          });
+        }
+      } catch (err) {
+        console.error(t("errorCreateModule", { module: mod.name }), err);
+      }
     }
-  } catch (err) {
-    console.error(`Erreur création module ${mod.name} :`, err);
-  }
-}
-
 
     // Appliquer les mises à jour visuellement
     setBlocks(newBlocks);
     onSubmit(selectedArray);
   };
 
+  // Util: récupère un label traduit si dispo, sinon fallback au label fourni
+  const getLabel = (mod) => {
+    const key = `general.${mod.name}`;
+    const translated = t(key);
+    return translated === key ? mod.label : translated;
+  };
+
   return (
     <BaseModal onClose={onCancel}>
-
-      <h3>Choisissez les modules à afficher</h3>
+      <h3>{t("changeModules")}</h3>
 
       <div className="module-selector">
         {MODULES.map((mod) => (
@@ -85,19 +93,16 @@ const ModuleSelectorModal = ({ onCancel, onSubmit, blocks = [], setBlocks }) => 
               onChange={() => toggle(mod.name)}
               className="inputCheck"
             />
-            {mod.label}
+            {getLabel(mod)}
           </label>
         ))}
       </div>
 
-
-
-
       <div className="tm-modal-buttons">
         <button className="tm-primary" onClick={handleValidation}>
-          Valider
+          {t("validate")}
         </button>
-        <button onClick={onCancel}>Annuler</button>
+        <button onClick={onCancel}>{t("cancel")}</button>
       </div>
     </BaseModal>
   );

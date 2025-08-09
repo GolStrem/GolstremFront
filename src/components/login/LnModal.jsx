@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { StyleModalIcon, WarningIcon } from "@assets";
 
@@ -17,6 +18,7 @@ import { setTheme } from '@store/themeSlice';
 import { login as loginAction } from '@store/authSlice';
 
 const LnModal = ({ type = 'login', onClose, onSubmit }) => {
+  const { t } = useTranslation('login'); 
   const isLogin = type === 'login';
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,7 +37,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const firstInputRef = useRef(null);
 
-  const { validate } = UseLnFormValidator(form, isLogin);
+  const { validate } = UseLnFormValidator(form, isLogin, t);
 
   useEffect(() => {
     firstInputRef.current?.focus();
@@ -46,9 +48,8 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
 
   const handleChange = ({ target: { name, value } }) => {
     setForm(prev => ({ ...prev, [name]: value }));
-
     if (name === 'password') {
-      const { score, label } = evaluatePasswordStrength(value);
+      const { score, label } = evaluatePasswordStrength(value, t);
       setPasswordScore(score);
       setPasswordStrength(label);
     }
@@ -60,44 +61,41 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    
-      if (isLogin) {
-        // 1️⃣ login
-        const tryLogin = await apiService.login(form.email, form.password);
-        if (tryLogin === undefined){
-          setErrors({ global: 'Identifiants incorrects' });
-          return
-        }        
+    if (isLogin) {
+      // 1) login
+      const tryLogin = await apiService.login(form.email, form.password);
+      if (tryLogin === undefined) {
+        setErrors({ global: t('login.errorInvalidCredentials') });
+        return;
+      }
 
-        // 2️⃣ récupérer infos utilisateur
-        const { data } = await apiService.getUserDetail();
-        delete data.friends // Pas encore gêré côté front
+      // 2) infos utilisateur
+      const { data } = await apiService.getUserDetail();
+      delete data.friends;
+      for (const [key, value] of Object.entries(data)) {
+        localStorage.setItem(key, value);
+      }
 
-        for (const [key, value] of Object.entries(data)) {
-          localStorage.setItem(key, value);
-        }
+      // thème (si utile)
+      dispatch(setTheme(localStorage.getItem('theme')));
+      document.documentElement.style.setProperty("--jaune", localStorage.getItem('color'));
 
-        setTheme(localStorage.getItem('theme'))
-        document.documentElement.style.setProperty("--jaune", localStorage.getItem('color'));
-        
+      // 3) Redux auth
+      dispatch(
+        loginAction({
+          token: apiService.getToken(),
+          ...data
+        })
+      );
 
-        // 3️⃣ mettre à jour Redux
-        dispatch(
-          loginAction({
-            token: apiService.getToken(),
-            ...data
-          })
-        );
-
-        onClose();
-        navigate('/dashboard');
+      onClose();
+      navigate('/dashboard');
+    } else {
+      // inscription
+      const responseApi = await apiService.createUser(form.username, form.password, form.email);
+      if (responseApi.status === 409) {
+        setErrors({ global: t('login.errorTaken') });
       } else {
-        // inscription
-        const responseApi = await apiService.createUser(form.username, form.password, form.email);
-        if (responseApi.status === 409){
-          const message = 'Pseudo ou email déjà utilisé.';
-        setErrors({ global: message });
-      }else{
         setShowSuccessModal(true);
         setForm({ username: '', password: '', confirm: '', email: '' });
         setPasswordStrength('');
@@ -106,15 +104,17 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
     }
   };
 
-  const renderField = field => {
+  const renderField = (field) => {
     if (field.onlyInSignup && isLogin) return null;
+
+    const translatedLabel = t(field.label); // ✅ traduction ici
 
     if (field.component === 'password') {
       return (
         <LnPasswordField
           key={field.name}
           name={field.name}
-          label={field.label}
+          label={translatedLabel}
           value={form[field.name]}
           onChange={handleChange}
           error={errors[field.name]}
@@ -131,7 +131,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
         key={field.name}
         ref={field.name === 'username' ? firstInputRef : undefined}
         name={field.name}
-        label={field.label}
+        label={translatedLabel}
         type={field.type}
         value={form[field.name]}
         onChange={handleChange}
@@ -145,17 +145,17 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
   return (
     <div className="ln-modal ln-modal-fade-in" onClick={onClose}>
       <div
-        className={`ln-modal-box ln-modal-slide-in`}
+        className="ln-modal-box ln-modal-slide-in"
         onClick={e => e.stopPropagation()}
       >
-        <StyleModalIcon alt="Décoration" className="ln-ModalStyle" />
-        <WarningIcon alt="Avertissement" className="ln-ModalWarning"  />
+        <StyleModalIcon alt={t('decorationAlt')} className="ln-ModalStyle" />
+        <WarningIcon alt={t('warningAlt')}  className="ln-ModalWarning" />
 
-        <button className="ln-modal-close" onClick={onClose} aria-label="Fermer">
+        <button className="ln-modal-close" onClick={onClose} aria-label={t('close')}>
           ×
         </button>
 
-        <h2>{isLogin ? 'Connexion' : 'Nouveau compte'}</h2>
+        <h2>{isLogin ? t('login.connexionTitle') : t('login.signupTitle')}</h2>
 
         <form onSubmit={handleSubmit} noValidate>
           {fields.map(renderField)}
@@ -171,19 +171,16 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
                 className="ln-link-button"
                 onClick={() => setShowForgotModal(true)}
               >
-                Mot de passe oublié ?
+                {t('login.forgot')}
               </button>
             </div>
           )}
 
-          <button
-            type="submit"
-            className={`ln-submit`}
-          >
-            {isLogin ? 'Se connecter' : 'Valider la création'}
+          <button type="submit" className="ln-submit">
+            {isLogin ? t('loginCta') : t('login.signupCta')}
           </button>
 
-          <StyleModalIcon alt="Décoration" className="ln-ModalStyle b" />
+          <StyleModalIcon alt={t('decorationAlt')} className="ln-ModalStyle b" />
         </form>
 
         {showForgotModal && (
@@ -192,6 +189,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
 
         {showSuccessModal && (
           <LnSuccessModal
+            message={t('login.messageSuccessNouveau')}
             onClose={() => {
               setShowSuccessModal(false);
               onClose();

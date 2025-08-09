@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { isValidImageUrl } from "@service";
-import { BaseModal } from "@components"
-
+import { BaseModal } from "@components";
+import { useTranslation } from "react-i18next";
 
 const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
-
+  const { t } = useTranslation("workspace");
 
   const [form, setForm] = useState({
     name: "",
     description: "",
-    image: "",
+    image: ""
   });
 
   const handleChange = (e) => {
@@ -21,20 +21,19 @@ const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
     const trimmed = {
       name: form.name.trim(),
       description: form.description.trim(),
-      image: form.image.trim(),
+      image: form.image.trim()
     };
 
     if (!trimmed.name) {
-      alert("Le nom est obligatoire.");
+      alert(t("workspace.workspaceNameRequired"));
       return;
     }
 
     if (trimmed.image && !isValidImageUrl(trimmed.image)) {
-      alert("L'URL de l'image n'est pas valide ou son format n'est pas autorisé.");
+      alert(t("workspace.workspaceImageInvalid"));
       return;
     }
 
-    // Si vide, force à null
     if (!trimmed.image) {
       trimmed.image = null;
     }
@@ -42,53 +41,50 @@ const CreateWorkspaceModal = ({ onConfirm, onCancel }) => {
     onConfirm(trimmed);
   };
 
-
   return (
-    <BaseModal onClose={onCancel} className={`tmedit`}>
+    <BaseModal onClose={onCancel} className="tmedit">
+      <h3>{t("workspace.createWorkspaceTitle")}</h3>
 
+      <div className="tm-modal-form">
+        <label>
+          {t("workspace.taskNameLabel")}
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder={t("workspace.workspaceNamePlaceholder")}
+          />
+        </label>
 
-        <h3>Créer un nouveau workspace</h3>
+        <label>
+          {t("workspace.taskDescriptionLabel")}
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            placeholder={t("workspace.workspaceDescriptionPlaceholder")}
+          />
+        </label>
 
-        <div className="tm-modal-form">
-          <label>
-            Nom :
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Nom du workspace"
-            />
-          </label>
+        <label>
+          {t("workspace.taskImageLabel")}
+          <input
+            type="text"
+            name="image"
+            value={form.image}
+            onChange={handleChange}
+            placeholder={t("workspace.workspaceImagePlaceholder")}
+          />
+        </label>
+      </div>
 
-          <label>
-            Description :
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Description"
-            />
-          </label>
-
-          <label>
-            Image (URL) :
-            <input
-              type="text"
-              name="image"
-              value={form.image}
-              onChange={handleChange}
-              placeholder="Lien de l'image"
-            />
-          </label>
-        </div>
-
-        <div className="tm-modal-buttons">
-          <button className="tm-primary" onClick={handleSubmit}>
-            Créer
-          </button>
-          <button onClick={onCancel}>Annuler</button>
-        </div>
+      <div className="tm-modal-buttons">
+        <button className="tm-primary" onClick={handleSubmit}>
+          {t("create")}
+        </button>
+        <button onClick={onCancel}>{t("cancel")}</button>
+      </div>
     </BaseModal>
   );
 };

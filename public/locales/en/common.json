@@ -1,0 +1,23 @@
+{
+  "title": "Success",
+  "close": "Close",
+  "validate": "Validate",
+  "decorationAlt": "Decoration",
+  "warningAlt": "Warning",
+  "showHidePassword": "Show / hide password",
+  "send": "Send",
+
+  "email": "Email address",
+  "password": "Password",
+  "bannerAlt": "Banner",
+  "avatarAlt": "Avatar",
+  "language": "Language",
+  "languageFr": "French",
+  "languageEn": "English",
+  "create": "Create",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "add": "Add",
+  "save": "Save",
+  "loginCta": "Log in"
+}
