@@ -1,29 +1,25 @@
 import React from "react";
 import { BaseModal } from "@components";
-
+import { useTranslation } from "react-i18next";
 
 const DeleteWorkspaceModal = ({ name, onConfirm, onCancel }) => {
-
+  const { t } = useTranslation("workspace");
 
   return (
-    <BaseModal onClose={onCancel} className={`tmedit`}>
+    <BaseModal onClose={onCancel} className="tmedit">
+      <h3>{t("workspace.deleteWorkspaceTitle")}</h3>
+      <p>
+        {t("workspace.deleteWorkspaceQuestion")} <strong>« {name} »</strong> ?
+      </p>
 
+      <p className="tm-warning-text">⚠️ {t("workspace.deleteWorkspaceWarning")}</p>
 
-        <h3>Supprimer le workspace</h3>
-        <p>
-          Êtes-vous sûr de vouloir supprimer <strong>« {name} »</strong> ?
-        </p>
-
-        <p className="tm-warning-text">
-          ⚠️ En supprimant ce workspace, vous perdrez tous les tableaux et cartes associés.
-        </p>
-
-        <div className="tm-modal-buttons">
-          <button className="tm-danger" onClick={onConfirm}>
-            Supprimer
-          </button>
-          <button onClick={onCancel}>Annuler</button>
-        </div>
+      <div className="tm-modal-buttons">
+        <button className="tm-danger" onClick={onConfirm}>
+          {t("delete")}
+        </button>
+        <button onClick={onCancel}>{t("cancel")}</button>
+      </div>
     </BaseModal>
   );
 };

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./TaskEditorModal.css";
 import { BoardCardAccess, BaseModal } from "@components";
-import { isValidImageUrl } from "@service"; 
+import { isValidImageUrl } from "@service";
+import { useTranslation } from "react-i18next";
 
 const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, handleDeleteCard }) => {
+  const { t } = useTranslation("workspace");
   const isEdit = !!modalData.cardId;
 
   const [formData, setFormData] = useState({
@@ -15,12 +17,11 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
     state: 0,
     endAt: "",
     createdAt: new Date().toISOString().split("T")[0],
-    image: "",
+    image: ""
   });
 
   const [isEditing, setIsEditing] = useState(isEdit);
 
-  // Gestion des erreurs
   const [errors, setErrors] = useState({
     name: "",
     description: "",
@@ -40,7 +41,8 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
         color: modalData.card.color || "#ffffff",
         state: modalData.card.state ?? 0,
         endAt: modalData.card.endAt || "",
-        createdAt: modalData.card.createdAt || new Date().toISOString().split("T")[0],
+        createdAt:
+          modalData.card.createdAt || new Date().toISOString().split("T")[0],
         image: modalData.card.image || ""
       });
     } else {
@@ -58,7 +60,7 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
       }));
     }
 
-    setErrors({ name: "", description: "", image: "" }); // reset erreurs
+    setErrors({ name: "", description: "", image: "" });
   }, [modalData, isEdit]);
 
   const handleChange = (e) => {
@@ -70,7 +72,6 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
       [name]: newValue
     }));
 
-    // Reset les erreurs à la modification
     setErrors((prev) => ({
       ...prev,
       [name]: ""
@@ -81,9 +82,11 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
     const { name, description, endAt, createdAt, image } = formData;
     const newErrors = {};
 
-    if (!name.trim()) newErrors.name = "Le nom est requis.";
-    if (!description.trim()) newErrors.description = "La description est requise.";
-    if (image && !isValidImageUrl(image)) newErrors.image = "L'URL fournie n'est pas une image valide.";
+    if (!name.trim()) newErrors.name = t("workspace.cardNameRequired");
+    if (!description.trim())
+      newErrors.description = t("workspace.cardDescriptionRequired");
+    if (image && !isValidImageUrl(image))
+      newErrors.image = t("workspace.cardImageInvalid");
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -98,7 +101,11 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
       createdAt: createdAt || new Date().toISOString().split("T")[0]
     };
 
-    handleCreateOrUpdateCard(formData.boardId, formData.cardId, sanitizedData);
+    handleCreateOrUpdateCard(
+      formData.boardId,
+      formData.cardId,
+      sanitizedData
+    );
     closeModal();
   };
 
@@ -110,15 +117,25 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
   };
 
   return (
-    <BaseModal onClose={closeModal} className={`tmedit`}>
-      <button className="tm-close-btn" onClick={closeModal}></button>
+    <BaseModal onClose={closeModal} className="tmedit">
+      <button className="tm-close-btn" onClick={closeModal} aria-label={t("close")} />
+
       {isEdit && !isEditing && (
-        <button className="tm-edit-btn" onClick={() => setIsEditing(true)}>✏️ Modifier</button>
+        <button className="tm-edit-btn" onClick={() => setIsEditing(true)}>
+          ✏️ {t("workspace.editTask")}
+        </button>
       )}
 
-      <h3>{isEdit ? (isEditing ? "Modifier une tâche" : "Détail de la tâche") : "Créer une tâche"}</h3>
+      <h3>
+        {isEdit
+          ? isEditing
+            ? t("workspace.updateTaskTitle")
+            : t("workspace.taskDetailTitle")
+          : t("workspace.createTaskTitle")}
+      </h3>
 
-      <label className="tm-label">Nom :
+      <label className="tm-label">
+        {t("workspace.taskNameLabel")}
         <div className="tm-label-field">
           <input
             type="text"
@@ -132,7 +149,8 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
         {errors.name && <p className="tm-error-text">{errors.name}</p>}
       </label>
 
-      <label className="tm-label">Description :
+      <label className="tm-label">
+        {t("workspace.taskDescriptionLabel")}
         <div className="tm-label-field">
           <textarea
             name="description"
@@ -142,37 +160,60 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
             className={errors.description ? "tm-input-error" : ""}
           />
         </div>
-        {errors.description && <p className="tm-error-text">{errors.description}</p>}
+        {errors.description && (
+          <p className="tm-error-text">{errors.description}</p>
+        )}
       </label>
 
       <div className="tm-color-state-fields">
-        <label className="tm-label tm-color-picker">Couleur :
+        <label className="tm-label tm-color-picker">
+          {t("workspace.taskColorLabel")}
           <div className="tm-label-field">
-            <input type="color" name="color" value={formData.color} onChange={handleChange} disabled={!isEditing} />
+            <input
+              type="color"
+              name="color"
+              value={formData.color}
+              onChange={handleChange}
+              disabled={!isEditing}
+            />
           </div>
         </label>
 
-        <label className="tm-label tm-state-select">État :
+        <label className="tm-label tm-state-select">
+          {t("workspace.taskStateLabel")}
           <div className="tm-label-field">
-            <select name="state" value={formData.state} onChange={handleChange} disabled={!isEditing}>
-              <option value={0}>À faire</option>
-              <option value={1}>En cours</option>
-              <option value={2}>Fait</option>
-              <option value={3}>En attente</option>
+            <select
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+              disabled={!isEditing}
+            >
+              <option value={0}>{t("workspace.stateTodo")}</option>
+              <option value={1}>{t("workspace.stateInProgress")}</option>
+              <option value={2}>{t("workspace.stateDone")}</option>
+              <option value={3}>{t("workspace.statePending")}</option>
             </select>
           </div>
         </label>
       </div>
 
       <div className="tm-date-fields">
-        <label className="tm-label">Échéance :
+        <label className="tm-label">
+          {t("workspace.taskDueDateLabel")}
           <div className="tm-label-field">
-            <input type="date" name="endAt" value={formData.endAt} onChange={handleChange} disabled={!isEditing} />
+            <input
+              type="date"
+              name="endAt"
+              value={formData.endAt}
+              onChange={handleChange}
+              disabled={!isEditing}
+            />
           </div>
         </label>
       </div>
 
-      <label className="tm-label">Image (URL) :
+      <label className="tm-label">
+        {t("workspace.taskImageLabel")}
         <div className="tm-label-field">
           <input
             type="text"
@@ -187,13 +228,21 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
       </label>
 
       <div className="tm-modal-buttons">
-        <button onClick={handleSubmit}>{isEdit ? "Modifier" : "Créer"}</button>
+        <button onClick={handleSubmit}>
+          {isEdit ? t("validate") : t("create")}
+        </button>
 
-        {BoardCardAccess.isOwner(modalData.card?.droit) && isEdit && isEditing && (
-          <button className="tm-delete-btn" onClick={handleDelete}>Supprimer</button>
-        )}
+        {BoardCardAccess.isOwner(modalData.card?.droit) &&
+          isEdit &&
+          isEditing && (
+            <button className="tm-delete-btn" onClick={handleDelete}>
+              {t("delete")}
+            </button>
+          )}
 
-        <button className="tm-cancel-btn" onClick={closeModal}>Annuler</button>
+        <button className="tm-cancel-btn" onClick={closeModal}>
+          {t("cancel")}
+        </button>
       </div>
     </BaseModal>
   );

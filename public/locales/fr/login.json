@@ -3,11 +3,9 @@
     "connexionText": "CONNEXION",
     "nouveauCompte": "Créer un compte",
     "messageSuccessNouveau": "Compte créé avec succès ! Un mail vous a été envoyé pour valider votre compte.",
-    
     "resetTitle": "Nouveau mot de passe",
     "passwordLabel": "Mot de passe",
     "confirmLabel": "Confirmez le mot de passe",
-
     "errorMinLength": "Au moins 8 caractères",
     "errorTooLong": "Mot de passe trop long",
     "errorUpper": "Inclure une majuscule",
@@ -15,22 +13,16 @@
     "errorNumber": "Inclure un chiffre",
     "errorMismatch": "Les mots de passe ne correspondent pas",
     "errorGlobal": "Une erreur est survenue. Lien invalide ou expiré.",
-
     "successShort": "Mot de passe modifié avec succès !",
     "successRedirect": "Mot de passe modifié avec succès ! Redirection...",
-
     "passwordRules": "Au moins 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre.",
     "passwordStrength": "Force : {{strength}}",
-
     "connexionTitle": "Connexion",
     "signupTitle": "Nouveau compte",
     "forgot": "Mot de passe oublié ?",
-    "loginCta": "Se connecter",
     "signupCta": "Valider la création",
-
     "errorInvalidCredentials": "Identifiants incorrects",
     "errorTaken": "Pseudo ou email déjà utilisé.",
-
     "forgotTitle": "Mot de passe oublié",
     "emailLabel": "Adresse e-mail",
     "forgotSuccess": "Si l'adresse correspond à un compte, un e-mail a été envoyé.",
@@ -40,10 +32,9 @@
     "passwordWeak": "Faible",
     "passwordMedium": "Moyen",
     "passwordStrong": "Fort",
-    "passwordVeryStrong": "Très fort"
-
-
-
-
+    "passwordVeryStrong": "Très fort",
+    "requiredPassword": "Mot de passe requis",
+    "requiredUsername": "Pseudo requis",
+    "usernameRules": "3-20 caractères, lettres/chiffres/underscore uniquement"
   }
 }

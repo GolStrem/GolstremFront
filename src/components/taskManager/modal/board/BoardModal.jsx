@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { BaseModal } from "@components"
-
+import { useTranslation } from "react-i18next";
+import { BaseModal } from "@components";
 
 const BoardModal = ({ closeModal, handleCreateBoard }) => {
+  const { t } = useTranslation("workspace"); // workspace pour le contenu spécifique
+
+
   const [title, setTitle] = useState("");
   const [color, setColor] = useState("#000000");
 
@@ -14,37 +17,34 @@ const BoardModal = ({ closeModal, handleCreateBoard }) => {
   };
 
   return (
-   <BaseModal onClose={closeModal} className={`tmedit `}>
-        {/* Croix de fermeture */}
-        <button className="tm-close-button" onClick={closeModal} aria-label="Fermer">
-          ×
-        </button>
+    <BaseModal onClose={closeModal} className="tmedit">
 
-        <h3>Créer un tableau</h3>
 
-        <label>
-          Nom du tableau :
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
+      <h3>{t("workspace.createBoardTitle")}</h3>
 
-        <label>
-          Couleur du tableau :
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-        </label>
+      <label>
+        {t("workspace.boardNameLabel")}
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </label>
 
-        <div className="tm-modal-buttons">
-          <button onClick={handleSubmit}>Créer</button>
-          <button onClick={closeModal}>Annuler</button>
-        </div>
-      </BaseModal>
+      <label>
+        {t("workspace.boardColorLabel")}
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+        />
+      </label>
+
+      <div className="tm-modal-buttons">
+        <button onClick={handleSubmit}>{t("create")}</button>
+        <button onClick={closeModal}>{t("cancel")}</button>
+      </div>
+    </BaseModal>
   );
 };
 

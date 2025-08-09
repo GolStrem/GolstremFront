@@ -17,11 +17,10 @@ import { UserInfo, normalize, TaskApi, Socket, useGhostDragAndDrop } from "@serv
 
 import "./TaskManager.css";
 import "../../components/taskManager/BoardManager.css";
-
-
+import { useTranslation } from "react-i18next";
 
 const TaskManager = ({ workspaceId = "Default", search = "" }) => {
-
+  const { t } = useTranslation("workspace");
 
   const {
     boards,
@@ -40,36 +39,36 @@ const TaskManager = ({ workspaceId = "Default", search = "" }) => {
     setBoards
   );
 
-useGhostDragAndDrop({
-  dragSelector: ".tm-cards > div",
-  onMouseUpCallback: async ({ draggedElement, event }) => {
-    const getIndex = (el) => Array.from(el.parentElement.children).indexOf(el);
+  useGhostDragAndDrop({
+    dragSelector: ".tm-cards > div",
+    onMouseUpCallback: async ({ draggedElement, event }) => {
+      const getIndex = (el) => Array.from(el.parentElement.children).indexOf(el);
 
-    const secondElement = event.target.closest(".tm-cards > div");
-    const data = {
-      idCard: draggedElement.getAttribute("data-id"),
-      oldPos: getIndex(draggedElement),
-      oldTableau: draggedElement.parentElement.getAttribute("data-id"),
-    };
+      const secondElement = event.target.closest(".tm-cards > div");
+      const data = {
+        idCard: draggedElement.getAttribute("data-id"),
+        oldPos: getIndex(draggedElement),
+        oldTableau: draggedElement.parentElement.getAttribute("data-id"),
+      };
 
-    if (secondElement === null && event.target.closest(".tm-board-container") !== null) {
-      data.newPos = 0;
-      data.newTableau = event.target
-        .closest(".tm-board-container")
-        .querySelector(".tm-cards")
-        .getAttribute("data-id");
-    }
+      if (secondElement === null && event.target.closest(".tm-board-container") !== null) {
+        data.newPos = 0;
+        data.newTableau = event.target
+          .closest(".tm-board-container")
+          .querySelector(".tm-cards")
+          .getAttribute("data-id");
+      }
 
-    if (draggedElement && secondElement && draggedElement !== secondElement) {
-      data.newPos = getIndex(secondElement);
-      data.newTableau = secondElement.parentElement.getAttribute("data-id");
-    }
+      if (draggedElement && secondElement && draggedElement !== secondElement) {
+        data.newPos = getIndex(secondElement);
+        data.newTableau = secondElement.parentElement.getAttribute("data-id");
+      }
 
-    if (data.newTableau !== undefined) {
-      await TaskApi.moveCard(workspaceId, data);
-    }
-  },
-});
+      if (data.newTableau !== undefined) {
+        await TaskApi.moveCard(workspaceId, data);
+      }
+    },
+  });
 
   const filteredBoards = boards
     .map((board) => {
@@ -105,7 +104,7 @@ useGhostDragAndDrop({
   });
   const [viewingCard, setViewingCard] = useState(null);
   const [showBoardModal, setShowBoardModal] = useState(false);
-  const fctSocket = useSocketWorkspace(); // ✅ appel du hook
+  const fctSocket = useSocketWorkspace();
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -122,16 +121,12 @@ useGhostDragAndDrop({
     setColumns(Math.max(possibleColumns, 1));
   }, []);
 
-
   useEffect(() => {
     calculateColumns();
     window.addEventListener("resize", calculateColumns);
     return () => window.removeEventListener("resize", calculateColumns);
   }, [calculateColumns]);
 
-
-  // ✅ Reconnexion automatique, avec dépendance minimale
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!workspaceId || workspaceId === "Default" || droit === null) return;
 
@@ -156,10 +151,7 @@ useGhostDragAndDrop({
         Socket.offMessage(type, handler);
       });
     };
-  }, [workspaceId, droit]); // ✅ ne pas ajouter droit, fctSocket, setBoards ici
-
-
-
+  }, [workspaceId, droit]); // ⚠️ garder dépendances minimales
 
   const openModal = (boardId, card = null) => {
     setModalData({
@@ -181,8 +173,6 @@ useGhostDragAndDrop({
 
   const sensors = useSensors(useSensor(PointerSensor));
 
-
-
   return (
     <div className={`tm-layout `}>
       <div className="tm-main-content">
@@ -190,9 +180,11 @@ useGhostDragAndDrop({
           <button
             className={`tm-floating-add`}
             onClick={() => setShowBoardModal(true)}
+            aria-label={t("workspace.createBoardTitle")}
+            title={t("workspace.createBoardTitle")}
           >
             <span className="tm-add-icon">+</span>
-            <span className="tm-add-text"> Nouveau tableau </span>
+            <span className="tm-add-text">{t("workspace.newBoardCta")}</span>
           </button>
         )}
 
@@ -200,11 +192,8 @@ useGhostDragAndDrop({
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragEnd={(event) => {
-
-            }}
+            onDragEnd={() => {}}
           >
-
             <Masonry
               breakpointCols={columns}
               className="tm-boards-masonry"
@@ -260,7 +249,5 @@ useGhostDragAndDrop({
     </div>
   );
 };
-
-
 
 export default TaskManager;

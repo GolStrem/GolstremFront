@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { TaskApi } from "@service";
-import { ApiService } from "@service";
+import { TaskApi, ApiService } from "@service";
 import "./addUserModal.css";
 import { BaseModal } from "@components";
+import { useTranslation } from "react-i18next";
 
 const AddUserModal = ({ workspaceId, onClose }) => {
+  const { t } = useTranslation("workspace");
   const [pseudo, setPseudo] = useState("");
   const [state, setState] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ const AddUserModal = ({ workspaceId, onClose }) => {
       const { data } = await ApiService.getUserByPseudo(pseudo);
 
       if (!data || !Array.isArray(data) || !data[0]?.id) {
-        setError("Utilisateur non trouvé");
+        setError(t("workspace.userNotFound"));
         setLoading(false);
         return;
       }
@@ -30,29 +30,33 @@ const AddUserModal = ({ workspaceId, onClose }) => {
 
       const result = await TaskApi.addWorkspaceUser(workspaceId, [{ idUser, state }]);
       if (!result || (result.status && result.status !== 200)) {
-        throw new Error("Échec côté serveur");
+        throw new Error(t("workspace.serverError"));
       }
 
-      window.dispatchEvent(new CustomEvent("workspaceUpdated", {
-        detail: { id: workspaceId, updatedFields: {} },
-      }));
+      window.dispatchEvent(
+        new CustomEvent("workspaceUpdated", {
+          detail: { id: workspaceId, updatedFields: {} }
+        })
+      );
 
-      setSuccess("Utilisateur ajouté avec succès.");
+      setSuccess(t("workspace.userAddSuccess"));
       setPseudo("");
       setState(0);
     } catch (err) {
       console.error(err);
-      setError(err.message || "Échec de l'ajout de l'utilisateur.");
+      setError(err.message || t("workspace.userAddFail"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <BaseModal onClose={onClose} className={`tmedit`}>
-      <button className="tm-close-btn" onClick={onClose}></button>
-      <h2>Ajouter un utilisateur</h2>
-      <label className="tm-label">Pseudo utilisateur :
+    <BaseModal onClose={onClose} className="tmedit">
+      <button className="tm-close-btn" onClick={onClose} aria-label={t("close")} />
+      <h2>{t("workspace.addUserTitle")}</h2>
+
+      <label className="tm-label">
+        {t("workspace.userPseudoLabel")}
         <div className="tm-label-field">
           <input
             type="text"
@@ -62,24 +66,30 @@ const AddUserModal = ({ workspaceId, onClose }) => {
           />
         </div>
       </label>
-      <label className="tm-label">Rôle :
+
+      <label className="tm-label">
+        {t("workspace.userRoleLabel")}
         <div className="tm-label-field">
           <select
             value={state}
             onChange={(e) => setState(parseInt(e.target.value, 10))}
           >
-            <option value={0}>Lecteur</option>
-            <option value={1}>Editeur</option>
+            <option value={0}>{t("workspace.roleReader")}</option>
+            <option value={1}>{t("workspace.roleEditor")}</option>
           </select>
         </div>
       </label>
+
       {error && <p className="tm-error">{error}</p>}
       {success && <p className="tm-success">{success}</p>}
+
       <div className="tm-modal-buttons">
         <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
-          {loading ? "Ajout..." : "Ajouter"}
+          {loading ? t("workspace.addingUser") : t("add")}
         </button>
-        <button className="cancel-btn" onClick={onClose}>Annuler</button>
+        <button className="cancel-btn" onClick={onClose}>
+          {t("cancel")}
+        </button>
       </div>
     </BaseModal>
   );

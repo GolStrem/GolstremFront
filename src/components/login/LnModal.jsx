@@ -177,7 +177,7 @@ const LnModal = ({ type = 'login', onClose, onSubmit }) => {
           )}
 
           <button type="submit" className="ln-submit">
-            {isLogin ? t('login.loginCta') : t('login.signupCta')}
+            {isLogin ? t('loginCta') : t('login.signupCta')}
           </button>
 
           <StyleModalIcon alt={t('decorationAlt')} className="ln-ModalStyle b" />

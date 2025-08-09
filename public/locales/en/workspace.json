@@ -1,0 +1,102 @@
+{
+    "workspace": {
+
+        "errorLoadBoards": "Error loading boards:",
+        "errorCreateBoard": "Error creating board:",
+        "errorUpdateBoard": "Error updating board:",
+        "errorDeleteBoard": "Error deleting board:",
+        "errorMoveBoard": "Error moving board:",
+        "errorEmptyBoardName": "The name cannot be empty!",
+
+        "createBoardTitle": "Create a board",
+        "boardNameLabel": "Board name:",
+        "boardColorLabel": "Board color:",
+
+        "deleteBoardTitle": "Delete board",
+        "deleteBoardQuestion": "Are you sure you want to delete the board",
+        "deleteBoardWarning": "Cards still present on this board will also be deleted.",
+        
+        "renameBoardTitle": "Rename board",
+        "newBoardNameLabel": "New name:",
+
+        "cardNameRequired": "Name is required.",
+        "cardDescriptionRequired": "Description is required.",
+        "cardImageInvalid": "The provided URL is not a valid image.",
+        "editTask": "Edit",
+        "updateTaskTitle": "Edit task",
+        "taskDetailTitle": "Task details",
+        "createTaskTitle": "Create a task",
+        "taskNameLabel": "Name:",
+        "taskDescriptionLabel": "Description:",
+        "taskColorLabel": "Color:",
+        "taskStateLabel": "Status:",
+        "stateTodo": "To do",
+        "stateInProgress": "In progress",
+        "stateDone": "Done",
+        "statePending": "Pending",
+        "taskDueDateLabel": "Due date:",
+        "taskImageLabel": "Image (URL):",
+
+        "stateUnknown": "Unknown",
+        "attachmentAlt": "Attachment",
+
+        "addUserTitle": "Add a user",
+        "userPseudoLabel": "User nickname:",
+        "userRoleLabel": "Role:",
+        "roleReader": "Reader",
+        "roleEditor": "Editor",
+        "userNotFound": "User not found",
+        "serverError": "Server-side failure",
+        "userAddSuccess": "User successfully added.",
+        "userAddFail": "Failed to add user.",
+        "addingUser": "Adding...",
+
+        "errorLoadUsers": "Unable to load users.",
+        "errorDeleteUser": "Failed to delete user.",
+        "errorUpdateRights": "Failed to update permissions.",
+        "manageUserRightsTitle": "Manage user permissions",
+        "loadingUsers": "Loading users...",
+        "deleteUserTitle": "Delete user",
+        "saving": "Saving...",
+
+        "workspaceNameRequired": "Name is required.",
+        "workspaceImageInvalid": "The image URL is invalid or its format is not allowed.",
+        "createWorkspaceTitle": "Create a new workspace",
+        "workspaceNamePlaceholder": "Workspace name",
+        "workspaceDescriptionPlaceholder": "Description",
+        "workspaceImagePlaceholder": "Image link",
+
+        "deleteWorkspaceTitle": "Delete workspace",
+        "deleteWorkspaceQuestion": "Are you sure you want to delete",
+        "deleteWorkspaceWarning": "Deleting this workspace will remove all associated boards and cards.",
+        "editWorkspaceTitle": "Edit workspace",
+
+        "loading": "Loading...",
+        "errorLoadWorkspace": "Error loading workspace:",
+        "userFallback": "User",
+        "roleOwner": "Owner",
+
+        "addCard": "+ Card",
+        "openBoardMenu": "Open board menu",
+        "menuEdit": "Edit",
+        "dropCardHere": "Drop a card here",
+
+        "previewAlt": "Preview",
+        "cardColorAlt": "Card color",
+
+        "errorFetchUserId": "Error fetching user ID:",
+        "errorFetchWorkspaces": "Error fetching workspaces:",
+        "errorDeleteWorkspace": "Error deleting workspace:",
+        "errorUpdateWorkspace": "Error updating workspace:",
+        "errorCreateWorkspace": "Error creating workspace:",
+        "errorLeaveWorkspace": "Error leaving workspace:",
+
+        "toggleMenu": "Open / close workspace menu",
+        "menuTitle": "Workspace",
+        "openItemMenu": "Open workspace menu",
+        "leaveWorkspace": "Leave workspace",
+        "menuUsers": "Users",
+        "newWorkspaceCta": "+ New Workspace",
+        "newBoardCta": "New board"
+    }
+}

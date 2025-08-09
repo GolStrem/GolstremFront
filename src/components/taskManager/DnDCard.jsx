@@ -2,14 +2,15 @@ import React, { useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { FaAlignLeft } from "react-icons/fa";
 import "./DnDCards.css";
+import { useTranslation } from "react-i18next";
 
 const DnDCard = ({ card, boardId, openViewerModal }) => {
-
+  const { t } = useTranslation("workspace");
 
   const clickStart = useRef(null);
   const cardRef = useRef(null);
 
-  const { attributes, listeners, setNodeRef,  } = useSortable({
+  const { attributes, listeners, setNodeRef } = useSortable({
     id: card.id,
     transition: { duration: 150 },
     activationConstraint: { delay: 2000, tolerance: 5 },
@@ -28,22 +29,15 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
 
   useEffect(() => {
     if (!cardRef.current) return;
-
     const observer = new ResizeObserver(() => {
-      window.dispatchEvent(new Event("resize")); // Masonry ou layout adaptera la taille
+      window.dispatchEvent(new Event("resize"));
     });
-
     observer.observe(cardRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
-  const hasCustomColor = !!card.color && card.color.toLowerCase() !== "#ffffff";
-  const cardClass = `dnd-task-card`;
-
-  
+  const hasCustomColor =
+    !!card.color && String(card.color).toLowerCase() !== "#ffffff";
 
   return (
     <div
@@ -57,16 +51,17 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
       {...listeners}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      
-      className={cardClass}
+      className="dnd-task-card"
     >
       {card.image && (
         <div className="dnd-task-card-image">
-          <img src={card.image} alt="aperçu" />
+          <img src={card.image} alt={t("workspace.previewAlt")} />
         </div>
       )}
 
-      <h4 className="dnd-task-title">{card.text || card.name || "Sans titre"}</h4>
+      <h4 className="dnd-task-title">
+        {card.text || card.name || t("workspace.untitled")}
+      </h4>
 
       {card.description && (
         <p className="dnd-task-description">{card.description}</p>
@@ -74,19 +69,26 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
 
       <div className="dnd-task-footer">
         <div className="dnd-task-dates">
-          {card.createdAt && <div>{new Date(card.createdAt).toLocaleDateString()}</div>}
-          {card.endAt && <div> - {new Date(card.endAt).toLocaleDateString()}</div>}
+          {card.createdAt && (
+            <div>{new Date(card.createdAt).toLocaleDateString()}</div>
+          )}
+          {card.endAt && (
+            <div> - {new Date(card.endAt).toLocaleDateString()}</div>
+          )}
         </div>
 
         {card.hasAttachment && (
-          <FaAlignLeft className="dnd-attachment-icon" title="Pièce jointe" />
+          <FaAlignLeft
+            className="dnd-attachment-icon"
+            title={t("workspace.attachmentAlt")}
+          />
         )}
 
         {hasCustomColor && (
           <div
             className="dnd-color-dot"
             style={{ backgroundColor: card.color }}
-            title="Couleur de la carte"
+            title={t("workspace.cardColorAlt")}
           />
         )}
       </div>

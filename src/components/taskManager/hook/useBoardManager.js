@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { TaskApi, UserInfo } from "@service";
 
 export default function useBoardManager(workspaceId) {
+  const { t } = useTranslation("workspace");
+
   const [boards, setBoards] = useState([]);
   const [draggingBoardIndex, setDraggingBoardIndex] = useState(null);
-  const [droit, setDroit] = useState(null); 
+  const [droit, setDroit] = useState(null);
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -13,18 +16,19 @@ export default function useBoardManager(workspaceId) {
         const userId = await UserInfo.getId();
 
         const computedDroit =
-                String(data.idOwner) === String(userId)
-                  ? "owner"
-                  : data.user.find(user => String(user.id) === String(userId))?.state || null;
+          String(data.idOwner) === String(userId)
+            ? "owner"
+            : data.user.find((user) => String(user.id) === String(userId))?.state || null;
 
-              setDroit(computedDroit);
+        setDroit(computedDroit);
 
-        data.tableau.forEach(table => {
-          table.card.forEach(card => {
-            card.droit = (String (card.idOwner) === String (userId)) ? "owner" : computedDroit;
+        data.tableau.forEach((table) => {
+          table.card.forEach((card) => {
+            card.droit = String(card.idOwner) === String(userId) ? "owner" : computedDroit;
           });
         });
-        const boardsArray = (data?.tableau || []).map(b => ({
+
+        const boardsArray = (data?.tableau || []).map((b) => ({
           id: b.id,
           name: b.name,
           color: b.color,
@@ -33,45 +37,46 @@ export default function useBoardManager(workspaceId) {
           droit: computedDroit,
           cards: b.card || []
         }));
+
         setBoards(boardsArray);
       } catch (err) {
-        console.error("Erreur lors du chargement des boards :", err);
+        console.error(t("workspace.errorLoadBoards"), err);
       }
     };
     fetchBoards();
-  }, [workspaceId]);
+  }, [workspaceId, t]);
 
   const createBoard = async ({ name, color }) => {
     const trimmed = (name || "").trim();
     try {
       const payload = { name: trimmed, color };
-      const { data } = await TaskApi.createTableau(workspaceId, payload);
+      await TaskApi.createTableau(workspaceId, payload);
     } catch (err) {
-      console.error("Erreur lors de la création d’un board :", err);
+      console.error(t("workspace.errorCreateBoard"), err);
     }
   };
 
   const updateBoard = async (boardId, newTitle) => {
     const trimmed = (newTitle || "").trim();
-    if (!trimmed) return alert("Le nom ne peut pas être vide !");
+    if (!trimmed) return alert(t("workspace.errorEmptyBoardName"));
     try {
       await TaskApi.editTableau(workspaceId, boardId, { name: trimmed });
     } catch (err) {
-      console.error("Erreur lors de la mise à jour d’un board :", err);
+      console.error(t("workspace.errorUpdateBoard"), err);
     }
   };
 
-  const deleteBoard = async boardId => {
+  const deleteBoard = async (boardId) => {
     try {
       await TaskApi.deleteTableau(workspaceId, boardId);
     } catch (err) {
-      console.error("Erreur lors de la suppression d’un board :", err);
+      console.error(t("workspace.errorDeleteBoard"), err);
     }
   };
 
-  const dragStartBoard = index => setDraggingBoardIndex(index);
+  const dragStartBoard = (index) => setDraggingBoardIndex(index);
 
-  const dropBoard = async targetIndex => {
+  const dropBoard = async (targetIndex) => {
     if (draggingBoardIndex === null || draggingBoardIndex === targetIndex) return;
 
     try {
@@ -83,7 +88,7 @@ export default function useBoardManager(workspaceId) {
       };
       await TaskApi.moveTableau(workspaceId, payload);
     } catch (err) {
-      console.error("Erreur lors du déplacement du tableau :", err);
+      console.error(t("workspace.errorMoveBoard"), err);
     }
 
     setDraggingBoardIndex(null);
@@ -91,12 +96,12 @@ export default function useBoardManager(workspaceId) {
 
   return {
     boards,
-    setBoards, 
+    setBoards,
     createBoard,
     deleteBoard,
     updateBoard,
     dragStartBoard,
     dropBoard,
-    droit,
+    droit
   };
 }

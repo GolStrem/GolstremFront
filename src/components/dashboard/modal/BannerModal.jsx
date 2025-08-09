@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { UserInfo } from "@service";
 import { BaseModal } from "@components";
 import "./BannerModal.css";
@@ -9,6 +10,8 @@ const BannerModal = ({
   onCancel,
   onSubmit,
 }) => {
+  const { t } = useTranslation("general");
+
   const [bannerUrl, setBannerUrl] = useState(initialValue || "");
   const [error, setError] = useState("");
 
@@ -23,7 +26,7 @@ const BannerModal = ({
     setError("");
 
     if (!bannerUrl.startsWith("http")) {
-      setError("L'URL doit commencer par http(s).");
+      setError(t("general.bannerErrorHttp"));
       return;
     }
 
@@ -31,7 +34,7 @@ const BannerModal = ({
       await onSubmit(bannerUrl);
       onCancel();
     } catch (err) {
-      setError("Erreur lors de l'enregistrement.");
+      setError(t("general.bannerErrorSave"));
     }
   };
 
@@ -40,29 +43,28 @@ const BannerModal = ({
       await onSubmit(defaultBanner);
       onCancel();
     } catch {
-      setError("Erreur lors de la réinitialisation.");
+      setError(t("general.bannerErrorReset"));
     }
   };
 
   return (
     <BaseModal onClose={onCancel} className="tmedit">
-
-      <h3>Changer la bannière</h3>
+      <h3>{t("general.changeBannerTitle")}</h3>
 
       <div className="tm-modal-form">
         <label>
-          URL de la nouvelle image :
+          {t("general.bannerUrlLabel")}
           <input
             type="text"
             value={bannerUrl}
             onChange={(e) => setBannerUrl(e.target.value)}
-            placeholder="https://exemple.com/banner.jpg"
+            placeholder={t("general.bannerPlaceholder")}
           />
         </label>
 
         {bannerUrl && (
           <div className="preview-banner">
-            <img src={bannerUrl} alt="Aperçu de la bannière" />
+            <img src={bannerUrl} alt={t("bannerAlt")} />
           </div>
         )}
 
@@ -71,16 +73,15 @@ const BannerModal = ({
 
       <div className="tm-modal-buttons">
         <button className="tm-primary" onClick={handleSubmit}>
-          Valider
+          {t("validate")}
         </button>
-        <button onClick={onCancel}>Annuler</button>
+        <button onClick={onCancel}>{t("close")}</button>
         <button className="tm-secondary" onClick={handleReset}>
-          Réinitialiser
+          {t("general.bannerReset")}
         </button>
       </div>
     </BaseModal>
   );
 };
-
 
 export default BannerModal;

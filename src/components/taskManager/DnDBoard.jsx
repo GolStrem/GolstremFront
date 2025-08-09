@@ -4,7 +4,7 @@ import DnDCard from "./DnDCard";
 import { EditBoardTitleModal, DeleteBoardModal, BoardCardAccess } from "@components";
 import BoardMenuPortal from "./BoardMenuPortal";
 import { FaChevronDown } from "react-icons/fa";
-
+import { useTranslation } from "react-i18next";
 
 const DnDBoard = ({
   board,
@@ -17,6 +17,8 @@ const DnDBoard = ({
   onBoardDragStart,
   onBoardDrop
 }) => {
+  const { t } = useTranslation("workspace");
+
   const collapseRef = useRef(null);
   const cardsContainerRef = useRef(null);
   const buttonRef = useRef(null); // Bouton ⋯
@@ -27,32 +29,26 @@ const DnDBoard = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
-
   const { setNodeRef, isOver } = useDroppable({ id: board.id });
 
   useEffect(() => {
     if (menuOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
-      const menuWidth = 160; // largeur estimée de ton menu contextuel
-      const menuHeight = 80; // hauteur estimée
+      const menuWidth = 160;
+      const menuHeight = 80;
 
       let left = rect.left;
       let top = rect.bottom + window.scrollY;
 
-      // Corrige si dépasse la droite
       if (left + menuWidth > window.innerWidth) {
-        left = window.innerWidth - menuWidth - 10; // 10px de marge
+        left = window.innerWidth - menuWidth - 10;
       }
-
-      // Corrige si dépasse le bas
       if (top + menuHeight > window.innerHeight + window.scrollY) {
-        top = rect.top + window.scrollY - menuHeight; // s'affiche au-dessus du bouton
+        top = rect.top + window.scrollY - menuHeight;
       }
-
       setMenuPosition({ top, left });
     }
   }, [menuOpen]);
-
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -65,12 +61,8 @@ const DnDBoard = ({
         setMenuOpen(false);
       }
     };
-    if (menuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (menuOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
   useEffect(() => {
@@ -81,11 +73,8 @@ const DnDBoard = ({
     const adjustHeight = () => {
       el.style.maxHeight = cardsEl.scrollHeight + "px";
     };
-
-    // Ajuster une première fois immédiatement
     adjustHeight();
 
-    // Vérifier si des images sont encore en chargement
     const images = cardsEl.querySelectorAll("img");
     let pending = 0;
 
@@ -94,14 +83,11 @@ const DnDBoard = ({
         pending++;
         img.addEventListener("load", () => {
           pending--;
-          if (pending === 0) {
-            adjustHeight();
-          }
+          if (pending === 0) adjustHeight();
         });
       }
     });
 
-    // Cleanup pour retirer les listeners
     return () => {
       images.forEach((img) => {
         img.removeEventListener("load", adjustHeight);
@@ -109,11 +95,9 @@ const DnDBoard = ({
     };
   }, [board.cards, isCollapsed]);
 
-
   useEffect(() => {
     const el = collapseRef.current;
     if (!el) return;
-
     if (isCollapsed) {
       el.style.maxHeight = el.scrollHeight + "px";
       requestAnimationFrame(() => {
@@ -125,14 +109,10 @@ const DnDBoard = ({
   }, [isCollapsed]);
 
   useEffect(() => {
-    if (isOver && isCollapsed) {
-      setIsCollapsed(false);
-    }
+    if (isOver && isCollapsed) setIsCollapsed(false);
   }, [isOver, isCollapsed]);
 
-  const toggleCollapse = () => {
-    setIsCollapsed((prev) => !prev);
-  };
+  const toggleCollapse = () => setIsCollapsed((prev) => !prev);
 
   const editBoardTitle = () => {
     setShowEditModal(true);
@@ -157,12 +137,12 @@ const DnDBoard = ({
   return (
     <>
       <div
-        className={`tm-board-container`}
+        className="tm-board-container"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => onBoardDrop(e, index)}
       >
         <div
-          className={`tm-board-header`}
+          className="tm-board-header"
           draggable
           onDragStart={(e) => onBoardDragStart(e, index)}
           onClick={toggleCollapse}
@@ -175,26 +155,28 @@ const DnDBoard = ({
               <span className="tm-card-count">({board.cards.length})</span>
             )}
           </h2>
-          {BoardCardAccess.hasWriteAccess(board.droit) && (
-          <div className="tm-board-header-buttons"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
-              + Carte
-            </button>
 
-            
+          {BoardCardAccess.hasWriteAccess(board.droit) && (
+            <div
+              className="tm-board-header-buttons"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="tm-add-card-btn" onClick={() => openModal(board.id)}>
+                {t("workspace.addCard")}
+              </button>
+
               <div className="tm-board-menu-wrapper">
                 <button
-                  className={`tm-board-menu-btn`}
+                  className="tm-board-menu-btn"
                   onClick={() => setMenuOpen(!menuOpen)}
                   ref={buttonRef}
+                  aria-label={t("workspace.openBoardMenu")}
+                  title={t("workspace.openBoardMenu")}
                 >
                   ...
                 </button>
               </div>
-         
-          </div>
+            </div>
           )}
         </div>
 
@@ -206,15 +188,16 @@ const DnDBoard = ({
           }}
           style={{
             overflowY: isCollapsed ? "hidden" : "auto",
-            transition: "max-height 0.3s ease, overflow 0.3s ease",
+            transition: "max-height 0.3s ease, overflow 0.3s ease"
           }}
         >
           <div className="tm-cards" ref={cardsContainerRef} data-id={board.id}>
             {board.cards.length === 0 && (
-              <div className={`tm-empty-board-placeholder`}>
-                Déposez une carte ici
+              <div className="tm-empty-board-placeholder">
+                {t("workspace.dropCardHere")}
               </div>
             )}
+
             {board.cards.map((card) => (
               <DnDCard
                 key={card.id}
@@ -231,16 +214,16 @@ const DnDBoard = ({
         <BoardMenuPortal>
           <div
             ref={menuRef}
-            className={`tm-board-menu fixed`}
+            className="tm-board-menu fixed"
             style={{
               top: `${menuPosition.top}px`,
               left: `${menuPosition.left}px`,
-              zIndex: 9999,
+              zIndex: 9999
             }}
           >
-            <button onClick={editBoardTitle}>✏️ Modifier</button>
-            {BoardCardAccess.isOwner (board.droit) && (
-             <button onClick={deleteBoard}>🗑️ Supprimer</button>
+            <button onClick={editBoardTitle}>✏️ {t("workspace.menuEdit")}</button>
+            {BoardCardAccess.isOwner(board.droit) && (
+              <button onClick={deleteBoard}>🗑️ {t("delete")}</button>
             )}
           </div>
         </BoardMenuPortal>

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { BaseModal } from '@components'
-
+import { useTranslation } from "react-i18next";
+import { BaseModal } from "@components";
 
 const EditBoardTitleModal = ({ currentTitle, onConfirm, onCancel }) => {
+  const { t } = useTranslation("workspace");
   const [title, setTitle] = useState(currentTitle);
   const mode = useSelector((state) => state.theme.mode);
 
@@ -15,25 +16,23 @@ const EditBoardTitleModal = ({ currentTitle, onConfirm, onCancel }) => {
 
   return (
     <BaseModal onClose={onCancel} className={`tmedit ${mode}`}>
-        <button className="tm-close-button" onClick={onCancel} aria-label="Fermer">
-          ✖
-        </button>
 
-        <h3>Renommer le tableau</h3>
 
-        <label>
-          Nouveau nom :
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
+      <h3>{t("workspace.renameBoardTitle")}</h3>
 
-        <div className="tm-modal-buttons">
-          <button onClick={handleSubmit}>Valider</button>
-          <button onClick={onCancel}>Annuler</button>
-        </div>
+      <label>
+        {t("workspace.newBoardNameLabel")}
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </label>
+
+      <div className="tm-modal-buttons">
+        <button onClick={handleSubmit}>{t("validate")}</button>
+        <button onClick={onCancel}>{t("cancel")}</button>
+      </div>
     </BaseModal>
   );
 };

@@ -2,11 +2,10 @@
   "general": {
     "notFoundTitle": "Page not found",
     "notFoundDashboard": "Return to Dashboard",
-    "notFoundHome": "Return to Home",
+    "notFoundHome": "Return to home",
 
     "homeTitle": "Welcome to our platform",
     "homeSubtitle": "Manage your account and preferences easily.",
-    "loginCta": "Log in",
 
     "sidebarTitle": "SETTINGS",
     "accountSettings": "Account settings",
@@ -14,15 +13,50 @@
     "errorFetchEmail": "Error while retrieving",
 
     "workspace": "Workspace",
-    "fiche": "Character sheets",
+    "fiche": "Sheet",
     "inventaire": "Inventory",
-    "univers": "World",
+    "univers": "Universe",
     "maitre": "Game master",
     "changeBanner": "Change banner",
     "changeModules": "Choose modules",
 
-    "chooseColor": "Choose a color:"
-    
+    "chooseColor": "Choose a color:",
 
+    "userNotFound": "User not found",
+    "userInfoError": "Unable to retrieve your information.",
+    "updateError": "Error while updating",
+    "loadingUserInfo": "Loading user information…",
+    "edit": "Edit",
+
+    "pseudoUnavailable": "Nickname not available",
+    "pseudo": "Nickname",
+
+    "changeBannerTitle": "Change banner",
+    "bannerUrlLabel": "URL of the new image:",
+    "bannerPlaceholder": "https://example.com/banner.jpg",
+    "bannerReset": "Reset",
+    "bannerErrorHttp": "The URL must start with http(s).",
+    "bannerErrorSave": "Error while saving.",
+    "bannerErrorReset": "Error while resetting.",
+
+    "evenement": "Events",
+    "notification": "Notifications",
+    "errorDeleteModule": "Error deleting module {{module}}:",
+    "errorCreateModule": "Error creating module {{module}}:",
+
+    "loading": "Loading...",
+    "myWorkspaces": "My Workspaces",
+    "errorLoadWorkspaces": "Error loading workspaces:",
+    "errorUpdateBanner": "Error updating banner:",
+    "searchPlaceholder": "Search",
+    "clear": "Clear",
+
+    "avatarAlt": "Avatar",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "logout": "Logout"
   }
 }

@@ -1,0 +1,102 @@
+{
+    "workspace" :{
+        "errorLoadBoards": "Erreur lors du chargement des boards :",
+        "errorCreateBoard": "Erreur lors de la création d’un board :",
+        "errorUpdateBoard": "Erreur lors de la mise à jour d’un board :",
+        "errorDeleteBoard": "Erreur lors de la suppression d’un board :",
+        "errorMoveBoard": "Erreur lors du déplacement du tableau :",
+        "errorEmptyBoardName": "Le nom ne peut pas être vide !",
+
+        "createBoardTitle": "Créer un tableau",
+        "boardNameLabel": "Nom du tableau :",
+        "boardColorLabel": "Couleur du tableau :",
+
+        "deleteBoardTitle": "Supprimer le tableau",
+        "deleteBoardQuestion": "Êtes-vous sûr de vouloir supprimer le tableau",
+        "deleteBoardWarning": "Les cartes encore présentes sur ce tableau seront aussi supprimées.",
+        
+        "renameBoardTitle": "Renommer le tableau",
+        "newBoardNameLabel": "Nouveau nom :",
+
+        "cardNameRequired": "Le nom est requis.",
+        "cardDescriptionRequired": "La description est requise.",
+        "cardImageInvalid": "L'URL fournie n'est pas une image valide.",
+        "editTask": "Modifier",
+        "updateTaskTitle": "Modifier une tâche",
+        "taskDetailTitle": "Détail de la tâche",
+        "createTaskTitle": "Créer une tâche",
+        "taskNameLabel": "Nom :",
+        "taskDescriptionLabel": "Description :",
+        "taskColorLabel": "Couleur :",
+        "taskStateLabel": "État :",
+        "stateTodo": "À faire",
+        "stateInProgress": "En cours",
+        "stateDone": "Fait",
+        "statePending": "En attente",
+        "taskDueDateLabel": "Échéance :",
+        "taskImageLabel": "Image (URL) :",
+
+        "stateUnknown": "Inconnu",
+        "attachmentAlt": "Pièce jointe",
+
+        "addUserTitle": "Ajouter un utilisateur",
+        "userPseudoLabel": "Pseudo utilisateur :",
+        "userRoleLabel": "Rôle :",
+        "roleReader": "Lecteur",
+        "roleEditor": "Éditeur",
+        "userNotFound": "Utilisateur non trouvé",
+        "serverError": "Échec côté serveur",
+        "userAddSuccess": "Utilisateur ajouté avec succès.",
+        "userAddFail": "Échec de l'ajout de l'utilisateur.",
+        "addingUser": "Ajout...",
+
+        "errorLoadUsers": "Impossible de charger les utilisateurs.",
+        "errorDeleteUser": "Échec de la suppression de l’utilisateur.",
+        "errorUpdateRights": "Échec de la mise à jour des droits.",
+        "manageUserRightsTitle": "Gérer les droits des utilisateurs",
+        "loadingUsers": "Chargement des utilisateurs...",
+        "deleteUserTitle": "Supprimer l'utilisateur",
+        "saving": "Enregistrement...",
+
+        "workspaceNameRequired": "Le nom est obligatoire.",
+        "workspaceImageInvalid": "L'URL de l'image n'est pas valide ou son format n'est pas autorisé.",
+        "createWorkspaceTitle": "Créer un nouveau workspace",
+        "workspaceNamePlaceholder": "Nom du workspace",
+        "workspaceDescriptionPlaceholder": "Description",
+        "workspaceImagePlaceholder": "Lien de l'image",
+
+        "deleteWorkspaceTitle": "Supprimer le workspace",
+        "deleteWorkspaceQuestion": "Êtes-vous sûr de vouloir supprimer",
+        "deleteWorkspaceWarning": "En supprimant ce workspace, vous perdrez tous les tableaux et cartes associés.",
+        "editWorkspaceTitle": "Modifier le workspace",
+
+        "loading": "Chargement...",
+        "errorLoadWorkspace": "Erreur lors du chargement du workspace :",
+        "userFallback": "Utilisateur",
+        "roleOwner": "Propriétaire",
+
+        "addCard": "+ Carte",
+        "openBoardMenu": "Ouvrir le menu du tableau",
+        "menuEdit": "Modifier",
+        "dropCardHere": "Déposez une carte ici",
+
+        "previewAlt": "Aperçu",
+        "cardColorAlt": "Couleur de la carte",
+
+        "errorFetchUserId": "Erreur lors de la récupération de l'id utilisateur :",
+        "errorFetchWorkspaces": "Erreur lors de la récupération des workspaces :",
+        "errorDeleteWorkspace": "Erreur lors de la suppression du workspace :",
+        "errorUpdateWorkspace": "Erreur lors de la modification du workspace :",
+        "errorCreateWorkspace": "Erreur lors de la création du workspace :",
+        "errorLeaveWorkspace": "Erreur lors de la sortie du workspace :",
+
+        "toggleMenu": "Ouvrir / fermer le menu des workspaces",
+        "menuTitle": "Workspace",
+        "openItemMenu": "Ouvrir le menu du workspace",
+        "leaveWorkspace": "Quitter le workspace",
+        "menuUsers": "Utilisateurs",
+        "newWorkspaceCta": "+ Nouveau Workspace",
+        "newBoardCta": "Nouveau tableau"
+
+    }
+}

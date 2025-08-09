@@ -6,7 +6,6 @@
 
     "homeTitle": "Bienvenue sur notre plateforme",
     "homeSubtitle": "Gérez votre compte et vos préférences facilement.",
-    "loginCta": "Se connecter",
 
     "sidebarTitle": "PARAMÈTRE",
     "accountSettings": "Paramètre du compte",
@@ -21,6 +20,44 @@
     "changeBanner": "Changer la bannière",
     "changeModules": "Choisir les modules",
 
-    "chooseColor": "Choisir une couleur :"
+    "chooseColor": "Choisir une couleur :",
+
+    "userNotFound": "Utilisateur non trouvé",
+    "userInfoError": "Impossible de récupérer vos informations.",
+    "updateError": "Erreur lors de la mise à jour",
+    "loadingUserInfo": "Chargement des informations utilisateur…",
+    "edit": "Modifier",
+
+    "pseudoUnavailable": "Pseudo non disponible",
+    "pseudo": "Pseudo",
+
+    "changeBannerTitle": "Changer la bannière",
+    "bannerUrlLabel": "URL de la nouvelle image :",
+    "bannerPlaceholder": "https://exemple.com/banner.jpg",
+    "bannerReset": "Réinitialiser",
+    "bannerErrorHttp": "L'URL doit commencer par http(s).",
+    "bannerErrorSave": "Erreur lors de l'enregistrement.",
+    "bannerErrorReset": "Erreur lors de la réinitialisation.",
+
+    "evenement": "Événements",
+    "notification": "Notifications",
+    "errorDeleteModule": "Erreur suppression module {{module}} :",
+    "errorCreateModule": "Erreur création module {{module}} :",
+
+    "loading": "Chargement...",
+    "myWorkspaces": "Mes Workspace",
+    "errorLoadWorkspaces": "Erreur lors du chargement des workspaces :",
+    "errorUpdateBanner": "Erreur lors de la mise à jour de la bannière :",
+    "searchPlaceholder": "Rechercher",
+    "clear": "Effacer",
+
+    "avatarAlt": "Avatar",
+    "profile": "Profil",
+    "dashboard": "Dashboard",
+    "settings": "Paramètres",
+    "lightMode": "Mode clair",
+    "darkMode": "Mode sombre",
+    "logout": "Déconnexion"
+
   }
 }

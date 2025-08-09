@@ -13,5 +13,11 @@
   "avatarAlt": "Avatar",
   "language": "Langue",
   "languageFr": "Français",
-  "languageEn": "Anglais"
+  "languageEn": "Anglais",
+  "create": "Créer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "add": "Ajouter",
+  "save": "Enregistrer",
+  "loginCta": "Se connecter"
 }
