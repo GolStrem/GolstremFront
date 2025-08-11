@@ -1,0 +1,63 @@
+{
+  "general": {
+    "notFoundTitle": "Pagina non trovata",
+    "notFoundDashboard": "Torna al Dashboard",
+    "notFoundHome": "Torna alla home",
+
+    "homeTitle": "Benvenuto sulla nostra piattaforma",
+    "homeSubtitle": "Gestisci facilmente il tuo account e le tue preferenze.",
+
+    "sidebarTitle": "IMPOSTAZIONI",
+    "accountSettings": "Impostazioni account",
+    "colorSettings": "Impostazioni colore",
+    "languageSettings": "Scelta della lingua",
+    "errorFetchEmail": "Errore durante il recupero",
+
+    "workspace": "Workspace",
+    "fiche": "Scheda",
+    "inventaire": "Inventario",
+    "univers": "Universo",
+    "maitre": "Master di gioco",
+    "changeBanner": "Cambia banner",
+    "changeModules": "Scegli i moduli",
+
+    "chooseColor": "Scegli un colore :",
+
+    "userNotFound": "Utente non trovato",
+    "userInfoError": "Impossibile recuperare le tue informazioni.",
+    "updateError": "Errore durante l'aggiornamento",
+    "loadingUserInfo": "Caricamento informazioni utente…",
+    "edit": "Modifica",
+
+    "pseudoUnavailable": "Pseudonimo non disponibile",
+    "pseudo": "Pseudonimo",
+
+    "changeBannerTitle": "Cambia banner",
+    "bannerUrlLabel": "URL della nuova immagine :",
+    "bannerPlaceholder": "https://esempio.com/banner.jpg",
+    "bannerReset": "Ripristina",
+    "bannerErrorHttp": "L'URL deve iniziare con http(s).",
+    "bannerErrorSave": "Errore durante il salvataggio.",
+    "bannerErrorReset": "Errore durante il ripristino.",
+
+    "evenement": "Eventi",
+    "notification": "Notifiche",
+    "errorDeleteModule": "Errore eliminazione modulo {{module}} :",
+    "errorCreateModule": "Errore creazione modulo {{module}} :",
+
+    "loading": "Caricamento...",
+    "myWorkspaces": "I miei Workspace",
+    "errorLoadWorkspaces": "Errore durante il caricamento dei workspace :",
+    "errorUpdateBanner": "Errore durante l'aggiornamento del banner :",
+    "searchPlaceholder": "Cerca",
+    "clear": "Cancella",
+
+    "avatarAlt": "Avatar",
+    "profile": "Profilo",
+    "dashboard": "Dashboard",
+    "settings": "Impostazioni",
+    "lightMode": "Modalità chiara",
+    "darkMode": "Modalità scura",
+    "logout": "Disconnetti"
+  }
+}
