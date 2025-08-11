@@ -3,7 +3,7 @@ import { UserNewPseudo, UserNewAvatar, ColorPicker, Language } from "@components
 import { ApiService } from "@service";
 import { StyleModalIcon, WarningIcon } from "@assets";
 import { useTranslation } from "react-i18next";
-import './config.css';
+import './Config.css';
 
 const Parametre = () => {
   const { t } = useTranslation("general");
