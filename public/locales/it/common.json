@@ -1,0 +1,25 @@
+{
+  "title": "Successo",
+  "close": "Chiudi",
+  "validate": "Conferma",
+  "decorationAlt": "Decorazione",
+  "warningAlt": "Avvertimento",
+  "showHidePassword": "Mostra / nascondi password",
+  "send": "Invia",
+
+  "email": "Indirizzo email",
+  "password": "Password",
+  "bannerAlt": "Banner",
+  "avatarAlt": "Avatar",
+  "language": "Lingua",
+  "languageFr": "Francese",
+  "languageEn": "Inglese",
+  "languageDe": "Tedesco",
+  "languageIt": "Italiano",
+  "create": "Crea",
+  "cancel": "Annulla",
+  "delete": "Elimina",
+  "add": "Aggiungi",
+  "save": "Salva",
+  "loginCta": "Accedi"
+}

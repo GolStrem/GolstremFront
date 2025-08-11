@@ -12,7 +12,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: "fr",
-    supportedLngs: ["fr", "en", "de"],
+    supportedLngs: ["fr", "en", "de", "it"],
     ns: ["common"],
     defaultNS: "common",
     fallbackNS: "common",   
