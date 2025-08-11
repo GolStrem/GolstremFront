@@ -3,16 +3,26 @@ import { useTranslation } from "react-i18next";
 
 const Language = () => {
   const { t, i18n } = useTranslation("general");
-  const [currentLang, setCurrentLang] = useState("fr");
+  const [currentLang, setCurrentLang] = useState(i18n.language.slice(0, 2)); // Initialiser avec la langue actuelle
 
   useEffect(() => {
-    const lang = i18n.resolvedLanguage || i18n.language || "fr";
-    setCurrentLang(lang.slice(0, 2)); // On garde uniquement le code de langue (ex. "fr" ou "en")
+    // Met à jour `currentLang` dès que la langue change
+    const handleLangChange = (lng) => {
+      setCurrentLang(lng.slice(0, 2));
+    };
+
+    // Écoute les changements de langue
+    i18n.on('languageChanged', handleLangChange);
+
+    // Nettoyer l'écouteur quand le composant est démonté
+    return () => {
+      i18n.off('languageChanged', handleLangChange);
+    };
   }, [i18n]);
 
   const handleLangChange = (e) => {
     const lng = e.target.value;
-    i18n.changeLanguage(lng);
+    i18n.changeLanguage(lng); // Change la langue avec i18n
     document.documentElement.setAttribute("lang", lng); // Met à jour l'attribut lang du document
   };
 
