@@ -10,6 +10,7 @@
     "sidebarTitle": "SETTINGS",
     "accountSettings": "Account settings",
     "colorSettings": "Color settings",
+    "languageSettings": "Language Selection",
     "errorFetchEmail": "Error while retrieving",
 
     "workspace": "Workspace",

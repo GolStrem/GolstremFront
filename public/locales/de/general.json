@@ -1,0 +1,63 @@
+{
+  "general": {
+    "notFoundTitle": "Seite nicht gefunden",
+    "notFoundDashboard": "Zurück zum Dashboard",
+    "notFoundHome": "Zurück zur Startseite",
+
+    "homeTitle": "Willkommen auf unserer Plattform",
+    "homeSubtitle": "Verwalten Sie Ihr Konto und Ihre Einstellungen einfach.",
+
+    "sidebarTitle": "EINSTELLUNGEN",
+    "accountSettings": "Kontoeinstellungen",
+    "colorSettings": "Farbeninstellungen",
+    "languageSettings": "Sprachauswahl",
+    "errorFetchEmail": "Fehler beim Abrufen",
+
+    "workspace": "Arbeitsbereich",
+    "fiche": "Blatt",
+    "inventaire": "Inventar",
+    "univers": "Universum",
+    "maitre": "Spielleiter",
+    "changeBanner": "Banner ändern",
+    "changeModules": "Module auswählen",
+
+    "chooseColor": "Wählen Sie eine Farbe:",
+
+    "userNotFound": "Benutzer nicht gefunden",
+    "userInfoError": "Informationen können nicht abgerufen werden.",
+    "updateError": "Fehler bei der Aktualisierung",
+    "loadingUserInfo": "Benutzerinformationen werden geladen…",
+    "edit": "Bearbeiten",
+
+    "pseudoUnavailable": "Benutzername nicht verfügbar",
+    "pseudo": "Benutzername",
+
+    "changeBannerTitle": "Banner ändern",
+    "bannerUrlLabel": "URL des neuen Bildes:",
+    "bannerPlaceholder": "https://example.com/banner.jpg",
+    "bannerReset": "Zurücksetzen",
+    "bannerErrorHttp": "Die URL muss mit http(s) beginnen.",
+    "bannerErrorSave": "Fehler beim Speichern.",
+    "bannerErrorReset": "Fehler beim Zurücksetzen.",
+
+    "evenement": "Ereignisse",
+    "notification": "Benachrichtigungen",
+    "errorDeleteModule": "Fehler beim Löschen des Moduls {{module}}:",
+    "errorCreateModule": "Fehler beim Erstellen des Moduls {{module}}:",
+
+    "loading": "Lädt...",
+    "myWorkspaces": "Meine Arbeitsbereiche",
+    "errorLoadWorkspaces": "Fehler beim Laden der Arbeitsbereiche:",
+    "errorUpdateBanner": "Fehler beim Aktualisieren des Banners:",
+    "searchPlaceholder": "Suchen",
+    "clear": "Löschen",
+
+    "avatarAlt": "Avatar",
+    "profile": "Profil",
+    "dashboard": "Dashboard",
+    "settings": "Einstellungen",
+    "lightMode": "Lichtmodus",
+    "darkMode": "Dunkelmodus",
+    "logout": "Abmelden"
+  }
+}

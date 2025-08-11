@@ -31,11 +31,11 @@ const NotFound = () => {
       </div>
 
       <div className="number">404</div>
-      <h1 className="error">{t('notFoundTitle')}</h1>
+      <h1 className="error">{t('general.notFoundTitle')}</h1>
 
       {/* Bouton unique avec condition */}
       <button className="redirect-button" onClick={handleRedirect}>
-        {isAuthenticated ? t('notFoundDashboard') : t('notFoundHome')}
+        {isAuthenticated ? t('general.notFoundDashboard') : t('general.notFoundHome')}
       </button>
 
       <div className="circle"></div>

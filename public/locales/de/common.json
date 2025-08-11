@@ -1,0 +1,24 @@
+{
+  "title": "Erfolg",
+  "close": "Schließen",
+  "validate": "Validieren",
+  "decorationAlt": "Dekoration",
+  "warningAlt": "Warnung",
+  "showHidePassword": "Passwort anzeigen / ausblenden",
+  "send": "Senden",
+
+  "email": "E-Mail-Adresse",
+  "password": "Passwort",
+  "bannerAlt": "Banner",
+  "avatarAlt": "Avatar",
+  "language": "Sprache",
+  "languageFr": "Französisch",
+  "languageEn": "Englisch",
+  "languageDe": "Deutsch",
+  "create": "Erstellen",
+  "cancel": "Abbrechen",
+  "delete": "Löschen",
+  "add": "Hinzufügen",
+  "save": "Speichern",
+  "loginCta": "Anmelden"
+}

@@ -82,12 +82,6 @@ const UserRightsModal = ({ workspaceId, onClose, onUpdate }) => {
 
   return (
     <BaseModal onClose={onClose} className="tmedit">
-      <button
-        className="tm-close-btn"
-        onClick={onClose}
-        aria-label={t("close")}
-      ></button>
-
       <h3>{t("workspace.manageUserRightsTitle")}</h3>
 
       {loading ? (

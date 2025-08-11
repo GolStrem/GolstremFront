@@ -1,8 +1,9 @@
-.fiche-select, select{
-    color: red;
-    width: 50% !important;
-    margin-left: 33px;
+.fiche-select select{
+    width: 300px !important;
+}
 
+.label-visi{
+width: 100%;
 }
 
 .labelSect{
@@ -14,6 +15,6 @@
 
 
 .label-ficheSect{
-width: 100%;
+   width: 100% 
 
 }

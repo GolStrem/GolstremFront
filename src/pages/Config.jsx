@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./Config.css";
-import { UserNewPseudo, UserNewAvatar, ColorPicker } from "@components";
+import { UserNewPseudo, UserNewAvatar, ColorPicker, Language } from "@components";
 import { ApiService } from "@service";
 import { StyleModalIcon, WarningIcon } from "@assets";
 import { useTranslation } from "react-i18next";
+import './config.css';
 
 const Parametre = () => {
-  const { t, i18n } = useTranslation("general");
+  const { t } = useTranslation("general");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
@@ -20,14 +20,6 @@ const Parametre = () => {
     };
     fetchUser();
   }, [t]);
-
-  const handleLangChange = (e) => {
-    const lng = e.target.value;
-    i18n.changeLanguage(lng);
-    document.documentElement.setAttribute("lang", lng);
-  };
-
-  const currentLang = (i18n.resolvedLanguage || i18n.language || "fr").slice(0, 2);
 
   return (
     <div className="parametre-page">
@@ -51,7 +43,6 @@ const Parametre = () => {
             <div className="parametre-maj">
               <UserNewPseudo />
 
-      
               <p className="param-g a">
                 <span className="param-g-label">{t("email")} :</span>{" "}
                 <span className="param-g-value">{email || "..."}</span>
@@ -60,25 +51,25 @@ const Parametre = () => {
                 <span className="param-g-label">{t("password")} :</span>{" "}
                 <span className="param-g-value">***********</span>
               </p>
-              {/* Sélecteur de langue */}
-              <label className="param-g a tm-label">
-                <span className="param-g-label">{t("language")} :</span>{" "}
-                <select
-                  className="param-lang-select"
-                  value={currentLang}
-                  onChange={handleLangChange}
-                  aria-label={t("language")}
-                >
-                  <option value="fr">{t("languageFr")}</option>
-                  <option value="en">{t("languageEn")}</option>
-                </select>
-              </label>
             </div>
           </div>
         </section>
 
-        <h2 className="parametre-h2">{t("general.colorSettings")}</h2>
-        <ColorPicker />
+        {/* Boîte pour les paramètres de couleur */}
+        <div className="param-box">
+          <h2 className="parametre-h2">{t("general.colorSettings")}</h2>
+          <div className="param-box-content">
+            <ColorPicker />
+          </div>
+        </div>
+
+        {/* Boîte pour les paramètres de langue */}
+        <div className="param-box">
+          <h2 className="parametre-h2">{t("general.languageSettings")}</h2>
+          <div className="param-box-content">
+            <Language />
+          </div>
+        </div>
 
         <div className="parametre-warning-wrapper">
           <WarningIcon className="parametre-warning" />

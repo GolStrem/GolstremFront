@@ -22,6 +22,7 @@
   top: 28px;
   right: 0;
   background: var(--color-background);
+  color: var(--color-text);
   border-radius: 6px;
   z-index: 100;
   min-width: 130px;
@@ -38,7 +39,6 @@
 
 .card-menu-dropdown div:hover {
   background: var(--color-background);
-  filter: brightness(80%); 
 }
 
 .ficheBouton{
