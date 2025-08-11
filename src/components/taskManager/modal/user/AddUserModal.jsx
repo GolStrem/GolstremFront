@@ -52,7 +52,7 @@ const AddUserModal = ({ workspaceId, onClose }) => {
 
   return (
     <BaseModal onClose={onClose} className="tmedit">
-      <button className="tm-close-btn" onClick={onClose} aria-label={t("close")} />
+      
       <h2>{t("workspace.addUserTitle")}</h2>
 
       <label className="tm-label">

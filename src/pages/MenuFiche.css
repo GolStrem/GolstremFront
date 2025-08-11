@@ -99,25 +99,13 @@ html, body {
   left: -2.2rem;
   transform: rotate(-90deg);
   font-size: 4rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text);
   font-weight: bold;
   pointer-events: none;
   z-index: 2;
 }
 
-/* HENEL géant */
-.card-bg-text {
-  position: absolute;
-  top: 40%;
-  left: -4.5rem;
-  font-size: 15rem;
-  font-weight: 900;
-  color: rgba(255, 255, 255, 0.5);
-  transform: rotate(-90deg) skewX(10deg);
-  z-index: 0;
-  white-space: nowrap;
-  pointer-events: none;
-}
+
 
 /* Créer une carte */
 .create-card {
@@ -203,7 +191,7 @@ html, body {
 
 .filter-button {
   background: white;             
-  color: #333;                    
+  color: rgb(48, 48, 48);                    
   border: none;
   width: 38px;
   height: 32px;
@@ -267,6 +255,7 @@ html, body {
     width: 100%;
     min-width: unset;
     padding: 0;
+    margin-top: 0 ;
 
   }
 

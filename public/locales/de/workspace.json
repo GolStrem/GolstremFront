@@ -1,0 +1,102 @@
+{
+  "workspace": {
+
+    "errorLoadBoards": "Fehler beim Laden der Boards:",
+    "errorCreateBoard": "Fehler beim Erstellen des Boards:",
+    "errorUpdateBoard": "Fehler beim Aktualisieren des Boards:",
+    "errorDeleteBoard": "Fehler beim Löschen des Boards:",
+    "errorMoveBoard": "Fehler beim Verschieben des Boards:",
+    "errorEmptyBoardName": "Der Name darf nicht leer sein!",
+
+    "createBoardTitle": "Erstelle ein Board",
+    "boardNameLabel": "Board Name:",
+    "boardColorLabel": "Board Farbe:",
+
+    "deleteBoardTitle": "Board löschen",
+    "deleteBoardQuestion": "Sind Sie sicher, dass Sie das Board löschen möchten?",
+    "deleteBoardWarning": "Karten, die noch auf diesem Board sind, werden ebenfalls gelöscht.",
+    
+    "renameBoardTitle": "Board umbenennen",
+    "newBoardNameLabel": "Neuer Name:",
+
+    "cardNameRequired": "Name ist erforderlich.",
+    "cardDescriptionRequired": "Beschreibung ist erforderlich.",
+    "cardImageInvalid": "Die angegebene URL ist kein gültiges Bild.",
+    "editTask": "Bearbeiten",
+    "updateTaskTitle": "Aufgabe bearbeiten",
+    "taskDetailTitle": "Aufgabendetails",
+    "createTaskTitle": "Erstelle eine Aufgabe",
+    "taskNameLabel": "Name:",
+    "taskDescriptionLabel": "Beschreibung:",
+    "taskColorLabel": "Farbe:",
+    "taskStateLabel": "Status:",
+    "stateTodo": "Zu erledigen",
+    "stateInProgress": "In Bearbeitung",
+    "stateDone": "Erledigt",
+    "statePending": "Ausstehend",
+    "taskDueDateLabel": "Fälligkeitsdatum:",
+    "taskImageLabel": "Bild (URL):",
+
+    "stateUnknown": "Unbekannt",
+    "attachmentAlt": "Anhänge",
+
+    "addUserTitle": "Benutzer hinzufügen",
+    "userPseudoLabel": "Benutzername:",
+    "userRoleLabel": "Rolle:",
+    "roleReader": "Leser",
+    "roleEditor": "Editor",
+    "userNotFound": "Benutzer nicht gefunden",
+    "serverError": "Serverfehler",
+    "userAddSuccess": "Benutzer erfolgreich hinzugefügt.",
+    "userAddFail": "Benutzer konnte nicht hinzugefügt werden.",
+    "addingUser": "Benutzer wird hinzugefügt...",
+
+    "errorLoadUsers": "Fehler beim Laden der Benutzer.",
+    "errorDeleteUser": "Benutzer konnte nicht gelöscht werden.",
+    "errorUpdateRights": "Fehler beim Aktualisieren der Berechtigungen.",
+    "manageUserRightsTitle": "Benutzerberechtigungen verwalten",
+    "loadingUsers": "Benutzer werden geladen...",
+    "deleteUserTitle": "Benutzer löschen",
+    "saving": "Speichern...",
+
+    "workspaceNameRequired": "Name ist erforderlich.",
+    "workspaceImageInvalid": "Die Bild-URL ist ungültig oder das Format wird nicht unterstützt.",
+    "createWorkspaceTitle": "Neuen Arbeitsbereich erstellen",
+    "workspaceNamePlaceholder": "Arbeitsbereich Name",
+    "workspaceDescriptionPlaceholder": "Beschreibung",
+    "workspaceImagePlaceholder": "Bildlink",
+
+    "deleteWorkspaceTitle": "Arbeitsbereich löschen",
+    "deleteWorkspaceQuestion": "Sind Sie sicher, dass Sie löschen möchten?",
+    "deleteWorkspaceWarning": "Das Löschen dieses Arbeitsbereichs entfernt alle zugehörigen Boards und Karten.",
+    "editWorkspaceTitle": "Arbeitsbereich bearbeiten",
+
+    "loading": "Wird geladen...",
+    "errorLoadWorkspace": "Fehler beim Laden des Arbeitsbereichs:",
+    "userFallback": "Benutzer",
+    "roleOwner": "Besitzer",
+
+    "addCard": "+ Karte",
+    "openBoardMenu": "Board-Menü öffnen",
+    "menuEdit": "Bearbeiten",
+    "dropCardHere": "Karte hier ablegen",
+
+    "previewAlt": "Vorschau",
+    "cardColorAlt": "Kartenfarbe",
+
+    "errorFetchUserId": "Fehler beim Abrufen der Benutzer-ID:",
+    "errorFetchWorkspaces": "Fehler beim Abrufen der Arbeitsbereiche:",
+    "errorDeleteWorkspace": "Fehler beim Löschen des Arbeitsbereichs:",
+    "errorUpdateWorkspace": "Fehler beim Aktualisieren des Arbeitsbereichs:",
+    "errorCreateWorkspace": "Fehler beim Erstellen des Arbeitsbereichs:",
+    "errorLeaveWorkspace": "Fehler beim Verlassen des Arbeitsbereichs:",
+
+    "toggleMenu": "Arbeitsbereich-Menü öffnen / schließen",
+    "menuTitle": "Arbeitsbereich",
+    "openItemMenu": "Arbeitsbereich-Menü öffnen",
+    "leaveWorkspace": "Arbeitsbereich verlassen",
+    "menuUsers": "Benutzer",
+    "newWorkspaceCta": "+ Neuer Arbeitsbereich",
+    "newBoardCta": "Neues Board"
+  }
+}

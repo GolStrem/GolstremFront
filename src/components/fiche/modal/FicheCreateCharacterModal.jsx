@@ -80,7 +80,8 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
 
         <div className="labelSect">
           <label className="tm-label label-ficheSect">
-            Visibilité :
+            <div className="label-visi">Visibilité :</div>
+            
             <select
               value={visibility}
               onChange={(e) => setVisibility(e.target.value)}
