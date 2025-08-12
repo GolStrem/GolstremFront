@@ -69,6 +69,26 @@ const routes = [
     ),
   },
   {
+    path: '/fiches/:type/:id',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <MenuFiche />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/fiche/:type/:id',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <MenuFiche />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: '/workspace/:id',
     element: (
       <ProtectedRoute>

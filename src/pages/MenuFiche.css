@@ -25,6 +25,7 @@ html, body {
 }
 
 .character-selection {
+  user-select: none;
   display: flex;
   gap: 1.5rem;
   padding: 2rem;
@@ -60,6 +61,23 @@ html, body {
 
 .character-card:hover {
   transform: skewX(-10deg) scale(1.03);
+}
+
+/* Mode lecture seule */
+.character-card.read-only {
+  cursor: default;
+  opacity: 0.9;
+}
+
+.character-card.read-only:hover {
+  transform: skewX(-10deg);
+}
+
+/* Mode lecture seule sur mobile */
+@media (max-width: 768px) {
+  .character-card.read-only:hover {
+    transform: none;
+  }
 }
 
 /* Image personnage */

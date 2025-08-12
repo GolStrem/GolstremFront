@@ -22,6 +22,7 @@ export default function useFicheHandlers() {
           : Number(data.visibility),
       idOwner: data.idOwner ?? null,
       createdAt: data.createdAt || new Date().toISOString(),
+      pos: data.pos || 0,
       ...data.extra, // si tu veux passer d'autres champs
     };
 
