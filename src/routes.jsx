@@ -47,8 +47,28 @@ const routes = [
       </ProtectedRoute>
     ),
   },
-    {
+  {
     path: '/fiches',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <MenuFiche />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/fiches/:type/:id',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <MenuFiche />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/fiche/:type/:id',
     element: (
       <ProtectedRoute>
         <Layout>

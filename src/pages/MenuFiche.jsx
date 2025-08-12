@@ -9,6 +9,7 @@ import {
   FicheModifCharacterModal,
 } from "@components";
 import { FaFilter } from "react-icons/fa";
+import { useParams, useLocation } from "react-router-dom";
 
 // ⬇️ Handlers purs (aucun appel API)
 import useFicheHandlers from "@service/handler/useFicheHandler";
@@ -17,6 +18,30 @@ const MenuFiche = () => {
   const scrollRef = useHorizontalScroll();
   const [search, setSearch] = useState("");
   const [characterList, setCharacterList] = useState([]);
+  
+  // Récupération des paramètres d'URL
+  const { type, id } = useParams();
+  const location = useLocation();
+  
+  // Déterminer si on est en mode lecture seule (URL avec paramètres)
+  const isReadOnly = location.pathname !== "/fiches";
+  
+  // Déterminer le type et l'ID à utiliser
+  const getFicheParams = () => {
+    if (location.pathname === "/fiches") {
+      // Mode normal : utiliser "owner" et l'ID du localStorage
+      return {
+        type: "owner",
+        id: localStorage.getItem("id")
+      };
+    } else {
+      // Mode avec paramètres : utiliser les paramètres de l'URL
+      return {
+        type: type || "owner",
+        id: id || localStorage.getItem("id")
+      };
+    }
+  };
 
   // Handlers purs
   const {
@@ -36,9 +61,8 @@ const MenuFiche = () => {
   // Modification
   const [editing, setEditing] = useState(null);
 
-  // ✅ Drag & drop sur desktop uniquement
-  // ✅ Drag & drop sur desktop uniquement
-  if (!/Mobi|Android/i.test(navigator.userAgent)) {
+  // ✅ Drag & drop sur desktop uniquement - désactivé en mode lecture seule
+  if (!/Mobi|Android/i.test(navigator.userAgent) && !isReadOnly) {
     useGhostDragAndDrop({
       dragSelector: ".character-card:not(.create-card)",
       onMouseUpCallback: ({ draggedElement, event }) => {
@@ -52,7 +76,8 @@ const MenuFiche = () => {
         const draggedId = characterList.findIndex(item => Number(item.id) === Number(draggedIndex));
         const targetId = characterList.findIndex(item => Number(item.id) === Number(targetIndex));
 
-        const payload = {type:"owner", targetId:localStorage.getItem("id"), pos:characterList[targetId].pos}
+        const ficheParams = getFicheParams();
+        const payload = {type: ficheParams.type, targetId: ficheParams.id, pos:characterList[targetId].pos}
 
         ApiFiche.moveFiche(characterList[draggedId].id, payload)
 
@@ -75,8 +100,6 @@ const MenuFiche = () => {
           }
         }
         updated = updated.sort((a, b) => a.pos - b.pos);
-        console.log(updated)
-
 
         setCharacterList(updated);
       },
@@ -85,10 +108,11 @@ const MenuFiche = () => {
 
   useEffect(() => {
     const fetchFiches = async () => {
-      const id = localStorage.getItem("id");
-      if (!id) return;
+      const ficheParams = getFicheParams();
+      if (!ficheParams.id) return;
+      
       try {
-        const result = await ApiFiche.getFiches("owner", id);
+        const result = await ApiFiche.getFiches(ficheParams.type, ficheParams.id);
         if (Array.isArray(result?.data)) {
           setCharacterList(result.data);
         }
@@ -97,14 +121,15 @@ const MenuFiche = () => {
       }
     };
     fetchFiches();
-  }, []);
+  }, [type, id, location.pathname]); // Recharger quand les paramètres changent
 
   const handleFilterClick = () => {
     console.log("Filtre cliqué !");
   };
 
-  // Ouverture suppression
+  // Ouverture suppression - désactivée en mode lecture seule
   const askDelete = (ficheId) => {
+    if (isReadOnly) return;
     setSelectedFicheId(ficheId);
     setShowDeleteModal(true);
   };
@@ -123,7 +148,7 @@ const MenuFiche = () => {
 
   // Après modification (callback de la modal) → handler pur
   const handleUpdated = (updated) => {
-    // On passe l’objet renvoyé (contient id + champs modifiés), le handler gère le merge propre
+    // On passe l'objet renvoyé (contient id + champs modifiés), le handler gère le merge propre
     setCharacterList((prev) => handleEditFiche(prev, updated));
     setEditing(null);
   };
@@ -152,10 +177,12 @@ const MenuFiche = () => {
 
       {/* ===== Characters list ===== */}
       <div className="character-selection" ref={scrollRef}>
-        {/* Carte pour créer un nouveau personnage */}
-        <div className="character-card create-card" onClick={() => setShowCreateModal(true)}>
-          <span className="plus-sign">NEW</span>
-        </div>
+        {/* Carte pour créer un nouveau personnage - masquée en mode lecture seule */}
+        {!isReadOnly && (
+          <div className="character-card create-card" onClick={() => setShowCreateModal(true)}>
+            <span className="plus-sign">NEW</span>
+          </div>
+        )}
 
         {/* Cartes des personnages */}
         {characterList
@@ -164,15 +191,18 @@ const MenuFiche = () => {
             <div
               key={char.id ?? index}
               data-index={char.id}
-              className="character-card"
+              className={`character-card ${isReadOnly ? 'read-only' : ''}`}
               style={{ backgroundColor: char.color }} // ⬅️ color (pas bgColor)
             >
-              <FicheCardMenu
-                triggerProps={{ 'data-nodrag': true }}
-                onEdit={() => setEditing(char)}
-                onDuplicate={() => console.log("Dupliquer", char)}
-                onDelete={() => askDelete(char.id)}
-              />
+              {/* Menu contextuel - désactivé en mode lecture seule */}
+              {!isReadOnly && (
+                <FicheCardMenu
+                  triggerProps={{ 'data-nodrag': true }}
+                  onEdit={() => setEditing(char)}
+                  onDuplicate={() => console.log("Dupliquer", char)}
+                  onDelete={() => askDelete(char.id)}
+                />
+              )}
               {char.isNew && <div className="card-new">NEW</div>}
               <div className="character-img" style={{ backgroundImage: `url(${char.image})` }} />
               <div className="character-name">{char.name}</div>
@@ -181,7 +211,7 @@ const MenuFiche = () => {
       </div>
 
       {/* ===== Modale création ===== */}
-      {showCreateModal && (
+      {showCreateModal && !isReadOnly && (
         <FicheCreateCharacterModal
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreated}
@@ -189,7 +219,7 @@ const MenuFiche = () => {
       )}
 
       {/* ===== Modale modification ===== */}
-      {editing && (
+      {editing && !isReadOnly && (
         <FicheModifCharacterModal
           fiche={editing}
           onClose={() => setEditing(null)}
@@ -198,7 +228,7 @@ const MenuFiche = () => {
       )}
 
       {/* ===== Modale suppression ===== */}
-      {showDeleteModal && selectedFicheId != null && (
+      {showDeleteModal && selectedFicheId != null && !isReadOnly && (
         <FicheDeleteCharacterModal
           ficheId={selectedFicheId}
           onClose={() => {
