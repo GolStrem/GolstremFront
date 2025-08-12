@@ -8,13 +8,13 @@
         "errorMoveBoard": "Error moving board:",
         "errorEmptyBoardName": "The name cannot be empty!",
 
-        "createBoardTitle": "Create a board",
+        "createBoardTitle": "Create a new board",
         "boardNameLabel": "Board name:",
         "boardColorLabel": "Board color:",
 
         "deleteBoardTitle": "Delete board",
-        "deleteBoardQuestion": "Are you sure you want to delete the board",
-        "deleteBoardWarning": "Cards still present on this board will also be deleted.",
+        "deleteBoardQuestion": "Are you sure you want to delete this board",
+        "deleteBoardWarning": "The tasks that are still present on this board will also be deleted",
         
         "renameBoardTitle": "Rename board",
         "newBoardNameLabel": "New name:",
@@ -40,15 +40,15 @@
         "stateUnknown": "Unknown",
         "attachmentAlt": "Attachment",
 
-        "addUserTitle": "Add a user",
+        "addUserTitle": "Add a new user",
         "userPseudoLabel": "User nickname:",
         "userRoleLabel": "Role:",
-        "roleReader": "Reader",
+        "roleReader": "Viewer",
         "roleEditor": "Editor",
         "userNotFound": "User not found",
         "serverError": "Server-side failure",
-        "userAddSuccess": "User successfully added.",
-        "userAddFail": "Failed to add user.",
+        "userAddSuccess": "New user successfully added.",
+        "userAddFail": "Failed to add new user.",
         "addingUser": "Adding...",
 
         "errorLoadUsers": "Unable to load users.",
@@ -67,8 +67,8 @@
         "workspaceImagePlaceholder": "Image link",
 
         "deleteWorkspaceTitle": "Delete workspace",
-        "deleteWorkspaceQuestion": "Are you sure you want to delete",
-        "deleteWorkspaceWarning": "Deleting this workspace will remove all associated boards and cards.",
+        "deleteWorkspaceQuestion": "Are you sure you want to delete this workspace ?",
+        "deleteWorkspaceWarning": "Deleting this workspace will remove all associated boards and tasks.",
         "editWorkspaceTitle": "Edit workspace",
 
         "loading": "Loading...",
@@ -76,13 +76,13 @@
         "userFallback": "User",
         "roleOwner": "Owner",
 
-        "addCard": "+ Card",
+        "addCard": "+ Task",
         "openBoardMenu": "Open board menu",
         "menuEdit": "Edit",
-        "dropCardHere": "Drop a card here",
+        "dropCardHere": "Drop a task here",
 
         "previewAlt": "Preview",
-        "cardColorAlt": "Card color",
+        "cardColorAlt": "Task color",
 
         "errorFetchUserId": "Error fetching user ID:",
         "errorFetchWorkspaces": "Error fetching workspaces:",
@@ -94,9 +94,9 @@
         "toggleMenu": "Open / close workspace menu",
         "menuTitle": "Workspace",
         "openItemMenu": "Open workspace menu",
-        "leaveWorkspace": "Leave workspace",
+        "leaveWorkspace": "Leave Workspace",
         "menuUsers": "Users",
         "newWorkspaceCta": "+ New Workspace",
-        "newBoardCta": "New board"
+        "newBoardCta": "New Board"
     }
 }
