@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import { useTranslation } from "react-i18next";
 import { TaskApi, UserInfo } from "@service";
 import apiService from "@service/api/ApiService";
@@ -23,6 +24,7 @@ const Dashboard = () => {
   const [showBannerModal, setShowBannerModal] = useState(false);
   const [showModuleModal, setShowModuleModal] = useState(false);
   const [bannerDash, setBannerDash] = useState(banner);
+  const navigate = useNavigate();
   const [workspaceId, setWorkspaceId] = useState(() =>
     localStorage.getItem("lastWorkspace")
   );
@@ -117,6 +119,19 @@ const Dashboard = () => {
           <img src={avatar} alt={t("general.avatarAlt")} className="banner-avatar" />
           <h1 className="helloPlayer">{pseudo}</h1>
         </div>
+
+        <button
+          className="lock-page-btn"
+          onClick={() => {
+            localStorage.setItem("locationBeforeLocked", window.location.pathname);
+            navigate("/lockscreen");
+          }}
+          aria-label={t("general.lockScreen")}
+          title={t("general.lockScreen")}
+        >
+          🔒
+        </button>
+
 
         <button
           className="change-module-btn"

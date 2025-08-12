@@ -249,7 +249,27 @@ opacity: 1;
 .change-module-btn:hover {
 opacity: 1;
 }
+.lock-page-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 100px;
+  padding: 8px 8px;
+  background: var(--color-background);
+  color: var(--color-text);
+  border: 2px solid var(--jaune);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px); /* effet de flou léger */
+  opacity: 0.5;
+}
 
+.lock-page-btn:hover {
+opacity: 1;
+}
 
 /* ==================== Responsive ==================== */
 

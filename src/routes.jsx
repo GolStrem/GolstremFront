@@ -8,6 +8,7 @@ import Error from './pages/NotFound';
 import LoginNew from './pages/LoginNew';
 import LnResetPasswordModal from './components/login/LnResetPasswordModal'; 
 import MenuFiche from './pages/MenuFiche';
+import LockScreen from './pages/LockScreen';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -48,6 +49,16 @@ const routes = [
     ),
   },
   {
+    path: '/lockscreen',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <LockScreen />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+    {
     path: '/fiches',
     element: (
       <ProtectedRoute>

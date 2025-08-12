@@ -29,6 +29,7 @@ import GoldenStremC from './svg/GoldenStremC';
 import GoldenStremE from './svg/GoldenStremE';
 import GoldenStremP from './svg/GoldenStremP';
 import GoldenStremV from './svg/GoldenStremV';
+import GoldenLogo from './svg/GoldenLogo';
 
 export {
   abstrait,
@@ -59,4 +60,5 @@ export {
   GoldenStremE,
   GoldenStremV,
   GoldenStremP,
+  GoldenLogo
 };

@@ -58,7 +58,11 @@
     "settings": "Paramètres",
     "lightMode": "Mode clair",
     "darkMode": "Mode sombre",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    
+    "lockScreen": "Verrouiller l'écran",
+    "lockScreenImageAlt": "Écran de verrouillage",
+    "swipeUpToUnlock" : "Glissez vers le haut pour déverrouiller"
 
   }
 }

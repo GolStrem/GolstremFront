@@ -1,0 +1,161 @@
+/* =============================
+   Styles de base existants
+   ============================= */
+.lock-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  text-align: center;
+  background-color: var(--color-background);
+  overflow: hidden; /* nécessaire pour l'animation */
+  touch-action: none; /* empêche le scroll sur mobile pendant le drag */
+}
+
+.lock-screen.light {
+  background-image: url('https://files09.oaiusercontent.com/file-RsS1dkEZ5RcYJoQVdruuYG?se=2025-08-12T13%3A16%3A58Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D5a06358b-319e-43ab-97e4-853ae76cc8d4.webp&sig=sxIXNdnmHrurZ8eSzwpDlO3pi7cwMO1uHHpu3OcMntM%3D');
+}
+
+.lock-screen.dark {
+  background-image: url('https://images-ext-1.discordapp.net/external/WVCTx1VajSu790d70xapkB7ZMuDLkWjur24Ym3SfUVo/%3Fse%3D2025-08-12T17%253A07%253A49Z%26sp%3Dr%26sv%3D2024-08-04%26sr%3Db%26rscc%3Dmax-age%253D604800%252C%2520immutable%252C%2520private%26rscd%3Dattachment%253B%2520filename%253D3b13dcf0-ab90-4a1e-8963-8451ddcbb914.webp%26sig%3DDFrCFfNDzvR2JX5zbbBTrrRiD7BtYZkXG8n7AKnQTOs%253D/https/files.oaiusercontent.com/file-RYhXERVNmEgQNnrnuo4b5T?format=webp&width=991&height=566');
+}
+
+.lock-screen-logo {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  user-select: none;
+  pointer-events: none;
+  fill: var(--color-text);
+}
+
+.clock {
+  font-size: 6rem;
+  font-weight: bold;
+  margin-top: 20px;
+  color: var(--color-text);
+  user-select: none;
+  transition: opacity 0.3s ease;
+}
+
+/* =============================
+   Animation "glisser pour déverrouiller"
+   ============================= */
+
+/* Conteneur du contenu animé */
+.lock-content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(0);
+  transition: transform 280ms ease, opacity 220ms ease;
+}
+
+/* Pendant le drag : on suit le doigt/souris */
+.lock-screen.is-dragging .lock-content {
+  transition: none;
+  transform: translateY(var(--offsetY, 0px));
+}
+
+/* Unlock : sortie vers le haut */
+.lock-screen.is-unlocking .lock-content {
+  transform: translateY(-100vh);
+  transition: transform 420ms cubic-bezier(.2,.8,.2,1);
+}
+
+/* Indication de swipe */
+.swipe-hint {
+  margin-top: 20px;
+  font-size: 1rem;
+  opacity: calc(1 + (var(--progress, 0) * 0.4));
+  color: var(--color-text);
+  transform: translateY(calc(6px - var(--progress, 0) * 6px));
+  transition: opacity 200ms ease, transform 200ms ease;
+  user-select: none;
+}
+
+/* Voile sombre qui s'atténue pendant le drag */
+.lock-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  pointer-events: none;
+  opacity: calc(1 - min(1, var(--progress, 0)));
+  transition: opacity 220ms ease;
+}
+
+.lock-screen.is-dragging .lock-scrim {
+  transition: none;
+}
+
+/* Bouton fallback pour déverrouiller rapidement */
+.lock-quick-unlock {
+  position: absolute;
+  bottom: 24px;
+  inset-inline: 0;
+  margin-inline: auto;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+.lock-quick-unlock:hover {
+  background: rgba(255,255,255,0.16);
+}
+
+
+/* Cercle contenant le cadenas */
+.lock-badge {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  pointer-events: none; /* juste visuel */
+  font-size: 2rem;
+}
+
+/* Les deux icônes superposées */
+.lock-icon {
+  position: absolute;
+  transition: opacity 200ms ease;
+}
+
+/* 🔒 fermé → visible au départ, disparaît en glissant */
+.lock-icon.locked {
+  opacity: calc(1 - min(1, var(--progress, 0)));
+}
+
+/* 🔓 ouvert → invisible au départ, apparaît en glissant */
+.lock-icon.unlocked {
+  opacity: var(--progress, 0);
+}
+
+/* Pendant le drag → pas de transition pour coller au doigt */
+.lock-screen.is-dragging .lock-icon {
+  transition: none;
+}
