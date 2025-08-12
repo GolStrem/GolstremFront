@@ -58,6 +58,12 @@
     "settings": "Einstellungen",
     "lightMode": "Lichtmodus",
     "darkMode": "Dunkelmodus",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+
+    "lockScreen": "Bildschirm sperren",
+    "lockScreenImageAlt": "Sperrbildschirm",
+    "swipeUpToUnlock": "Nach oben wischen zum Entsperren"
+
+
   }
 }

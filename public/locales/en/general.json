@@ -58,6 +58,11 @@
     "settings": "Settings",
     "lightMode": "Light mode",
     "darkMode": "Dark mode",
-    "logout": "Logout"
+    "logout": "Logout",
+
+    "lockScreen": "Lock screen",
+    "lockScreenImageAlt": "Lock screen",
+    "swipeUpToUnlock": "Swipe up to unlock"
+
   }
 }

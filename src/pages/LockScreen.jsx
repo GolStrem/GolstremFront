@@ -50,16 +50,22 @@ const LockScreen = () => {
       const delta = y - startYRef.current; // négatif si on monte
       const clamped = Math.max(-window.innerHeight, Math.min(0, delta));
       setOffsetY(clamped);
+      
+      // Déclenche le déverrouillage dès qu'on atteint 70% de la hauteur de la page
+      const unlockTriggerHeight = window.innerHeight * 0.7;
+      if (Math.abs(clamped) >= unlockTriggerHeight && !unlocking) {
+        setUnlocking(true);
+      }
     };
 
     const onPointerUp = () => {
       if (!dragging || unlocking) return;
 
-      // Si on a tiré suffisamment vers le haut, on lance l’animation d’unlock
+      // Si on a tiré suffisamment vers le haut, on lance l'animation d'unlock
       if (Math.abs(offsetY) >= UNLOCK_THRESHOLD_PX) {
         setUnlocking(true);
-        // L’animation CSS emmène le contenu vers le haut (-100vh).
-        // À la fin de l’animation (transitionend), on navigue.
+        // L'animation CSS emmène le contenu vers le haut (-100vh).
+        // À la fin de l'animation (transitionend), on navigue.
       } else {
         // Retour en place
         setOffsetY(0);
@@ -71,7 +77,7 @@ const LockScreen = () => {
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
 
-    // Empêche le scroll “tirer pour rafraîchir” sur mobile
+    // Empêche le scroll "tirer pour rafraîchir" sur mobile
     const preventTouchScroll = (e) => {
       if (dragging) e.preventDefault();
     };
@@ -85,11 +91,11 @@ const LockScreen = () => {
     };
   }, [dragging, unlocking, offsetY]);
 
-  // Navigation après l’animation d’unlock
+  // Navigation après l'animation d'unlock
   const handleTransitionEnd = () => {
     if (!unlocking) return;
     const target = localStorage.getItem("locationBeforeLocked") || "/dashboard";
-    // Optionnel : on peut vider la valeur pour éviter d’anciennes redirections
+    // Optionnel : on peut vider la valeur pour éviter d'anciennes redirections
     localStorage.removeItem("locationBeforeLocked");
     navigate(target);
   };
@@ -118,7 +124,7 @@ const LockScreen = () => {
 
         <div className="clock">{currentTime}</div>
 
-        {/* Indicateur visuel “Glisser vers le haut” */}
+        {/* Indicateur visuel "Glisser vers le haut" */}
         <div className="swipe-hint">
           {t("general.swipeUpToUnlock")}
         </div>
@@ -142,14 +148,11 @@ const LockScreen = () => {
 </div>
 
 
-        
-
-
 
 
       </div>
 
-      {/* Voile qui s’atténue pendant le drag */}
+      {/* Voile qui s'atténue pendant le drag */}
       <div className="lock-scrim" />
     </div>
   );

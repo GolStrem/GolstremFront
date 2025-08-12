@@ -58,6 +58,12 @@
     "settings": "Impostazioni",
     "lightMode": "Modalità chiara",
     "darkMode": "Modalità scura",
-    "logout": "Disconnetti"
+    "logout": "Disconnetti",
+
+
+    "lockScreen": "Blocca schermo",
+    "lockScreenImageAlt": "Schermata di blocco",
+    "swipeUpToUnlock": "Scorri verso l'alto per sbloccare"
+
   }
 }
