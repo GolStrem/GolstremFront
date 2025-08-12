@@ -4,7 +4,7 @@
     "notFoundDashboard": "Return to Dashboard",
     "notFoundHome": "Return to home",
 
-    "homeTitle": "Welcome to our platform",
+    "homeTitle": "Welcome to your space",
     "homeSubtitle": "Manage your account and preferences easily.",
 
     "sidebarTitle": "SETTINGS",
@@ -21,12 +21,12 @@
     "changeBanner": "Change banner",
     "changeModules": "Choose modules",
 
-    "chooseColor": "Choose a color:",
+    "chooseColor": "Choose color:",
 
     "userNotFound": "User not found",
     "userInfoError": "Unable to retrieve your information.",
     "updateError": "Error while updating",
-    "loadingUserInfo": "Loading user information…",
+    "loadingUserInfo": "Loading user informations…",
     "edit": "Edit",
 
     "pseudoUnavailable": "Nickname not available",
