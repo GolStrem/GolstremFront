@@ -25,6 +25,7 @@ html, body {
 }
 
 .character-selection {
+  user-select: none;
   display: flex;
   gap: 1.5rem;
   padding: 2rem;
