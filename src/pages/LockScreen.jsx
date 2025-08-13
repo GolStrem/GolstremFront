@@ -222,7 +222,7 @@ const LockScreen = () => {
 
             
           <button
-            className="change-banner-btn-mod"
+            className="change-banner-btn-mod lockmod"
             onClick={() => setShowModal(true)}
           >
             ✎
