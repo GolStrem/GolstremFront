@@ -62,7 +62,13 @@
     
     "lockScreen": "Verrouiller l'écran",
     "lockScreenImageAlt": "Écran de verrouillage",
-    "swipeUpToUnlock" : "Glissez vers le haut pour déverrouiller"
+    "swipeUpToUnlock" : "Glissez vers le haut pour déverrouiller",
+
+
+
+      "changeLockscreenBackground": "Changer le fond d'écran du verrouillage",
+      "lightLockBackground": "Fond clair (lightLock)",
+      "darkLockBackground": "Fond sombre (darkLock)"
 
   }
 }
