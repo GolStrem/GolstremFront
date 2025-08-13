@@ -161,25 +161,19 @@
 }
 
 
+.lock-badge,.lock-quick-unlock,.lockmod {
+  bottom: calc(20px + env(safe-area-inset-bottom));
+}
+
+
 @media screen and (max-width: 449px) {
-.lockmod{
-  bottom: 60px;
-}
 
-.lock-badge{
-  bottom: 58px;
-}
-
-.lock-quick-unlock{
-  bottom: 60px;
+.clock{
+  font-size: 4rem;
 }
 
 .lock-screen-logo{
   top: 70px;
-}
-
-.clock{
-  font-size: 4rem;
 }
 
 }
