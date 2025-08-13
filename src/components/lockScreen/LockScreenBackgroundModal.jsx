@@ -3,8 +3,10 @@ import { useTranslation } from "react-i18next";
 import { UserInfo } from "@service"; // ou adapter selon ton code
 import { BaseModal } from "@components";
 import "../dashboard/modal/BannerModal.css";
+import "./LockScreenBackgroundModal.css"
 
-const LockScreenBackgroundModal = ({ onCancel, lightUrl, darkUrl, setLightUrl, setDarkUrl }) => {
+const LockScreenBackgroundModal = ({ onCancel, lightUrl, darkUrl, hideClock, setLightUrl, setDarkUrl, setHideClock }) => {
+
   const { t } = useTranslation("general");
 
 
@@ -33,6 +35,7 @@ const LockScreenBackgroundModal = ({ onCancel, lightUrl, darkUrl, setLightUrl, s
     // Sauvegarde dans UserInfo
     UserInfo.set("lightLock", lightUrl);
     UserInfo.set("darkLock", darkUrl);
+    UserInfo.set("hideClock", hideClock); // 0 ou 1
 
     onCancel();
   };
@@ -43,14 +46,16 @@ const LockScreenBackgroundModal = ({ onCancel, lightUrl, darkUrl, setLightUrl, s
 
       <form className="tm-modal-form" onSubmit={handleSubmit}>
 
-        <label>
-          {t("general.lightLockBackground")}
-          <input
-            type="text"
-            value={lightUrl}
-            onChange={(e) => setLightUrl(e.target.value)}
-            placeholder="https://..."
-          />
+        <label className="lockLabel">
+          <div className="lockLabeldiv">{t("general.lightLockBackground")}
+            <input
+              type="text"
+              value={lightUrl}
+              onChange={(e) => setLightUrl(e.target.value)}
+              placeholder="https://..."
+            />
+          </div>
+          
           {lightUrl && (
             <div className="preview-banner">
               <img src={lightUrl} alt={t("bannerAlt")} />
@@ -59,14 +64,17 @@ const LockScreenBackgroundModal = ({ onCancel, lightUrl, darkUrl, setLightUrl, s
           {errorLight && <p className="error">{errorLight}</p>}
         </label>
 
-        <label>
-          {t("general.darkLockBackground")}
-          <input
-            type="text"
-            value={darkUrl}
-            onChange={(e) => setDarkUrl(e.target.value)}
-            placeholder="https://..."
-          />
+        <label className="lockLabel">
+          <div className="lockLabeldiv">
+              {t("general.darkLockBackground")}
+            <input
+              type="text"
+              value={darkUrl}
+              onChange={(e) => setDarkUrl(e.target.value)}
+              placeholder="https://..."
+            />
+          </div>
+          
           {darkUrl && (
             <div className="preview-banner">
               <img src={darkUrl} alt={t("bannerAlt")} />
@@ -74,6 +82,16 @@ const LockScreenBackgroundModal = ({ onCancel, lightUrl, darkUrl, setLightUrl, s
           )}
           {errorDark && <p className="error">{errorDark}</p>}
         </label>
+
+        <label className="checkboxLabel">
+          <input
+            type="checkbox"
+            checked={hideClock === 1}
+            onChange={(e) => setHideClock(e.target.checked ? 1 : 0)}
+          />
+          <span>{t("general.hideClock")}</span>
+        </label>
+
 
         <div className="tm-modal-buttons">
           <button type="submit" className="tm-primary">{t("validate")}</button>

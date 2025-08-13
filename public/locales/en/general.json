@@ -62,7 +62,12 @@
 
     "lockScreen": "Lock screen",
     "lockScreenImageAlt": "Lock screen",
-    "swipeUpToUnlock": "Swipe up to unlock"
+    "swipeUpToUnlock": "Swipe up to unlock",
+
+    "changeLockscreenBackground": "Change lock screen background",
+    "lightLockBackground": "Light background",
+    "darkLockBackground": "Dark background",
+    "hideClock": "Hide clock"
 
   }
 }

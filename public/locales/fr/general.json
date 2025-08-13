@@ -65,10 +65,10 @@
     "swipeUpToUnlock" : "Glissez vers le haut pour déverrouiller",
 
 
-
-      "changeLockscreenBackground": "Changer le fond d'écran du verrouillage",
-      "lightLockBackground": "Fond clair (lightLock)",
-      "darkLockBackground": "Fond sombre (darkLock)"
+    "changeLockscreenBackground": "Changer le fond d'écran du verrouillage",
+    "lightLockBackground": "Fond clair ",
+    "darkLockBackground": "Fond sombre ",
+    "hideClock": "Désactiver l'horloge"
 
   }
 }

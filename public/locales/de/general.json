@@ -62,8 +62,12 @@
 
     "lockScreen": "Bildschirm sperren",
     "lockScreenImageAlt": "Sperrbildschirm",
-    "swipeUpToUnlock": "Nach oben wischen zum Entsperren"
+    "swipeUpToUnlock": "Nach oben wischen zum Entsperren",
 
+    "changeLockscreenBackground": "Sperrbildschirm-Hintergrund ändern",
+    "lightLockBackground": "Heller Hintergrund",
+    "darkLockBackground": "Dunkler Hintergrund",
+    "hideClock": "Uhr ausblenden"
 
   }
 }

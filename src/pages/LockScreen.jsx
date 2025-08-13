@@ -22,6 +22,7 @@ const LockScreen = () => {
 
   const [lightUrl, setLightUrl] = useState('');
   const [darkUrl, setDarkUrl] = useState('');
+  const [hideClock, setHideClock] = useState(0);
 
   const navigate = useNavigate();
   const wrapRef = useRef(null);
@@ -32,6 +33,7 @@ const LockScreen = () => {
       try {
         setLightUrl(await UserInfo.get("lightLock"))
         setDarkUrl(await UserInfo.get("darkLock"))
+        setHideClock(await UserInfo.get('hideClock'))
       } catch (err) {
       }
     };
@@ -58,14 +60,20 @@ const LockScreen = () => {
     if (!el) return;
 
     const onPointerDown = (e) => {
-      if (unlocking) return;
+      if (unlocking || showModal) return;
       
       // Vérifier si on clique sur un bouton ou un élément cliquable
       const target = e.target;
       const isClickable = target.closest('button') || 
                          target.closest('[role="button"]') || 
                          target.closest('.change-banner-btn-mod') ||
-                         target.closest('.lock-quick-unlock');
+                         target.closest('.lock-quick-unlock') ||
+                         target.closest('.modal-overlay') ||
+                         target.closest('.modal-content') ||
+                         target.closest('.tmedit') ||
+                         target.closest('input') ||
+                         target.closest('label') ||
+                         target.closest('form');
       
       if (isClickable) {
         // Ne pas activer le drag pour les éléments cliquables
@@ -79,7 +87,7 @@ const LockScreen = () => {
     };
 
     const onPointerMove = (e) => {
-      if (!dragging || unlocking) return;
+      if (!dragging || unlocking || showModal) return;
       const y = e.clientY ?? (e.touches?.[0]?.clientY || 0);
       const delta = y - startYRef.current; // négatif si on monte
       
@@ -102,7 +110,7 @@ const LockScreen = () => {
     };
 
     const onPointerUp = () => {
-      if (!dragging || unlocking) return;
+      if (!dragging || unlocking || showModal) return;
 
       // Si le drag a commencé et qu'on a tiré suffisamment vers le haut, on lance l'animation d'unlock
       if (dragStarted && Math.abs(offsetY) >= UNLOCK_THRESHOLD_PX) {
@@ -123,7 +131,7 @@ const LockScreen = () => {
 
     // Empêche le scroll "tirer pour rafraîchir" sur mobile seulement si le drag a commencé
     const preventTouchScroll = (e) => {
-      if (dragStarted) e.preventDefault();
+      if (dragStarted && !showModal) e.preventDefault();
     };
     el.addEventListener("touchmove", preventTouchScroll, { passive: false });
 
@@ -133,7 +141,7 @@ const LockScreen = () => {
       window.removeEventListener("pointerup", onPointerUp);
       el.removeEventListener("touchmove", preventTouchScroll);
     };
-  }, [dragging, unlocking, offsetY, dragStarted]);
+  }, [dragging, unlocking, offsetY, dragStarted, showModal]);
 
   // Navigation après l'animation d'unlock
   const handleTransitionEnd = () => {
@@ -187,7 +195,7 @@ const LockScreen = () => {
         
         <GoldenLogo alt="texte logo 3" className="lock-screen-logo" />
 
-        <div className="clock">{currentTime}</div>
+        {hideClock == 0 && <div className="clock">{currentTime}</div>}
 
         {/* Indicateur visuel "Glisser vers le haut" */}
         <div className="swipe-hint">
@@ -231,8 +239,10 @@ const LockScreen = () => {
           onCancel={() => setShowModal(false)}
           lightUrl={lightUrl}
           darkUrl={darkUrl}
+          hideClock={hideClock}
           setLightUrl={setLightUrl}
           setDarkUrl={setDarkUrl}
+          setHideClock={setHideClock}
         />
       )}
     </div>
