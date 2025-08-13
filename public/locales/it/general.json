@@ -63,7 +63,12 @@
 
     "lockScreen": "Blocca schermo",
     "lockScreenImageAlt": "Schermata di blocco",
-    "swipeUpToUnlock": "Scorri verso l'alto per sbloccare"
+    "swipeUpToUnlock": "Scorri verso l'alto per sbloccare",
+
+    "changeLockscreenBackground": "Cambia sfondo schermata di blocco",
+    "lightLockBackground": "Sfondo chiaro",
+    "darkLockBackground": "Sfondo scuro",
+    "hideClock": "Nascondi orologio"
 
   }
 }
