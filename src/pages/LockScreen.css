@@ -9,12 +9,12 @@
   justify-content: center;
   align-items: center;
 
-  /* ⚠️ Hauteur fiable sur mobile */
-  min-height: 100vh;   /* fallback */
-  min-height: 100svh;  /* small viewport units (Android/Chrome) */
+
+  min-height: 100vh;   
+  min-height: 100svh;  
 }
 @supports (height: 100dvh) {
-  .lock-screen { min-height: 100dvh; } /* dynamic viewport (iOS/modern) */
+  .lock-screen { min-height: 100dvh; } 
 }
 
 .lock-screen {
@@ -24,13 +24,13 @@
   color: white;
   text-align: center;
   background-color: var(--color-background);
-  overflow: hidden;        /* nécessaire pour l'animation */
-  touch-action: none;      /* empêche le scroll sur mobile pendant le drag */
-  padding-bottom: env(safe-area-inset-bottom); /* réserve l'encoche/bas */
+  overflow: hidden;       
+  touch-action: none;      
+  padding-bottom: env(safe-area-inset-bottom); 
 }
 
 
-/* Z-index layering pour éviter le rognage/recouvrement */
+
 .lock-content { z-index: 2; }
 .lock-scrim   { z-index: 1; }
 .lock-quick-unlock,
@@ -57,11 +57,7 @@
   transition: opacity 0.3s ease;
 }
 
-/* =============================
-   Animation "glisser pour déverrouiller"
-   ============================= */
 
-/* Conteneur du contenu animé */
 .lock-content {
   position: relative;
   height: 100%;
@@ -74,19 +70,18 @@
   transition: transform 280ms ease, opacity 220ms ease;
 }
 
-/* Pendant le drag : on suit le doigt/souris */
+
 .lock-screen.is-dragging .lock-content {
   transition: none;
   transform: translateY(var(--offsetY, 0px));
 }
 
-/* Unlock : sortie vers le haut */
 .lock-screen.is-unlocking .lock-content {
   transform: translateY(-100vh);
   transition: transform 420ms cubic-bezier(.2,.8,.2,1);
 }
 
-/* Indication de swipe */
+
 .swipe-hint {
   margin-top: 20px;
   font-size: 1rem;
@@ -97,12 +92,12 @@
   user-select: none;
 }
 
-/* Voile sombre qui s'atténue pendant le drag */
+
 .lock-scrim {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.4);
-  pointer-events: none; /* ne bloque pas les clics */
+  pointer-events: none; 
   opacity: calc(1 - min(1, var(--progress, 0)));
   transition: opacity 220ms ease;
 }
@@ -111,16 +106,13 @@
   transition: none;
 }
 
-/* =============================
-   Boutons bas (déverrouillage)
-   ============================= */
 
-/* Bouton fallback pour déverrouiller rapidement */
+
 .lock-quick-unlock {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  /* marge bas sûre + encoche */
+
   bottom: calc(clamp(16px, 5vh, 64px) + env(safe-area-inset-bottom));
 
   width: clamp(40px, 10vw, 54px);
@@ -136,12 +128,12 @@
   background: rgba(255,255,255,0.16);
 }
 
-/* Cercle contenant le cadenas (visuel) */
+
 .lock-badge {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  /* marge bas sûre + encoche */
+
   bottom: calc(clamp(16px, 5vh, 60px) + env(safe-area-inset-bottom));
 
   width: clamp(48px, 12vw, 64px);
@@ -152,11 +144,11 @@
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-  pointer-events: none; /* juste visuel */
-  font-size: 2rem;
+  pointer-events: none; 
+  font-size: 1.5rem;
 }
 
-/* Les deux icônes superposées */
+
 .lock-icon {
   position: absolute;
   transition: opacity 200ms ease;
