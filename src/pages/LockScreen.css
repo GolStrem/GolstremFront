@@ -1,5 +1,5 @@
 /* =============================
-   Styles de base existants
+   Styles de base
    ============================= */
 .lock-screen {
   position: fixed;
@@ -8,38 +8,48 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+
+  /* ⚠️ Hauteur fiable sur mobile */
+  min-height: 100vh;   /* fallback */
+  min-height: 100svh;  /* small viewport units (Android/Chrome) */
+}
+@supports (height: 100dvh) {
+  .lock-screen { min-height: 100dvh; } /* dynamic viewport (iOS/modern) */
+}
+
+.lock-screen {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   color: white;
   text-align: center;
   background-color: var(--color-background);
-  overflow: hidden; /* nécessaire pour l'animation */
-  touch-action: none; /* empêche le scroll sur mobile pendant le drag */
+  overflow: hidden;        /* nécessaire pour l'animation */
+  touch-action: none;      /* empêche le scroll sur mobile pendant le drag */
+  padding-bottom: env(safe-area-inset-bottom); /* réserve l'encoche/bas */
 }
 
-.lock-screen.light {
-  background-image: url('https://files09.oaiusercontent.com/file-RsS1dkEZ5RcYJoQVdruuYG?se=2025-08-12T13%3A16%3A58Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D5a06358b-319e-43ab-97e4-853ae76cc8d4.webp&sig=sxIXNdnmHrurZ8eSzwpDlO3pi7cwMO1uHHpu3OcMntM%3D');
-}
 
-.lock-screen.dark {
-  background-image: url('https://images-ext-1.discordapp.net/external/WVCTx1VajSu790d70xapkB7ZMuDLkWjur24Ym3SfUVo/%3Fse%3D2025-08-12T17%253A07%253A49Z%26sp%3Dr%26sv%3D2024-08-04%26sr%3Db%26rscc%3Dmax-age%253D604800%252C%2520immutable%252C%2520private%26rscd%3Dattachment%253B%2520filename%253D3b13dcf0-ab90-4a1e-8963-8451ddcbb914.webp%26sig%3DDFrCFfNDzvR2JX5zbbBTrrRiD7BtYZkXG8n7AKnQTOs%253D/https/files.oaiusercontent.com/file-RYhXERVNmEgQNnrnuo4b5T?format=webp&width=991&height=566');
-}
+/* Z-index layering pour éviter le rognage/recouvrement */
+.lock-content { z-index: 2; }
+.lock-scrim   { z-index: 1; }
+.lock-quick-unlock,
+.lock-badge,
+.lockmod      { z-index: 3; }
 
 .lock-screen-logo {
   position: absolute;
-  top: 20px;
+  top: clamp(20px, 8vh, 70px);
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
+  width: clamp(150px, 20vw, 300px);
   user-select: none;
   pointer-events: none;
   fill: var(--color-text);
 }
 
 .clock {
-  font-size: 6rem;
+  font-size: clamp(2.4rem, 8vw, 6rem);
   font-weight: bold;
   margin-top: 20px;
   color: var(--color-text);
@@ -92,7 +102,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.4);
-  pointer-events: none;
+  pointer-events: none; /* ne bloque pas les clics */
   opacity: calc(1 - min(1, var(--progress, 0)));
   transition: opacity 220ms ease;
 }
@@ -101,14 +111,20 @@
   transition: none;
 }
 
+/* =============================
+   Boutons bas (déverrouillage)
+   ============================= */
+
 /* Bouton fallback pour déverrouiller rapidement */
 .lock-quick-unlock {
   position: absolute;
-  bottom: 24px;
-  inset-inline: 0;
-  margin-inline: auto;
-  width: 54px;
-  height: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* marge bas sûre + encoche */
+  bottom: calc(clamp(16px, 5vh, 64px) + env(safe-area-inset-bottom));
+
+  width: clamp(40px, 10vw, 54px);
+  height: clamp(40px, 10vw, 54px);
   border-radius: 50%;
   border: none;
   background: rgba(255,255,255,0.08);
@@ -120,15 +136,16 @@
   background: rgba(255,255,255,0.16);
 }
 
-
-/* Cercle contenant le cadenas */
+/* Cercle contenant le cadenas (visuel) */
 .lock-badge {
   position: absolute;
-  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
-  width: 64px;
-  height: 64px;
+  /* marge bas sûre + encoche */
+  bottom: calc(clamp(16px, 5vh, 60px) + env(safe-area-inset-bottom));
+
+  width: clamp(48px, 12vw, 64px);
+  height: clamp(48px, 12vw, 64px);
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -160,20 +177,18 @@
   transition: none;
 }
 
-
-.lock-badge,.lock-quick-unlock,.lockmod {
-  bottom: calc(20px + env(safe-area-inset-bottom));
+/* Harmonisation des éléments bas éventuels (lockmod etc.) */
+.lock-badge,
+.lock-quick-unlock,
+.lockmod {
+  /* marge bas sûre commune */
+  bottom: calc(clamp(16px, 5vh, 64px) + env(safe-area-inset-bottom));
 }
 
-
+/* =============================
+   Ajustements mobiles légers
+   ============================= */
 @media screen and (max-width: 449px) {
-
-.clock{
-  font-size: 4rem;
-}
-
-.lock-screen-logo{
-  top: 70px;
-}
-
+  .clock { font-size: clamp(2.2rem, 10vw, 4rem); }
+  .lock-screen-logo { top: clamp(24px, 8vh, 70px); }
 }
