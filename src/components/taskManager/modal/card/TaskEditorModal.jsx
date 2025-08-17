@@ -118,7 +118,7 @@ const TaskEditorModal = ({ modalData, closeModal, handleCreateOrUpdateCard, hand
 
   return (
     <BaseModal onClose={closeModal} className="tmedit">
-      <button className="tm-close-btn" onClick={closeModal} aria-label={t("close")} />
+
 
       {isEdit && !isEditing && (
         <button className="tm-edit-btn" onClick={() => setIsEditing(true)}>

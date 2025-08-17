@@ -80,16 +80,6 @@ const routes = [
     ),
   },
   {
-    path: '/fiche/:type/:id',
-    element: (
-      <ProtectedRoute>
-        <Layout>
-          <MenuFiche />
-        </Layout>
-      </ProtectedRoute>
-    ),
-  },
-  {
     path: '/workspace/:id',
     element: (
       <ProtectedRoute>

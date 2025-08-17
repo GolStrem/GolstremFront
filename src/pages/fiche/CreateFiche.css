@@ -46,7 +46,6 @@
   gap: clamp(16px, 3vw, 40px);
   z-index: 2;
   overflow: visible;
-  margin: -15px;
 }
 .cf-card::before {
   content: "";
@@ -212,8 +211,8 @@
   z-index: 4;
 }
 .cf-badge {
-  background: rgba(0,0,0,.85);
-  color: #fff;
+  background: var(--color-background);
+  color: var(--color-text);
   padding: 6px 10px;
   border-radius: 999px;
   font-size: .85rem;
@@ -221,6 +220,70 @@
   letter-spacing: .02em;
   box-shadow: 0 2px 8px rgba(0,0,0,.2);
 }
+
+
+/* Bouton "Modifier" en bas à droite */
+.cf-edit-btn {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  transition: background 0.2s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.cf-edit-btn:hover {
+  background: var(--color-background);
+  transform: translateY(-2px);
+}
+
+.cf-edit-btn:active {
+  background: var(--color-background);
+  transform: translateY(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* =============== Responsive téléphone =============== */
 @media (max-width: 600px) {

@@ -1,0 +1,138 @@
+/* =========================
+   Overlay & conteneur
+   ========================= */
+.cf-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.cf-modal {
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+}
+
+.cf-modal h2,
+.tm-modal-form h2 {
+  margin-top: 0;
+}
+
+/* =========================
+   Formulaire
+   ========================= */
+.tm-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.label-fiche{
+  margin: 0px !important;
+  margin-bottom: 10px !important;
+}
+
+.cf-field select{
+  border: none !important;
+  margin-top: 10px;
+}
+/* Champs standards */
+.tm-label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+#name,#age,#image{
+  margin-left: 0 !important;
+}
+#image{ 
+  width: 95%;
+}
+.cf-about-display {
+  white-space: pre-wrap;  
+  word-wrap: break-word;  
+}
+
+
+.tm-label input,
+.tm-label select,
+.tm-label textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+/* =========================
+   Champs spécifiques
+   ========================= */
+
+/* Champ court (Nom, Race) */
+.cf-field.short {
+  width: 100%;
+  margin: 10px;
+}
+
+/* Champ long (À propos) */
+.cf-field textarea {
+  width: 95%;
+  min-height: 200px;
+  resize: vertical;
+  line-height: 1.5;
+  font-size: 15px;
+  padding: 10px;
+}
+
+/* =========================
+   Messages d'erreur
+   ========================= */
+.tm-error {
+  color: #d33;
+  font-size: 13px;
+  margin-top: -6px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* =========================
+   Boutons
+   ========================= */
+.tm-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.tm-modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.tm-modal-buttons .tm-primary {
+  background: #007bff;
+  color: #fff;
+}
+
+
+/* =========================
+   Variante modale large
+   ========================= */
+.cf-modal-large {
+  max-width: 800px;   /* Largeur plus grande */
+  min-height: 600px;  /* Hauteur plus grande */
+}
