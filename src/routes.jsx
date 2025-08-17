@@ -14,6 +14,7 @@ import LockScreen from './pages/LockScreen';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Workspace = lazy(() => import('./pages/Workspace'));
 const Config = lazy(() => import('./pages/Config'));
+const Fiche = lazy(() => import ('./pages/fiche/CreateFiche'))
 
 const routes = [
   {
@@ -79,16 +80,6 @@ const routes = [
     ),
   },
   {
-    path: '/fiche/:type/:id',
-    element: (
-      <ProtectedRoute>
-        <Layout>
-          <MenuFiche />
-        </Layout>
-      </ProtectedRoute>
-    ),
-  },
-  {
     path: '/workspace/:id',
     element: (
       <ProtectedRoute>
@@ -96,6 +87,16 @@ const routes = [
           <React.Suspense fallback={<div>Chargement du workspace...</div>}>
             <Workspace />
           </React.Suspense>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+    {
+    path: '/ficheNew',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <Fiche />
         </Layout>
       </ProtectedRoute>
     ),

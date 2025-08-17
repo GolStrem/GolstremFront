@@ -9,7 +9,7 @@ import {
   FicheModifCharacterModal,
 } from "@components";
 import { FaFilter } from "react-icons/fa";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 // ⬇️ Handlers purs (aucun appel API)
 import useFicheHandlers from "@service/handler/useFicheHandler";
@@ -18,6 +18,7 @@ const MenuFiche = () => {
   const scrollRef = useHorizontalScroll();
   const [search, setSearch] = useState("");
   const [characterList, setCharacterList] = useState([]);
+  const navigate = useNavigate();
   
   // Récupération des paramètres d'URL
   const { type, id } = useParams();
@@ -193,6 +194,7 @@ const MenuFiche = () => {
               data-index={char.id}
               className={`character-card ${isReadOnly ? 'read-only' : ''}`}
               style={{ backgroundColor: char.color }} // ⬅️ color (pas bgColor)
+              onClick={() =>navigate("/ficheNew")}
             >
               {/* Menu contextuel - désactivé en mode lecture seule */}
               {!isReadOnly && (
