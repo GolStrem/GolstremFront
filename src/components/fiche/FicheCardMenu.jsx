@@ -23,15 +23,27 @@ const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
 
   return (
     <div className="card-menu-wrapper" ref={menuRef}>
-      <button className="card-menu-button" onClick={() => setOpen(!open)}>
+      <button className="card-menu-button" onClick={(e) => {
+        e.stopPropagation();
+        setOpen(!open);
+      }}>
         <FaEllipsisV />
       </button>
 
       {open && (
-        <div className="card-menu-dropdown">
-          <div onClick={onEdit} className="ficheBouton">✏️ Modifier</div>
-          <div onClick={onDuplicate} className="ficheBouton"> <BiCopy />&nbsp; Dupliquer</div>
-          <div onClick={onDelete} className="ficheBouton">🗑️ Supprimer</div>
+        <div className="card-menu-dropdown" onClick={(e) => e.stopPropagation()}>
+          <div onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }} className="ficheBouton">✏️ Modifier</div>
+          <div onClick={(e) => {
+            e.stopPropagation();
+            onDuplicate();
+          }} className="ficheBouton"> <BiCopy />&nbsp; Dupliquer</div>
+          <div onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }} className="ficheBouton">🗑️ Supprimer</div>
         </div>
       )}
     </div>
