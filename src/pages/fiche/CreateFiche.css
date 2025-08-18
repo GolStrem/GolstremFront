@@ -46,6 +46,7 @@
   gap: clamp(16px, 3vw, 40px);
   z-index: 2;
   overflow: visible;
+  max-width: 1500px;
 }
 .cf-card::before {
   content: "";
@@ -180,7 +181,7 @@
 .cf-portrait-float img {
   display: block;
   width: 100%;
-  height: clamp(500px, 86vh, 940px);
+  /*height: clamp(500px, 86vh, 940px);*/
   min-width: clamp(350px, 45vh, 580px);
 
   object-fit: cover;

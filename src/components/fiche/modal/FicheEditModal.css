@@ -73,6 +73,7 @@
 #about{
     scrollbar-width: thin;
     scrollbar-color: rgba(0,0,0,0.4) transparent;
+    margin-left: 0;
 }
 .cf-about-display {
   white-space: pre-wrap;  
