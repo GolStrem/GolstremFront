@@ -8,19 +8,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 16px;
   z-index: 999;
+  overflow-y: auto;
 }
 
-.cf-modal {
-  background: #fff;
-  color: #000;
+.cf-modal,
+.cf-modal-large {
+  background: var(--color-background);        /* blanc */
+  color: var(--color-text);             /* texte noir */
   padding: 20px;
   border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90svh;
+  overflow-y: auto;
   box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  box-sizing: border-box;
+      scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.4) transparent;
 }
 
+/* Titres */
 .cf-modal h2,
 .tm-modal-form h2 {
   margin-top: 0;
@@ -34,32 +43,42 @@
   flex-direction: column;
   gap: 16px;
 }
-.label-fiche{
-  margin: 0px !important;
+
+.label-fiche {
+  margin: 0 !important;
   margin-bottom: 10px !important;
 }
 
-.cf-field select{
+.cf-field select {
   border: none !important;
   margin-top: 10px;
 }
+
 /* Champs standards */
 .tm-label {
   font-weight: 600;
   margin-bottom: 4px;
   display: block;
 }
-#name,#age,#image{
+
+#name,
+#age,
+#image {
   margin-left: 0 !important;
 }
-#image{ 
+
+#image {
   width: 95%;
+}
+#about{
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.4) transparent;
 }
 .cf-about-display {
   white-space: pre-wrap;  
   word-wrap: break-word;  
-}
 
+}
 
 .tm-label input,
 .tm-label select,
@@ -77,15 +96,15 @@
    Champs spécifiques
    ========================= */
 
-/* Champ court (Nom, Race) */
+/* Champ court (Nom, Âge, Image) */
 .cf-field.short {
   width: 100%;
-  margin: 10px;
+  margin: 10px 0;
 }
 
 /* Champ long (À propos) */
 .cf-field textarea {
-  width: 95%;
+  width: 93%;
   min-height: 200px;
   resize: vertical;
   line-height: 1.5;
@@ -97,7 +116,7 @@
    Messages d'erreur
    ========================= */
 .tm-error {
-  color: #d33;
+  color: #d33;  /* rouge */
   font-size: 13px;
   margin-top: -6px;
   margin-bottom: 6px;
@@ -112,6 +131,7 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .tm-modal-buttons button {
@@ -124,15 +144,37 @@
 }
 
 .tm-modal-buttons .tm-primary {
-  background: #007bff;
+  background: #007bff; /* bleu */
   color: #fff;
 }
-
 
 /* =========================
    Variante modale large
    ========================= */
 .cf-modal-large {
-  max-width: 800px;   /* Largeur plus grande */
-  min-height: 600px;  /* Hauteur plus grande */
+  max-width: 800px;
+  min-height: 400px;
+}
+
+/* =========================
+   Responsive mobile
+   ========================= */
+@media (max-width: 600px) {
+  .cf-modal,
+  .cf-modal-large {
+    width: 100%;
+    max-width: 100%;
+    max-height: 95svh;
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .tm-modal-form textarea {
+    min-height: 150px;
+  }
+
+  .tm-modal-buttons {
+    justify-content: center;
+    gap: 8px;
+  }
 }
