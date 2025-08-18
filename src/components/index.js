@@ -80,3 +80,10 @@ export {default as FicheEditModal } from './fiche/modal/FicheEditModal'
 
 
 export { default as LockScreenBackgroundModal } from './lockScreen/LockScreenBackgroundModal'
+
+export { default as FicheCardGeneral } from './fiche/module/FicheCardGeneral'
+export { default as FicheCardStory } from './fiche/module/FicheCardStory'
+export { default as FicheCardCharacter } from './fiche/module/FicheCardCharacter'
+export { default as FicheCardPower } from './fiche/module/FicheCardPower'
+export { default as FicheCardGallery } from './fiche/module/FicheCardGallery'
+export { default as FicheNav } from './fiche/FicheNav'

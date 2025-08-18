@@ -139,8 +139,7 @@
   padding-right: 6px;
   scrollbar-color: rgba(0,0,0,0.4) transparent;
   scrollbar-width: thin;
-  max-height: none;
-
+  max-height: 550px;
 }
 .cf-text p {
   margin: 0 0 12px;
@@ -336,6 +335,7 @@
     width: 100%;
     overflow-y: auto;
     padding-right: 6px;
+    max-height: none;
   }
 
   .cf-portrait-float {
