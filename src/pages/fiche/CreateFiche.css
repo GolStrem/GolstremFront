@@ -46,7 +46,8 @@
   gap: clamp(16px, 3vw, 40px);
   z-index: 2;
   overflow: visible;
-  max-width: 1500px;
+  max-width: clamp(600px, 65vw, 1500px);
+
 }
 .cf-card::before {
   content: "";
@@ -109,7 +110,7 @@
 .cf-header { margin: 0 6px 10px; }
 .cf-h1 {
   margin: 0 0 6px;
-  font-size: clamp(2rem,5vw,4rem);
+  font-size: clamp(1rem,5vh,4rem);
   line-height: 1.1;
   color: var(--color-text);
 }
