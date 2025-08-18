@@ -58,7 +58,6 @@ const CreateFiche = () => {
         {/* Colonne portrait */}
         <aside className="cf-portrait-float">
           <img src={imgUrl} alt="Portrait du personnage" />
-          <button className="cf-portrait-action" aria-label="Modifier le portrait">●</button>
         </aside>
 
         {/* Bouton Modifier en bas à droite */}
