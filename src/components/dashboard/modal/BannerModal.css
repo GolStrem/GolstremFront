@@ -33,6 +33,13 @@
   color: #000;
 }
 
+.bannerModLab{
+  margin: 0 !important;
+}
+.bannerMod{
+  width: 100%;
+  margin: 0 !important;
+}
 .tm-modal-form {
   position: relative;
   z-index: 1;
