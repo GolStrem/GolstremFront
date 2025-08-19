@@ -6,6 +6,8 @@ import Golden from "@assets/golden.svg?react";
 import "./Accueil.css";
 import { toggleTheme } from "@store/index";
 import { FaSun, FaMoon } from "react-icons/fa";
+import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV, raw } from '@assets';
+
 
 const Accueil = () => {
   const { t } = useTranslation("general");
@@ -19,21 +21,44 @@ const Accueil = () => {
 
   return (
     <div className="home-page">
+      <Golden className="home-logo" />
       <div
         className={`mode-toggle ${mode}`}
         onClick={() => dispatch(toggleTheme())}
       >
+       
         {mode === "dark" ? <FaMoon size={24} /> : <FaSun size={24} />}
       </div>
 
       <div className="home-content">
-        <Golden className="home-logo" />
+        <div className="home-content-box">
         <h1 className="home-title">{t("general.homeTitle")}</h1>
         <p className="home-subtitle">{t("general.homeSubtitle")}</p>
-        <button className="home-button" onClick={handleLoginClick}>
+         <button className="home-button" onClick={handleLoginClick}>
           {t("loginCta")}
         </button>
+        </div>
+        <div className="home-img"><img src={raw} alt="Fond personnage" className="home-perso" /> </div>
       </div>
+
+
+      <div className="ln-backText">
+          <GoldenStremE alt={t('decorationAlt')} className="ln-tgold" />
+          <GoldenStremV alt={t('decorationAlt')} className="ln-tgold" />
+          <GoldenStremV alt={t('decorationAlt')} className="ln-tgold" />
+      </div>
+      
+      {/* — aside + background décoratif — */}
+      <div className="ln-back">
+        <div className="ln-background">
+          <div className="error-text ln-text">
+            <GoldenStremP alt={t('decorationAlt')} className="ln-textlogo" />
+            <GoldenStremC alt={t('decorationAlt')} className="ln-textlogo" />
+            <GoldenStremC alt={t('decorationAlt')} className="ln-textlogo" />
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

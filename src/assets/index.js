@@ -15,10 +15,11 @@ import logo from './logo.png';
 import styleModal from './styleModal.svg';
 import warningModal from './warningModal.svg';
 import avatar from './avatar.png';
-import banner from './banner.jpg'
+import banner1 from './banner.jpg'
+import banner from './banner1.jpg'
 import trombone from './icons/trombone.svg'
 import cadre from'./icons/cadre.svg'
-
+import raw from './raw.png'
 
 import StyleModalIcon from './svg/StyleModalIcon';
 import WarningIcon from './svg/WarningIcon';
@@ -38,6 +39,7 @@ export {
   Fichier5,
   Fichier6,
   personp,
+  raw,
   golden,
   golstremV,
   golstremb,
@@ -49,6 +51,7 @@ export {
   styleModal,
   warningModal,
   avatar,
+  banner1,
   banner,
   cadre,
   trombone,

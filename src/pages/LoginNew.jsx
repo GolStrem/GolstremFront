@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import './LoginNew.css';
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
-import { golstremb, personp, golden } from '@assets';
+import { golstremb, personp, golden, raw } from '@assets';
 
 const LoginNew = () => {
   const { t } = useTranslation('login');
@@ -73,7 +73,7 @@ const LoginNew = () => {
         </aside>
 
         <div className="ln-background">
-          <img src={personp} alt="Fond personnage" className="ln-character" />
+          <img src={raw} alt="Fond personnage" className="ln-character" />
 
           <div className="ln-text">
             <GoldenStremP alt="texte logo 1" className="ln-textlogo" />
