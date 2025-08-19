@@ -57,7 +57,7 @@ const FicheEditModal = ({ onClose, onSave, initialData }) => {
         </div>
 
         {/* Âge */}
-        <div className="cf-field short">
+        <div className="cf-field short ">
           <label className="tm-label label-fiche" htmlFor="age">
             Âge :
           </label>
@@ -70,7 +70,7 @@ const FicheEditModal = ({ onClose, onSave, initialData }) => {
         </div>
 
         {/* Image */}
-        <div className="cf-field short">
+        <div className="cf-field short ">
           <label className="tm-label label-fiche" htmlFor="image">
             Image (URL) :
           </label>
