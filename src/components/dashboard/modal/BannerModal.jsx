@@ -52,13 +52,14 @@ const BannerModal = ({
       <h3>{t("general.changeBannerTitle")}</h3>
 
       <div className="tm-modal-form">
-        <label>
+        <label className="bannerModLab">
           {t("general.bannerUrlLabel")}
           <input
             type="text"
             value={bannerUrl}
             onChange={(e) => setBannerUrl(e.target.value)}
             placeholder={t("general.bannerPlaceholder")}
+            className="bannerMod"
           />
         </label>
 

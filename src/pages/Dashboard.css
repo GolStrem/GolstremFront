@@ -275,9 +275,7 @@ opacity: 1;
 
 /* Tablette */
 @media (max-width: 768px) {
-  .helloPlayer{
-    font-size: 2rem;
-  }
+
 
   .dashboard-header p {
     font-size: 1rem;
@@ -308,9 +306,7 @@ opacity: 1;
 
 /* Mobile */
 @media (max-width: 480px) {
-  .helloPlayer{
-    font-size: 1.6rem;
-  }
+
 
   .dashboard-header p {
     font-size: 0.9rem;
@@ -342,9 +338,10 @@ opacity: 1;
     font-size: 0.75rem;
   }
   .banner-content {
-  bottom: 1rem;
+
   left: 1rem;
-  align-items: flex-start;
+  bottom: -1.5rem
+  
 }
 
 .banner-avatar {
@@ -352,8 +349,6 @@ opacity: 1;
   height: 90px;
 }
 
-.helloPlayer {
-  font-size: 1.4rem;
-}
+
 
 }

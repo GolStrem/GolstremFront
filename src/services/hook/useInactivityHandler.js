@@ -2,10 +2,11 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const INACTIVITY_TIMEOUT = 5 * 60 * 1000;
+const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 min
 
 const useInactivityHandler = () => {
   const lastActivityTimeRef = useRef(Date.now());
+  const timeoutRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -17,26 +18,29 @@ const useInactivityHandler = () => {
       lastActivityTimeRef.current = Date.now();
     };
 
-    window.addEventListener("mousemove", handleUserActivity);
-    window.addEventListener("keydown", handleUserActivity);
-    window.addEventListener("click", handleUserActivity);
+    const events = ["mousemove", "keydown", "click", "touchstart", "touchmove", "scroll"];
+    events.forEach((evt) => window.addEventListener(evt, handleUserActivity));
 
-    const inactivityCheckInterval = setInterval(() => {
-      // Empêche de relancer si on est déjà sur /lockscreen
-      if (
-        Date.now() - lastActivityTimeRef.current > INACTIVITY_TIMEOUT &&
-        location.pathname !== "/lockscreen"
-      ) {
+    const checkInactivity = () => {
+      const now = Date.now();
+      const elapsed = now - lastActivityTimeRef.current;
+
+      if (elapsed > INACTIVITY_TIMEOUT && location.pathname !== "/lockscreen") {
         localStorage.setItem("locationBeforeLocked", window.location.pathname);
         navigate("/lockscreen");
+      } else {
+        // Réarme le timeout en tenant compte du temps restant
+        const timeLeft = INACTIVITY_TIMEOUT - elapsed;
+        timeoutRef.current = setTimeout(checkInactivity, Math.min(timeLeft, 10000)); // max 10s
       }
-    }, 30000);
+    };
+
+    // Démarre le premier timeout
+    timeoutRef.current = setTimeout(checkInactivity, 10000);
 
     return () => {
-      clearInterval(inactivityCheckInterval);
-      window.removeEventListener("mousemove", handleUserActivity);
-      window.removeEventListener("keydown", handleUserActivity);
-      window.removeEventListener("click", handleUserActivity);
+      clearTimeout(timeoutRef.current);
+      events.forEach((evt) => window.removeEventListener(evt, handleUserActivity));
     };
   }, [isAuthenticated, navigate, location.pathname]);
 

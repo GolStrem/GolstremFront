@@ -33,7 +33,7 @@
     "pseudo": "Pseudo",
 
     "changeBannerTitle": "Changer la bannière",
-    "bannerUrlLabel": "URL de la nouvelle image :",
+    "bannerUrlLabel": "URL nouvelle image :",
     "bannerPlaceholder": "https://exemple.com/banner.jpg",
     "bannerReset": "Réinitialiser",
     "bannerErrorHttp": "L'URL doit commencer par http(s).",
