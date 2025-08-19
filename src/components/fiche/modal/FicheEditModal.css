@@ -102,6 +102,9 @@
   margin: 10px 0;
 }
 
+.label-about{
+  margin-left: 0 !important;
+}
 /* Champ long (À propos) */
 .cf-field textarea {
   width: 95%;

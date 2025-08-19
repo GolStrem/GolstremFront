@@ -58,30 +58,31 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
       <h2 className="modal-title">Créer un personnage</h2>
 
       <form className="tm-modal-form" onSubmit={(e) => e.preventDefault()}>
-        <label className="tm-label label-fiche">
+        <label className="tm-label shortMenu">
           Prénom Nom
           <input
             type="text"
             value={prenom}
             onChange={(e) => setPrenom(e.target.value)}
+            className="text-input"
           />
-          {prenomError && <span className="tm-error">{prenomError}</span>}
+          {prenomError && <span className="fiche-error">{prenomError}</span>}
         </label>
 
-        <label className="tm-label label-fiche">
+        <label className="tm-label shortMenu">
           Image (URL) :
           <input
             type="url"
             value={image}
             onChange={(e) => setImage(e.target.value)}
+            className="text-inpu "
           />
-          {imageError && <span className="tm-error">{imageError}</span>}
+          {imageError && <span className="fiche-error">{imageError}</span>}
         </label>
 
-        <div className="labelSect">
-          <label className="tm-label label-ficheSect">
-            <div className="label-visi">Visibilité :</div>
-            
+          <div className="shoModal">
+          <label className="ptit ShortMenu">
+            Visibilité :
             <select
               value={visibility}
               onChange={(e) => setVisibility(e.target.value)}
@@ -94,18 +95,20 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
             </select>
           </label>
 
-          <label className="label-ficheSect">
+          <label >
             Couleur :
             <input
               type="color"
               value={couleur}
               onChange={(e) => setCouleur(e.target.value)}
+              className="colorInpu"
             />
           </label>
-        </div>
+          </div>
+        
       </form>
 
-      {error && <span className="tm-error">{error}</span>}
+      {error && <span className="fiche-error">{error}</span>}
 
       <div className="tm-modal-buttons">
         <button className="tm-primary" onClick={handleSubmit} disabled={loading}>

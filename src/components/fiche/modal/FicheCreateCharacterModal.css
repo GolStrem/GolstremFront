@@ -3,7 +3,8 @@
 }
 
 .label-visi{
-width: 100%;
+    margin-right: 10px;
+    width: 30%;
 }
 
 .labelSect{
@@ -12,9 +13,56 @@ width: 100%;
 }
 
 
+.ptit select{
+   
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  background-color: var(--color-input-bg);
+  border: none;
+  width: 150px;
+}
+.shoModal{
+    display: flex;
+}
+.ptit option{
+    background-color: var(--color-background);
+}
+
+.fiche-select{
+    margin-left: 8px;
+}
+
+.colorInpu{
+   padding: 5px !important;
+
+}
+.fiche-error{
+    color: #d33;
+    font-size: 13px;
+    margin-top: -6px;
+    margin-bottom: 6px;
+}
 
 
-.label-ficheSect{
-   width: 100% 
+.text-input{
+    width: 15rem !important;
+    margin-left: 0 !important;
+}
+.text-inpu{
+    margin-left: 0 !important;
+}
 
+.shortMenu{
+  display: flex;
+  flex-direction: column;
+  align-items: initial !important;
+}
+
+@media (max-width: 600px) {
+    .shoModal{
+        flex-direction: column;
+    }
 }
