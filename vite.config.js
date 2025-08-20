@@ -13,6 +13,13 @@ export default defineConfig({
       '@components': path.resolve(__dirname, 'src/components'),
     },
   },
+  optimizeDeps: {
+    include: [
+      "@tiptap/react",
+      "@tiptap/starter-kit",
+      "@tiptap/extension-link"
+    ]
+  },
   server: {
     port: 3000,
   },

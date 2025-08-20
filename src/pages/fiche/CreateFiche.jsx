@@ -45,22 +45,22 @@ const CreateFiche = () => {
     story: {
       component : FicheCardStory,
       fields : {
-        story: { type: "chapter", label: "Histoire" },
+        story: { type: "chapter", label: "" },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },
     power: {
       component : FicheCardPower,
       fields : {
-        name: { type: "inputText", label: "Nom du pouvoir" },
-        story: { type: "chapter", label: "description du pouvoir" },
+        name: { type: "inputText", label: "Pouvoir " },
+        description: { type: "textarea", label: "description du pouvoir" },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },
     gallery: {
       component : FicheCardGallery,
       fields : {
-        imageGallery: { type: "texteImg+", label: "Texte et image" },
+        imageGallery: { type: "texteImg+", label: "" },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },

@@ -77,7 +77,7 @@ export {default as FicheCreateCharacterModal } from './fiche/modal/FicheCreateCh
 export {default as FicheDeleteCharacterModal } from './fiche/modal/FicheDeleteCharacterModal'
 export {default as FicheModifCharacterModal } from './fiche/modal/FicheModifCharacterModal'
 export {default as FicheEditModal } from './fiche/modal/FicheEditModal'
-export {default as ModalGeneric } from './fiche/modal/ModalGeneric'
+
 
 
 export { default as LockScreenBackgroundModal } from './lockScreen/LockScreenBackgroundModal'
@@ -88,3 +88,8 @@ export { default as FicheCardCharacter } from './fiche/module/FicheCardCharacter
 export { default as FicheCardPower } from './fiche/module/FicheCardPower'
 export { default as FicheCardGallery } from './fiche/module/FicheCardGallery'
 export { default as FicheNav } from './fiche/FicheNav'
+
+
+
+export {default as ModalGeneric } from './general/ModalGeneric'
+export { default as ToolbarTipTap } from './general/ToolbarTipTap'

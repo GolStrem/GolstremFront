@@ -1,15 +1,22 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
-import { BaseModal } from "@components";
+import { BaseModal, ToolbarTipTap } from "@components";
 import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
-import "./FicheEditModal.css";
+import "../fiche/modal/FicheEditModal.css";
 import "./ModalGeneric.css"
 import { FaEye } from "react-icons/fa";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+
 
 
 const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false }) => {
 	const textareasRef = useRef([]);
 	const [previewSrc, setPreviewSrc] = useState(null);
+	
+	// Référence pour forcer la mise à jour des éditeurs
+	const forceUpdateRef = useRef(0);
 
 	const [values, setValues] = useState(() => {
 
@@ -68,7 +75,6 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 // Retourne output original (non modifié immédiatement)
 		return output;
 	});
-
 
 	const handleClose = () => {
 		Cookies.set(name, JSON.stringify(values), { expires: 0.0208 }); 
@@ -132,6 +138,12 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 		searchAlias()
 	}, [values])
 
+	// Forcer la mise à jour des éditeurs quand les valeurs changent (après traitement des alias)
+	useEffect(() => {
+		// Incrémenter le compteur pour forcer la mise à jour des éditeurs
+		forceUpdateRef.current += 1;
+	}, [values])
+
 	useEffect(() => {
 		// S'assure qu'au moins inputText0/inputUrl0 existent si texteImg+ est demandé
 		const hasTexteImg = Object.values(fields).some((c) => c?.type === "texteImg+");
@@ -170,6 +182,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 		cleanupFns.forEach((fn) => fn());
 		};
 	}, [values]); // relance si le contenu change
+
 
 
 
@@ -285,41 +298,45 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					const textKey = `${textKeyBase}${idx}`;
 					const urlKey = `${urlKeyBase}${idx}`;
 					return (
-						<div key={idx} style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8, alignItems: "flex-end" }}>
-							<div className="cf-field short" style={{ flex: 1, minWidth: 220 }}>
-								<label className="tm-label label-fiche" htmlFor={textKey}>Nom :</label>
-								<input id={textKey} className="ficheText" type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
-							</div>
-							<div className="cf-field short" style={{ flex: 1, minWidth: 220 }}>
-								<label className="tm-label label-fiche" htmlFor={urlKey}>Image (URL) :
-									{values[urlKey] && isValidImageUrl(values[urlKey]) && (
-								<div style={{ marginLeft: 6, marginBottom:-6 }}>
-									<FaEye
-									style={{ cursor: "pointer", fontSize: 20 }}
-									title="Voir l'aperçu"
-									onClick={() => setPreviewSrc(values[urlKey])}
-									/>
-								</div>
-								)}
-								</label>
-								<input id={urlKey} type="url" value={values[urlKey] ?? ""} onChange={handleChange(urlKey)} />
-								
-							</div>
+						
+						<div key={idx} className="shosho" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8 }} >
 							{existingCount > 1 && (
 								<button 
 									type="button" 
-									className="tm-secondary" 
+									className="tm-secondary shoshote" 
 									onClick={() => removeRow(idx)}
-									style={{ padding: "8px 12px", marginBottom: "8px" }}
 								>
 									-
 								</button>
 							)}
+							<div className="parentdodo">
+								<div className="dada" >
+									<label className="tm-label label-fiche" htmlFor={textKey}>Nom :</label>
+									<input id={textKey} className="ficheText textparent" type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
+								</div>
+								
+								<div className="dodo">
+									<label className="tm-label label-fiche" htmlFor={urlKey}>Image (URL) :
+										{values[urlKey] && isValidImageUrl(values[urlKey]) && (
+									<div style={{ marginLeft: 6, marginBottom:-6 }}>
+										<FaEye
+										style={{ cursor: "pointer", fontSize: 20 }}
+										title="Voir l'aperçu"
+										onClick={() => setPreviewSrc(values[urlKey])}
+										/>
+									</div>
+									)}
+									</label>
+									<input id={urlKey} className="gugute" type="url" value={values[urlKey] ?? ""} onChange={handleChange(urlKey)} />
+									
+								</div>
+							</div>
+							
 						</div>
 					);
 				})}
-				<div style={{ display: "flex", justifyContent: "flex-end" }}>
-					<button type="button" className="tm-primary" onClick={addRow}>+</button>
+				<div style={{ display: "flex", justifyContent: "flex-start"  }} >
+					<button type="button" className="tm-primary shoshote vd" onClick={addRow} >+</button>
 				</div>
 			</div>
 		);
@@ -416,6 +433,71 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 			return key.replace(/^nC-/, "");
 		};
 
+		// Composant pour un chapitre individuel
+		const ChapterEditor = ({ chapterKey, isVisible, displayName, onNameChange, onNameBlur, onRemove, existingCount }) => {
+			const editor = useEditor({
+				extensions: [StarterKit],
+				content: values[chapterKey] || "",
+				onUpdate: ({ editor }) => {
+					handleChange(chapterKey)({ target: { value: editor.getHTML() } });
+				},
+			});
+
+			// Mettre à jour le contenu de l'éditeur quand values change
+			useEffect(() => {
+				if (editor && editor.getHTML() !== values[chapterKey]) {
+					editor.commands.setContent(values[chapterKey] || '');
+				}
+			}, [values[chapterKey], editor, forceUpdateRef.current]);
+
+			// Forcer la mise à jour du contenu quand l'éditeur devient visible
+			useEffect(() => {
+				if (isVisible && editor) {
+					editor.commands.setContent(values[chapterKey] || '');
+				}
+			}, [isVisible, editor, values[chapterKey]]);
+
+			return (
+				<div 
+					style={{ 
+						marginBottom: 16, 
+						
+						display: isVisible ? "block" : "none"
+					}}
+				>
+					<div className="cf-field short" style={{ marginBottom: 12 }}>
+						<label className="tm-label label-fiche" htmlFor={`${chapterKey}_name`}>Nom du chapitre :</label>
+						<div className="boitecha">
+							<input 
+								id={`${chapterKey}_name`} 
+								type="text" 
+								value={displayName} 
+								onChange={(e) => onNameChange(chapterKey, e.target.value)}
+								onBlur={() => onNameBlur(chapterKey)}
+								placeholder="Nom du chapitre"
+							/>
+							{existingCount > 1 && (
+								<button 
+									type="button" 
+									className="tm-secondary shoshot" 
+									onClick={() => onRemove(chapterKey)}
+									style={{ padding: "6px 10px" }}
+									
+								>
+									-
+								</button>
+							)}
+						</div>
+					</div>
+					<div className="cf-field">
+						<label className="tm-label label-about" htmlFor={`${chapterKey}_text`}>Texte du chapitre :</label>
+						<ToolbarTipTap editor={editor} />
+						<EditorContent editor={editor} className="tiptap-editor editChapter" />
+					</div>
+				</div>
+			);
+		};
+
 		// Fonction pour gérer le changement de nom du chapitre (mise à jour en temps réel)
 		const handleChapterNameChange = (oldKey, newName) => {
 			// Mettre à jour le nom en cours d'édition
@@ -491,28 +573,33 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				<label className="tm-label label-fiche">{label}</label>
 				
 				{/* Sélecteur de chapitre */}
-				<div className="cf-field short" style={{ marginBottom: 16 }}>
+				<div className="cf-field short bobo" style={{ marginBottom: 16 }}>
 					<label className="tm-label label-fiche">Sélectionner un chapitre :</label>
-					<select 
-						value={currentChapterKey || ""} 
-						onChange={handleChapterChange}
-						style={{ 
-							padding: "8px", 
-							borderRadius: "4px", 
-							border: "1px solid #ddd", 
-							width: "100%"
-						}}
-					>
-						{chapterOrder.map((key) => {
-							// Afficher le nom édité s'il existe, sinon le nom original
-							const displayName = editingNames[key] || getCleanTitle(key);
-							return (
-								<option key={key} value={key}>
-									{displayName}
-								</option>
-							);
-						})}
-					</select>
+					<div className=" boitecho">
+						<select 
+							value={currentChapterKey || ""} 
+							onChange={handleChapterChange}
+							style={{ 
+								padding: "8px", 
+								borderRadius: "4px", 
+								border: "1px solid #ddd", 
+								width: "40%",
+								backgroundColor:"var(--color-input-bg)"
+							}}
+							className="selectbo"
+						>
+							{chapterOrder.map((key) => {
+								// Afficher le nom édité s'il existe, sinon le nom original
+								const displayName = editingNames[key] || getCleanTitle(key);
+								return (
+									<option key={key} value={key}>
+										{displayName}
+									</option>
+								);
+							})}
+						</select>
+						<button type="button" className="tm-primary shoshotel" onClick={addChapter}>+</button>
+					</div>
 				</div>
 
 				{/* Affichage du chapitre sélectionné */}
@@ -521,60 +608,19 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					const displayName = editingNames[key] || getCleanTitle(key);
 					
 					return (
-						<div 
-							key={`chapter-${index}`} 
-							style={{ 
-								marginBottom: 16, 
-								padding: 16, 
-								border: "1px solid #ddd", 
-								borderRadius: 8,
-								display: isVisible ? "block" : "none"
-							}}
-						>
-							<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-								<h4 style={{ margin: 0 }}>Édition du chapitre</h4>
-								{existingCount > 1 && (
-									<button 
-										type="button" 
-										className="tm-secondary" 
-										onClick={() => removeChapter(key)}
-										style={{ padding: "6px 10px" }}
-									>
-										-
-									</button>
-								)}
-							</div>
-							<div className="cf-field short" style={{ marginBottom: 12 }}>
-								<label className="tm-label label-fiche" htmlFor={`${key}_name`}>Nom du chapitre :</label>
-								<input 
-									id={`${key}_name`} 
-									type="text" 
-									value={displayName} 
-									onChange={(e) => handleChapterNameChange(key, e.target.value)}
-									onBlur={() => handleChapterNameBlur(key)}
-									placeholder="Nom du chapitre"
-								/>
-							</div>
-							<div className="cf-field">
-								<label className="tm-label label-about" htmlFor={`${key}_text`}>Texte du chapitre :</label>
-								<textarea 
-									id={`${key}_text`} 
-									rows="4" 
-									value={values[key] ?? ""} 
-									onChange={handleChange(key)} 
-									placeholder="Contenu du chapitre"
-									style={{ 
-										resize: "vertical",
-										minHeight: "80px"
-									}}
-								/>
-							</div>
-						</div>
+						<ChapterEditor
+							key={`chapter-${index}`}
+							chapterKey={key}
+							isVisible={isVisible}
+							displayName={displayName}
+							onNameChange={handleChapterNameChange}
+							onNameBlur={handleChapterNameBlur}
+							onRemove={removeChapter}
+							existingCount={existingCount}
+						/>
 					);
 				})}
-				<div style={{ display: "flex", justifyContent: "flex-end" }}>
-					<button type="button" className="tm-primary" onClick={addChapter}>+</button>
-				</div>
+				
 			</div>
 		);
 	};
@@ -617,12 +663,28 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					</div>
 					);
 			case "textarea":
+				const editor = useEditor({
+					extensions: [StarterKit],
+					content: values[key] || "", // valeur initiale
+					onUpdate: ({ editor }) => {
+					handleChange(key)({ target: { value: editor.getHTML() } }); // on simule un event pour ton handleChange
+					},
+				});
+
+				// Mettre à jour le contenu de l'éditeur quand values change
+				useEffect(() => {
+					if (editor && editor.getHTML() !== values[key]) {
+						editor.commands.setContent(values[key] || '');
+					}
+				}, [values[key], editor, forceUpdateRef.current]);
+
 				return (
 					<div key={key} className="cf-generic">
 						<label className="tm-label label-about" htmlFor={id}>
 							{label} :
 						</label>
-						<textarea id={id} rows="6" value={values[key]} onChange={handleChange(key)} />
+						 <ToolbarTipTap editor={editor} />
+						<EditorContent editor={editor} className="tiptap-editor" />
 					</div>
 				);
 			case "texteImg+":
@@ -632,6 +694,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					</div>
 				);
 			case "chapter":
+				
 				return (
 					<div key={key} className="cf-field">
 						{renderChapter(config)}
