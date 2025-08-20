@@ -13,13 +13,26 @@ html, body {
 }
 
 .home-content {
+  display: flex;
+  position: relative;
   text-align: center;
+  background-color: var(--color-background);
+  z-index: 8000;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 1100px;
+  gap: 12px;
+  
+
 }
 
 .home-logo {
-  width: 400px;
+  width: 300px;
   height: auto;
   margin-bottom: 1rem;
+  left: 1rem;
+  top: 1rem;
+  position: absolute;
 }
 
 .home-title {
@@ -35,7 +48,7 @@ html, body {
 }
 
 .home-button {
-  padding: 12px 24px;
+  padding: 8px 15px;
   font-size: 1rem;
   font-weight: bold;
   color: #222;
@@ -44,9 +57,104 @@ html, body {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-right: 10px;
+  width: 140px;
+  position: absolute;
+  bottom: 20px;   /* marge depuis le bas */
+  left: 20px;     /* marge depuis la gauche */
+
 }
 
 .home-button:hover {
   background-color: color-mix(in srgb, var(--jaune) 40%, rgb(168, 168, 168));
   transform: translateY(-2px);
+}
+
+.mode-toggle{
+  display: flex;
+  align-items: center;
+}
+
+.home-img{
+  height: 400px;
+  width: 400px;
+  background-color: var(--jaune);
+  
+}
+
+.home-perso{
+  height: 600px;
+  margin-top: -200px;
+  width: 540px;
+  object-fit: cover;
+  object-position: top center;
+  transform: scaleX(-1);
+  border-radius: 12px;
+  margin-left: -75px;
+
+
+}
+
+.home-content-box{
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  z-index: 800;
+  
+}
+
+@media(max-width:810px){
+
+    .home-page {
+  height: 100vh;
+  overflow-y: auto; 
+}
+    .home-content{
+      flex-wrap: wrap;
+      flex-direction: column;
+      padding: 0;
+      padding-bottom: 30px;
+    }
+
+    .home-content-box{
+      align-items: center;
+      order: 1;
+      margin: 10px;
+      margin-top: 0;
+    }
+
+    .home-button{
+      position: initial;
+    }
+
+    .home-logo{
+      width: auto;
+      z-index: 9000;
+      background-color: var(--color-background);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.329);
+
+      padding: 20px;
+      top: 0;
+      left: 0;
+    }
+
+    .home-img{
+      align-self: center;
+      order: 0;
+      max-height: 300px;
+      max-width: 300px;
+      margin-top: 40px;
+    }
+
+    .home-perso{
+      max-height: 389px;
+      max-width: 314px;
+      margin-top: -88px;
+      margin-left: -8px;
+    }
+
+    .mode-toggle{
+      z-index: 9999 !important;
+    }
+
 }
