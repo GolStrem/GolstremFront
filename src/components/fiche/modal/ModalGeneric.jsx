@@ -57,7 +57,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 			} else {
 				output[key] = initialData[key] ?? "";
 			}
-		});
+	});
 				
 
 // Retourne output original (non modifié immédiatement)
