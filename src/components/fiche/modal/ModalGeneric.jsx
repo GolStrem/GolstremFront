@@ -1,10 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { BaseModal } from "@components";
 import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
 import "./FicheEditModal.css";
+import "./ModalGeneric.css"
+import { FaEye } from "react-icons/fa";
+
 
 const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false }) => {
+	const textareasRef = useRef([]);
+	const [previewSrc, setPreviewSrc] = useState(null);
 
 	const [values, setValues] = useState(() => {
 
@@ -139,6 +144,35 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 		}
 	}, [fields]);
 
+	useLayoutEffect(() => {
+		textareasRef.current = [];
+
+		// récupérer tous les textarea du DOM de cette modale
+		const textareas = document.querySelectorAll(".tmedit textarea");
+
+		// garder toutes les fonctions resize pour cleanup
+		const cleanupFns = [];
+
+		textareas.forEach((textarea) => {
+		// ajouter à la ref
+		textareasRef.current.push(textarea);
+
+		const resize = () => {
+		textarea.style.height = "auto"; 
+		textarea.style.height = textarea.scrollHeight + "px";
+		};
+		resize();
+		textarea.addEventListener("input", resize);
+		cleanupFns.push(() => textarea.removeEventListener("input", resize));
+		});
+
+		return () => {
+		cleanupFns.forEach((fn) => fn());
+		};
+	}, [values]); // relance si le contenu change
+
+
+
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 
@@ -254,16 +288,22 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 						<div key={idx} style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8, alignItems: "flex-end" }}>
 							<div className="cf-field short" style={{ flex: 1, minWidth: 220 }}>
 								<label className="tm-label label-fiche" htmlFor={textKey}>Nom :</label>
-								<input id={textKey} type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
+								<input id={textKey} className="ficheText" type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
 							</div>
 							<div className="cf-field short" style={{ flex: 1, minWidth: 220 }}>
-								<label className="tm-label label-fiche" htmlFor={urlKey}>Image (URL) :</label>
-								<input id={urlKey} type="url" value={values[urlKey] ?? ""} onChange={handleChange(urlKey)} />
-								{values[urlKey] && isValidImageUrl(values[urlKey]) && (
-									<div style={{ marginTop: 6 }}>
-										<img src={values[urlKey]} alt="Prévisualisation" style={{ maxWidth: 200, maxHeight: 120, borderRadius: 6 }} />
-									</div>
+								<label className="tm-label label-fiche" htmlFor={urlKey}>Image (URL) :
+									{values[urlKey] && isValidImageUrl(values[urlKey]) && (
+								<div style={{ marginLeft: 6, marginBottom:-6 }}>
+									<FaEye
+									style={{ cursor: "pointer", fontSize: 20 }}
+									title="Voir l'aperçu"
+									onClick={() => setPreviewSrc(values[urlKey])}
+									/>
+								</div>
 								)}
+								</label>
+								<input id={urlKey} type="url" value={values[urlKey] ?? ""} onChange={handleChange(urlKey)} />
+								
 							</div>
 							{existingCount > 1 && (
 								<button 
@@ -554,21 +594,31 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				);
 			case "inputUrl":
 				return (
-					<div key={key} className="cf-field short ">
-						<label className="tm-label label-fiche" htmlFor={id}>
-							{label} :
-						</label>
-						<input id={id} type="url" value={values[key]} onChange={handleChange(key)} />
+					<div key={key} className="cf-field short">
+						<label className="tm-label label-fiche  " htmlFor={id}>
+						{label} :
 						{values[key] && isValidImageUrl(values[key]) && (
-							<div style={{ marginTop: 6 }}>
-								<img src={values[key]} alt="Prévisualisation" style={{ maxWidth: 220, maxHeight: 140, borderRadius: 6 }} />
-							</div>
+						<div style={{ marginLeft: 6, marginBottom:-6 }}>
+							<FaEye
+							style={{ cursor: "pointer", fontSize: 20 }}
+							title="Voir l'aperçu"
+							onClick={() => setPreviewSrc(values[key])}
+							/>
+						</div>
 						)}
+						</label>
+						<input
+						id={id}
+						type="url"
+						value={values[key]}
+						onChange={handleChange(key)}
+						placeholder="Collez l'URL de l'image"
+						/>	
 					</div>
-				);
+					);
 			case "textarea":
 				return (
-					<div key={key} className="cf-field">
+					<div key={key} className="cf-generic">
 						<label className="tm-label label-about" htmlFor={id}>
 							{label} :
 						</label>
@@ -605,6 +655,30 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				</button>
 				<button onClick={handleClose} disabled={loading}>Annuler</button>
 			</div>
+
+			{/* Modal d'aperçu */}
+			{previewSrc && (
+			<div
+				className="image-preview-overlay"
+				onClick={() => setPreviewSrc(null)}
+				style={{
+				position: "fixed",
+				inset: 0,
+				background: "rgba(0,0,0,0.7)",
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				zIndex: 9999,
+				}}
+			>
+				<img
+				src={previewSrc}
+				alt="Aperçu"
+				style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: 8 }}
+				onClick={(e) => e.stopPropagation()} // empêcher la fermeture au clic sur l'image
+				/>
+			</div>
+			)}
 		</BaseModal>
 	);
 };

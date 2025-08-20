@@ -35,9 +35,9 @@ const CreateFiche = () => {
     character: {
       component : FicheCardCharacter,
       fields : {
-        personalité: { type: "textarea", label: "personalité" },
-        peur: { type: "textarea", label: "peur" },
-        motivation: { type: "textarea", label: "motivation" },
+        personalité: { type: "textarea", label: "Personalité" },
+        peur: { type: "textarea", label: "Peur" },
+        motivation: { type: "textarea", label: "Motivation" },
         image: { type: "inputUrl", label: "Image (URL)" },
         another: { type: "textarea", label: "Information complémentaire" }
       }
