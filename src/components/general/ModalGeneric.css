@@ -1,0 +1,184 @@
+
+#nC-introduction_text{
+    max-height: 500px;
+}
+
+#nC-introduction_name{
+    margin-left: 0 ;
+}
+
+#peur,#personalité,#motivation,#another,#nC-Introduction_text,#about,#image{
+
+    margin-left: 0;
+    width: 98%;
+    
+    
+}
+
+.ficheText{
+    margin-left: 0 !important;
+}
+
+
+.modal-title{
+    margin-top: 0;
+}
+
+.tiptap-editor{
+    border-radius: 6px;
+    background-color: var(--color-input-bg);
+    color: var(--color-text);
+
+    margin-top: 0;
+}
+
+.tiptap{
+    padding: 10px;
+    min-height: 80px;
+}
+
+.tiptap-editor p{
+    border-radius: 6px;
+    padding: 0px;
+
+
+    background-color: var(--color-input-bg);
+    color: var(--color-text);
+    margin-top: 0;
+}
+
+.shoshote{
+    background-color: transparent;
+    border: none;
+    font-size: 2rem ;
+    margin-bottom: -10px;
+    
+    
+}
+.shoshotel{
+    background-color: transparent;
+    border: none;
+    font-size: 2rem ;
+    margin-bottom: -10px;
+    
+    
+}
+.shoshot{
+    background-color: transparent;
+    border: none;
+    font-size: 2rem ;
+    margin-bottom: 5px;
+    
+    
+}
+
+.editChapter{
+
+    max-height: 700px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.4) transparent;
+
+}
+.selectbo{
+    margin-right: 10px;
+}
+.gugute{
+    width: 96%;
+    margin-left: 0 !important;
+
+}
+
+.dodo{
+    width: 70%;
+}
+
+.dada{
+    width: 30%;
+}
+
+
+.parentdodo{
+    display: flex;
+    width: 93%;
+    
+}
+
+.boitecho{
+    display: flex;
+    align-content: center;
+}
+.boitecha{
+    display: flex;
+    align-content: center;
+
+}
+
+.cf-generic{
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 760px) {
+    
+    .shoshote{
+        width: 20px;
+        border-right: 6px solid var(--color-input-bg);
+        padding-right: 20px;
+    }
+
+    .shosho{
+        justify-content: normal;
+    }
+
+    .parentdodo{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .vd{
+        border: none;
+    }
+
+    
+}
+
+
+@media (max-width: 685px) {
+    
+    .shoshote{
+        width: 20px;
+        border-right: 6px solid var(--color-input-bg);
+        padding-right: 20px;
+    }
+
+    .shosho{
+        justify-content: normal;
+        flex-wrap: initial !important;
+    }
+
+    .parentdodo{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dada{
+        width: 93%;
+    }
+    .dodo{
+        max-width: 88%;
+        width: auto;
+    }
+
+    .vd{
+        border: none;
+    }
+
+    #image{
+        width: 96%;
+    }
+
+    
+
+    
+}

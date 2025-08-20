@@ -35,9 +35,9 @@ const CreateFiche = () => {
     character: {
       component : FicheCardCharacter,
       fields : {
-        personalité: { type: "textarea", label: "personalité" },
-        peur: { type: "textarea", label: "peur" },
-        motivation: { type: "textarea", label: "motivation" },
+        personalité: { type: "textarea", label: "Personalité" },
+        peur: { type: "textarea", label: "Peur" },
+        motivation: { type: "textarea", label: "Motivation" },
         image: { type: "inputUrl", label: "Image (URL)" },
         another: { type: "textarea", label: "Information complémentaire" }
       }
@@ -45,22 +45,22 @@ const CreateFiche = () => {
     story: {
       component : FicheCardStory,
       fields : {
-        story: { type: "chapter", label: "Histoire" },
+        story: { type: "chapter", label: "" },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },
     power: {
       component : FicheCardPower,
       fields : {
-        name: { type: "inputText", label: "Nom du pouvoir" },
-        story: { type: "chapter", label: "description du pouvoir" },
+        name: { type: "inputText", label: "Pouvoir " },
+        description: { type: "textarea", label: "description du pouvoir" },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },
     gallery: {
       component : FicheCardGallery,
       fields : {
-        imageGallery: { type: "texteImg+", label: "Texte et image" },
+        imageGallery: { type: "texteImg+", label: "" },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },
