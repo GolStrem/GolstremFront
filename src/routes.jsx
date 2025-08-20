@@ -92,7 +92,7 @@ const routes = [
     ),
   },
     {
-    path: '/ficheNew',
+    path: '/ficheDetail/:id',
     element: (
       <ProtectedRoute>
         <Layout>

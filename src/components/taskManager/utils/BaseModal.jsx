@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 
 
-const BaseModal = ({ onClose, className = "", children }) => {
+const BaseModal = ({ onClose, className = "", children, noClose = false}) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -16,7 +16,7 @@ const BaseModal = ({ onClose, className = "", children }) => {
   }, [onClose]);
 
   return (
-    <div className="tm-modal-overlay" onClick={onClose}>
+    <div className="tm-modal-overlay" onClick={noClose ? undefined : onClose}>
       <div
         className={`tm-modal-popup ${className}`}
         onClick={(e) => e.stopPropagation()}

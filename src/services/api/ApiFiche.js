@@ -7,6 +7,7 @@ const realApi = {
   editFiche:(ficheId, payload) => api.put(`/fiche/${ficheId}`, payload),
   moveFiche:(ficheId, payload) => api.patch(`/fiche/move/${ficheId}`, payload),
   getFiches: (type, targetId) => api.get(`/fiche/${type}/${targetId}`),
+  getFicheDetail: (id) => api.get(`/fiche/detail/${id}`),
   deleteFiche:(ficheId) => api.delete(`/fiche/${ficheId}`),
   
 };

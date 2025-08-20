@@ -57,6 +57,10 @@ const realApi = {
     return api.get(`/module/${type}/${targetId}`);
   },
 
+  getAliasModule(payload) {
+    return api.post(`/module/alias`, payload);
+  },
+
   updateModule(id, payload) {
     return api.put(`/module/${id}`, payload);
   },
