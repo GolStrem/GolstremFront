@@ -194,7 +194,7 @@ const MenuFiche = () => {
               data-index={char.id}
               className={`character-card ${isReadOnly ? 'read-only' : ''}`}
               style={{ backgroundColor: char.color }} // ⬅️ color (pas bgColor)
-              onClick={() =>navigate("/ficheNew")}
+              onClick={() =>navigate(`/ficheDetail/${char.id}`)}
             >
               {/* Menu contextuel - désactivé en mode lecture seule */}
               {!isReadOnly && (

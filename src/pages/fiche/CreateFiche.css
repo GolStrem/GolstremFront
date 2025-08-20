@@ -9,7 +9,6 @@
 .cf-right {
   position: absolute;
   inset: 0;
-  background: #eec17f;
   z-index: 0;
 }
 
@@ -95,6 +94,12 @@
   cursor: pointer;
   margin-right: 10px;
 }
+.cf-tab { order: 999; }
+.cf-tab--general { order: 0; }
+.cf-tab--character { order: 1; }
+.cf-tab--story { order: 2; }
+.cf-tab--power { order: 3; }
+.cf-tab--gallery { order: 4; }
 .cf-tab--ghost {
   width: 36px; height: 36px;
   padding: 0;

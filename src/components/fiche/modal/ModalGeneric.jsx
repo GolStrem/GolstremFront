@@ -1,0 +1,614 @@
+import React, { useEffect, useState, useRef } from "react";
+import { BaseModal } from "@components";
+import { isValidImageUrl, ApiService } from "@service";
+import Cookies from "js-cookie";
+import "./FicheEditModal.css";
+
+const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false }) => {
+
+	const [values, setValues] = useState(() => {
+
+		const cookie = Cookies.get(name)
+		if (cookie) {
+			return JSON.parse(cookie)
+		}
+
+		const output = {};
+		Object.keys(fields).forEach((key) => {
+			const type = fields[key]?.type;
+			if (type === "texteImg+") {
+				// Détecter combien de paires existent déjà dans initialData
+				const textKeyBase = "inputText";
+				const urlKeyBase = "inputUrl";
+				const textRegex = /^inputText(\d+)$/;
+				const urlRegex = /^inputUrl(\d+)$/;
+
+				const textIndexes = Object.keys(initialData)
+					.filter((k) => textRegex.test(k))
+					.map((k) => Number(k.replace(textKeyBase, "")))
+					.filter((n) => !Number.isNaN(n));
+				const urlIndexes = Object.keys(initialData)
+					.filter((k) => urlRegex.test(k))
+					.map((k) => Number(k.replace(urlKeyBase, "")))
+					.filter((n) => !Number.isNaN(n));
+
+				const existingCount = Math.max(
+					textIndexes.length ? Math.max(...textIndexes) + 1 : 0,
+					urlIndexes.length ? Math.max(...urlIndexes) + 1 : 0,
+					1
+				);
+
+				// Créer toutes les paires nécessaires
+				for (let i = 0; i < existingCount; i++) {
+					output[`inputText${i}`] = initialData[`inputText${i}`] ?? initialData.inputText ?? "";
+					output[`inputUrl${i}`] = initialData[`inputUrl${i}`] ?? initialData.inputUrl ?? "";
+				}
+			} else if (type === "chapter") {
+				// Gérer les chapitres - accepter tous les formats de clés
+				const allKeys = Object.keys(initialData);
+				if (allKeys.length > 0) {
+					allKeys.forEach(key => {
+						output[key] = initialData[key] ?? "";
+					});
+				} else {
+					// Au moins un chapitre par défaut
+					output["nC-introduction"] = "";
+				}
+			} else {
+				output[key] = initialData[key] ?? "";
+			}
+		});
+				
+
+// Retourne output original (non modifié immédiatement)
+		return output;
+	});
+
+
+	const handleClose = () => {
+		Cookies.set(name, JSON.stringify(values), { expires: 0.0208 }); 
+		onClose()
+	}
+
+	const handleSave = (values) => {
+		handleSubmit(values)
+		Cookies.remove(name)
+	}
+
+	// Référence pour éviter la boucle infinie
+	const isProcessingAliases = useRef(false);
+
+	useEffect(() => {
+		// Éviter la boucle infinie
+		if (isProcessingAliases.current) return;
+		
+		const searchAlias = async () => {
+			const aliasRegex = /\$\$(\d+)\$\$/g;
+			const foundNumbers = new Set();
+
+			Object.values(values).forEach((val) => {
+				if (typeof val === "string") {
+					let match;
+					while ((match = aliasRegex.exec(val)) !== null) {
+						foundNumbers.add(match[1]); // match[1] = le nombre sans les $$
+					}
+				}
+			});
+			
+			// S'il n'y a pas d'alias, ne rien faire
+			if (foundNumbers.size === 0) return;
+			
+			isProcessingAliases.current = true;
+			
+			try {
+				const aliasModule = await ApiService.getAliasModule(Array.from(foundNumbers))
+				const aliasMap = aliasModule.data;
+
+				// On remplace dans values
+				const replacedValues = Object.fromEntries(
+					Object.entries(values).map(([key, val]) => {
+						if (typeof val === "string") {
+							return [
+								key,
+								val.replace(aliasRegex, (_, num) => aliasMap[num] || `$$${num}$$`)
+							];
+						}
+						return [key, val];
+					})
+				);
+				setValues(replacedValues)
+			} catch (error) {
+				console.error("Erreur lors du traitement des alias:", error);
+			} finally {
+				isProcessingAliases.current = false;
+			}
+		}
+
+		searchAlias()
+	}, [values])
+
+	useEffect(() => {
+		// S'assure qu'au moins inputText0/inputUrl0 existent si texteImg+ est demandé
+		const hasTexteImg = Object.values(fields).some((c) => c?.type === "texteImg+");
+		if (hasTexteImg && (values.inputText0 === undefined || values.inputUrl0 === undefined)) {
+			setValues((prev) => ({
+				...prev,
+				inputText0: prev.inputText0 ?? "",
+				inputUrl0: prev.inputUrl0 ?? "",
+			}));
+		}
+	}, [fields]);
+
+	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
+
+	const handleChange = (key) => (e) => {
+		const nextValue = e?.target?.value ?? "";
+		setValues((prev) => ({ ...prev, [key]: nextValue }));
+	};
+
+	const onSubmit = async () => {
+		setError("");
+		setLoading(true);
+		try {
+			await Promise.resolve(handleSave?.(values));
+			onClose?.(); // Utiliser onClose directement au lieu de handleClose
+		} catch (e) {
+			console.error("Erreur de sauvegarde:", e);
+			setError("Impossible de sauvegarder.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const renderTexteImgPlus = (config) => {
+		// Détecter combien de paires existent déjà
+		const textKeyBase = "inputText";
+		const urlKeyBase = "inputUrl";
+		const textRegex = /^inputText(\d+)$/;
+		const urlRegex = /^inputUrl(\d+)$/;
+
+		const textIndexes = Object.keys(values)
+			.filter((k) => textRegex.test(k))
+			.map((k) => Number(k.replace(textKeyBase, "")))
+			.filter((n) => !Number.isNaN(n));
+		const urlIndexes = Object.keys(values)
+			.filter((k) => urlRegex.test(k))
+			.map((k) => Number(k.replace(urlKeyBase, "")))
+			.filter((n) => !Number.isNaN(n));
+
+		const existingCount = Math.max(
+			textIndexes.length ? Math.max(...textIndexes) + 1 : 0,
+			urlIndexes.length ? Math.max(...urlIndexes) + 1 : 0,
+			1
+		);
+
+		const rows = Array.from({ length: existingCount }, (_, idx) => idx);
+
+		const addRow = () => {
+			// Ajoute une nouvelle paire vide
+			const nextIndex = existingCount; // basé sur le comptage actuel
+			const nextTextKey = `${textKeyBase}${nextIndex}`;
+			const nextUrlKey = `${urlKeyBase}${nextIndex}`;
+			setValues((prev) => ({ ...prev, [nextTextKey]: "", [nextUrlKey]: "" }));
+		};
+
+		const removeRow = (indexToRemove) => {
+			if (existingCount <= 1) return; // Garder au moins une ligne
+			
+			const textKey = `${textKeyBase}${indexToRemove}`;
+			const urlKey = `${urlKeyBase}${indexToRemove}`;
+			
+			setValues((prev) => {
+				const newValues = { ...prev };
+				delete newValues[textKey];
+				delete newValues[urlKey];
+				
+				// Réorganiser les index pour éviter les trous
+				const remainingTextKeys = Object.keys(newValues)
+					.filter(k => textRegex.test(k))
+					.sort((a, b) => {
+						const aIndex = Number(a.replace(textKeyBase, ""));
+						const bIndex = Number(b.replace(textKeyBase, ""));
+						return aIndex - bIndex;
+					});
+				
+				const remainingUrlKeys = Object.keys(newValues)
+					.filter(k => urlRegex.test(k))
+					.sort((a, b) => {
+						const aIndex = Number(a.replace(urlKeyBase, ""));
+						const bIndex = Number(b.replace(urlKeyBase, ""));
+						return aIndex - bIndex;
+					});
+				
+				// Recréer les clés avec des index séquentiels
+				const reorganizedValues = {};
+				Object.keys(newValues).forEach(key => {
+					if (!textRegex.test(key) && !urlRegex.test(key)) {
+						reorganizedValues[key] = newValues[key];
+					}
+				});
+				
+				remainingTextKeys.forEach((oldKey, newIndex) => {
+					const newKey = `${textKeyBase}${newIndex}`;
+					reorganizedValues[newKey] = newValues[oldKey];
+				});
+				
+				remainingUrlKeys.forEach((oldKey, newIndex) => {
+					const newKey = `${urlKeyBase}${newIndex}`;
+					reorganizedValues[newKey] = newValues[oldKey];
+				});
+				
+				return reorganizedValues;
+			});
+		};
+
+		const label = config?.label ?? "Texte + Image";
+		return (
+			<div className="cf-field">
+				<label className="tm-label label-fiche">{label}</label>
+				{rows.map((idx) => {
+					const textKey = `${textKeyBase}${idx}`;
+					const urlKey = `${urlKeyBase}${idx}`;
+					return (
+						<div key={idx} style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8, alignItems: "flex-end" }}>
+							<div className="cf-field short" style={{ flex: 1, minWidth: 220 }}>
+								<label className="tm-label label-fiche" htmlFor={textKey}>Nom :</label>
+								<input id={textKey} type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
+							</div>
+							<div className="cf-field short" style={{ flex: 1, minWidth: 220 }}>
+								<label className="tm-label label-fiche" htmlFor={urlKey}>Image (URL) :</label>
+								<input id={urlKey} type="url" value={values[urlKey] ?? ""} onChange={handleChange(urlKey)} />
+								{values[urlKey] && isValidImageUrl(values[urlKey]) && (
+									<div style={{ marginTop: 6 }}>
+										<img src={values[urlKey]} alt="Prévisualisation" style={{ maxWidth: 200, maxHeight: 120, borderRadius: 6 }} />
+									</div>
+								)}
+							</div>
+							{existingCount > 1 && (
+								<button 
+									type="button" 
+									className="tm-secondary" 
+									onClick={() => removeRow(idx)}
+									style={{ padding: "8px 12px", marginBottom: "8px" }}
+								>
+									-
+								</button>
+							)}
+						</div>
+					);
+				})}
+				<div style={{ display: "flex", justifyContent: "flex-end" }}>
+					<button type="button" className="tm-primary" onClick={addRow}>+</button>
+				</div>
+			</div>
+		);
+	};
+
+	const renderChapter = (config) => {
+		// Détecter uniquement les chapitres qui commencent par nC-
+		const chapterKeys = Object.keys(values).filter(key => key.startsWith("nC-"));
+		const existingCount = chapterKeys.length || 1;
+
+		// État pour le chapitre actuellement affiché (utiliser la clé au lieu de l'index)
+		const [currentChapterKey, setCurrentChapterKey] = useState(() => {
+			// Initialiser avec le premier chapitre disponible
+			return chapterKeys.length > 0 ? chapterKeys[0] : null;
+		});
+
+		// État temporaire pour le nom en cours de saisie
+		const [editingNames, setEditingNames] = useState({});
+
+		// État pour préserver l'ordre des chapitres
+		const [chapterOrder, setChapterOrder] = useState(() => {
+			// Initialiser avec l'ordre actuel
+			return [...chapterKeys];
+		});
+
+		// Mettre à jour la clé courante si elle n'existe plus
+		useEffect(() => {
+			if (!currentChapterKey || !chapterKeys.includes(currentChapterKey)) {
+				setCurrentChapterKey(chapterKeys.length > 0 ? chapterKeys[0] : null);
+			}
+		}, [chapterKeys, currentChapterKey]);
+
+		// Initialiser les noms en cours d'édition - seulement quand chapterKeys change vraiment
+		useEffect(() => {
+			const newEditingNames = {};
+			let hasChanges = false;
+			
+			chapterKeys.forEach(key => {
+				const cleanTitle = getCleanTitle(key);
+				if (!editingNames[key]) {
+					newEditingNames[key] = cleanTitle;
+					hasChanges = true;
+				}
+			});
+			
+			// Ne mettre à jour que s'il y a de vrais changements
+			if (hasChanges) {
+				setEditingNames(prev => ({ ...prev, ...newEditingNames }));
+			}
+		}, [chapterKeys]); // Retirer editingNames des dépendances
+
+		// Mettre à jour l'ordre des chapitres quand de nouveaux sont ajoutés
+		useEffect(() => {
+			const newKeys = chapterKeys.filter(key => !chapterOrder.includes(key));
+			if (newKeys.length > 0) {
+				setChapterOrder(prev => [...prev, ...newKeys]);
+			}
+		}, [chapterKeys, chapterOrder]);
+
+		const addChapter = () => {
+			const nextIndex = existingCount;
+			const nextKey = `nC-chapitre${nextIndex}`;
+			setValues((prev) => ({ ...prev, [nextKey]: "" }));
+			// Changer directement vers le nouveau chapitre
+			setCurrentChapterKey(nextKey);
+		};
+
+		const removeChapter = (keyToRemove) => {
+			if (existingCount <= 1) return; // Garder au moins un chapitre
+			
+			setValues((prev) => {
+				const newValues = { ...prev };
+				delete newValues[keyToRemove];
+				return newValues;
+			});
+
+			// Retirer de l'ordre
+			setChapterOrder(prev => prev.filter(key => key !== keyToRemove));
+
+			// Ajuster la clé du chapitre affiché si nécessaire
+			if (keyToRemove === currentChapterKey) {
+				const remainingKeys = chapterOrder.filter(key => key !== keyToRemove);
+				setCurrentChapterKey(remainingKeys.length > 0 ? remainingKeys[0] : null);
+			}
+		};
+
+		const handleChapterChange = (e) => {
+			const selectedKey = e.target.value;
+			setCurrentChapterKey(selectedKey);
+		};
+
+		// Fonction pour nettoyer le titre (enlever nC-)
+		const getCleanTitle = (key) => {
+			return key.replace(/^nC-/, "");
+		};
+
+		// Fonction pour gérer le changement de nom du chapitre (mise à jour en temps réel)
+		const handleChapterNameChange = (oldKey, newName) => {
+			// Mettre à jour le nom en cours d'édition
+			setEditingNames(prev => ({
+				...prev,
+				[oldKey]: newName
+			}));
+		};
+
+		// Fonction pour valider le nom du chapitre (appelée lors de la perte de focus)
+		const handleChapterNameBlur = (oldKey) => {
+			const newName = editingNames[oldKey];
+			
+			// Permettre les espaces et les caractères spéciaux, mais pas de nom complètement vide
+			if (!newName || newName.trim() === "") {
+				// Remettre l'ancien nom si vide
+				setEditingNames(prev => ({
+					...prev,
+					[oldKey]: getCleanTitle(oldKey)
+				}));
+				return;
+			}
+			
+			const newKey = `nC-${newName}`; // Garder les espaces et caractères tels quels
+			
+			// Éviter de créer une clé identique
+			if (newKey === oldKey) return;
+			
+			// Créer un mapping pour préserver l'ordre dans values
+			setValues((prev) => {
+				const newValues = {};
+				
+				// Préserver l'ordre en recréant l'objet dans le bon ordre
+				chapterOrder.forEach(key => {
+					if (key === oldKey) {
+						newValues[newKey] = prev[oldKey]; // Nouvelle clé avec l'ancien contenu
+					} else {
+						newValues[key] = prev[key]; // Garder les autres clés
+					}
+				});
+				
+				// Ajouter les autres propriétés non-chapitre
+				Object.keys(prev).forEach(key => {
+					if (!key.startsWith("nC-")) {
+						newValues[key] = prev[key];
+					}
+				});
+				
+				return newValues;
+			});
+
+			// Mettre à jour l'ordre des chapitres (remplacer l'ancienne clé par la nouvelle)
+			setChapterOrder(prev => prev.map(key => key === oldKey ? newKey : key));
+
+			// Mettre à jour la clé courante si c'était le chapitre affiché
+			if (oldKey === currentChapterKey) {
+				setCurrentChapterKey(newKey);
+			}
+
+			// Mettre à jour les noms en cours d'édition avec la nouvelle clé
+			setEditingNames(prev => {
+				const newEditing = { ...prev };
+				delete newEditing[oldKey];
+				newEditing[newKey] = newName;
+				return newEditing;
+			});
+		};
+
+		const label = config?.label ?? "Chapitres";
+		return (
+			<div className="cf-field">
+				
+				<label className="tm-label label-fiche">{label}</label>
+				
+				{/* Sélecteur de chapitre */}
+				<div className="cf-field short" style={{ marginBottom: 16 }}>
+					<label className="tm-label label-fiche">Sélectionner un chapitre :</label>
+					<select 
+						value={currentChapterKey || ""} 
+						onChange={handleChapterChange}
+						style={{ 
+							padding: "8px", 
+							borderRadius: "4px", 
+							border: "1px solid #ddd", 
+							width: "100%"
+						}}
+					>
+						{chapterOrder.map((key) => {
+							// Afficher le nom édité s'il existe, sinon le nom original
+							const displayName = editingNames[key] || getCleanTitle(key);
+							return (
+								<option key={key} value={key}>
+									{displayName}
+								</option>
+							);
+						})}
+					</select>
+				</div>
+
+				{/* Affichage du chapitre sélectionné */}
+				{chapterOrder.map((key, index) => {
+					const isVisible = key === currentChapterKey;
+					const displayName = editingNames[key] || getCleanTitle(key);
+					
+					return (
+						<div 
+							key={`chapter-${index}`} 
+							style={{ 
+								marginBottom: 16, 
+								padding: 16, 
+								border: "1px solid #ddd", 
+								borderRadius: 8,
+								display: isVisible ? "block" : "none"
+							}}
+						>
+							<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+								<h4 style={{ margin: 0 }}>Édition du chapitre</h4>
+								{existingCount > 1 && (
+									<button 
+										type="button" 
+										className="tm-secondary" 
+										onClick={() => removeChapter(key)}
+										style={{ padding: "6px 10px" }}
+									>
+										-
+									</button>
+								)}
+							</div>
+							<div className="cf-field short" style={{ marginBottom: 12 }}>
+								<label className="tm-label label-fiche" htmlFor={`${key}_name`}>Nom du chapitre :</label>
+								<input 
+									id={`${key}_name`} 
+									type="text" 
+									value={displayName} 
+									onChange={(e) => handleChapterNameChange(key, e.target.value)}
+									onBlur={() => handleChapterNameBlur(key)}
+									placeholder="Nom du chapitre"
+								/>
+							</div>
+							<div className="cf-field">
+								<label className="tm-label label-about" htmlFor={`${key}_text`}>Texte du chapitre :</label>
+								<textarea 
+									id={`${key}_text`} 
+									rows="4" 
+									value={values[key] ?? ""} 
+									onChange={handleChange(key)} 
+									placeholder="Contenu du chapitre"
+									style={{ 
+										resize: "vertical",
+										minHeight: "80px"
+									}}
+								/>
+							</div>
+						</div>
+					);
+				})}
+				<div style={{ display: "flex", justifyContent: "flex-end" }}>
+					<button type="button" className="tm-primary" onClick={addChapter}>+</button>
+				</div>
+			</div>
+		);
+	};
+
+	const renderField = (key, config) => {
+		const id = key;
+		const label = config?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
+		switch (config?.type) {
+			case "inputText":
+				return (
+					<div key={key} className="cf-field short">
+						<label className="tm-label label-fiche" htmlFor={id}>
+							{label} :
+						</label>
+						<input id={id} type="text" value={values[key]} onChange={handleChange(key)} />
+					</div>
+				);
+			case "inputUrl":
+				return (
+					<div key={key} className="cf-field short ">
+						<label className="tm-label label-fiche" htmlFor={id}>
+							{label} :
+						</label>
+						<input id={id} type="url" value={values[key]} onChange={handleChange(key)} />
+						{values[key] && isValidImageUrl(values[key]) && (
+							<div style={{ marginTop: 6 }}>
+								<img src={values[key]} alt="Prévisualisation" style={{ maxWidth: 220, maxHeight: 140, borderRadius: 6 }} />
+							</div>
+						)}
+					</div>
+				);
+			case "textarea":
+				return (
+					<div key={key} className="cf-field">
+						<label className="tm-label label-about" htmlFor={id}>
+							{label} :
+						</label>
+						<textarea id={id} rows="6" value={values[key]} onChange={handleChange(key)} />
+					</div>
+				);
+			case "texteImg+":
+				return (
+					<div key={key} className="cf-field">
+						{renderTexteImgPlus(config)}
+					</div>
+				);
+			case "chapter":
+				return (
+					<div key={key} className="cf-field">
+						{renderChapter(config)}
+					</div>
+				);
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<BaseModal onClose={handleClose} className="tmedit cf-modal-large" noClose={noClose}>
+			<h2 className="modal-title">Édition</h2>
+			<form className="tm-modal-form" onSubmit={(e) => e.preventDefault()}>
+				{Object.entries(fields).map(([key, config]) => renderField(key, config))}
+			</form>
+			{error && <span className="tm-error">{error}</span>}
+			<div className="tm-modal-buttons">
+				<button className="tm-primary" onClick={onSubmit} disabled={loading}>
+					{loading ? "Sauvegarde..." : "Enregistrer"}
+				</button>
+				<button onClick={handleClose} disabled={loading}>Annuler</button>
+			</div>
+		</BaseModal>
+	);
+};
+
+export default ModalGeneric;
+
+
