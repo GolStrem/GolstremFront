@@ -16,8 +16,7 @@ export default defineConfig({
   optimizeDeps: {
     include: [
       "@tiptap/react",
-      "@tiptap/starter-kit",
-      "@tiptap/extension-link"
+      "@tiptap/starter-kit"
     ]
   },
   server: {

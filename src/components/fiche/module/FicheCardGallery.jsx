@@ -60,7 +60,6 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
     
     // Vérifier si les données ont changé
     if (prevDataRef.current !== currentSignature) {
-      console.log('Changement détecté dans la galerie - rechargement');
       prevDataRef.current = currentSignature;
       loadGalleryData();
     }
@@ -78,7 +77,6 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
       const currentSignature = JSON.stringify(extraData);
       
       if (prevDataRef.current !== currentSignature) {
-        console.log('Mise à jour périodique détectée - rechargement');
         prevDataRef.current = currentSignature;
         loadGalleryData();
       }
@@ -94,7 +92,6 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
       const currentSignature = JSON.stringify(extraData);
       
       if (prevDataRef.current !== currentSignature) {
-        console.log('Changement de données détecté - rechargement immédiat');
         prevDataRef.current = currentSignature;
         loadGalleryData();
       }

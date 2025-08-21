@@ -6,14 +6,11 @@ import {
   FicheCardPower, 
   FicheCardGallery,
   ModalGeneric,
-  FicheSelectModule
+  BackLocation
 } from "@components";
 import "./CreateFiche.css";
 import { useParams } from "react-router-dom";
 import { ApiFiche, ApiService } from "@service"
-
-
-
 
 const CreateFiche = () => {
   const { id: ficheId } = useParams();
@@ -26,14 +23,74 @@ const CreateFiche = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-const [isModuleSelectorOpen, setModuleSelectorOpen] = useState(false);
-const [selectedModules, setSelectedModules] = useState([]);
+  const [isModuleSelectorOpen, setModuleSelectorOpen] = useState(false);
+  const [listModule, setListModule] = useState([])
 
-// callback pour ouvrir la modale dans l'angle droit
-const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
-const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); setModuleSelectorOpen(false); };
+  // callback pour ouvrir la modale dans l'angle droit
+  const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
+  const handleSaveModuleSelector = async (modules) => {
+    const newModules = modules.selectedModules;
+    const oldModules = listModule;
+    
+    try {
+      let firstValidModule = null;
+      // Supprimer les modules qui ne sont plus sélectionnés
+
+      if (newModules.length === 0) {
+        newModules = ['general']
+      }
+
+
+      for (const oldModule of oldModules) {
+        if (!newModules.includes(oldModule)) {
+          const moduleToDelete = characterData.module.find(m => m.name === oldModule);
+          
+          if (moduleToDelete) {
+            if (moduleToDelete.name === activeTab) {
+              firstValidModule = Object.keys(componentMap).find((tabName) => 
+                newModules.some((m) => m === tabName)
+              );
+            }
+            await ApiService.deleteModule(moduleToDelete.id);
+            
+            setCharacterData(prev => ({
+              ...prev,
+              module: prev.module.filter(m => m.id !== moduleToDelete.id)
+            }));
+          }
+        }
+      }
+      
+      for (const newModule of newModules) {
+        if (!oldModules.includes(newModule)) {
+          const createdModule = await ApiService.createModule(1, ficheId, newModule);
+          const transformed = Object.entries(createdModule.data).map(([id, obj]) => ({
+            id: Number(id), 
+            name: obj.name,
+            extra: JSON.parse(obj.extra)
+          }));
+          
+           setCharacterData(prev => ({
+             ...prev,
+             module: [...prev.module, transformed[0]]
+           }));
+        }
+      }
+      
+      // Mettre à jour listModule avec les nouveaux modules
+      setListModule(newModules);
+      setModuleSelectorOpen(false);
+      if(firstValidModule !== null) {
+        setActiveTab(firstValidModule);
+      }
+      
+    } catch (error) {
+      console.error('Erreur lors de la gestion des modules:', error);
+    }
+  };
 
   // Ouvre la modale de sélection au premier accès à cette fiche (clé par ficheId)
+  
   const openModuleSelectorIfFirstVisit = () => {
     try {
       const key = `cf_seen_fiche_${ficheId}`;
@@ -76,8 +133,7 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
     power: {
       component : FicheCardPower,
       fields : {
-        name: { type: "inputText", label: "Pouvoir " },
-        description: { type: "textarea", label: "description du pouvoir" },
+        power: { type: "textTextArea+", label: "Pouvoir " },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },
@@ -89,6 +145,15 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
       }
     },
   };
+
+  const fieldsModale =   {
+    'modules': {
+      type: "checkBox",
+      list: ["general", "character", "story", "power", "gallery"],
+      label: "",
+      key: "selectedModules"
+    }
+  }
 
 
   useEffect(() => {
@@ -137,6 +202,9 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
         setActiveTab(defaultTab);
         setIndex(parsedData.module.findIndex(item => item.name === defaultTab))
 
+        const listModule = parsedData.module.map((e) => e.name)
+        setListModule(listModule)
+
         setImg(parsedData.image)
         setCharacterData(parsedData);
         setIsLoading(false);
@@ -172,8 +240,12 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
       setImg(updated.image)
     }
     ApiService.updateModule(moduleId, {extra: updated})
-    characterData.module[index].extra = updated
-    setCharacterData(characterData)
+    setCharacterData(prev => ({
+      ...prev,
+      module: prev.module.map((m, i) => 
+        i === index ? { ...m, extra: updated } : m
+      )
+    }))
     setIsModalOpen(false);
   };
 
@@ -187,6 +259,9 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
 
   return (
     <div className="cf-container">
+      {/* Bouton de retour */}
+      <BackLocation />
+
       <div className="cf-right" aria-hidden="true" />
       <div className="cf-left" aria-hidden="true">
         <img src={characterData.image} alt="Portrait décoratif" className="cf-img" />
@@ -216,6 +291,7 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
           fields={fields}
           name={ficheId+"-"+activeTab}
           noClose={true}
+          title={activeTab}
         />
       )}
 
@@ -233,12 +309,15 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
         Choisir modules
       </button>
 
-      {/* Modale flottante */}
-      <FicheSelectModule
-        isOpen={isModuleSelectorOpen}
-        onClose={() => setModuleSelectorOpen(false)}
-        onSave={handleSaveModuleSelector}
-      />
+             {isModuleSelectorOpen && (
+         <ModalGeneric
+           onClose={() => setModuleSelectorOpen(false)}
+           handleSubmit={handleSaveModuleSelector}
+           fields={fieldsModale}
+           title={"Choisissez vos modules à afficher"}
+           initialData={{ selectedModules: listModule }}
+         />
+       )}
 
     </div>
   );

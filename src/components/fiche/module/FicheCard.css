@@ -1,5 +1,6 @@
 
 .chapter-btn{
+  color: var(--color-text);
   background-color: var(--color-story);
   font-size: 1.2rem;
   border: none;
@@ -21,9 +22,120 @@
   padding-right: 10px;
 }
 
+/* Styles pour la liste déroulante des chapitres */
+.chapter-select-container {
+  margin-bottom: 10px;
+}
+
+.chapter-select {
+  background-color: var(--color-story);
+  font-size: 1.2rem;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  color: var(--color-text);
+  cursor: pointer;
+  min-width: 200px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.chapter-select:hover {
+  background-color: var(--color-story-select);
+}
+
+.chapter-select:focus {
+  outline: none;
+  background-color: var(--color-story-select);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.chapter-select option {
+  background-color: var(--color-story);
+  color: white;
+  padding: 8px;
+}
+
+.chapter-select option:hover {
+  background-color: var(--color-story-select);
+}
+
   .storytext{
     margin-top: 10px;
   }
+
+/* =============== Styles pour les pouvoirs =============== */
+.power-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.power-btn {
+  background-color: var(--color-power, #8B4513);
+  font-size: 1.2rem;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.power-btn:hover {
+  background-color: var(--color-power-hover, #A0522D);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.power-btn.active {
+  background-color: var(--color-power-select, #D2691E);
+  font-size: 1.35rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.power-content {
+  margin-top: 10px;
+  padding: 20px;
+}
+
+.power-description {
+  color: var(--color-text);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.power-description p {
+  margin-bottom: 12px;
+}
+
+.power-description p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive pour les pouvoirs */
+@media (max-width: 600px) {
+  .power-buttons {
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .power-btn {
+    font-size: 1rem;
+    padding: 6px 12px;
+  }
+  
+  .power-btn.active {
+    font-size: 1.1rem;
+  }
+  
+  .power-content {
+    padding: 15px;
+  }
+}
 
   .cf-imagetaille{
     max-height: 700px;

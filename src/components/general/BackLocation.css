@@ -1,0 +1,42 @@
+/* =============== Bouton de retour BackLocation =============== */
+.back-location-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: var(--color-background);
+  border: 2px solid var(--color-text);
+  color: var(--color-text);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 18px;
+}
+
+.back-location-button:hover {
+  background: var(--color-text);
+  color: var(--color-background);
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.back-location-button:active {
+  transform: scale(0.95);
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+  .back-location-button {
+    top: 15px;
+    left: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+  }
+}

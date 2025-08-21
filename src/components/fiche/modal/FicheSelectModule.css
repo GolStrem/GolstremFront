@@ -48,3 +48,7 @@
 .fsm-checkbox-text{
     margin-left: 10px;
 }
+
+.tm-modal-form input[type="checkbox"] {
+  margin: 0px !important;
+}
