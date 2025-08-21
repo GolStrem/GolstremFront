@@ -170,11 +170,11 @@ const FicheCardPower = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
       ) : powers.length > 0 ? (
         <>
           {/* Boutons des pouvoirs */}
-          <div className="power-buttons">
+          <div className="chapter-buttons">
             {powers.map((power) => (
               <button
                 key={power.id}
-                className={`power-btn ${selectedPower === power.id ? 'active' : ''}`}
+                className={`chapter-btn ${selectedPower === power.id ? 'active' : ''}`}
                 onClick={() => handlePowerChange(power.id)}
               >
                 {power.name}

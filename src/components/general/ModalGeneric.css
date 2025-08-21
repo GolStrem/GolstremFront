@@ -52,6 +52,7 @@
     border: none;
     font-size: 2rem ;
     margin-bottom: -10px;
+    color: var(--color-text);
     
     
 }
@@ -59,6 +60,7 @@
     background-color: transparent;
     border: none;
     font-size: 2rem ;
+    color: var(--color-text);
     margin-bottom: -10px;
     
     
@@ -68,10 +70,14 @@
     border: none;
     font-size: 2rem ;
     margin-bottom: 5px;
+    color: var(--color-text);
     
     
 }
-
+.shoshove{
+    margin-bottom: 0;
+    color: var(--color-text);
+}
 .editChapter{
 
     max-height: 700px;
@@ -184,6 +190,7 @@
 
     .shosho{
         justify-content: normal;
+        margin-top: 20px;
     }
 
     .parentdodo{

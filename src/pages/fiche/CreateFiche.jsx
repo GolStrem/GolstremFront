@@ -133,7 +133,7 @@ const CreateFiche = () => {
     power: {
       component : FicheCardPower,
       fields : {
-        power: { type: "textTextArea+", label: "Pouvoir " },
+        power: { type: "textTextArea+", label: "" },
         image: { type: "inputUrl", label: "Image (URL)" },
       }
     },

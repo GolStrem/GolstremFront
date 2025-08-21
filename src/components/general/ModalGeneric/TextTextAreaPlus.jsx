@@ -133,7 +133,7 @@ const TextTextAreaPlus = ({ config, values, setValues, handleChange, forceUpdate
 								<input id={textKey} className="ficheText textparent" type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
 							</div>
 							
-							<div className="dodo" style={{ flex: 1 }}>
+							<div className="cf-field short" style={{ flex: 1 }}>
 								<label className="tm-label label-about" htmlFor={textareaKey}>Description :</label>
 								<div className="cf-generic">
 									<TextAreaEditor 
