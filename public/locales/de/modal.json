@@ -1,0 +1,9 @@
+{
+    "modal": {
+        "moduleSelector": "Wählen Sie Ihre anzuzeigenden Module",
+        "chapterName": "Kapitelname",
+        "chapterText": "Kapiteltext",
+        "chapitres": "Kapitel",
+        "selectChapter": "Kapitel auswählen"
+    }
+}

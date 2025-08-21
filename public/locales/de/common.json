@@ -21,5 +21,27 @@
   "delete": "Löschen",
   "add": "Hinzufügen",
   "save": "Speichern",
-  "loginCta": "Anmelden"
+  "loginCta": "Anmelden",
+
+  "general": "Allgemein", 
+  "character": "Charakter", 
+  "story": "Geschichte", 
+  "power": "Kraft", 
+  "gallery": "Galerie",
+
+  "preview": "Vorschau",
+  "pasteUrl": "Bild-URL einfügen",
+  "invalidUrl": "Ungültige Bild-URL",
+  "invalidUrlList": "Bitte korrigieren Sie ungültige Bild-URLs",
+  "saving": "Speichern...",
+  "nom": "Name",
+  "titre": "Titel",
+  "description": "Beschreibung",
+  "imgUrl": "Bild (URL)",
+  "moreInfo": "Zusätzliche Informationen",
+  "fear": "Angst",
+  "motivation": "Motivation",
+  "personality": "Persönlichkeit",
+  "age": "Alter",
+  "about": "Über"
 }

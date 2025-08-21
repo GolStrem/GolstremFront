@@ -109,40 +109,40 @@ const CreateFiche = () => {
     general: {
       component : FicheCardGeneral,
       fields : {
-        age: { type: "inputText", label: "Âge" },
-        image: { type: "inputUrl", label: "Image (URL)" },
-        about: { type: "textarea", label: "À propos" },
+        age: { type: "inputText", label: "age" },
+        image: { type: "inputUrl", label: "imgUrl" },
+        about: { type: "textarea", label: "about" },
       }
     },
     character: {
       component : FicheCardCharacter,
       fields : {
-        personalité: { type: "textarea", label: "Personalité" },
-        peur: { type: "textarea", label: "Peur" },
+        personalité: { type: "textarea", label: "Personality" },
+        peur: { type: "textarea", label: "fear" },
         motivation: { type: "textarea", label: "Motivation" },
-        image: { type: "inputUrl", label: "Image (URL)" },
-        another: { type: "textarea", label: "Information complémentaire" }
+        image: { type: "inputUrl", label: "imgUrl" },
+        another: { type: "textarea", label: "moreInfo" }
       }
     },
     story: {
       component : FicheCardStory,
       fields : {
         story: { type: "chapter", label: "" },
-        image: { type: "inputUrl", label: "Image (URL)" },
+        image: { type: "inputUrl", label: "imgUrl" },
       }
     },
     power: {
       component : FicheCardPower,
       fields : {
         power: { type: "textTextArea+", label: "" },
-        image: { type: "inputUrl", label: "Image (URL)" },
+        image: { type: "inputUrl", label: "imgUrl" },
       }
     },
     gallery: {
       component : FicheCardGallery,
       fields : {
         imageGallery: { type: "texteImg+", label: "" },
-        image: { type: "inputUrl", label: "Image (URL)" },
+        image: { type: "inputUrl", label: "imgUrl" },
       }
     },
   };
@@ -317,7 +317,7 @@ const CreateFiche = () => {
            onClose={() => setModuleSelectorOpen(false)}
            handleSubmit={handleSaveModuleSelector}
            fields={fieldsModale}
-           title={"Choisissez vos modules à afficher"}
+           title={"modal.moduleSelector"}
            initialData={{ selectedModules: listModule }}
          />
        )}

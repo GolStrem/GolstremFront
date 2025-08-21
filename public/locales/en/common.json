@@ -20,5 +20,27 @@
   "delete": "Delete",
   "add": "Add",
   "save": "Save",
-  "loginCta": "Log in"
+  "loginCta": "Log in",
+
+  "general": "General", 
+  "character": "Character", 
+  "story": "Story", 
+  "power": "Power", 
+  "gallery": "Gallery",
+
+  "preview": "Preview",
+  "pasteUrl": "Paste image URL",
+  "invalidUrl": "Invalid image URL",
+  "invalidUrlList": "Please correct invalid image URLs",
+  "saving": "Saving...",
+  "nom": "Name",
+  "titre": "Title",
+  "description": "Description",
+  "imgUrl": "Image (URL)",
+  "moreInfo": "Additional information",
+  "fear": "Fear",
+  "motivation": "Motivation",
+  "personality": "Personality",
+  "age": "Age",
+  "about": "About"
 }

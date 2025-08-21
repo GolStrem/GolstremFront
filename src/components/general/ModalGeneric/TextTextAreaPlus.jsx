@@ -2,6 +2,7 @@ import React from "react";
 import { ToolbarTipTap } from "@components";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { useTranslation } from "react-i18next";
 
 const TextAreaEditor = React.memo(({ content, onChange, forceUpdateRef }) => {
 	const editor = useEditor({
@@ -28,6 +29,7 @@ const TextAreaEditor = React.memo(({ content, onChange, forceUpdateRef }) => {
 });
 
 const TextTextAreaPlus = ({ config, values, setValues, handleChange, forceUpdateRef }) => {
+	const { t } = useTranslation("modal");
 	// Détecter combien de paires existent déjà
 	const textKeyBase = "inputText";
 	const textareaKeyBase = "inputTextarea";
@@ -112,7 +114,7 @@ const TextTextAreaPlus = ({ config, values, setValues, handleChange, forceUpdate
 	const label = config?.label ?? "Texte + TextArea";
 	return (
 		<div className="cf-field">
-			<label className="tm-label label-fiche">{label}</label>
+			<label className="tm-label label-fiche">{t(label)}</label>
 			{rows.map((idx) => {
 				const textKey = `${textKeyBase}${idx}`;
 				const textareaKey = `${textareaKeyBase}${idx}`;
@@ -129,12 +131,12 @@ const TextTextAreaPlus = ({ config, values, setValues, handleChange, forceUpdate
 						)}
 						<div className="parentdodo" style={{ flexDirection: "column", gap: "12px" }}>
 							<div className="dada" >
-								<label className="tm-label label-fiche" htmlFor={textKey}>Titre :</label>
+								<label className="tm-label label-fiche" htmlFor={textKey}>{t("titre")} :</label>
 								<input id={textKey} className="ficheText textparent" type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
 							</div>
 							
 							<div className="cf-field short" style={{ flex: 1 }}>
-								<label className="tm-label label-about" htmlFor={textareaKey}>Description :</label>
+								<label className="tm-label label-about" htmlFor={textareaKey}>{t("description")} :</label>
 								<div className="cf-generic">
 									<TextAreaEditor 
 										content={values[textareaKey] || ""}
