@@ -4,7 +4,7 @@ import "../../../pages/fiche/CreateFiche.css";
 import "./FicheCard.css"
 
 
-const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
+const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit, setPreviewSrc }) => {
   const [loading, setLoading] = useState(true);
   const [galleryItems, setGalleryItems] = useState([]);
   const prevDataRef = useRef(null);
@@ -160,6 +160,8 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
                     src={item.imageUrl} 
                     alt={item.title}
                     className="gallery-image"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setPreviewSrc(item.imageUrl)}
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'block';
@@ -181,6 +183,7 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
       <button className="cf-edit-btn" onClick={onEdit}>
         ✏️ Modifier
       </button>
+
     </div>
   );
 };

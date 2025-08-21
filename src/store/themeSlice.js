@@ -57,7 +57,7 @@ function switchColor(theme) {
   document.documentElement.style.setProperty("--btn-hover-bg", theme === 'dark' ? '#3a3a3a' : '#f0f0f0');
 
   document.documentElement.style.setProperty("--color-story", theme === 'dark' ? '#131313ff' : '#d8d8d8ff');
-  document.documentElement.style.setProperty("--color-story-select", theme === 'dark' ? '#2c2c2c' : '#8a8a8aff');
+  document.documentElement.style.setProperty("--color-story-select", theme === 'dark' ? '#4b4b4bff' : '#f0f0f0');
 
   document.documentElement.style.setProperty("--color-home-gradient", theme === 'dark' ? 'linear-gradient(135deg, #121212, #222)' : 'linear-gradient(135deg, #f5f5f5, #e0e0e0)');
 

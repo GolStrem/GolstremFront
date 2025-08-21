@@ -120,7 +120,27 @@ const TextImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc })
 								</div>
 								)}
 								</label>
-								<input id={urlKey} className="gugute" type="url" value={values[urlKey] ?? ""} onChange={handleChange(urlKey)} />
+								<input 
+									id={urlKey} 
+									className="gugute" 
+									type="url" 
+									value={values[urlKey] ?? ""} 
+									onChange={handleChange(urlKey)}
+									style={{
+										border: (!values[urlKey] || isValidImageUrl(values[urlKey])) ? undefined : '2px solid #ff4444',
+										borderRadius: (!values[urlKey] || isValidImageUrl(values[urlKey])) ? undefined : '4px'
+									}}
+								/>
+								{values[urlKey] && !isValidImageUrl(values[urlKey]) && (
+									<div style={{ 
+										color: '#ff4444', 
+										fontSize: '12px', 
+										marginTop: '4px',
+										fontStyle: 'italic'
+									}}>
+										URL d'image invalide
+									</div>
+								)}
 								
 							</div>
 						</div>

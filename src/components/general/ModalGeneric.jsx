@@ -224,7 +224,38 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 		setValues((prev) => ({ ...prev, [key]: nextValue }));
 	};
 
+	// Fonction pour vérifier si tous les champs URL sont valides
+	const validateAllUrlFields = () => {
+		// Vérifier les champs inputUrl simples
+		const urlFields = Object.entries(fields).filter(([key, config]) => config?.type === "inputUrl");
+		for (const [key] of urlFields) {
+			if (values[key] && !isValidImageUrl(values[key])) {
+				return false;
+			}
+		}
+
+		// Vérifier les champs dans les composants texteImg+
+		const texteImgFields = Object.entries(fields).filter(([key, config]) => config?.type === "texteImg+");
+		for (const [key] of texteImgFields) {
+			const urlRegex = /^inputUrl(\d+)$/;
+			const urlKeys = Object.keys(values).filter(k => urlRegex.test(k));
+			for (const urlKey of urlKeys) {
+				if (values[urlKey] && !isValidImageUrl(values[urlKey])) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+
 	const onSubmit = async () => {
+		// Vérifier la validation avant de soumettre
+		if (!validateAllUrlFields()) {
+			setError("Veuillez corriger les URLs d'images invalides avant de continuer.");
+			return;
+		}
+
 		setError("");
 		setLoading(true);
 		try {
@@ -253,6 +284,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					</div>
 				);
 			case "inputUrl":
+				const isUrlValid = !values[key] || isValidImageUrl(values[key]);
 				return (
 					<div key={key} className="cf-field short">
 						<label className="tm-label label-fiche  " htmlFor={id}>
@@ -273,7 +305,21 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 						value={values[key]}
 						onChange={handleChange(key)}
 						placeholder="Collez l'URL de l'image"
-						/>	
+						style={{
+							border: isUrlValid ? undefined : '2px solid #ff4444',
+							borderRadius: isUrlValid ? undefined : '4px'
+						}}
+						/>
+						{values[key] && !isValidImageUrl(values[key]) && (
+							<div style={{ 
+								color: '#ff4444', 
+								fontSize: '12px', 
+								marginTop: '4px',
+								fontStyle: 'italic'
+							}}>
+								URL d'image invalide
+							</div>
+						)}
 					</div>
 					);
 			case "textarea":
@@ -359,7 +405,12 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 			</form>
 			{error && <span className="tm-error">{error}</span>}
 			<div className="tm-modal-buttons">
-				<button className="tm-primary" onClick={onSubmit} disabled={loading}>
+				<button 
+					className="tm-primary" 
+					onClick={onSubmit} 
+					disabled={loading || !validateAllUrlFields()}
+					title={!validateAllUrlFields() ? "Veuillez corriger les URLs d'images invalides" : ""}
+				>
 					{loading ? "Sauvegarde..." : "Enregistrer"}
 				</button>
 				<button onClick={handleClose} disabled={loading}>Annuler</button>

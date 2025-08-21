@@ -18,6 +18,7 @@ const CreateFiche = () => {
   const [characterData, setCharacterData] = useState({});
   const [index, setIndex] = useState({});
   const [img, setImg] = useState({});
+  const [previewSrc, setPreviewSrc] = useState(null);
 
   const [activeTab, setActiveTab] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -275,7 +276,9 @@ const CreateFiche = () => {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onEdit={handleOpenModal}
+          setPreviewSrc={setPreviewSrc}
         />
+
 
         <aside className="cf-portrait-float">
           <img src={img} alt="Portrait du personnage" />
@@ -318,6 +321,31 @@ const CreateFiche = () => {
            initialData={{ selectedModules: listModule }}
          />
        )}
+
+       
+      {/* Modal d'aperçu */}
+      {previewSrc && (
+        <div
+          className="image-preview-overlay"
+          onClick={() => setPreviewSrc(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <img
+            src={previewSrc}
+            alt="Aperçu"
+            style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: 8 }}
+            onClick={(e) => e.stopPropagation()} // empêcher la fermeture au clic sur l'image
+          />
+        </div>
+      )}
 
     </div>
   );
