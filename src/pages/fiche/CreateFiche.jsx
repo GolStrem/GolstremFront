@@ -33,6 +33,19 @@ const [selectedModules, setSelectedModules] = useState([]);
 const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
 const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); setModuleSelectorOpen(false); };
 
+  // Ouvre la modale de sélection au premier accès à cette fiche (clé par ficheId)
+  const openModuleSelectorIfFirstVisit = () => {
+    try {
+      const key = `cf_seen_fiche_${ficheId}`;
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, "1");
+        setModuleSelectorOpen(true);
+      }
+    } catch (e) {
+      // Silencieux si localStorage indisponible
+    }
+  };
+
 
   const componentMap = {
     general: {
@@ -127,6 +140,8 @@ const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); set
         setImg(parsedData.image)
         setCharacterData(parsedData);
         setIsLoading(false);
+        // Ouvrir la sélection des modules lors de la toute première visite
+        openModuleSelectorIfFirstVisit();
       } catch (error) {
         console.error("erreur", error);
         setIsLoading(false);
