@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
 import { BaseModal, ToolbarTipTap } from "@components";
 import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
@@ -9,7 +9,82 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 
+// Composant pour un chapitre individuel - défini en dehors pour éviter les re-renders
+const ChapterEditor = React.memo(({ 
+	chapterKey, 
+	isVisible, 
+	displayName, 
+	onNameChange, 
+	onNameBlur, 
+	onRemove, 
+	existingCount,
+	values,
+	handleChange,
+	forceUpdateRef
+}) => {
+	const editor = useEditor({
+		extensions: [StarterKit],
+		content: values[chapterKey] || "",
+		onBlur: () => {
+			// Mettre à jour values seulement quand on sort du focus
+			handleChange(chapterKey)({ target: { value: editor.getHTML() } });
+			onNameBlur(chapterKey);
+		},
+	});
 
+	// Mettre à jour le contenu de l'éditeur quand values change
+	useEffect(() => {
+		if (editor && editor.getHTML() !== values[chapterKey]) {
+			editor.commands.setContent(values[chapterKey] || '');
+		}
+	}, [values[chapterKey], editor, forceUpdateRef.current]);
+
+	// Forcer la mise à jour du contenu quand l'éditeur devient visible
+	useEffect(() => {
+		if (isVisible && editor) {
+			editor.commands.setContent(values[chapterKey] || '');
+		}
+	}, [isVisible, editor, values[chapterKey]]);
+
+	return (
+		<div 
+			style={{ 
+				marginBottom: 16, 
+				display: isVisible ? "block" : "none"
+			}}
+		>
+			<div className="cf-field short" style={{ marginBottom: 12 }}>
+				<label className="tm-label label-fiche" htmlFor={`${chapterKey}_name`}>Nom du chapitre :</label>
+				<div className="boitecha">
+					<input 
+						id={`${chapterKey}_name`}
+						className="chapterName" 
+						type="text" 
+						value={displayName} 
+						onChange={(e) => onNameChange(chapterKey, e.target.value)}
+						onBlur={() => onNameBlur(chapterKey)}
+						placeholder="Nom du chapitre"
+					/>
+					{existingCount > 1 && (
+						<button 
+							type="button" 
+							className="tm-secondary shoshot" 
+							onClick={() => onRemove(chapterKey)}
+							style={{ padding: "6px 10px" }}
+						>
+							-
+						</button>
+					)}
+				</div>
+			</div>
+			<div className="cf-field">
+				<label className="tm-label label-about" htmlFor={`${chapterKey}_text`}>Texte du chapitre :</label>
+				<ToolbarTipTap editor={editor} />
+				<EditorContent editor={editor} className="tiptap-editor editChapter" />
+			</div>
+		</div>
+	);
+});
 
 const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false }) => {
 	const textareasRef = useRef([]);
@@ -156,32 +231,6 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 		}
 	}, [fields]);
 
-	useLayoutEffect(() => {
-		textareasRef.current = [];
-
-		// récupérer tous les textarea du DOM de cette modale
-		const textareas = document.querySelectorAll(".tmedit textarea");
-
-		// garder toutes les fonctions resize pour cleanup
-		const cleanupFns = [];
-
-		textareas.forEach((textarea) => {
-		// ajouter à la ref
-		textareasRef.current.push(textarea);
-
-		const resize = () => {
-		textarea.style.height = "auto"; 
-		textarea.style.height = textarea.scrollHeight + "px";
-		};
-		resize();
-		textarea.addEventListener("input", resize);
-		cleanupFns.push(() => textarea.removeEventListener("input", resize));
-		});
-
-		return () => {
-		cleanupFns.forEach((fn) => fn());
-		};
-	}, [values]); // relance si le contenu change
 
 
 
@@ -396,15 +445,15 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 			}
 		}, [chapterKeys, chapterOrder]);
 
-		const addChapter = () => {
+		const addChapter = useCallback(() => {
 			const nextIndex = existingCount;
 			const nextKey = `nC-chapitre${nextIndex}`;
 			setValues((prev) => ({ ...prev, [nextKey]: "" }));
 			// Changer directement vers le nouveau chapitre
 			setCurrentChapterKey(nextKey);
-		};
+		}, [existingCount]);
 
-		const removeChapter = (keyToRemove) => {
+		const removeChapter = useCallback((keyToRemove) => {
 			if (existingCount <= 1) return; // Garder au moins un chapitre
 			
 			setValues((prev) => {
@@ -421,150 +470,93 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				const remainingKeys = chapterOrder.filter(key => key !== keyToRemove);
 				setCurrentChapterKey(remainingKeys.length > 0 ? remainingKeys[0] : null);
 			}
-		};
+		}, [existingCount, currentChapterKey, chapterOrder]);
 
-		const handleChapterChange = (e) => {
+		const handleChapterChange = useCallback((e) => {
 			const selectedKey = e.target.value;
 			setCurrentChapterKey(selectedKey);
-		};
+		}, []);
 
-		// Fonction pour nettoyer le titre (enlever nC-)
-		const getCleanTitle = (key) => {
+		// Fonction pour nettoyer le titre (enlever nC-) - mémorisée
+		const getCleanTitle = useCallback((key) => {
 			return key.replace(/^nC-/, "");
-		};
+		}, []);
 
-		// Composant pour un chapitre individuel
-		const ChapterEditor = ({ chapterKey, isVisible, displayName, onNameChange, onNameBlur, onRemove, existingCount }) => {
-			const editor = useEditor({
-				extensions: [StarterKit],
-				content: values[chapterKey] || "",
-				onUpdate: ({ editor }) => {
-					handleChange(chapterKey)({ target: { value: editor.getHTML() } });
-				},
-			});
 
-			// Mettre à jour le contenu de l'éditeur quand values change
-			useEffect(() => {
-				if (editor && editor.getHTML() !== values[chapterKey]) {
-					editor.commands.setContent(values[chapterKey] || '');
-				}
-			}, [values[chapterKey], editor, forceUpdateRef.current]);
-
-			// Forcer la mise à jour du contenu quand l'éditeur devient visible
-			useEffect(() => {
-				if (isVisible && editor) {
-					editor.commands.setContent(values[chapterKey] || '');
-				}
-			}, [isVisible, editor, values[chapterKey]]);
-
-			return (
-				<div 
-					style={{ 
-						marginBottom: 16, 
-						
-						display: isVisible ? "block" : "none"
-					}}
-				>
-					<div className="cf-field short" style={{ marginBottom: 12 }}>
-						<label className="tm-label label-fiche" htmlFor={`${chapterKey}_name`}>Nom du chapitre :</label>
-						<div className="boitecha">
-							<input 
-								id={`${chapterKey}_name`} 
-								type="text" 
-								value={displayName} 
-								onChange={(e) => onNameChange(chapterKey, e.target.value)}
-								onBlur={() => onNameBlur(chapterKey)}
-								placeholder="Nom du chapitre"
-							/>
-							{existingCount > 1 && (
-								<button 
-									type="button" 
-									className="tm-secondary shoshot" 
-									onClick={() => onRemove(chapterKey)}
-									style={{ padding: "6px 10px" }}
-									
-								>
-									-
-								</button>
-							)}
-						</div>
-					</div>
-					<div className="cf-field">
-						<label className="tm-label label-about" htmlFor={`${chapterKey}_text`}>Texte du chapitre :</label>
-						<ToolbarTipTap editor={editor} />
-						<EditorContent editor={editor} className="tiptap-editor editChapter" />
-					</div>
-				</div>
-			);
-		};
 
 		// Fonction pour gérer le changement de nom du chapitre (mise à jour en temps réel)
-		const handleChapterNameChange = (oldKey, newName) => {
-			// Mettre à jour le nom en cours d'édition
+		const handleChapterNameChange = useCallback((oldKey, newName) => {
+			// Mettre à jour UNIQUEMENT le nom en cours d'édition pour le select
+			// Ne déclenche aucun re-render du composant parent
 			setEditingNames(prev => ({
 				...prev,
 				[oldKey]: newName
 			}));
-		};
+		}, []);
 
-		// Fonction pour valider le nom du chapitre (appelée lors de la perte de focus)
-		const handleChapterNameBlur = (oldKey) => {
-			const newName = editingNames[oldKey];
-			
-			// Permettre les espaces et les caractères spéciaux, mais pas de nom complètement vide
-			if (!newName || newName.trim() === "") {
-				// Remettre l'ancien nom si vide
-				setEditingNames(prev => ({
-					...prev,
-					[oldKey]: getCleanTitle(oldKey)
-				}));
-				return;
-			}
-			
-			const newKey = `nC-${newName}`; // Garder les espaces et caractères tels quels
-			
-			// Éviter de créer une clé identique
-			if (newKey === oldKey) return;
-			
-			// Créer un mapping pour préserver l'ordre dans values
-			setValues((prev) => {
-				const newValues = {};
+		// Fonction pour vérifier si le focus est encore dans la zone du chapitre
+		const handleChapterBlur = useCallback((oldKey) => {
+			setTimeout(() => {
+				const activeElement = document.activeElement;
+				const chapterContainer = document.querySelector(`[data-chapter-key="${oldKey}"]`);
 				
-				// Préserver l'ordre en recréant l'objet dans le bon ordre
-				chapterOrder.forEach(key => {
-					if (key === oldKey) {
-						newValues[newKey] = prev[oldKey]; // Nouvelle clé avec l'ancien contenu
-					} else {
-						newValues[key] = prev[key]; // Garder les autres clés
-					}
+				// Si le focus est encore dans le conteneur du chapitre, ne rien faire
+				if (chapterContainer && chapterContainer.contains(activeElement)) {
+					return;
+				}
+				
+				// Sinon, mettre à jour le titre ET le texte du chapitre
+				const newName = editingNames[oldKey];
+				
+				// Permettre les espaces et les caractères spéciaux, mais pas de nom complètement vide
+				if (!newName || newName.trim() === "") {
+					// Remettre l'ancien nom si vide
+					setEditingNames(prev => ({
+						...prev,
+						[oldKey]: getCleanTitle(oldKey)
+					}));
+					return;
+				}
+				
+				const newKey = `nC-${newName}`; // Garder les espaces et caractères tels quels
+				
+				// Éviter de créer une clé identique
+				if (newKey === oldKey) return;
+				
+				// Mettre à jour values avec la nouvelle clé
+				setValues((prev) => {
+					const newValues = {};
+					
+					// Préserver l'ordre exact en recréant l'objet dans le bon ordre
+					chapterOrder.forEach(key => {
+						if (key === oldKey) {
+							// Remplacer l'ancienne clé par la nouvelle
+							newValues[newKey] = prev[oldKey];
+						} else {
+							// Garder les autres clés telles quelles
+							newValues[key] = prev[key];
+						}
+					});
+					
+					return newValues;
 				});
 				
-				// Ajouter les autres propriétés non-chapitre
-				Object.keys(prev).forEach(key => {
-					if (!key.startsWith("nC-")) {
-						newValues[key] = prev[key];
+				// Mettre à jour l'ordre des chapitres en préservant l'ordre exact
+				setChapterOrder(prev => {
+					const newOrder = [...prev];
+					const index = newOrder.indexOf(oldKey);
+					if (index !== -1) {
+						newOrder[index] = newKey;
 					}
+					return newOrder;
 				});
 				
-				return newValues;
-			});
-
-			// Mettre à jour l'ordre des chapitres (remplacer l'ancienne clé par la nouvelle)
-			setChapterOrder(prev => prev.map(key => key === oldKey ? newKey : key));
-
-			// Mettre à jour la clé courante si c'était le chapitre affiché
-			if (oldKey === currentChapterKey) {
-				setCurrentChapterKey(newKey);
-			}
-
-			// Mettre à jour les noms en cours d'édition avec la nouvelle clé
-			setEditingNames(prev => {
-				const newEditing = { ...prev };
-				delete newEditing[oldKey];
-				newEditing[newKey] = newName;
-				return newEditing;
-			});
-		};
+				// Mettre à jour la clé courante si c'était le chapitre affiché
+				if (oldKey === currentChapterKey) {
+					setCurrentChapterKey(newKey);
+				}
+			}, 0);
+		}, [editingNames, getCleanTitle, chapterOrder, currentChapterKey]);
 
 		const label = config?.label ?? "Chapitres";
 		return (
@@ -602,24 +594,28 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					</div>
 				</div>
 
-				{/* Affichage du chapitre sélectionné */}
-				{chapterOrder.map((key, index) => {
-					const isVisible = key === currentChapterKey;
-					const displayName = editingNames[key] || getCleanTitle(key);
-					
-					return (
-						<ChapterEditor
-							key={`chapter-${index}`}
-							chapterKey={key}
-							isVisible={isVisible}
-							displayName={displayName}
-							onNameChange={handleChapterNameChange}
-							onNameBlur={handleChapterNameBlur}
-							onRemove={removeChapter}
-							existingCount={existingCount}
-						/>
-					);
-				})}
+						{/* Affichage du chapitre sélectionné */}
+		{chapterOrder.map((key) => {
+			const isVisible = key === currentChapterKey;
+			const displayName = editingNames[key] || getCleanTitle(key);
+			
+			return (
+				<div key={`chapter-${key}`} data-chapter-key={key}>
+					<ChapterEditor
+						chapterKey={key}
+						isVisible={isVisible}
+						displayName={displayName}
+						onNameChange={handleChapterNameChange}
+						onNameBlur={handleChapterBlur}
+						onRemove={removeChapter}
+						existingCount={existingCount}
+						values={values}
+						handleChange={handleChange}
+						forceUpdateRef={forceUpdateRef}
+					/>
+				</div>
+			);
+		})}
 				
 			</div>
 		);

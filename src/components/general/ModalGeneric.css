@@ -3,8 +3,8 @@
     max-height: 500px;
 }
 
-#nC-introduction_name{
-    margin-left: 0 ;
+.chapterName {
+    margin-left: 0!important ;
 }
 
 #peur,#personalité,#motivation,#another,#nC-Introduction_text,#about,#image{
