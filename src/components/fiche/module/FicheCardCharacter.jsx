@@ -6,7 +6,6 @@ import { ApiService } from "@service";
 const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
 
   const extraData = (data.module === undefined) ? {} : data.module[indexModule]?.extra;
-  console.log(extraData)
   // État pour les valeurs avec alias résolus
   const [resolvedValues, setResolvedValues] = useState(extraData);
   const [isLoading, setIsLoading] = useState(false);

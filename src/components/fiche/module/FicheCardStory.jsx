@@ -149,18 +149,34 @@ const FicheCardStory = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
         <p>Chargement des chapitres...</p>
       ) : chaptersWithContent.length > 0 ? (
         <>
-          {/* Boutons des chapitres */}
-          <div className="chapter-buttons">
-            {chaptersWithContent.map(([key, value]) => (
-              <button
-                key={key}
-                className={`chapter-btn ${selectedChapter === key ? 'active' : ''}`}
-                onClick={() => handleChapterChange(key)}
+          {/* Sélection des chapitres - boutons si ≤ 5, dropdown si > 5 */}
+          {chaptersWithContent.length <= 5 ? (
+            <div className="chapter-buttons">
+              {chaptersWithContent.map(([key, value]) => (
+                <button
+                  key={key}
+                  className={`chapter-btn ${selectedChapter === key ? 'active' : ''}`}
+                  onClick={() => handleChapterChange(key)}
+                >
+                  {getChapterName(key)}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="chapter-select-container">
+              <select
+                className="chapter-select"
+                value={selectedChapter || ''}
+                onChange={(e) => handleChapterChange(e.target.value)}
               >
-                {getChapterName(key)}
-              </button>
-            ))}
-          </div>
+                {chaptersWithContent.map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {getChapterName(key)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           
           {/* Contenu du chapitre sélectionné */}
           {selectedChapter && resolvedValues[selectedChapter] && (
