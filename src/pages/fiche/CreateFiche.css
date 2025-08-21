@@ -264,6 +264,20 @@
 }
 
 
+/* Bouton flottant en haut à droite */
+.cf-module-selector-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
 
 
 

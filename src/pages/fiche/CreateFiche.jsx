@@ -5,11 +5,14 @@ import {
   FicheCardStory, 
   FicheCardPower, 
   FicheCardGallery,
-  ModalGeneric
+  ModalGeneric,
+  FicheSelectModule
 } from "@components";
 import "./CreateFiche.css";
 import { useParams } from "react-router-dom";
 import { ApiFiche, ApiService } from "@service"
+
+
 
 
 const CreateFiche = () => {
@@ -22,6 +25,14 @@ const CreateFiche = () => {
   const [activeTab, setActiveTab] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+const [isModuleSelectorOpen, setModuleSelectorOpen] = useState(false);
+const [selectedModules, setSelectedModules] = useState([]);
+
+// callback pour ouvrir la modale dans l'angle droit
+const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
+const handleSaveModuleSelector = (modules) => { setSelectedModules(modules); setModuleSelectorOpen(false); };
+
 
   const componentMap = {
     general: {
@@ -197,6 +208,23 @@ const CreateFiche = () => {
         <span className="cf-badge">DISCORD</span>
         <span className="cf-badge">SERVEUR ZHENEOS</span>
       </div>
+
+
+      {/* Bouton pour ouvrir la modale */}
+      <button 
+        className="cf-module-selector-btn"
+        onClick={handleOpenModuleSelector}
+      >
+        Choisir modules
+      </button>
+
+      {/* Modale flottante */}
+      <FicheSelectModule
+        isOpen={isModuleSelectorOpen}
+        onClose={() => setModuleSelectorOpen(false)}
+        onSave={handleSaveModuleSelector}
+      />
+
     </div>
   );
 };
