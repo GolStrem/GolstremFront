@@ -1,0 +1,21 @@
+{
+    "modal": {
+        "moduleSelector": "Scegli i moduli da visualizzare",
+        "chapterName": "Nome del capitolo",
+        "chapterText": "Testo del capitolo",
+        "chapitres": "Capitoli",
+        "selectChapter": "Seleziona un capitolo",
+        "missingFicheId": "ID fiche mancante",
+        "cannotDeleteFiche": "Impossibile eliminare questa fiche",
+        "deleteFiche": "Elimina fiche",
+        "confirmDeleteFiche": "Sei sicuro di voler eliminare questa fiche?",
+        "deleting": "Eliminazione...",
+        "createCharacter": "Crea un personaggio",
+        "firstNameRequired": "Il nome è obbligatorio.",
+        "invalidImageUrl": "URL immagine non valido (jpg, jpeg, png, gif, webp, bmp, svg).",
+        "creationFailed": "Creazione fallita. Riprova più tardi.",
+        "creating": "Creazione...",
+        "error": "La modifica è fallita. Controlla i campi e riprova.",
+        "modifyFiche": "Modifica la scheda"
+    }
+}

@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaEllipsisV } from "react-icons/fa";
 import { BiCopy } from "react-icons/bi";
+import { useTranslation } from "react-i18next";
 
 import "./FicheCardMenu.css";
 
 const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
+  const { t } = useTranslation("common");
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
@@ -35,15 +37,15 @@ const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
           <div onClick={(e) => {
             e.stopPropagation();
             onEdit();
-          }} className="ficheBouton">✏️ Modifier</div>
+          }} className="ficheBouton">✏️ {t("edit")}</div>
           <div onClick={(e) => {
             e.stopPropagation();
             onDuplicate();
-          }} className="ficheBouton"> <BiCopy />&nbsp; Dupliquer</div>
+          }} className="ficheBouton"> <BiCopy />&nbsp; {t("duplicate")}</div>
           <div onClick={(e) => {
             e.stopPropagation();
             onDelete();
-          }} className="ficheBouton">🗑️ Supprimer</div>
+          }} className="ficheBouton">🗑️ {t("delete")}</div>
         </div>
       )}
     </div>

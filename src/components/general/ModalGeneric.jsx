@@ -8,7 +8,7 @@ import { FaEye } from "react-icons/fa";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextImgPlus, TextTextAreaPlus, CheckBox, Chapter } from "./ModalGeneric/index.js";
-
+import { useTranslation } from "react-i18next";
 
 
 const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false, isOpen = undefined, title = undefined }) => {
@@ -16,6 +16,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 	
 	const [previewSrc, setPreviewSrc] = useState(null);
 	const forceUpdateRef = useRef(0);
+	const { t } = useTranslation("modal");
 
 	const [values, setValues] = useState(() => {
 
@@ -224,7 +225,38 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 		setValues((prev) => ({ ...prev, [key]: nextValue }));
 	};
 
+	// Fonction pour vérifier si tous les champs URL sont valides
+	const validateAllUrlFields = () => {
+		// Vérifier les champs inputUrl simples
+		const urlFields = Object.entries(fields).filter(([key, config]) => config?.type === "inputUrl");
+		for (const [key] of urlFields) {
+			if (values[key] && !isValidImageUrl(values[key])) {
+				return false;
+			}
+		}
+
+		// Vérifier les champs dans les composants texteImg+
+		const texteImgFields = Object.entries(fields).filter(([key, config]) => config?.type === "texteImg+");
+		for (const [key] of texteImgFields) {
+			const urlRegex = /^inputUrl(\d+)$/;
+			const urlKeys = Object.keys(values).filter(k => urlRegex.test(k));
+			for (const urlKey of urlKeys) {
+				if (values[urlKey] && !isValidImageUrl(values[urlKey])) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+
 	const onSubmit = async () => {
+		// Vérifier la validation avant de soumettre
+		if (!validateAllUrlFields()) {
+			setError("Veuillez corriger les URLs d'images invalides avant de continuer.");
+			return;
+		}
+
 		setError("");
 		setLoading(true);
 		try {
@@ -247,21 +279,22 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				return (
 					<div key={key} className="cf-field short">
 						<label className="tm-label label-fiche" htmlFor={id}>
-							{label} :
+							{t(label)} :
 						</label>
 						<input id={id} type="text" value={values[key]} onChange={handleChange(key)} />
 					</div>
 				);
 			case "inputUrl":
+				const isUrlValid = !values[key] || isValidImageUrl(values[key]);
 				return (
 					<div key={key} className="cf-field short">
 						<label className="tm-label label-fiche  " htmlFor={id}>
-						{label} :
+						{t(label)} :
 						{values[key] && isValidImageUrl(values[key]) && (
 						<div style={{ marginLeft: 6, marginBottom:-6 }}>
 							<FaEye
 							style={{ cursor: "pointer", fontSize: 20 }}
-							title="Voir l'aperçu"
+							title={t("preview")}
 							onClick={() => setPreviewSrc(values[key])}
 							/>
 						</div>
@@ -272,8 +305,22 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 						type="url"
 						value={values[key]}
 						onChange={handleChange(key)}
-						placeholder="Collez l'URL de l'image"
-						/>	
+						placeholder={t("pasteUrl")}
+						style={{
+							border: isUrlValid ? undefined : '2px solid #ff4444',
+							borderRadius: isUrlValid ? undefined : '4px'
+						}}
+						/>
+						{values[key] && !isValidImageUrl(values[key]) && (
+							<div style={{ 
+								color: '#ff4444', 
+								fontSize: '12px', 
+								marginTop: '4px',
+								fontStyle: 'italic'
+							}}>
+								{t("invalidUrl")}
+							</div>
+						)}
 					</div>
 					);
 			case "textarea":
@@ -294,7 +341,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				return (
 					<div key={key} className="cf-generic">
 						<label className="tm-label label-about" htmlFor={id}>
-							{label} :
+							{t(label)} :
 						</label>
 						 <ToolbarTipTap editor={editor} />
 						<EditorContent editor={editor} className="tiptap-editor" />
@@ -353,16 +400,21 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 
 	return (
 		<BaseModal onClose={handleClose} className="tmedit cf-modal-large" noClose={noClose}>
-			{title && <h2>{title}</h2>}
+			{title && <h2>{t(title)}</h2>}
 			<form className="tm-modal-form" onSubmit={(e) => e.preventDefault()}>
 				{Object.entries(fields).map(([key, config]) => renderField(key, config))}
 			</form>
 			{error && <span className="tm-error">{error}</span>}
 			<div className="tm-modal-buttons">
-				<button className="tm-primary" onClick={onSubmit} disabled={loading}>
-					{loading ? "Sauvegarde..." : "Enregistrer"}
+				<button 
+					className="tm-primary" 
+					onClick={onSubmit} 
+					disabled={loading || !validateAllUrlFields()}
+					title={!validateAllUrlFields() ? t("invalidUrlList") : ""}
+				>
+					{loading ? t("saving") : t("save")}
 				</button>
-				<button onClick={handleClose} disabled={loading}>Annuler</button>
+				<button onClick={handleClose} disabled={loading}>{t("cancel")}</button>
 			</div>
 
 			{/* Modal d'aperçu */}
@@ -382,7 +434,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 			>
 				<img
 				src={previewSrc}
-				alt="Aperçu"
+				alt={t("preview")}
 				style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: 8 }}
 				onClick={(e) => e.stopPropagation()} // empêcher la fermeture au clic sur l'image
 				/>

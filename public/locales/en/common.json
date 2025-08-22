@@ -20,5 +20,59 @@
   "delete": "Delete",
   "add": "Add",
   "save": "Save",
-  "loginCta": "Log in"
+  "loginCta": "Log in",
+
+  "general": "General", 
+  "character": "Character", 
+  "story": "Story", 
+  "power": "Power", 
+  "gallery": "Gallery",
+
+  "preview": "Preview",
+  "pasteUrl": "Paste image URL",
+  "invalidUrl": "Invalid image URL",
+  "invalidUrlList": "Please correct invalid image URLs",
+  "saving": "Saving...",
+  "nom": "Name",
+  "titre": "Title",
+  "description": "Description",
+  "imgUrl": "Image (URL)",
+  "moreInfo": "Additional information",
+  "fear": "Fear",
+  "motivation": "Motivation",
+  "personality": "Personality",
+  "age": "Age",
+  "about": "About",
+
+  "loading": "Loading...",
+  "chooseModules": "Choose modules",
+  "discord": "DISCORD",
+  "serverZheneos": "ZHENEOS SERVER",
+  "decorativePortrait": "Decorative portrait",
+  "characterPortrait": "Character portrait",
+
+  "characterTrait": "Character",
+  "other": "Other",
+  "edit": "Edit",
+
+  "loadingGallery": "Loading gallery...",
+  "noImagesInGallery": "No images in gallery",
+  "imageNotFound": "Image not found",
+
+  "powers": "Powers",
+  "loadingPowers": "Loading powers...",
+  "noPowersAvailable": "No powers available",
+
+  "loadingChapters": "Loading chapters...",
+  "noChaptersAvailable": "No chapters available",
+
+  "duplicate": "Duplicate",
+
+  "firstName": "First Name",
+  "imageUrl": "Image (URL):",
+  "visibility": "Visibility:",
+  "color": "Color:",
+  "private": "Private",
+  "friends": "Friends/Server",
+  "public": "Public"
 }

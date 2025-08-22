@@ -1,0 +1,21 @@
+{
+    "modal": {
+        "moduleSelector": "Choose your modules to display",
+        "chapterName": "Chapter name",
+        "chapterText": "Chapter text",
+        "chapitres": "Chapters",
+        "selectChapter": "Select a chapter",
+        "missingFicheId": "Missing fiche ID",
+        "cannotDeleteFiche": "Cannot delete this fiche",
+        "deleteFiche": "Delete fiche",
+        "confirmDeleteFiche": "Are you sure you want to delete this fiche?",
+        "deleting": "Deleting...",
+        "createCharacter": "Create a character",
+        "firstNameRequired": "First name is required.",
+        "invalidImageUrl": "Invalid image URL (jpg, jpeg, png, gif, webp, bmp, svg).",
+        "creationFailed": "Creation failed. Please try again later.",
+        "creating": "Creating...",
+        "error": "The modification failed. Check the fields and try again.",
+        "modifyFiche": "Modify the sheet"
+    }
+}

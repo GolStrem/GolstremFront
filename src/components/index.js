@@ -76,7 +76,6 @@ export {default as FicheCardMenu } from './fiche/FicheCardMenu'
 export {default as FicheCreateCharacterModal } from './fiche/modal/FicheCreateCharacterModal'
 export {default as FicheDeleteCharacterModal } from './fiche/modal/FicheDeleteCharacterModal'
 export {default as FicheModifCharacterModal } from './fiche/modal/FicheModifCharacterModal'
-export {default as FicheEditModal } from './fiche/modal/FicheEditModal'
 
 
 
@@ -88,7 +87,7 @@ export { default as FicheCardCharacter } from './fiche/module/FicheCardCharacter
 export { default as FicheCardPower } from './fiche/module/FicheCardPower'
 export { default as FicheCardGallery } from './fiche/module/FicheCardGallery'
 export { default as FicheNav } from './fiche/FicheNav'
-export { default as FicheSelectModule } from './fiche/modal/FicheSelectModule'
+
 
 
 

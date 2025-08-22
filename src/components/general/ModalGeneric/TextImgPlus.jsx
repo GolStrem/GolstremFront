@@ -1,8 +1,10 @@
 import React from "react";
 import { FaEye } from "react-icons/fa";
 import { isValidImageUrl } from "@service";
+import { useTranslation } from "react-i18next";
 
 const TextImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc }) => {
+	const { t } = useTranslation("modal");
 	// Détecter combien de paires existent déjà
 	const textKeyBase = "inputText";
 	const urlKeyBase = "inputUrl";
@@ -87,7 +89,7 @@ const TextImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc })
 	const label = config?.label ?? "Texte + Image";
 	return (
 		<div className="cf-field">
-			<label className="tm-label label-fiche">{label}</label>
+			<label className="tm-label label-fiche">{t(label)}</label>
 			{rows.map((idx) => {
 				const textKey = `${textKeyBase}${idx}`;
 				const urlKey = `${urlKeyBase}${idx}`;
@@ -104,23 +106,43 @@ const TextImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc })
 						)}
 						<div className="parentdodo">
 							<div className="dada" >
-								<label className="tm-label label-fiche" htmlFor={textKey}>Nom :</label>
+								<label className="tm-label label-fiche" htmlFor={textKey}>{t("nom")} :</label>
 								<input id={textKey} className="ficheText textparent" type="text" value={values[textKey] ?? ""} onChange={handleChange(textKey)} />
 							</div>
 							
 							<div className="dodo">
-								<label className="tm-label label-fiche" htmlFor={urlKey}>Image (URL) :
+								<label className="tm-label label-fiche" htmlFor={urlKey}>{t("imgUrl")} :
 									{values[urlKey] && isValidImageUrl(values[urlKey]) && (
 								<div style={{ marginLeft: 6, marginBottom:-6 }}>
 									<FaEye
 									style={{ cursor: "pointer", fontSize: 20 }}
-									title="Voir l'aperçu"
+									title={t("preview")}
 									onClick={() => setPreviewSrc(values[urlKey])}
 									/>
 								</div>
 								)}
 								</label>
-								<input id={urlKey} className="gugute" type="url" value={values[urlKey] ?? ""} onChange={handleChange(urlKey)} />
+								<input 
+									id={urlKey} 
+									className="gugute" 
+									type="url" 
+									value={values[urlKey] ?? ""} 
+									onChange={handleChange(urlKey)}
+									style={{
+										border: (!values[urlKey] || isValidImageUrl(values[urlKey])) ? undefined : '2px solid #ff4444',
+										borderRadius: (!values[urlKey] || isValidImageUrl(values[urlKey])) ? undefined : '4px'
+									}}
+								/>
+								{values[urlKey] && !isValidImageUrl(values[urlKey]) && (
+									<div style={{ 
+										color: '#ff4444', 
+										fontSize: '12px', 
+										marginTop: '4px',
+										fontStyle: 'italic'
+									}}>
+										{t("invalidUrl")}
+									</div>
+								)}
 								
 							</div>
 						</div>

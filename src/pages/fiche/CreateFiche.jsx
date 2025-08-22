@@ -11,13 +11,16 @@ import {
 import "./CreateFiche.css";
 import { useParams } from "react-router-dom";
 import { ApiFiche, ApiService } from "@service"
+import { useTranslation } from "react-i18next";
 
 const CreateFiche = () => {
   const { id: ficheId } = useParams();
+  const { t } = useTranslation("common");
 
   const [characterData, setCharacterData] = useState({});
   const [index, setIndex] = useState({});
   const [img, setImg] = useState({});
+  const [previewSrc, setPreviewSrc] = useState(null);
 
   const [activeTab, setActiveTab] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,40 +111,40 @@ const CreateFiche = () => {
     general: {
       component : FicheCardGeneral,
       fields : {
-        age: { type: "inputText", label: "Âge" },
-        image: { type: "inputUrl", label: "Image (URL)" },
-        about: { type: "textarea", label: "À propos" },
+        age: { type: "inputText", label: "age" },
+        image: { type: "inputUrl", label: "imgUrl" },
+        about: { type: "textarea", label: "about" },
       }
     },
     character: {
       component : FicheCardCharacter,
       fields : {
-        personalité: { type: "textarea", label: "Personalité" },
-        peur: { type: "textarea", label: "Peur" },
-        motivation: { type: "textarea", label: "Motivation" },
-        image: { type: "inputUrl", label: "Image (URL)" },
-        another: { type: "textarea", label: "Information complémentaire" }
+        personalité: { type: "textarea", label: "personality" },
+        peur: { type: "textarea", label: "fear" },
+        motivation: { type: "textarea", label: "motivation" },
+        image: { type: "inputUrl", label: "imgUrl" },
+        another: { type: "textarea", label: "moreInfo" }
       }
     },
     story: {
       component : FicheCardStory,
       fields : {
         story: { type: "chapter", label: "" },
-        image: { type: "inputUrl", label: "Image (URL)" },
+        image: { type: "inputUrl", label: "imgUrl" },
       }
     },
     power: {
       component : FicheCardPower,
       fields : {
-        power: { type: "textTextArea+", label: "Pouvoir " },
-        image: { type: "inputUrl", label: "Image (URL)" },
+        power: { type: "textTextArea+", label: "" },
+        image: { type: "inputUrl", label: "imgUrl" },
       }
     },
     gallery: {
       component : FicheCardGallery,
       fields : {
         imageGallery: { type: "texteImg+", label: "" },
-        image: { type: "inputUrl", label: "Image (URL)" },
+        image: { type: "inputUrl", label: "imgUrl" },
       }
     },
   };
@@ -251,7 +254,7 @@ const CreateFiche = () => {
 
   // Ne pas rendre tant que les données ne sont pas chargées
   if (isLoading || !activeTab) {
-    return <div className="cf-container">Chargement...</div>;
+    return <div className="cf-container">{t("loading")}</div>;
   }
 
   const ActiveComponent = componentMap[activeTab].component;
@@ -264,7 +267,7 @@ const CreateFiche = () => {
 
       <div className="cf-right" aria-hidden="true" />
       <div className="cf-left" aria-hidden="true">
-        <img src={characterData.image} alt="Portrait décoratif" className="cf-img" />
+        <img src={characterData.image} alt={t("decorativePortrait")} className="cf-img" />
       </div>
 
       <div className="cf-card">
@@ -275,10 +278,12 @@ const CreateFiche = () => {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onEdit={handleOpenModal}
+          setPreviewSrc={setPreviewSrc}
         />
 
+
         <aside className="cf-portrait-float">
-          <img src={img} alt="Portrait du personnage" />
+          <img src={img} alt={t("characterPortrait")} />
         </aside>
       </div>
 
@@ -296,8 +301,8 @@ const CreateFiche = () => {
       )}
 
       <div className="cf-global-badges">
-        <span className="cf-badge">DISCORD</span>
-        <span className="cf-badge">SERVEUR ZHENEOS</span>
+        <span className="cf-badge">{t("discord")}</span>
+        <span className="cf-badge">{t("serverZheneos")}</span>
       </div>
 
 
@@ -306,7 +311,7 @@ const CreateFiche = () => {
         className="cf-module-selector-btn"
         onClick={handleOpenModuleSelector}
       >
-        Choisir modules
+        {t("chooseModules")}
       </button>
 
              {isModuleSelectorOpen && (
@@ -314,10 +319,35 @@ const CreateFiche = () => {
            onClose={() => setModuleSelectorOpen(false)}
            handleSubmit={handleSaveModuleSelector}
            fields={fieldsModale}
-           title={"Choisissez vos modules à afficher"}
+           title={"modal.moduleSelector"}
            initialData={{ selectedModules: listModule }}
          />
        )}
+
+       
+      {/* Modal d'aperçu */}
+      {previewSrc && (
+        <div
+          className="image-preview-overlay"
+          onClick={() => setPreviewSrc(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <img
+            src={previewSrc}
+            alt="Aperçu"
+            style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: 8 }}
+            onClick={(e) => e.stopPropagation()} // empêcher la fermeture au clic sur l'image
+          />
+        </div>
+      )}
 
     </div>
   );

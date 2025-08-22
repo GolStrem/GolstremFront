@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { ToolbarTipTap } from "@components";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-
+import { useTranslation } from "react-i18next";
 // Composant pour un chapitre individuel - défini en dehors pour éviter les re-renders
 const ChapterEditor = React.memo(({ 
 	chapterKey, 
@@ -14,7 +14,8 @@ const ChapterEditor = React.memo(({
 	existingCount,
 	values,
 	handleChange,
-	forceUpdateRef
+	forceUpdateRef,
+	t
 }) => {
 	const editor = useEditor({
 		extensions: [StarterKit],
@@ -47,7 +48,7 @@ const ChapterEditor = React.memo(({
 			}}
 		>
 			<div className="cf-field short" style={{ marginBottom: 12 }}>
-				<label className="tm-label label-fiche" htmlFor={`${chapterKey}_name`}>Nom du chapitre :</label>
+				<label className="tm-label label-fiche" htmlFor={`${chapterKey}_name`}>{t("modal.chapterName")} :</label>
 				<div className="boitecha">
 					<input 
 						id={`${chapterKey}_name`}
@@ -56,7 +57,7 @@ const ChapterEditor = React.memo(({
 						value={displayName} 
 						onChange={(e) => onNameChange(chapterKey, e.target.value)}
 						onBlur={() => onNameBlur(chapterKey)}
-						placeholder="Nom du chapitre"
+						placeholder={t("modal.chapterName")}
 					/>
 					{existingCount > 1 && (
 						<button 
@@ -71,7 +72,7 @@ const ChapterEditor = React.memo(({
 				</div>
 			</div>
 			<div className="cf-field">
-				<label className="tm-label label-about" htmlFor={`${chapterKey}_text`}>Texte du chapitre :</label>
+				<label className="tm-label label-about" htmlFor={`${chapterKey}_text`}>{t("modal.chapterText")} :</label>
 				<ToolbarTipTap editor={editor} />
 				<EditorContent editor={editor} className="tiptap-editor editChapter" />
 			</div>
@@ -80,6 +81,7 @@ const ChapterEditor = React.memo(({
 });
 
 const Chapter = ({ config, values, setValues, handleChange, forceUpdateRef }) => {
+	const { t } = useTranslation("modal");
 	// Détecter uniquement les chapitres qui commencent par nC-
 	const chapterKeys = Object.keys(values).filter(key => key.startsWith("nC-"));
 	const existingCount = chapterKeys.length || 1;
@@ -219,14 +221,14 @@ const Chapter = ({ config, values, setValues, handleChange, forceUpdateRef }) =>
 		}, 0);
 	}, [editingNames, getCleanTitle, chapterOrder, currentChapterKey, setValues]);
 
-	const label = config?.label ?? "Chapitres";
+	const label = config?.label ?? "modal.chapitres";
 	return (
 		<div className="cf-field">
-			<label className="tm-label label-fiche">{label}</label>
+			<label className="tm-label label-fiche">{t(label)}</label>
 			
 			{/* Sélecteur de chapitre */}
 			<div className="cf-field short bobo" style={{ marginBottom: 16 }}>
-				<label className="tm-label label-fiche">Sélectionner un chapitre :</label>
+				<label className="tm-label label-fiche">{t("modal.selectChapter")} :</label>
 				<div className=" boitecho">
 					<select 
 						value={currentChapterKey || ""} 
@@ -273,6 +275,7 @@ const Chapter = ({ config, values, setValues, handleChange, forceUpdateRef }) =>
 							values={values}
 							handleChange={handleChange}
 							forceUpdateRef={forceUpdateRef}
+							t={t}
 						/>
 					</div>
 				);

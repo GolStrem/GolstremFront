@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { FicheNav } from "@components"; 
 import "../../../pages/fiche/CreateFiche.css";
 import "./FicheCard.css"
+import { useTranslation } from "react-i18next";
 
 
-const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
+const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit, setPreviewSrc }) => {
+  const { t } = useTranslation("common");
   const [loading, setLoading] = useState(true);
   const [galleryItems, setGalleryItems] = useState([]);
   const prevDataRef = useRef(null);
@@ -129,7 +131,7 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
           fontSize: '18px',
           color: 'var(--color-text-secondary)'
         }}>
-          Chargement de la galerie...
+          {t("loadingGallery")}
         </div>
       </div>
     );
@@ -149,7 +151,7 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
             color: 'var(--color-text-secondary)',
             fontSize: '16px'
           }}>
-            Aucune image dans la galerie
+            {t("noImagesInGallery")}
           </div>
         ) : (
           <div className="gallery-grid">
@@ -160,13 +162,15 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
                     src={item.imageUrl} 
                     alt={item.title}
                     className="gallery-image"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setPreviewSrc(item.imageUrl)}
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'block';
                     }}
                   />
                   <div className="gallery-image-error" style={{ display: 'none' }}>
-                    <span>Image non trouvée</span>
+                    <span>{t("imageNotFound")}</span>
                   </div>
                 </div>
                 <div className="gallery-title">
@@ -179,8 +183,9 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit }
       </div>
 
       <button className="cf-edit-btn" onClick={onEdit}>
-        ✏️ Modifier
+        ✏️ {t("edit")}
       </button>
+
     </div>
   );
 };

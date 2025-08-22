@@ -1,8 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const CheckBox = ({ config, values, setValues }) => {
 	const list = config?.list || [];
 	const label = config?.label ?? "Sélection multiple";
+	const { t } = useTranslation("modal");
 	
 	// Initialiser les valeurs si elles n'existent pas
 	const currentValues = values[config?.key || 'selectedItems'] || [];
@@ -20,7 +22,7 @@ const CheckBox = ({ config, values, setValues }) => {
 
 	return (
 		<div className="cf-field">
-			<h2>{label}</h2>
+			<h2>{t(label)}</h2>
 			<div className="fsm-checkboxes">
 				{list.map((item) => (
 					<label key={item} className="fsm-checkbox-label">
@@ -29,7 +31,7 @@ const CheckBox = ({ config, values, setValues }) => {
 							checked={currentValues.includes(item)}
 							onChange={() => handleToggle(item)}
 						/>
-						<span className="fsm-checkbox-text">{item}</span>
+						<span className="fsm-checkbox-text">{t(item)}</span>
 					</label>
 				))}
 			</div>

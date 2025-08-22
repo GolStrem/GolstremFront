@@ -3,8 +3,10 @@ import { FicheNav } from "@components";
 import "../../../pages/fiche/CreateFiche.css";
 import { ApiService } from "@service";
 import "./FicheCard.css";
+import { useTranslation } from "react-i18next";
 
 const FicheCardPower = ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
+  const { t } = useTranslation("common");
   const extraData = (data.module === undefined) ? {} : data.module[indexModule]?.extra;
 
   const [resolvedValues, setResolvedValues] = useState(extraData);
@@ -163,18 +165,18 @@ const FicheCardPower = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
     <div className="cf-content">
       <FicheNav activeTab={activeTab} setActiveTab={setActiveTab} data={data} />
       
-      <h2 className="cf-h2">Pouvoirs</h2>
+      <h2 className="cf-h2">{t("powers")}</h2>
       
       {isLoading ? (
-        <p>Chargement des pouvoirs...</p>
+        <p>{t("loadingPowers")}</p>
       ) : powers.length > 0 ? (
         <>
           {/* Boutons des pouvoirs */}
-          <div className="power-buttons">
+          <div className="chapter-buttons">
             {powers.map((power) => (
               <button
                 key={power.id}
-                className={`power-btn ${selectedPower === power.id ? 'active' : ''}`}
+                className={`chapter-btn ${selectedPower === power.id ? 'active' : ''}`}
                 onClick={() => handlePowerChange(power.id)}
               >
                 {power.name}
@@ -194,10 +196,10 @@ const FicheCardPower = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
           )}
         </>
       ) : (
-        <p>Aucun pouvoir disponible</p>
+        <p>{t("noPowersAvailable")}</p>
       )}
 
-      <button className="cf-edit-btn" onClick={handleEdit}>✏️ Modifier</button>
+      <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
     </div>
   );
 };

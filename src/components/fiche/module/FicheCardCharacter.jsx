@@ -2,8 +2,10 @@ import { FicheNav } from "@components";
 import "./FicheCard.css"
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { ApiService } from "@service";
+import { useTranslation } from "react-i18next";
 
 const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
+  const { t } = useTranslation("common");
 
   const extraData = (data.module === undefined) ? {} : data.module[indexModule]?.extra;
   // État pour les valeurs avec alias résolus
@@ -117,9 +119,9 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
 
         {resolvedValues?.personalité && resolvedValues.personalité.trim() !== '' && resolvedValues.personalité !== '<p></p>' && (
           <>
-            <h2>Caractère</h2>
+            <h2>{t("characterTrait")}</h2>
             <div className="cf-rank">
-              {isLoading ? "Chargement..." : (
+              {isLoading ? t("loading") : (
                 <div dangerouslySetInnerHTML={{ __html: resolvedValues.personalité }} />
               )}
             </div>
@@ -128,9 +130,9 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
         
         {resolvedValues?.peur && resolvedValues.peur.trim() !== '' && resolvedValues.peur !== '<p></p>' && (
           <>
-            <h3>Peur</h3>
+            <h3>{t("fear")}</h3>
             <div className="cf-rank">
-              {isLoading ? "Chargement..." : (
+              {isLoading ? t("loading") : (
                 <div dangerouslySetInnerHTML={{ __html: resolvedValues.peur }} />
               )}
             </div>
@@ -139,9 +141,9 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
         
         {resolvedValues?.motivation && resolvedValues.motivation.trim() !== '' && resolvedValues.motivation !== '<p></p>' && (
           <>
-            <h3>Motivation</h3>
+            <h3>{t("motivation")}</h3>
             <div className="cf-rank">
-              {isLoading ? "Chargement..." : (
+              {isLoading ? t("loading") : (
                 <div dangerouslySetInnerHTML={{ __html: resolvedValues.motivation }} />
               )}
             </div>
@@ -150,9 +152,9 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
         
         {resolvedValues?.another && resolvedValues.another.trim() !== '' && resolvedValues.another !== '<p></p>' && (
           <>
-            <h3>Autre</h3>
+            <h3>{t("other")}</h3>
             <div className="cf-rank">
-              {isLoading ? "Chargement..." : (
+              {isLoading ? t("loading") : (
                 <div dangerouslySetInnerHTML={{ __html: resolvedValues.another }} />
               )}
             </div>
@@ -163,7 +165,7 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
         
 
     
-          <button className="cf-edit-btn" onClick={handleEdit}>✏️ Modifier</button>
+          <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
         </div>
   );
 };

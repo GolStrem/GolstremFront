@@ -21,5 +21,59 @@
   "delete": "Elimina",
   "add": "Aggiungi",
   "save": "Salva",
-  "loginCta": "Accedi"
+  "loginCta": "Accedi",
+
+  "general": "Generale", 
+  "character": "Personaggio", 
+  "story": "Storia", 
+  "power": "Potere", 
+  "gallery": "Galleria",
+
+  "preview": "Anteprima",
+  "pasteUrl": "Incolla URL dell'immagine",
+  "invalidUrl": "URL immagine non valido",
+  "invalidUrlList": "Correggi gli URL delle immagini non validi",
+  "saving": "Salvataggio...",
+  "nom": "Nome",
+  "titre": "Titolo",
+  "description": "Descrizione",
+  "imgUrl": "Immagine (URL)",
+  "moreInfo": "Informazioni aggiuntive",
+  "fear": "Paura",
+  "motivation": "Motivazione",
+  "personality": "Personalità",
+  "age": "Età",
+  "about": "Informazioni",
+
+  "loading": "Caricamento...",
+  "chooseModules": "Scegli moduli",
+  "discord": "DISCORD",
+  "serverZheneos": "SERVER ZHENEOS",
+  "decorativePortrait": "Ritratto decorativo",
+  "characterPortrait": "Ritratto del personaggio",
+
+  "characterTrait": "Carattere",
+  "other": "Altro",
+  "edit": "Modifica",
+
+  "loadingGallery": "Caricamento galleria...",
+  "noImagesInGallery": "Nessuna immagine nella galleria",
+  "imageNotFound": "Immagine non trovata",
+
+  "powers": "Poteri",
+  "loadingPowers": "Caricamento poteri...",
+  "noPowersAvailable": "Nessun potere disponibile",
+
+  "loadingChapters": "Caricamento capitoli...",
+  "noChaptersAvailable": "Nessun capitolo disponibile",
+
+  "duplicate": "Duplica",
+
+  "firstName": "Nome",
+  "imageUrl": "Immagine (URL):",
+  "visibility": "Visibilità:",
+  "color": "Colore:",
+  "private": "Privato",
+  "friends": "Amici/Server",
+  "public": "Pubblico"
 }

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { BaseModal } from "@components";
 import { ApiFiche, isValidImageUrl } from "@service";
+import { useTranslation } from "react-i18next";
 import "./FicheCreateCharacterModal.css";
 
 const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
+  const { t } = useTranslation("modal");
+  const { t: tCommon } = useTranslation("common");
   const [prenom, setPrenom] = useState("");
   const [image, setImage] = useState("");
   const [visibility, setVisibility] = useState("2"); // "2" Public (cf. options ci-dessous)
@@ -22,11 +25,11 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
     // 🔎 Validations UI minimales (le reste peut vivre côté parent/handlers si besoin)
     let hasError = false;
     if (!prenom.trim()) {
-      setPrenomError("Le prénom est requis.");
+      setPrenomError(t("modal.firstNameRequired"));
       hasError = true;
     }
     if (image && !isValidImageUrl(image)) {
-      setImageError("URL d'image invalide (jpg, jpeg, png, gif, webp, bmp, svg).");
+      setImageError(t("modal.invalidImageUrl"));
       hasError = true;
     }
     if (hasError) return;
@@ -47,7 +50,7 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
       onClose?.();
     } catch (e) {
       console.error("Création fiche échouée:", e);
-      setError("Création impossible. Réessaie plus tard.");
+      setError(t("modal.creationFailed"));
     } finally {
       setLoading(false);
     }
@@ -55,11 +58,11 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
 
   return (
     <BaseModal onClose={onClose} className="tmedit">
-      <h2 className="modal-title">Créer un personnage</h2>
+      <h2 className="modal-title">{t("modal.createCharacter")}</h2>
 
       <form className="tm-modal-form" onSubmit={(e) => e.preventDefault()}>
         <label className="tm-label shortMenu">
-          Prénom Nom
+          {tCommon("firstName")}
           <input
             type="text"
             value={prenom}
@@ -70,7 +73,7 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
         </label>
 
         <label className="tm-label shortMenu">
-          Image (URL) :
+          {tCommon("imageUrl")}
           <input
             type="url"
             value={image}
@@ -82,21 +85,21 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
 
           <div className="shoModal">
           <label className="ptit ShortMenu">
-            Visibilité :
+            {tCommon("visibility")}
             <select
               value={visibility}
               onChange={(e) => setVisibility(e.target.value)}
               className="fiche-select"
             >
               {/* Garde la même convention que tes autres écrans : 0 Privé, 1 Amis, 2 Public */}
-              <option value="0">Privé</option>
-              <option value="1">Ami/Serveur</option>
-              <option value="2">Public</option>
+              <option value="0">{tCommon("private")}</option>
+              <option value="1">{tCommon("friends")}</option>
+              <option value="2">{tCommon("public")}</option>
             </select>
           </label>
 
           <label >
-            Couleur :
+            {tCommon("color")}
             <input
               type="color"
               value={couleur}
@@ -112,10 +115,10 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
 
       <div className="tm-modal-buttons">
         <button className="tm-primary" onClick={handleSubmit} disabled={loading}>
-          {loading ? "Création..." : "Créer"}
+          {loading ? t("modal.creating") : tCommon("create")}
         </button>
         <button onClick={onClose} disabled={loading}>
-          Annuler
+          {tCommon("cancel")}
         </button>
       </div>
     </BaseModal>
