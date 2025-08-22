@@ -32,7 +32,20 @@ import GoldenStremP from './svg/GoldenStremP';
 import GoldenStremV from './svg/GoldenStremV';
 import GoldenLogo from './svg/GoldenLogo';
 
+import discordimg from "./img-univers/discordimg.png"
+import ffimg from "./img-univers/ffimg.png"
+import forum from "./img-univers/forum.png"
+import jeux from "./img-univers/jeux.png"
+import plateau from "./img-univers/plateau.png"
+
+
+
 export {
+  discordimg,
+  ffimg,
+  forum,
+  jeux,
+  plateau,
   abstrait,
   checkIcon,
   Fichier4,
