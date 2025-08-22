@@ -345,11 +345,10 @@
   .cf-portrait-float img {
     width: 100%;
     height: auto;
-    aspect-ratio: 16/9;
-    max-height: 300px;
     object-position: center;
     min-width: auto !important;
   }
+
 
   .cf-global-badges {
     position: static;

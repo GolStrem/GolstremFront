@@ -10,6 +10,7 @@
     padding-left: 10px;
   padding-right: 10px;
   margin-right: 4px;
+
 }
 .chapter-btn.active{
   background-color: var(--color-story-select);
@@ -20,11 +21,13 @@
   border-top-right-radius: 5px;
   padding-left: 10px;
   padding-right: 10px;
+
 }
 
 /* Styles pour la liste déroulante des chapitres */
 .chapter-select-container {
   margin-bottom: 10px;
+
 }
 
 .chapter-select {
@@ -38,6 +41,8 @@
   min-width: 200px;
   font-weight: 500;
   transition: all 0.2s ease;
+      outline-color: transparent;
+
 }
 
 .chapter-select:hover {
@@ -47,12 +52,14 @@
 .chapter-select:focus {
   outline: none;
   background-color: var(--color-story-select);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+  color: var(--color-text);
+
+
 }
 
 .chapter-select option {
-  background-color: var(--color-story);
-  color: white;
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
   padding: 8px;
 }
 
