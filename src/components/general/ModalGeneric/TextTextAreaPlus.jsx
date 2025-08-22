@@ -150,7 +150,7 @@ const TextTextAreaPlus = ({ config, values, setValues, handleChange, forceUpdate
 				);
 			})}
 			<div style={{ display: "flex", justifyContent: "flex-start"  }} >
-				<button type="button" className="tm-primary shoshote vd" onClick={addRow} >+</button>
+				<button type="button" className="shoshote vd" onClick={addRow} >+</button>
 			</div>
 		</div>
 	);
