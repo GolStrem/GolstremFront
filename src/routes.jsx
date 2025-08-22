@@ -96,11 +96,11 @@ const routes = [
     {
     path: '/ficheDetail/:id',
     element: (
-      <ProtectedRoute>
+      
         <Layout>
           <Fiche />
         </Layout>
-      </ProtectedRoute>
+      
     ),
   },
       {
