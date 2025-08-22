@@ -341,7 +341,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				return (
 					<div key={key} className="cf-generic">
 						<label className="tm-label label-about" htmlFor={id}>
-							{label} :
+							{t(label)} :
 						</label>
 						 <ToolbarTipTap editor={editor} />
 						<EditorContent editor={editor} className="tiptap-editor" />

@@ -117,9 +117,9 @@ const CreateFiche = () => {
     character: {
       component : FicheCardCharacter,
       fields : {
-        personalité: { type: "textarea", label: "Personality" },
+        personalité: { type: "textarea", label: "personality" },
         peur: { type: "textarea", label: "fear" },
-        motivation: { type: "textarea", label: "Motivation" },
+        motivation: { type: "textarea", label: "motivation" },
         image: { type: "inputUrl", label: "imgUrl" },
         another: { type: "textarea", label: "moreInfo" }
       }
