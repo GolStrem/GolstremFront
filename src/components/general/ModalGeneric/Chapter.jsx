@@ -252,7 +252,7 @@ const Chapter = ({ config, values, setValues, handleChange, forceUpdateRef }) =>
 							);
 						})}
 					</select>
-					<button type="button" className="tm-primary shoshotel" onClick={addChapter}>+</button>
+					<button type="button" className=" shoshotel" onClick={addChapter}>+</button>
 				</div>
 			</div>
 

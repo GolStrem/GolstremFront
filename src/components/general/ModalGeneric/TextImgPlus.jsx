@@ -151,7 +151,7 @@ const TextImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc })
 				);
 			})}
 			<div style={{ display: "flex", justifyContent: "flex-start"  }} >
-				<button type="button" className="tm-primary shoshote vd" onClick={addRow} >+</button>
+				<button type="button" className=" shoshote vd" onClick={addRow} >+</button>
 			</div>
 		</div>
 	);
