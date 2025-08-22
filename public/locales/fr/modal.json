@@ -4,6 +4,16 @@
         "chapterName": "Nom du chapitre",
         "chapterText": "Texte du chapitre",
         "chapitres": "Chapitres",
-        "selectChapter": "Sélectionner un chapitre"
+        "selectChapter": "Sélectionner un chapitre",
+        "missingFicheId": "ID de fiche manquant",
+        "cannotDeleteFiche": "Impossible de supprimer cette fiche",
+        "deleteFiche": "Supprimer la fiche",
+        "confirmDeleteFiche": "Êtes-vous sûr de vouloir supprimer cette fiche ?",
+        "deleting": "Suppression...",
+        "createCharacter": "Créer un personnage",
+        "firstNameRequired": "Le prénom est requis.",
+        "invalidImageUrl": "URL d'image invalide (jpg, jpeg, png, gif, webp, bmp, svg).",
+        "creationFailed": "Création impossible. Réessaie plus tard.",
+        "creating": "Création..."
     }
 }

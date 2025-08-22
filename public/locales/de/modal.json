@@ -4,6 +4,16 @@
         "chapterName": "Kapitelname",
         "chapterText": "Kapiteltext",
         "chapitres": "Kapitel",
-        "selectChapter": "Kapitel auswählen"
+        "selectChapter": "Kapitel auswählen",
+        "missingFicheId": "Fehlende Fiche-ID",
+        "cannotDeleteFiche": "Diese Fiche kann nicht gelöscht werden",
+        "deleteFiche": "Fiche löschen",
+        "confirmDeleteFiche": "Sind Sie sicher, dass Sie diese Fiche löschen möchten?",
+        "deleting": "Löschen...",
+        "createCharacter": "Charakter erstellen",
+        "firstNameRequired": "Vorname ist erforderlich.",
+        "invalidImageUrl": "Ungültige Bild-URL (jpg, jpeg, png, gif, webp, bmp, svg).",
+        "creationFailed": "Erstellung fehlgeschlagen. Bitte versuchen Sie es später erneut.",
+        "creating": "Erstellen..."
     }
 }

@@ -11,9 +11,11 @@ import {
 import "./CreateFiche.css";
 import { useParams } from "react-router-dom";
 import { ApiFiche, ApiService } from "@service"
+import { useTranslation } from "react-i18next";
 
 const CreateFiche = () => {
   const { id: ficheId } = useParams();
+  const { t } = useTranslation("common");
 
   const [characterData, setCharacterData] = useState({});
   const [index, setIndex] = useState({});
@@ -252,7 +254,7 @@ const CreateFiche = () => {
 
   // Ne pas rendre tant que les données ne sont pas chargées
   if (isLoading || !activeTab) {
-    return <div className="cf-container">Chargement...</div>;
+    return <div className="cf-container">{t("loading")}</div>;
   }
 
   const ActiveComponent = componentMap[activeTab].component;
@@ -265,7 +267,7 @@ const CreateFiche = () => {
 
       <div className="cf-right" aria-hidden="true" />
       <div className="cf-left" aria-hidden="true">
-        <img src={characterData.image} alt="Portrait décoratif" className="cf-img" />
+        <img src={characterData.image} alt={t("decorativePortrait")} className="cf-img" />
       </div>
 
       <div className="cf-card">
@@ -281,7 +283,7 @@ const CreateFiche = () => {
 
 
         <aside className="cf-portrait-float">
-          <img src={img} alt="Portrait du personnage" />
+          <img src={img} alt={t("characterPortrait")} />
         </aside>
       </div>
 
@@ -299,8 +301,8 @@ const CreateFiche = () => {
       )}
 
       <div className="cf-global-badges">
-        <span className="cf-badge">DISCORD</span>
-        <span className="cf-badge">SERVEUR ZHENEOS</span>
+        <span className="cf-badge">{t("discord")}</span>
+        <span className="cf-badge">{t("serverZheneos")}</span>
       </div>
 
 
@@ -309,7 +311,7 @@ const CreateFiche = () => {
         className="cf-module-selector-btn"
         onClick={handleOpenModuleSelector}
       >
-        Choisir modules
+        {t("chooseModules")}
       </button>
 
              {isModuleSelectorOpen && (

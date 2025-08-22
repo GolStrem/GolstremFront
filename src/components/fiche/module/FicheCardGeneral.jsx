@@ -3,9 +3,11 @@ import { FicheNav } from "@components";
 import "../../../pages/fiche/CreateFiche.css";
 import { ApiService } from "@service";
 import "./FicheCard.css"
+import { useTranslation } from "react-i18next";
 
 
 const FicheCardGeneral = ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
+  const { t } = useTranslation("common");
   const extraData = (data.module === undefined) ? {} : data.module[indexModule]?.extra;
   
   // État pour les valeurs avec alias résolus
@@ -119,23 +121,23 @@ const FicheCardGeneral = ({ activeTab, indexModule, setActiveTab, data, onEdit }
         <h1 className="cf-h1">{data.name}</h1> 
         {resolvedValues?.age && resolvedValues.age.trim() !== '' && resolvedValues.age !== '<p></p>' && (
           <span className="cf-rank">
-            {isLoading ? "Chargement..." : resolvedValues.age}
+            {isLoading ? t("loading") : resolvedValues.age}
           </span>
         )}
       </div>
 
       {resolvedValues?.about && resolvedValues.about.trim() !== '' && resolvedValues.about !== '<p></p>' && (
         <section className="cf-text"> 
-          <h2 className="cf-h2">À propos</h2> 
+          <h2 className="cf-h2">{t("about")}</h2> 
           <div className="cf-about-display">
-            {isLoading ? "Chargement..." : (
+            {isLoading ? t("loading") : (
               <div dangerouslySetInnerHTML={{ __html: resolvedValues.about }} />
             )}
           </div> 
         </section> 
       )}
       
-      <button className="cf-edit-btn" onClick={handleEdit}>✏️ Modifier</button>
+      <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
 
     </div>
   );

@@ -3,9 +3,11 @@ import { FicheNav } from "@components";
 import "../../../pages/fiche/CreateFiche.css";
 import { ApiService } from "@service";
 import "./FicheCard.css"
+import { useTranslation } from "react-i18next";
 
 
 const FicheCardStory = ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
+  const { t } = useTranslation("common");
   const extraData = (data.module === undefined) ? {} : data.module[indexModule]?.extra;
 
   const [resolvedValues, setResolvedValues] = useState(extraData);
@@ -143,10 +145,10 @@ const FicheCardStory = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
     <div className="cf-content">
       <FicheNav activeTab={activeTab} setActiveTab={setActiveTab} data={data} />
       
-      <h2 className="cf-h2">Histoire</h2>
+      <h2 className="cf-h2">{t("story")}</h2>
       
       {isLoading ? (
-        <p>Chargement des chapitres...</p>
+        <p>{t("loadingChapters")}</p>
       ) : chaptersWithContent.length > 0 ? (
         <>
           {/* Sélection des chapitres - boutons si ≤ 5, dropdown si > 5 */}
@@ -186,10 +188,10 @@ const FicheCardStory = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
           )}
         </>
       ) : (
-        <p>Aucun chapitre disponible</p>
+        <p>{t("noChaptersAvailable")}</p>
       )}
 
-      <button className="cf-edit-btn" onClick={handleEdit}>✏️ Modifier</button>
+      <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
     </div>
   );
 };

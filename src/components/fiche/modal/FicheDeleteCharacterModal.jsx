@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BaseModal } from "@components";
 import { ApiFiche } from "@service";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props:
@@ -9,12 +10,13 @@ import { ApiFiche } from "@service";
  * - onDelete: (deletedId) => void // parent appliquera handleDeleteFiche(prev, deletedId)
  */
 const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
+  const { t } = useTranslation("modal");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
     if (!ficheId && ficheId !== 0) {
-      setError("ID de fiche manquant");
+      setError(t("modal.missingFicheId"));
       return;
     }
 
@@ -27,7 +29,7 @@ const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
       onClose?.();
     } catch (err) {
       console.error("Erreur suppression fiche :", err);
-      setError("Impossible de supprimer cette fiche");
+      setError(t("modal.cannotDeleteFiche"));
     } finally {
       setLoading(false);
     }
@@ -35,8 +37,8 @@ const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
 
   return (
     <BaseModal onClose={onClose} className="tmedit">
-      <h2>Supprimer la fiche</h2>
-      <p>Êtes-vous sûr de vouloir supprimer cette fiche ?</p>
+      <h2>{t("modal.deleteFiche")}</h2>
+      <p>{t("modal.confirmDeleteFiche")}</p>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -46,10 +48,10 @@ const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
           onClick={handleSubmit}
           disabled={loading}
         >
-          {loading ? "Suppression..." : "Supprimer"}
+          {loading ? t("modal.deleting") : t("delete")}
         </button>
         <button onClick={onClose} disabled={loading}>
-          Annuler
+          {t("cancel")}
         </button>
       </div>
     </BaseModal>

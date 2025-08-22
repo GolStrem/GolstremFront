@@ -43,5 +43,37 @@
   "motivation": "Motivazione",
   "personality": "Personalità",
   "age": "Età",
-  "about": "Informazioni"
+  "about": "Informazioni",
+
+  "loading": "Caricamento...",
+  "chooseModules": "Scegli moduli",
+  "discord": "DISCORD",
+  "serverZheneos": "SERVER ZHENEOS",
+  "decorativePortrait": "Ritratto decorativo",
+  "characterPortrait": "Ritratto del personaggio",
+
+  "characterTrait": "Carattere",
+  "other": "Altro",
+  "edit": "Modifica",
+
+  "loadingGallery": "Caricamento galleria...",
+  "noImagesInGallery": "Nessuna immagine nella galleria",
+  "imageNotFound": "Immagine non trovata",
+
+  "powers": "Poteri",
+  "loadingPowers": "Caricamento poteri...",
+  "noPowersAvailable": "Nessun potere disponibile",
+
+  "loadingChapters": "Caricamento capitoli...",
+  "noChaptersAvailable": "Nessun capitolo disponibile",
+
+  "duplicate": "Duplica",
+
+  "firstName": "Nome",
+  "imageUrl": "Immagine (URL):",
+  "visibility": "Visibilità:",
+  "color": "Colore:",
+  "private": "Privato",
+  "friends": "Amici/Server",
+  "public": "Pubblico"
 }
