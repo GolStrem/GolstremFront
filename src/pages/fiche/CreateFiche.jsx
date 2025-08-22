@@ -32,65 +32,66 @@ const CreateFiche = () => {
   // callback pour ouvrir la modale dans l'angle droit
   const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
   const handleSaveModuleSelector = async (modules) => {
-    const newModules = modules.selectedModules;
-    const oldModules = listModule;
-    
+    let newModules = Array.isArray(modules?.selectedModules) ? [...modules.selectedModules] : [];
+    const oldModules = Array.isArray(listModule) ? [...listModule] : [];
+
+    // ne garder que les modules supportés et dédoublonner
+    const allowed = Object.keys(componentMap);
+    newModules = [...new Set(newModules.filter((m) => allowed.includes(m)))];
+
+    // Si rien sélectionné, on force "general"
+    if (newModules.length === 0) {
+      newModules = ["general"];
+    }
+
     try {
-      let firstValidModule = null;
-      // Supprimer les modules qui ne sont plus sélectionnés
+      let nextActive = null;
 
-      if (newModules.length === 0) {
-        newModules = ['general']
-      }
-
-
+      // Supprimer les modules non sélectionnés
       for (const oldModule of oldModules) {
         if (!newModules.includes(oldModule)) {
-          const moduleToDelete = characterData.module.find(m => m.name === oldModule);
-          
+          const moduleToDelete = characterData.module?.find((m) => m.name === oldModule);
           if (moduleToDelete) {
             if (moduleToDelete.name === activeTab) {
-              firstValidModule = Object.keys(componentMap).find((tabName) => 
-                newModules.some((m) => m === tabName)
-              );
+              nextActive = allowed.find((tab) => newModules.includes(tab)) ?? "general";
             }
             await ApiService.deleteModule(moduleToDelete.id);
-            
-            setCharacterData(prev => ({
+            setCharacterData((prev) => ({
               ...prev,
-              module: prev.module.filter(m => m.id !== moduleToDelete.id)
+              module: prev.module.filter((m) => m.id !== moduleToDelete.id),
             }));
           }
         }
       }
-      
-      for (const newModule of newModules) {
-        if (!oldModules.includes(newModule)) {
-          const createdModule = await ApiService.createModule(1, ficheId, newModule);
+
+      // Créer les nouveaux modules manquants
+      for (const mod of newModules) {
+        if (!oldModules.includes(mod)) {
+          const createdModule = await ApiService.createModule(1, ficheId, mod);
           const transformed = Object.entries(createdModule.data).map(([id, obj]) => ({
-            id: Number(id), 
+            id: Number(id),
             name: obj.name,
-            extra: JSON.parse(obj.extra)
+            extra: JSON.parse(obj.extra),
           }));
-          
-           setCharacterData(prev => ({
-             ...prev,
-             module: [...prev.module, transformed[0]]
-           }));
+
+          setCharacterData((prev) => ({
+            ...prev,
+            module: [...prev.module, transformed[0]],
+          }));
         }
       }
-      
-      // Mettre à jour listModule avec les nouveaux modules
+
+      // Mettre à jour la liste + fermer la modale
       setListModule(newModules);
       setModuleSelectorOpen(false);
-      if(firstValidModule !== null) {
-        setActiveTab(firstValidModule);
-      }
-      
+
+      // Bascule d'onglet si nécessaire
+      if (nextActive) setActiveTab(nextActive);
     } catch (error) {
-      console.error('Erreur lors de la gestion des modules:', error);
+      console.error("Erreur lors de la gestion des modules:", error);
     }
   };
+
 
   // Ouvre la modale de sélection au premier accès à cette fiche (clé par ficheId)
   
@@ -342,7 +343,7 @@ const CreateFiche = () => {
         >
           <img
             src={previewSrc}
-            alt="Aperçu"
+            alt={t("preview")}
             style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: 8 }}
             onClick={(e) => e.stopPropagation()} // empêcher la fermeture au clic sur l'image
           />
