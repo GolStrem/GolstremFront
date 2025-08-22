@@ -14,6 +14,8 @@
         "firstNameRequired": "First name is required.",
         "invalidImageUrl": "Invalid image URL (jpg, jpeg, png, gif, webp, bmp, svg).",
         "creationFailed": "Creation failed. Please try again later.",
-        "creating": "Creating..."
+        "creating": "Creating...",
+        "error": "The modification failed. Check the fields and try again.",
+        "modifyFiche": "Modify the sheet"
     }
 }

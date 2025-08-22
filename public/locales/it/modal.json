@@ -14,6 +14,8 @@
         "firstNameRequired": "Il nome è obbligatorio.",
         "invalidImageUrl": "URL immagine non valido (jpg, jpeg, png, gif, webp, bmp, svg).",
         "creationFailed": "Creazione fallita. Riprova più tardi.",
-        "creating": "Creazione..."
+        "creating": "Creazione...",
+        "error": "La modifica è fallita. Controlla i campi e riprova.",
+        "modifyFiche": "Modifica la scheda"
     }
 }

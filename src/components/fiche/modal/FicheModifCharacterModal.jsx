@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BaseModal } from "@components";
 import { ApiFiche, isValidImageUrl } from "@service";
 import "./FicheCreateCharacterModal.css";
-
+import { useTranslation } from "react-i18next";
 /**
  * Props:
  * - fiche: { id, name, image, color, visibility, ... }
@@ -10,6 +10,7 @@ import "./FicheCreateCharacterModal.css";
  * - onUpdate: (updated) => void  // parent appliquera handleEditFiche(prev, updated)
  */
 const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
+  const { t } = useTranslation("modal");
   const [prenom, setPrenom] = useState("");
   const [image, setImage] = useState("");
   const [visibility, setVisibility] = useState("2");
@@ -60,7 +61,7 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
       onClose?.();
     } catch (e) {
       console.error("Erreur lors de la modification de la fiche :", e);
-      setError("La modification a échoué. Vérifie les champs et réessaie.");
+      setError(t("modal.error"));
     } finally {
       setLoading(false);
     }
@@ -90,11 +91,11 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
 
   return (
     <BaseModal onClose={onClose} className="tmedit">
-      <h2>Modifier la fiche</h2>
+      <h2>{t("modal.modifyFiche")}</h2>
 
       <form className="tm-modal-form" onSubmit={(e) => e.preventDefault()}>
         <label className="tm-label short shortMenu">
-          Prénom Nom
+          {t('firstName')}
           <input
             type="text"
             value={prenom}
@@ -105,7 +106,7 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
         </label>
 
         <label className="tm-label short shortMenu">
-          Image (URL) :
+          {t('imgUrl')} :
           <input
             type="url"
             value={image}
@@ -117,7 +118,7 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
 
         <div className="shoModal">
           <label className="ptit ShortMenu">
-            Visibilité :
+            {t('visibility')} :
             <select
               value={visibility}
               onChange={(e) => setVisibility(e.target.value)}
@@ -130,7 +131,7 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
           </label>
 
           <label>
-            Couleur :
+            {t('color')}
             <input
               type="color"
               value={couleur}
@@ -145,10 +146,10 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
 
       <div className="tm-modal-buttons">
         <button className="tm-primary" onClick={handleSubmit} disabled={loading}>
-          {loading ? "Enregistrement..." : "Enregistrer"}
+          {loading ? t("saving") : t("save")}
         </button>
         <button onClick={onClose} disabled={loading}>
-          Annuler
+          {t("cancel")}
         </button>
       </div>
     </BaseModal>

@@ -14,6 +14,8 @@
         "firstNameRequired": "Le prénom est requis.",
         "invalidImageUrl": "URL d'image invalide (jpg, jpeg, png, gif, webp, bmp, svg).",
         "creationFailed": "Création impossible. Réessaie plus tard.",
-        "creating": "Création..."
+        "creating": "Création...",
+        "error": "La modification a échoué. Vérifie les champs et réessaie.",
+        "modifyFiche": "Modifier la fiche"
     }
 }
