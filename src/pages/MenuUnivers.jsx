@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./MenuFiche.css";
 import { SearchBar } from "@components";
-import { useIcon } from "../utils/iconImports";
-import { useAsset } from "../utils/assetLoader";
+import { FaFilter, FaStar } from "react-icons/fa";
+import { ffimg, forum, jeux, plateau, discordimg } from "@assets";
 import "./MenuUnivers.css";
 
 const TAGS = ["rp-francais", "fantastiques", "discord", "anglais", "jeu de table", "WoW", "ffxiv"];
@@ -16,16 +16,7 @@ const MenuUnivers = () => {
     catch { return []; }
   });
 
-  // Utilisation optimisée des icônes
-  const { Icon: FilterIcon } = useIcon('Filter');
-  const { Icon: StarIcon } = useIcon('Star');
-  
-  // Utilisation optimisée des assets
-  const { asset: ffimg } = useAsset('ffimg');
-  const { asset: forum } = useAsset('forum');
-  const { asset: jeux } = useAsset('jeux');
-  const { asset: plateau } = useAsset('plateau');
-  const { asset: discordimg } = useAsset('discordimg');
+
 
   // 🔹 Simule les univers où l'user a une fiche attachée
   const [myUniverseIds] = useState([1, 5, 9]); // <-- à remplacer par API plus tard
@@ -38,8 +29,7 @@ const MenuUnivers = () => {
   useEffect(() => {
     let isMounted = true;
 
-    // Attendre que tous les assets soient chargés
-    if (!ffimg || !forum || !jeux || !plateau || !discordimg) return;
+
 
     // TODO: remplace ceci par ton appel API (ex: ApiUnivers.list())
     const mockData = [
@@ -72,7 +62,7 @@ const MenuUnivers = () => {
     })();
 
     return () => { isMounted = false; };
-  }, [ffimg, forum, jeux, plateau, discordimg]);
+  }, []);
 
   // Persistance des favoris
   useEffect(() => {
@@ -115,7 +105,7 @@ const MenuUnivers = () => {
       <div className="menu-header">
         <div className="menu-header-content">
           <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
-            {FilterIcon && <FilterIcon size={16} />}
+            <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
         </div>
@@ -124,7 +114,7 @@ const MenuUnivers = () => {
       <div className="menu-header-mobil">
         <div className="menu-header-content">
           <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
-            {FilterIcon && <FilterIcon size={16} />}
+            <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
         </div>
@@ -159,7 +149,7 @@ const MenuUnivers = () => {
                   onClick={() => toggleFav(card.id)}
                   title="Favori"
                 >
-                  {StarIcon && <StarIcon size={16} />}
+                  <FaStar size={16} />
                 </button>
 
                 <div
@@ -182,14 +172,14 @@ const MenuUnivers = () => {
       <section className="univers-grid" aria-label="Liste des univers">
         {filteredCards.map((card) => (
           <article key={card.id} className="univers-card">
-            <button
-              className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
-              aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
-              onClick={() => toggleFav(card.id)}
-              title="Favori"
-            >
-              {StarIcon && <StarIcon size={16} />}
-            </button>
+                          <button
+                className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
+                aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
+                onClick={() => toggleFav(card.id)}
+                title="Favori"
+              >
+                <FaStar size={16} />
+              </button>
 
             <div
               className="univers-card-bg"

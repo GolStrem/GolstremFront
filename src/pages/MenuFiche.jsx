@@ -8,7 +8,7 @@ import {
   FicheDeleteCharacterModal,
   FicheModifCharacterModal,
 } from "@components";
-import { useIcon } from "../utils/iconImports";
+import { FaFilter } from "react-icons/fa";
 
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
@@ -28,7 +28,7 @@ const MenuFiche = () => {
   // Déterminer si on est en mode lecture seule (URL avec paramètres)
   const isReadOnly = location.pathname !== "/fiches";
 
-  const { Icon: FilterIcon } = useIcon('Filter');
+
   
   // Déterminer le type et l'ID à utiliser
   const getFicheParams = () => {
@@ -163,7 +163,7 @@ const MenuFiche = () => {
       <div className="menu-header">
         <div className="menu-header-content">
           <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
-            {FilterIcon && <FilterIcon size={16} />}
+            <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
         </div>
@@ -173,7 +173,7 @@ const MenuFiche = () => {
       <div className="menu-header-mobil">
         <div className="menu-header-content">
           <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
-            {FilterIcon && <FilterIcon size={16} />}
+            <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
         </div>

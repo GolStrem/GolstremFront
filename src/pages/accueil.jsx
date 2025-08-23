@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import Golden from "@assets/golden.svg?react";
 import "./Accueil.css";
 import { toggleTheme } from "@store/index";
-import { useIcon } from "../utils/iconImports";
-import { useAsset } from "../utils/assetLoader";
+import { FaSun, FaMoon } from "react-icons/fa";
+import { raw } from "@assets";
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
 
 
@@ -16,12 +16,7 @@ const Accueil = () => {
   const mode = useSelector((state) => state.theme.mode);
   const navigate = useNavigate();
 
-  // Utilisation optimisée des icônes
-  const { Icon: SunIcon } = useIcon('Sun');
-  const { Icon: MoonIcon } = useIcon('Moon');
-  
-  // Utilisation optimisée des assets
-  const { asset: rawImage } = useAsset('raw');
+
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -35,8 +30,8 @@ const Accueil = () => {
         onClick={() => dispatch(toggleTheme())}
       >
         {mode === "dark" ? 
-          (MoonIcon && <MoonIcon size={24} />) : 
-          (SunIcon && <SunIcon size={24} />)
+          <FaMoon size={24} /> : 
+          <FaSun size={24} />
         }
       </div>
 
@@ -49,7 +44,7 @@ const Accueil = () => {
         </button>
         </div>
                  <div className="home-img">
-           {rawImage && <img src={rawImage} alt="Fond personnage" className="home-perso" />}
+           <img src={raw} alt="Fond personnage" className="home-perso" />
          </div>
       </div>
 

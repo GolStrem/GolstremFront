@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useIcon } from "../utils/iconImports";
-import { useAsset } from "../utils/assetLoader";
+import { FaSun, FaMoon, FaUserAlt, FaPlus } from "react-icons/fa";
+import { golstremb, golden, raw } from "@assets";
 import { LnModal } from '@components';
 import { toggleTheme } from '@store/index';
 import { useNavigate } from 'react-router-dom';
@@ -17,15 +17,7 @@ const LoginNew = () => {
   const mode = useSelector((state) => state.theme.mode);
 
   // Utilisation optimisée des icônes
-  const { Icon: SunIcon } = useIcon('Sun');
-  const { Icon: MoonIcon } = useIcon('Moon');
-  const { Icon: UserAltIcon } = useIcon('UserAlt');
-  const { Icon: PlusIcon } = useIcon('Plus');
-  
-  // Utilisation optimisée des assets
-  const { asset: golstrembImage } = useAsset('golstremb');
-  const { asset: goldenImage } = useAsset('golden');
-  const { asset: rawImage } = useAsset('raw');
+
 
   const [modal, setModal] = useState(null); // 'login' | 'register' | null
   const openLogin    = () => setModal('login');
@@ -49,25 +41,25 @@ const LoginNew = () => {
         onClick={() => dispatch(toggleTheme())}
       >
         {mode === 'dark' ? 
-          (MoonIcon && <MoonIcon size={24} />) : 
-          (SunIcon && <SunIcon size={24} />)
+          <FaMoon size={24} /> : 
+          <FaSun size={24} />
         }
       </div>
 
       {/* — header mobile — */}
       <header className="ln-header">
-        {goldenImage && <img src={goldenImage} alt="Mon logo" className="ln-logor" />}
+        <img src={golden} alt="Mon logo" className="ln-logor" />
       </header>
 
       {/* — carré “Connexion” & “Créer un compte” — */}
       <div className="ln-form">
         <button className="ln-connexion" onClick={openLogin}>
-          {UserAltIcon && <UserAltIcon className="ln-ico" />}
+          <FaUserAlt className="ln-ico" />
           <span>{t('login.connexionText')}</span>
         </button>
 
         <button className="ln-create" onClick={openRegister}>
-          {PlusIcon && <PlusIcon className="ln-ico" />}
+          <FaPlus className="ln-ico" />
           <span>{t('login.nouveauCompte')}</span>
         </button>
       </div>
@@ -83,11 +75,11 @@ const LoginNew = () => {
       {/* — aside + background décoratif — */}
       <div className="ln-back">
         <aside className="ln-aside">
-          {golstrembImage && <img src={golstrembImage} alt="Mon logo" className="ln-logo" />}
+          <img src={golstremb} alt="Mon logo" className="ln-logo" />
         </aside>
 
         <div className="ln-background">
-          {rawImage && <img src={rawImage} alt="Fond personnage" className="ln-character" />}
+          <img src={raw} alt="Fond personnage" className="ln-character" />
 
           <div className="ln-text">
             <GoldenStremP alt="texte logo 1" className="ln-textlogo" />

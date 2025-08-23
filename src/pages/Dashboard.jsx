@@ -19,6 +19,7 @@ import "./Dashboard.css";
 
 const Dashboard = () => {
   const { t } = useTranslation("general"); // ✅ On ne garde que "general"
+
   const [avatar, setAvatar] = useState(avatarDefault);
   const [pseudo, setPseudo] = useState("joueur");
   const [showBannerModal, setShowBannerModal] = useState(false);

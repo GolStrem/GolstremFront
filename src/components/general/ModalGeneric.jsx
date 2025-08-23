@@ -4,7 +4,7 @@ import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
 import "../fiche/modal/FicheEditModal.css";
 import "./ModalGeneric.css"
-import { useIcon } from "../../utils/iconImports";
+import { FaEye } from "react-icons/fa";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextImgPlus, TextTextAreaPlus, CheckBox, Chapter } from "./ModalGeneric/index.js";
@@ -17,7 +17,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 	const [previewSrc, setPreviewSrc] = useState(null);
 	const forceUpdateRef = useRef(0);
 	const { t } = useTranslation("modal");
-	const { Icon: EyeIcon } = useIcon('Eye');
+	
 
 	const [values, setValues] = useState(() => {
 
@@ -293,11 +293,11 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 						{t(label)} :
 						{values[key] && isValidImageUrl(values[key]) && (
 						<div style={{ marginLeft: 6, marginBottom:-6 }}>
-							{EyeIcon && <EyeIcon size={16}
-							style={{ cursor: "pointer", fontSize: 20 }}
-							title={t("preview")}
-							onClick={() => setPreviewSrc(values[key])}
-							/>}
+							                                    <FaEye size={16}
+              style={{ cursor: "pointer", fontSize: 20 }}
+              title={t("preview")}
+              onClick={() => setPreviewSrc(values[key])}
+            />
 						</div>
 						)}
 						</label>

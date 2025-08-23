@@ -1,5 +1,5 @@
 import React from "react";
-import { useIcon } from "../../../utils/iconImports";
+import { FaEye } from "react-icons/fa";
 import { isValidImageUrl } from "@service";
 import { useTranslation } from "react-i18next";
 
@@ -7,7 +7,7 @@ const TextImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc })
 	const { t } = useTranslation("modal");
 
 	// Utilisation optimisée des icônes
-	const { Icon: EyeIcon } = useIcon('Eye');
+	
 	// Détecter combien de paires existent déjà
 	const textKeyBase = "inputText";
 	const urlKeyBase = "inputUrl";
@@ -117,11 +117,11 @@ const TextImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc })
 								<label className="tm-label label-fiche" htmlFor={urlKey}>{t("imgUrl")} :
 									{values[urlKey] && isValidImageUrl(values[urlKey]) && (
 								<div style={{ marginLeft: 6, marginBottom:-6 }}>
-									{EyeIcon && <EyeIcon size={16}
-									style={{ cursor: "pointer", fontSize: 20 }}
-									title={t("preview")}
-									onClick={() => setPreviewSrc(values[urlKey])}
-									/>}
+									                        <FaEye size={16}
+              style={{ cursor: "pointer", fontSize: 20 }}
+              title={t("preview")}
+              onClick={() => setPreviewSrc(values[urlKey])}
+            />
 								</div>
 								)}
 								</label>

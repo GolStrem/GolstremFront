@@ -1,63 +1,78 @@
-// Assets chargés de manière dynamique pour optimiser le bundle
-// Seuls les assets les plus utilisés sont importés statiquement
-
-// Assets principaux (utilisés fréquemment)
-import avatar from './avatar.png';
-import banner from './banner1.jpg';
-import banner1 from './banner.jpg';
+import abstrait from './abstrait.webp';
+import checkIcon from './checkIcon.svg';
+import Fichier4 from './Fichier4.svg';
+import Fichier5 from './Fichier5.png';
+import Fichier6 from './Fichier6.png';
+import personp from './Fichier6.png';
+import golden from './golden.svg';
+import golstremV from './goldstremV.svg';
+import golstremb from './golstremb.svg';
+import golstremc from './golstremc.svg';
+import golstremE from './golstremE.svg';
+import golstremp from './golstremp_1.svg';
+import golstremw from './golstremw.svg';
 import logo from './logo.png';
+import styleModal from './styleModal.svg';
+import warningModal from './warningModal.svg';
+import avatar from './avatar.png';
+import banner1 from './banner.jpg'
+import banner from './banner1.jpg'
+import trombone from './icons/trombone.svg'
+import cadre from'./icons/cadre.svg'
+import raw from './raw.png'
 
-// Composants SVG (utilisés dans l'UI)
 import StyleModalIcon from './svg/StyleModalIcon';
 import WarningIcon from './svg/WarningIcon';
 import FondBack from './svg/FondBack';
 import CheckIcon from './svg/CheckIcon';
+
 import GoldenStremC from './svg/GoldenStremC';
 import GoldenStremE from './svg/GoldenStremE';
 import GoldenStremP from './svg/GoldenStremP';
 import GoldenStremV from './svg/GoldenStremV';
 import GoldenLogo from './svg/GoldenLogo';
 
-// Fonctions pour charger les autres assets de manière dynamique
-const loadAsset = (path) => () => import(`./${path}`);
+import discordimg from "./img-univers/discordimg.png"
+import ffimg from "./img-univers/ffimg.png"
+import forum from "./img-univers/forum.png"
+import jeux from "./img-univers/jeux.png"
+import plateau from "./img-univers/plateau.png"
 
-// Assets secondaires (chargés à la demande)
-export const abstrait = loadAsset('abstrait.webp');
-export const checkIcon = loadAsset('checkIcon.svg');
-export const Fichier4 = loadAsset('Fichier4.svg');
-export const Fichier5 = loadAsset('Fichier5.png');
-export const Fichier6 = loadAsset('Fichier6.png');
-export const personp = loadAsset('Fichier6.png');
-export const golden = loadAsset('golden.svg');
-export const golstremV = loadAsset('goldstremV.svg');
-export const golstremb = loadAsset('golstremb.svg');
-export const golstremc = loadAsset('golstremc.svg');
-export const golstremE = loadAsset('golstremE.svg');
-export const golstremp = loadAsset('golstremp_1.svg');
-export const golstremw = loadAsset('golstremw.svg');
-export const styleModal = loadAsset('styleModal.svg');
-export const warningModal = loadAsset('warningModal.svg');
-export const trombone = loadAsset('icons/trombone.svg');
-export const cadre = loadAsset('icons/cadre.svg');
-export const raw = loadAsset('raw.png');
-
-// Images univers (déplacées dans public/images/univers)
-
-// Export des assets principaux (imports statiques)
 export {
-  avatar,
-  banner,
-  banner1,
+  discordimg,
+  ffimg,
+  forum,
+  jeux,
+  plateau,
+  abstrait,
+  checkIcon,
+  Fichier4,
+  Fichier5,
+  Fichier6,
+  personp,
+  raw,
+  golden,
+  golstremV,
+  golstremb,
+  golstremc,
+  golstremE,
+  golstremp,
+  golstremw,
   logo,
-  StyleModalIcon,
+  styleModal,
+  warningModal,
+  avatar,
+  banner1,
+  banner,
+  cadre,
+  trombone,
   WarningIcon,
+  StyleModalIcon,
   FondBack,
   CheckIcon,
   GoldenStremC,
   GoldenStremE,
-  GoldenStremP,
   GoldenStremV,
+  GoldenStremP,
   GoldenLogo
 };
-
-// Les autres assets sont exportés comme fonctions de chargement dynamique

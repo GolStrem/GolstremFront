@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
-import { useIcon } from "../../utils/iconImports";
+import { FaAlignLeft } from "react-icons/fa";
 import "./DnDCards.css";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +11,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   const cardRef = useRef(null);
 
   // Utilisation optimisée des icônes
-  const { Icon: AlignLeftIcon } = useIcon('AlignLeft');
+
 
   const { attributes, listeners, setNodeRef } = useSortable({
     id: card.id,
@@ -81,7 +81,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
         </div>
 
         {card.hasAttachment && (
-          AlignLeftIcon && <AlignLeftIcon
+                      <FaAlignLeft
             className="dnd-attachment-icon"
             title={t("workspace.attachmentAlt")}
           />

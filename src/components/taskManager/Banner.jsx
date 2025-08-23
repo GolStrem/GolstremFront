@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { TaskApi, UserInfo, Socket } from "@service";
 import { AddUserModal, BoardCardAccess, SearchBar } from "@components";
-import { useIcon } from "../../utils/iconImports";
-import { useAsset } from "../../utils/assetLoader";
+import { FaUserPlus } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+import { banner, avatar } from "@assets";
 import "./Banner.css";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -17,12 +18,7 @@ const Banner = ({ workspaceId, onSearch }) => {
   const [droit, setDroit] = useState(null);
 
   // Utilisation optimisée des icônes
-  const { Icon: UserPlusIcon } = useIcon('UserPlus');
-  const { Icon: CloseIcon } = useIcon('Close', 'Io');
-  
-  // Utilisation optimisée des assets
-  const { asset: bannerImage } = useAsset('banner');
-  const { asset: avatarImage } = useAsset('avatar');
+
 
   const roleLabel = (state) => {
     if (state === "owner") return t("workspace.roleOwner");
@@ -183,7 +179,7 @@ const Banner = ({ workspaceId, onSearch }) => {
       <div
         className="tm-header-banner"
         style={{
-          backgroundImage: `url(${workspace?.image || bannerImage})`,
+          backgroundImage: `url(${workspace?.image || banner})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           width: "100%",
@@ -222,7 +218,7 @@ const Banner = ({ workspaceId, onSearch }) => {
               onClick={() => setShowAddUserModal(true)}
               title={t("workspace.addUserTitle")}
             >
-              {UserPlusIcon && <UserPlusIcon size={20} className="userplus" />}
+              <FaUserPlus size={20} className="userplus" />
             </button>
           )}
         </div>

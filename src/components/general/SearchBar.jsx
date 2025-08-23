@@ -1,5 +1,5 @@
 import React from "react";
-import { useIcon } from "../../utils/iconImports";
+import { IoClose } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import "./SearchBar.css";
 
@@ -7,7 +7,7 @@ const SearchBar = ({ value, onChange, onClear }) => {
   const { t } = useTranslation("general");
 
   // Utilisation optimisée des icônes
-  const { Icon: CloseIcon } = useIcon('Close', 'Io');
+
 
   return (
     <div className="tm-search-wrapper">
@@ -25,7 +25,7 @@ const SearchBar = ({ value, onChange, onClear }) => {
           title={t("general.clear")}
           aria-label={t("general.clear")}
         >
-          {CloseIcon && <CloseIcon size={18} />}
+          <IoClose size={18} />
         </button>
       )}
     </div>

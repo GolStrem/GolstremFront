@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '@store/index';
-import { useIcon } from "../utils/iconImports";
+import { FaSun, FaMoon } from "react-icons/fa";
 import './LoginNew.css';
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
 import { useTranslation } from 'react-i18next';
@@ -17,8 +17,7 @@ const NotFound = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   // Utilisation optimisée des icônes
-  const { Icon: SunIcon } = useIcon('Sun');
-  const { Icon: MoonIcon } = useIcon('Moon');
+
 
   const handleRedirect = () => {
     navigate(isAuthenticated ? '/dashboard' : '/');
@@ -32,8 +31,8 @@ const NotFound = () => {
         onClick={() => dispatch(toggleTheme())}
       >
         {mode === 'dark' ? 
-          (MoonIcon && <MoonIcon size={24} />) : 
-          (SunIcon && <SunIcon size={24} />)
+          <FaMoon size={24} /> : 
+          <FaSun size={24} />
         }
       </div>
 

@@ -5,6 +5,7 @@ import { banner as defaultBanner } from "@assets";
 
 const EditableBanner = ({ id, extra, title, className = "" }) => {
   const parsedExtra = typeof extra === "string" ? JSON.parse(extra) : extra || {};
+
   const [bannerUrl, setBannerUrl] = useState(parsedExtra.banner || defaultBanner);
   const [showModal, setShowModal] = useState(false);
 

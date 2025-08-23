@@ -1,4 +1,4 @@
-import { useIcon } from "../../utils/iconImports";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,8 +17,7 @@ const LnPasswordField = ({
   const { t } = useTranslation('login');
 
   // Utilisation optimisée des icônes
-  const { Icon: EyeIcon } = useIcon('Eye');
-  const { Icon: EyeSlashIcon } = useIcon('EyeSlash'); 
+ 
 
   return (
     <label>
@@ -40,8 +39,8 @@ const LnPasswordField = ({
           aria-label={t('showHidePassword')}
         >
           {visible ? 
-            (EyeSlashIcon && <EyeSlashIcon />) : 
-            (EyeIcon && <EyeIcon />)
+            <FaEyeSlash /> : 
+            <FaEye />
           }
         </button>
       </div>
