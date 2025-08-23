@@ -3,7 +3,7 @@ import { useDroppable } from "@dnd-kit/core";
 import DnDCard from "./DnDCard";
 import { EditBoardTitleModal, DeleteBoardModal, BoardCardAccess } from "@components";
 import BoardMenuPortal from "./BoardMenuPortal";
-import { FaChevronDown } from "react-icons/fa";
+import { useIcon } from "../../utils/iconImports";
 import { useTranslation } from "react-i18next";
 
 const DnDBoard = ({
@@ -23,6 +23,9 @@ const DnDBoard = ({
   const cardsContainerRef = useRef(null);
   const buttonRef = useRef(null); // Bouton ⋯
   const menuRef = useRef(null);   // Menu contextuel
+
+  // Utilisation optimisée des icônes
+  const { Icon: ChevronDownIcon } = useIcon('ChevronDown');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -149,7 +152,7 @@ const DnDBoard = ({
           style={{ cursor: "pointer" }}
         >
           <h2 className="tm-board-title">
-            <FaChevronDown className={`tm-chevron ${isCollapsed ? "collapsed" : ""}`} />
+            {ChevronDownIcon && <ChevronDownIcon className={`tm-chevron ${isCollapsed ? "collapsed" : ""}`} />}
             {board.name}
             {board.cards.length > 0 && (
               <span className="tm-card-count">({board.cards.length})</span>

@@ -1,11 +1,14 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { useIcon } from "../../utils/iconImports";
 import "./BackLocation.css";
 
 const BackLocation = ({ className = "", title = "Retour" }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Utilisation optimisée des icônes
+  const { Icon: ArrowLeftIcon } = useIcon('ArrowLeft');
 
   // Sauvegarder la page d'origine si elle est fournie
   if (location.state?.from !== undefined) {
@@ -22,7 +25,7 @@ const BackLocation = ({ className = "", title = "Retour" }) => {
       onClick={handleGoBack}
       title={title}
     >
-      <FaArrowLeft />
+      {ArrowLeftIcon && <ArrowLeftIcon />}
     </button>
   );
 };

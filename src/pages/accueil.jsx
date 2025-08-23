@@ -5,8 +5,9 @@ import { useTranslation } from "react-i18next";
 import Golden from "@assets/golden.svg?react";
 import "./Accueil.css";
 import { toggleTheme } from "@store/index";
-import { FaSun, FaMoon } from "react-icons/fa";
-import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV, raw } from '@assets';
+import { useIcon } from "../utils/iconImports";
+import { useAsset } from "../utils/assetLoader";
+import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
 
 
 const Accueil = () => {
@@ -14,6 +15,13 @@ const Accueil = () => {
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.theme.mode);
   const navigate = useNavigate();
+
+  // Utilisation optimisée des icônes
+  const { Icon: SunIcon } = useIcon('Sun');
+  const { Icon: MoonIcon } = useIcon('Moon');
+  
+  // Utilisation optimisée des assets
+  const { asset: rawImage } = useAsset('raw');
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -26,8 +34,10 @@ const Accueil = () => {
         className={`mode-toggle ${mode}`}
         onClick={() => dispatch(toggleTheme())}
       >
-       
-        {mode === "dark" ? <FaMoon size={24} /> : <FaSun size={24} />}
+        {mode === "dark" ? 
+          (MoonIcon && <MoonIcon size={24} />) : 
+          (SunIcon && <SunIcon size={24} />)
+        }
       </div>
 
       <div className="home-content">
@@ -38,7 +48,9 @@ const Accueil = () => {
           {t("loginCta")}
         </button>
         </div>
-        <div className="home-img"><img src={raw} alt="Fond personnage" className="home-perso" /> </div>
+                 <div className="home-img">
+           {rawImage && <img src={rawImage} alt="Fond personnage" className="home-perso" />}
+         </div>
       </div>
 
 

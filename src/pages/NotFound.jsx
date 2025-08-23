@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '@store/index';
-import { FaSun, FaMoon } from 'react-icons/fa';
+import { useIcon } from "../utils/iconImports";
 import './LoginNew.css';
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,10 @@ const NotFound = () => {
   const mode = useSelector((state) => state.theme.mode);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
+  // Utilisation optimisée des icônes
+  const { Icon: SunIcon } = useIcon('Sun');
+  const { Icon: MoonIcon } = useIcon('Moon');
+
   const handleRedirect = () => {
     navigate(isAuthenticated ? '/dashboard' : '/');
   };
@@ -27,7 +31,10 @@ const NotFound = () => {
         className={`mode-toggle ${mode}`}
         onClick={() => dispatch(toggleTheme())}
       >
-        {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}
+        {mode === 'dark' ? 
+          (MoonIcon && <MoonIcon size={24} />) : 
+          (SunIcon && <SunIcon size={24} />)
+        }
       </div>
 
       <div className="number">404</div>

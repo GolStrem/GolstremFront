@@ -1,4 +1,4 @@
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useIcon } from "../../utils/iconImports";
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,11 @@ const LnPasswordField = ({
   getStrengthColor,
 }) => {
   const [visible, setVisible] = useState(false);
-  const { t } = useTranslation('login'); 
+  const { t } = useTranslation('login');
+
+  // Utilisation optimisée des icônes
+  const { Icon: EyeIcon } = useIcon('Eye');
+  const { Icon: EyeSlashIcon } = useIcon('EyeSlash'); 
 
   return (
     <label>
@@ -35,7 +39,10 @@ const LnPasswordField = ({
           onClick={() => setVisible(!visible)}
           aria-label={t('showHidePassword')}
         >
-          {visible ? <FaEyeSlash /> : <FaEye />}
+          {visible ? 
+            (EyeSlashIcon && <EyeSlashIcon />) : 
+            (EyeIcon && <EyeIcon />)
+          }
         </button>
       </div>
 

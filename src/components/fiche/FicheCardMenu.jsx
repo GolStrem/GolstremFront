@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaEllipsisV } from "react-icons/fa";
-import { BiCopy } from "react-icons/bi";
+import { useIcon } from "../../utils/iconImports";
 import { useTranslation } from "react-i18next";
 
 import "./FicheCardMenu.css";
@@ -9,6 +8,10 @@ const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
   const { t } = useTranslation("common");
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
+
+  // Utilisation optimisée des icônes
+  const { Icon: EllipsisVIcon } = useIcon('EllipsisV');
+  const { Icon: CopyIcon } = useIcon('Copy', 'Bi');
 
   const handleClickOutside = (e) => {
     if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -29,7 +32,7 @@ const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
         e.stopPropagation();
         setOpen(!open);
       }}>
-        <FaEllipsisV />
+        {EllipsisVIcon && <EllipsisVIcon />}
       </button>
 
       {open && (
@@ -41,7 +44,7 @@ const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
           <div onClick={(e) => {
             e.stopPropagation();
             onDuplicate();
-          }} className="ficheBouton"> <BiCopy />&nbsp; {t("duplicate")}</div>
+          }} className="ficheBouton"> {CopyIcon && <CopyIcon />}&nbsp; {t("duplicate")}</div>
           <div onClick={(e) => {
             e.stopPropagation();
             onDelete();

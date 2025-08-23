@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./MenuFiche.css";
 import { SearchBar } from "@components";
-import { FaFilter, FaStar } from "react-icons/fa";
-import { ffimg, forum, jeux, plateau, discordimg } from "@assets";
+import { useIcon } from "../utils/iconImports";
+import { useAsset } from "../utils/assetLoader";
 import "./MenuUnivers.css";
 
 const TAGS = ["rp-francais", "fantastiques", "discord", "anglais", "jeu de table", "WoW", "ffxiv"];
@@ -16,6 +16,17 @@ const MenuUnivers = () => {
     catch { return []; }
   });
 
+  // Utilisation optimisée des icônes
+  const { Icon: FilterIcon } = useIcon('Filter');
+  const { Icon: StarIcon } = useIcon('Star');
+  
+  // Utilisation optimisée des assets
+  const { asset: ffimg } = useAsset('ffimg');
+  const { asset: forum } = useAsset('forum');
+  const { asset: jeux } = useAsset('jeux');
+  const { asset: plateau } = useAsset('plateau');
+  const { asset: discordimg } = useAsset('discordimg');
+
   // 🔹 Simule les univers où l'user a une fiche attachée
   const [myUniverseIds] = useState([1, 5, 9]); // <-- à remplacer par API plus tard
 
@@ -26,6 +37,9 @@ const MenuUnivers = () => {
   // ====== Chargement des cartes (préparé pour API) ======
   useEffect(() => {
     let isMounted = true;
+
+    // Attendre que tous les assets soient chargés
+    if (!ffimg || !forum || !jeux || !plateau || !discordimg) return;
 
     // TODO: remplace ceci par ton appel API (ex: ApiUnivers.list())
     const mockData = [
@@ -58,7 +72,7 @@ const MenuUnivers = () => {
     })();
 
     return () => { isMounted = false; };
-  }, []);
+  }, [ffimg, forum, jeux, plateau, discordimg]);
 
   // Persistance des favoris
   useEffect(() => {
@@ -101,7 +115,7 @@ const MenuUnivers = () => {
       <div className="menu-header">
         <div className="menu-header-content">
           <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
-            <FaFilter size={16} />
+            {FilterIcon && <FilterIcon size={16} />}
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
         </div>
@@ -110,7 +124,7 @@ const MenuUnivers = () => {
       <div className="menu-header-mobil">
         <div className="menu-header-content">
           <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
-            <FaFilter size={16} />
+            {FilterIcon && <FilterIcon size={16} />}
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
         </div>
@@ -145,7 +159,7 @@ const MenuUnivers = () => {
                   onClick={() => toggleFav(card.id)}
                   title="Favori"
                 >
-                  <FaStar size={16} />
+                  {StarIcon && <StarIcon size={16} />}
                 </button>
 
                 <div
@@ -174,7 +188,7 @@ const MenuUnivers = () => {
               onClick={() => toggleFav(card.id)}
               title="Favori"
             >
-              <FaStar size={16} />
+              {StarIcon && <StarIcon size={16} />}
             </button>
 
             <div
