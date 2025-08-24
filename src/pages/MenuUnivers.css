@@ -218,6 +218,7 @@
   overflow-y: auto;
   padding-right: 6px;
   max-height: 300px;
+  text-align: justify;
 }
 
 .universTitle {
