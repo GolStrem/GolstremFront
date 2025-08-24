@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { TaskApi, UserInfo } from "@service";
-import apiService from "@service/api/ApiService";
+import { TaskApi, UserInfo, ApiService } from "@service";
 import {
   FaTasks,
   FaBook,
@@ -18,7 +17,7 @@ import avatarDefault from "@assets/avatar.png";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  const { t } = useTranslation("general"); // ✅ On ne garde que "general"
+  const { t } = useTranslation("general");
 
   const [avatar, setAvatar] = useState(avatarDefault);
   const [pseudo, setPseudo] = useState("joueur");
@@ -77,7 +76,7 @@ const Dashboard = () => {
   useEffect(() => {
     const initDashboard = async () => {
       try {
-        const { data: user } = await apiService.getUser();
+        const { data: user } = await ApiService.getUser();
         if (user?.image) setAvatar(user.image);
         if (user?.pseudo) setPseudo(user.pseudo);
         const bannerUse = await UserInfo.get("banner");

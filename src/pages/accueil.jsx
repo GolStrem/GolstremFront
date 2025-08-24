@@ -6,8 +6,7 @@ import Golden from "@assets/golden.svg?react";
 import "./Accueil.css";
 import { toggleTheme } from "@store/index";
 import { FaSun, FaMoon } from "react-icons/fa";
-import { raw } from "@assets";
-import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
+import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV, raw } from '@assets';
 
 
 const Accueil = () => {
