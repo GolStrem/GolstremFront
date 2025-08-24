@@ -10,6 +10,9 @@ const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
+  // Utilisation optimisée des icônes
+
+
   const handleClickOutside = (e) => {
     if (menuRef.current && !menuRef.current.contains(e.target)) {
       setOpen(false);

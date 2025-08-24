@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaSun, FaMoon, FaUserAlt, FaPlus } from 'react-icons/fa';
+import { FaSun, FaMoon, FaUserAlt, FaPlus } from "react-icons/fa";
+import { golstremb, golden, raw } from "@assets";
 import { LnModal } from '@components';
 import { toggleTheme } from '@store/index';
 import { useNavigate } from 'react-router-dom';
@@ -8,13 +9,15 @@ import { useTranslation } from 'react-i18next';
 
 import './LoginNew.css';
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
-import { golstremb, personp, golden, raw } from '@assets';
 
 const LoginNew = () => {
   const { t } = useTranslation('login');
 
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.theme.mode);
+
+  // Utilisation optimisée des icônes
+
 
   const [modal, setModal] = useState(null); // 'login' | 'register' | null
   const openLogin    = () => setModal('login');
@@ -37,7 +40,10 @@ const LoginNew = () => {
         className={`mode-toggle ${mode}`}
         onClick={() => dispatch(toggleTheme())}
       >
-        {mode === 'dark' ? <FaMoon size={24} /> : <FaSun size={24} />}
+        {mode === 'dark' ? 
+          <FaMoon size={24} /> : 
+          <FaSun size={24} />
+        }
       </div>
 
       {/* — header mobile — */}

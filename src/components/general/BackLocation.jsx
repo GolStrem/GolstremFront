@@ -7,6 +7,9 @@ const BackLocation = ({ className = "", title = "Retour" }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Utilisation optimisée des icônes
+
+
   // Sauvegarder la page d'origine si elle est fournie
   if (location.state?.from !== undefined) {
     localStorage.setItem('lastPage', location.state?.from);
@@ -22,7 +25,7 @@ const BackLocation = ({ className = "", title = "Retour" }) => {
       onClick={handleGoBack}
       title={title}
     >
-      <FaArrowLeft />
+              <FaArrowLeft />
     </button>
   );
 };

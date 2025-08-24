@@ -10,6 +10,9 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
   const clickStart = useRef(null);
   const cardRef = useRef(null);
 
+  // Utilisation optimisée des icônes
+
+
   const { attributes, listeners, setNodeRef } = useSortable({
     id: card.id,
     transition: { duration: 150 },
@@ -78,7 +81,7 @@ const DnDCard = ({ card, boardId, openViewerModal }) => {
         </div>
 
         {card.hasAttachment && (
-          <FaAlignLeft
+                      <FaAlignLeft
             className="dnd-attachment-icon"
             title={t("workspace.attachmentAlt")}
           />

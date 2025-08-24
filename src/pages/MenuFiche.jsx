@@ -9,6 +9,7 @@ import {
   FicheModifCharacterModal,
 } from "@components";
 import { FaFilter } from "react-icons/fa";
+
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 // ⬇️ Handlers purs (aucun appel API)
@@ -26,6 +27,8 @@ const MenuFiche = () => {
   
   // Déterminer si on est en mode lecture seule (URL avec paramètres)
   const isReadOnly = location.pathname !== "/fiches";
+
+
   
   // Déterminer le type et l'ID à utiliser
   const getFicheParams = () => {

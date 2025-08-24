@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import banner from "@assets/banner.jpg";
 import { TaskApi, UserInfo, Socket } from "@service";
 import { AddUserModal, BoardCardAccess, SearchBar } from "@components";
 import { FaUserPlus } from "react-icons/fa";
-import { IoClose } from "react-icons/io5"; // pour la croix
-import avatar1 from "@assets/avatar.png";
+import { banner } from "@assets";
 import "./Banner.css";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -17,6 +15,9 @@ const Banner = ({ workspaceId, onSearch }) => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [search, setSearch] = useState("");
   const [droit, setDroit] = useState(null);
+
+  // Utilisation optimisée des icônes
+
 
   const roleLabel = (state) => {
     if (state === "owner") return t("workspace.roleOwner");

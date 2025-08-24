@@ -15,6 +15,8 @@ const Accueil = () => {
   const mode = useSelector((state) => state.theme.mode);
   const navigate = useNavigate();
 
+
+
   const handleLoginClick = () => {
     navigate("/login");
   };
@@ -26,8 +28,10 @@ const Accueil = () => {
         className={`mode-toggle ${mode}`}
         onClick={() => dispatch(toggleTheme())}
       >
-       
-        {mode === "dark" ? <FaMoon size={24} /> : <FaSun size={24} />}
+        {mode === "dark" ? 
+          <FaMoon size={24} /> : 
+          <FaSun size={24} />
+        }
       </div>
 
       <div className="home-content">
@@ -38,7 +42,9 @@ const Accueil = () => {
           {t("loginCta")}
         </button>
         </div>
-        <div className="home-img"><img src={raw} alt="Fond personnage" className="home-perso" /> </div>
+                 <div className="home-img">
+           <img src={raw} alt="Fond personnage" className="home-perso" />
+         </div>
       </div>
 
 

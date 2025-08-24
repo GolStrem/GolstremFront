@@ -17,6 +17,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 	const [previewSrc, setPreviewSrc] = useState(null);
 	const forceUpdateRef = useRef(0);
 	const { t } = useTranslation("modal");
+	
 
 	const [values, setValues] = useState(() => {
 
@@ -292,11 +293,11 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 						{t(label)} :
 						{values[key] && isValidImageUrl(values[key]) && (
 						<div style={{ marginLeft: 6, marginBottom:-6 }}>
-							<FaEye
-							style={{ cursor: "pointer", fontSize: 20 }}
-							title={t("preview")}
-							onClick={() => setPreviewSrc(values[key])}
-							/>
+							                                    <FaEye size={16}
+              style={{ cursor: "pointer", fontSize: 20 }}
+              title={t("preview")}
+              onClick={() => setPreviewSrc(values[key])}
+            />
 						</div>
 						)}
 						</label>

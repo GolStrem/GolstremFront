@@ -11,6 +11,7 @@ const DashWorkspace = ({ extra, id }) => {
   const navigate = useNavigate();
   const parsedExtra = typeof extra === "string" ? JSON.parse(extra) : extra || {};
 
+
   const [bannerUrl, setBannerUrl] = useState(parsedExtra.banner || defaultBanner);
   const [showBannerModal, setShowBannerModal] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);

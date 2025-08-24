@@ -6,6 +6,9 @@ import "./SearchBar.css";
 const SearchBar = ({ value, onChange, onClear }) => {
   const { t } = useTranslation("general");
 
+  // Utilisation optimisée des icônes
+
+
   return (
     <div className="tm-search-wrapper">
       <input

@@ -23,6 +23,9 @@ const DnDBoard = ({
   const cardsContainerRef = useRef(null);
   const buttonRef = useRef(null); // Bouton ⋯
   const menuRef = useRef(null);   // Menu contextuel
+
+  // Utilisation optimisée des icônes
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

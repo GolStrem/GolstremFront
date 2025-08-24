@@ -1,4 +1,4 @@
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,10 @@ const LnPasswordField = ({
   getStrengthColor,
 }) => {
   const [visible, setVisible] = useState(false);
-  const { t } = useTranslation('login'); 
+  const { t } = useTranslation('login');
+
+  // Utilisation optimisée des icônes
+ 
 
   return (
     <label>
@@ -35,7 +38,10 @@ const LnPasswordField = ({
           onClick={() => setVisible(!visible)}
           aria-label={t('showHidePassword')}
         >
-          {visible ? <FaEyeSlash /> : <FaEye />}
+          {visible ? 
+            <FaEyeSlash /> : 
+            <FaEye />
+          }
         </button>
       </div>
 

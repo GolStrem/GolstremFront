@@ -11,7 +11,6 @@ const BannerModal = ({
   onSubmit,
 }) => {
   const { t } = useTranslation("general");
-
   const [bannerUrl, setBannerUrl] = useState(initialValue || "");
   const [error, setError] = useState("");
 

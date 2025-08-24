@@ -16,6 +16,8 @@ const MenuUnivers = () => {
     catch { return []; }
   });
 
+
+
   // 🔹 Simule les univers où l'user a une fiche attachée
   const [myUniverseIds] = useState([1, 5, 9]); // <-- à remplacer par API plus tard
 
@@ -26,6 +28,8 @@ const MenuUnivers = () => {
   // ====== Chargement des cartes (préparé pour API) ======
   useEffect(() => {
     let isMounted = true;
+
+
 
     // TODO: remplace ceci par ton appel API (ex: ApiUnivers.list())
     const mockData = [
@@ -168,14 +172,14 @@ const MenuUnivers = () => {
       <section className="univers-grid" aria-label="Liste des univers">
         {filteredCards.map((card) => (
           <article key={card.id} className="univers-card">
-            <button
-              className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
-              aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
-              onClick={() => toggleFav(card.id)}
-              title="Favori"
-            >
-              <FaStar size={16} />
-            </button>
+                          <button
+                className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
+                aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
+                onClick={() => toggleFav(card.id)}
+                title="Favori"
+              >
+                <FaStar size={16} />
+              </button>
 
             <div
               className="univers-card-bg"
