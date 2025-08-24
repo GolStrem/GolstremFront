@@ -181,11 +181,11 @@ const FicheCardGallery = ({ activeTab, indexModule, setActiveTab, data, onEdit, 
           </div>
         )}
       </div>
-
+        {data.droit === "write" && (
       <button className="cf-edit-btn" onClick={onEdit}>
         ✏️ {t("edit")}
       </button>
-
+        )}
     </div>
   );
 };

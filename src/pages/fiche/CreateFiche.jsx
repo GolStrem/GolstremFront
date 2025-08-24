@@ -264,7 +264,9 @@ const CreateFiche = () => {
   return (
     <div className="cf-container">
       {/* Bouton de retour */}
+      
       <BackLocation />
+      
 
       <div className="cf-right" aria-hidden="true" />
       <div className="cf-left" aria-hidden="true">
@@ -273,14 +275,16 @@ const CreateFiche = () => {
 
       <div className="cf-card">
         {/* Passer la data + callback pour la modale */}
+       
         <ActiveComponent
           data={characterData}
           indexModule={index}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          onEdit={handleOpenModal}
+          onEdit={ handleOpenModal }
           setPreviewSrc={setPreviewSrc}
         />
+        
 
 
         <aside className="cf-portrait-float">
@@ -308,12 +312,14 @@ const CreateFiche = () => {
 
 
       {/* Bouton pour ouvrir la modale */}
-      <button 
-        className="cf-module-selector-btn"
-        onClick={handleOpenModuleSelector}
-      >
-        {t("chooseModules")}
-      </button>
+      {characterData.droit === "write" && (
+        <button 
+          className="cf-module-selector-btn"
+          onClick={handleOpenModuleSelector}
+        >
+          {t("chooseModules")}
+        </button>
+      )}
 
              {isModuleSelectorOpen && (
          <ModalGeneric

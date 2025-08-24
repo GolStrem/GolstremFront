@@ -198,9 +198,11 @@ const FicheCardPower = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
       ) : (
         <p>{t("noPowersAvailable")}</p>
       )}
-
-      <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
+      {data.droit === "write" && (
+        <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
+      )}
     </div>
+      
   );
 };
 
