@@ -127,3 +127,29 @@
   border-color: gold;
   background: rgba(255,215,0,0.15);
 }
+
+.imageUnivers img{
+  height: 400px;
+  width: 300px;
+  object-fit: cover; /* ajuste l'image pour couvrir tout l'espace, découpe si nécessaire */
+  object-position: center; /* centre l'image */
+
+}
+
+.univerOwner{
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+}
+
+.nameOwner{
+  order: 1;
+  margin-left: 10px;
+}
+.imgOwner{
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  order: 0;
+}
