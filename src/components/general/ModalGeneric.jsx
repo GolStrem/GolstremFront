@@ -401,12 +401,14 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					</div>
 				);
 			case "tags":
-				return(
-					config.value.map((val, index) => (
-						<div key={index} className={`tagGeneric ${val}`}>
+				return (
+					<div key={key} id="tagsUnivers" className={`tagGeneric ${key}`}>
+					{config.value.map((val, index) => (
+						<div key={index} className={`miniTag ${val}`}>
 						{val}
+						</div>
+					))}
 					</div>
-					))
 				);
 			case "html":
 				return (
@@ -423,8 +425,8 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 
 	return (
 		<BaseModal onClose={handleClose} className="tmedit cf-modal-large" noClose={noClose}>
-			{title && <h2>{t(title)}</h2>}
-			<form className="tm-modal-form" onSubmit={(e) => e.preventDefault()}>
+			{title && <h2 className={`h2-${name}`}>{t(title)}</h2>}
+			<form className={`tm-modal-form ${name}`} onSubmit={(e) => e.preventDefault()}>
 				{Object.entries(fields).map(([key, config]) => renderField(key, config))}
 			</form>
 			{error && <span className="tm-error">{error}</span>}

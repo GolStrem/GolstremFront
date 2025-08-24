@@ -25,7 +25,7 @@ const MenuUnivers = () => {
         <img src="${card.imageOwner}" class="imgOwner"/>
       </div>
 
-      <div class= "descriptionUnivers">
+      <div class= "descriUnivers">
         ${card.description}
       </div>
     </div>
@@ -81,10 +81,10 @@ const MenuUnivers = () => {
 
     // TODO: remplace ceci par ton appel API (ex: ApiUnivers.list())
        const mockData = [
-      { id: 1, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Final Fantasy XIV", image: ffimg, tags: ["ffxiv", "fantastiques"] },
+      { id: 1, description: 'ptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Final Fantasy XIV", image: ffimg, tags: ["ffxiv", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques"] },
       { id: 2, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "RP sur table",      image: plateau, tags: ["rp-francais", "jeu de table"] },
       { id: 3, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "World of Warcraft", image: ffimg, tags: ["ffxiv", "fantastiques"] },
-      { id: 4, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Conan exile", image: ffimg, tags: ["ffxiv", "fantastiques"] },
+      { id: 4, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Conan exile", image: ffimg, tags: ["ffxiv", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques"] },
       { id: 5, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Discord",            image: discordimg, tags: ["discord", "anglais"] },
       { id: 6, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Forum",              image: forum, tags: ["rp-francais"] },
       { id: 7, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Jeux",               image: jeux, tags: ["fantastiques"] },
@@ -257,6 +257,7 @@ const MenuUnivers = () => {
           title={title}
           noButtonCancel={true}
           textButtonValidate="Visiter"
+          name="previewUnivers"
         />
       )}
     </div>
