@@ -17,7 +17,7 @@ import "./Header.css";
 
 const Header = () => {
   const { t } = useTranslation("general");
-
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -53,6 +53,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-right" ref={menuRef}>
+        {isAuthenticated && (
         <div className="user-menu" onClick={toggleMenu}>
           <img src={avatar || avatarImg} alt={t("general.avatarAlt")} className="avatar" />
           <span className="username">
@@ -62,6 +63,7 @@ const Header = () => {
           </span>
           <FaChevronDown />
         </div>
+        )}
 
         {menuOpen && (
           <div className="dropdown-menu">

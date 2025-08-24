@@ -11,6 +11,7 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
   // État pour les valeurs avec alias résolus
   const [resolvedValues, setResolvedValues] = useState(extraData);
   const [isLoading, setIsLoading] = useState(false);
+
   
   // Référence pour annuler les appels API précédents
   const abortControllerRef = useRef(null);
@@ -164,8 +165,9 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
         </div>
         
 
-    
+          {data.droit === "write" && (
           <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
+          )}
         </div>
   );
 };

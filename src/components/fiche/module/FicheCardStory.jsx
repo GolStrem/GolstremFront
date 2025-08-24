@@ -191,7 +191,9 @@ const FicheCardStory = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
         <p>{t("noChaptersAvailable")}</p>
       )}
 
-      <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
+      {data.droit === "write" && (
+        <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
+      )}
     </div>
   );
 };

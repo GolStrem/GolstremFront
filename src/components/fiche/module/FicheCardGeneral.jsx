@@ -136,9 +136,9 @@ const FicheCardGeneral = ({ activeTab, indexModule, setActiveTab, data, onEdit }
           </div> 
         </section> 
       )}
-      
-      <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
-
+      {data.droit === "write" && (
+        <button className="cf-edit-btn" onClick={handleEdit}>✏️ {t("edit")}</button>
+      )}
     </div>
   );
 };
