@@ -11,7 +11,7 @@ import { TextImgPlus, TextTextAreaPlus, CheckBox, Chapter } from "./ModalGeneric
 import { useTranslation } from "react-i18next";
 
 
-const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false, isOpen = undefined, title = undefined }) => {
+const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false, isOpen = undefined, title = undefined, noButtonCancel= false, textButtonValidate= 'save' }) => {
 	if (isOpen !== undefined && !isOpen) return null;
 	
 	const [previewSrc, setPreviewSrc] = useState(null);
@@ -394,6 +394,30 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 						/>
 					</div>
 				);
+			case "image":
+				return(
+					<div key={key} className={`imageGeneric ${key}`}>
+						<img src={config.value} />
+					</div>
+				);
+			case "tags":
+				return (
+					<div key={key} id="tagsUnivers" className={`tagGeneric ${key}`}>
+					{config.value.map((val, index) => (
+						<div key={index} className={`miniTag ${val}`}>
+						{val}
+						</div>
+					))}
+					</div>
+				);
+			case "html":
+				return (
+					<div
+					key={key}
+					className={`htmlGeneric ${key}`}
+					dangerouslySetInnerHTML={{ __html: config.value }}
+					/>
+				);
 			default:
 				return null;
 		}
@@ -401,8 +425,8 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 
 	return (
 		<BaseModal onClose={handleClose} className="tmedit cf-modal-large" noClose={noClose}>
-			{title && <h2>{t(title)}</h2>}
-			<form className="tm-modal-form" onSubmit={(e) => e.preventDefault()}>
+			{title && <h2 className={`h2-${name}`}>{t(title)}</h2>}
+			<form className={`tm-modal-form ${name}`} onSubmit={(e) => e.preventDefault()}>
 				{Object.entries(fields).map(([key, config]) => renderField(key, config))}
 			</form>
 			{error && <span className="tm-error">{error}</span>}
@@ -413,9 +437,11 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					disabled={loading || !validateAllUrlFields()}
 					title={!validateAllUrlFields() ? t("invalidUrlList") : ""}
 				>
-					{loading ? t("saving") : t("save")}
+					{loading ? t("saving") : t(textButtonValidate)}
 				</button>
-				<button onClick={handleClose} disabled={loading}>{t("cancel")}</button>
+				{ !noButtonCancel &&  (
+					<button onClick={handleClose} disabled={loading}>{t("cancel")}</button>
+				)}
 			</div>
 
 			{/* Modal d'aperçu */}

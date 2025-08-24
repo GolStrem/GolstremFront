@@ -127,3 +127,230 @@
   border-color: gold;
   background: rgba(255,215,0,0.15);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.previewUnivers {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  grid-template-rows: auto 1fr auto;
+}
+
+.descriUnivers {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--color-text);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.4) transparent;
+  overflow-y: auto;
+  padding-right: 6px;
+  max-height: 300px;
+  text-align: justify;
+}
+
+.universTitle {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 64px);
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.univerOwner {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  letter-spacing: .5px;
+  color: var(--color-text);
+  padding-bottom: 40px;
+}
+
+.imgOwner {
+  height: 42px;
+  width: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+  order: 0;
+}
+
+.nameOwner {
+  order: 1;
+}
+
+.universText {
+  line-height: 1.55;
+  color: var(--color-text)
+}
+
+.tags {
+  display: flex;
+  gap: 10px;
+  align-self: end;
+}
+
+.tagGeneric {
+  display: flex;
+  font-size: .9rem;
+  color: var(--color-text);
+  user-select: none;
+}
+
+#tagsUnivers {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  max-width: 100%;
+  max-height: 90px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.4) transparent;
+  overflow-y: auto;
+}
+
+#tagsUnivers .miniTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: #252525;
+  border: 1px solid #3a3a3a;
+  color: #dcdcdc;
+  font-size: .85rem;
+  white-space: nowrap;
+  height: 10px;
+}
+
+.h2-previewUnivers {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.imageUnivers {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: start;
+}
+
+.imageUnivers img {
+  display: block;
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 22px;
+}
+
+.visitBtn {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: end;
+  align-self: end;
+  padding: 14px 28px;
+  border-radius: 14px;
+  border: 2px solid var(--jaune, #f2c200);
+  background: transparent;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .5px;
+  cursor: pointer;
+}
+
+.visitBtn:hover {
+  background: rgba(242,194,0,.08);
+}
+
+@media (max-width: 900px) {
+  .previewUnivers {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 20px;
+  }
+  .imageUnivers {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .imageUnivers img {
+    height: 360px;
+  }
+  .visitBtn {
+    grid-column: 1;
+    grid-row: 4;
+    justify-self: stretch;
+  }
+}
