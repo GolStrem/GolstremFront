@@ -386,11 +386,12 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				);
 			case "checkBox":
 				return (
-					<div key={key} className="cf-field">
+					<div key={key} className={`cf-field`}>
 						<CheckBox 
 							config={config}
 							values={values}
 							setValues={setValues}
+							className={key}
 						/>
 					</div>
 				);
@@ -417,6 +418,19 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					className={`htmlGeneric ${key}`}
 					dangerouslySetInnerHTML={{ __html: config.value }}
 					/>
+				);
+			case "select":
+				return (
+					<div  className={`selectGeneric ${key}`}>
+						
+						{config.label !== "" && (<label for ={key}>{config.label}</label>)}
+
+						<select key={key} name={key} className="filter-select">
+						{config.value.map((val, index) => (
+							<option value={index} className={`option  ${val}`}> {val}</option>
+						))}
+						</select>
+					</div>
 				);
 			default:
 				return null;

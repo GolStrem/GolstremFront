@@ -144,61 +144,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .previewUnivers {
   position: relative;
   display: grid;
@@ -268,7 +213,7 @@
   user-select: none;
 }
 
-#tagsUnivers {
+.tagUnivers {
   grid-column: 1;
   grid-row: 3;
   align-self: end;
@@ -282,8 +227,7 @@
   scrollbar-color: rgba(0,0,0,0.4) transparent;
   overflow-y: auto;
 }
-
-#tagsUnivers .miniTag {
+.tagUnivers .miniTag {
   display: inline-flex;
   align-items: center;
   padding: 6px 12px;
@@ -330,6 +274,221 @@
   letter-spacing: .5px;
   cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- ligne des cases à cocher en haut --- */
+.flags{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+}
+
+/* ===== Grille du formulaire "Filtre" ===== */
+.tm-modal-form.previewFilter{
+  display:grid;
+  /* label | select 1 | select 2 */
+  grid-template-columns: 142px minmax(200px,1fr) minmax(200px,1fr);
+  column-gap:16px;
+  row-gap:16px;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Les blocs "flags" (et autres cf-field éventuels) prennent toute la largeur */
+.tm-modal-form.previewFilter > .cf-field{
+  grid-column:1 / -1;
+}
+.tm-modal-form.previewFilter .fsm-checkboxes.flags{
+  grid-column:1 / -1;
+  justify-content:center;
+}
+
+/* ---- Titre ---- */
+.h2-previewFilter {
+  text-align: center;
+  font-weight: 700;
+  margin: 24px 0 12px;
+}
+
+/* ---- Flags (Ami(e)s / Favoris / NSFW) ---- */
+.fsm-checkboxes.flags {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  margin: 16px 0 24px;
+  flex-wrap: wrap;           /* permet le retour à la ligne sur petits écrans */
+}
+
+/* ===== Lignes "Trier par :" + selects ===== */
+
+/* On aplatit le wrapper pour placer son label et son select directement dans la grille */
+.selectGeneric{ 
+  display: contents;
+}
+
+/* Label à gauche (col 1) */
+.selectGeneric > label {
+  grid-column: 1;
+  justify-self: end;
+  align-self: center;
+  margin-right: 12px;
+  min-width: 130px;        /* largeur “Trier par :” */
+  white-space: nowrap;
+  font-weight: 600;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Tous les selects par défaut en colonne 2 */
+.selectGeneric > select {
+  grid-column: 2;
+  min-width: 0;            /* évite l’overflow en responsive */
+}
+
+/* Le 2e select de la dernière ligne (orderDir) en colonne 3 */
+.selectGeneric.orderDir > select{
+  grid-column: 3;
+}
+/* (si jamais un label existe sur orderDir, on le masque) */
+.selectGeneric.orderDir > label{ 
+  display:none; 
+}
+
+/* ---- Style des <select> ---- */
+.tm-modal-form.previewFilter select {
+  height: 40px;
+  width: 100%;
+  min-width: 220px;
+  padding: 0 32px 0 14px;  /* place pour la flèche */
+  border-radius: 10px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  background-position: right 12px center, right 7px center;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.filter-select{
+  background-color: var(--color-input-bg) !important;
+  color: var(--color-text);
+  border: none;
+}
+
+/* ===== Breakpoints ===== */
+
+/* Medium: garde 3 colonnes mais plus souples */
+@media (max-width: 992px){
+  .tm-modal-form.previewFilter{
+    grid-template-columns: 130px minmax(160px,1fr) minmax(160px,1fr);
+    column-gap:12px;
+  }
+}
+
+/* Small: passe à 2 colonnes (label | champ). Le 2e select va à la ligne suivante */
+@media (max-width: 768px){
+  .tm-modal-form.previewFilter{
+    grid-template-columns: 130px 1fr;
+    column-gap:12px;
+  }
+  .selectGeneric.orderDir > select{
+    grid-column: 2;               /* s’aligne sous le précédent */
+  }
+}
+
+/* ===== XS: 460px et moins ===== */
+@media (max-width: 460px) {
+  /* grille en 1 colonne */
+  .tm-modal-form.previewFilter{
+    grid-template-columns: 1fr;
+    column-gap: 8px;
+    row-gap: 12px;
+  }
+
+  /* flags plus compacts, retour à la ligne autorisé */
+  .fsm-checkboxes.flags{
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* label au-dessus du champ */
+  .selectGeneric > label{
+    grid-column: 1;
+    justify-self: start;
+    align-self: center;
+    margin: 0 0 6px 0;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  /* champ en pleine largeur */
+  .selectGeneric > select{
+    grid-column: 1;
+    width: 100%;
+    min-width: 0;         /* override du 220px */
+    height: 38px;
+    padding: 0 30px 0 12px;
+    border-radius: 8px;
+  }
+
+  /* le 2e select de la dernière ligne passe sous le 1er */
+  .selectGeneric.orderDir > select{
+    grid-column: 1;
+    margin-top: 8px;
+  }
+
+  /* titre un peu resserré */
+  .h2-previewFilter{
+    margin: 16px 0 8px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .visitBtn:hover {
   background: rgba(242,194,0,.08);

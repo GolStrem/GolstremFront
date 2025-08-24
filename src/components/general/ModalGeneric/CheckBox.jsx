@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-const CheckBox = ({ config, values, setValues }) => {
+const CheckBox = ({ config, values, setValues, className }) => {
 	const list = config?.list || [];
 	const label = config?.label ?? "Sélection multiple";
 	const { t } = useTranslation("modal");
@@ -22,8 +22,8 @@ const CheckBox = ({ config, values, setValues }) => {
 
 	return (
 		<div className="cf-field">
-			<h2>{t(label)}</h2>
-			<div className="fsm-checkboxes">
+			{label !== "" && <h2>{t(label)}</h2>}
+			<div className={`fsm-checkboxes ${className}`}>
 				{list.map((item) => (
 					<label key={item} className="fsm-checkbox-label">
 						<input

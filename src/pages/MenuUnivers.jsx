@@ -5,15 +5,17 @@ import { FaFilter, FaStar } from "react-icons/fa";
 import { ffimg, forum, jeux, plateau, discordimg } from "@assets";
 import "./MenuUnivers.css";
 
-const TAGS = ["rp-francais", "fantastiques", "discord", "anglais", "jeu de table", "WoW", "ffxiv"];
+const listTag = ["rp-francais", "fantastiques", "discord", "anglais", "jeu de table", "WoW", "ffxiv"];
 
 const MenuUnivers = () => {
   const [search, setSearch] = useState("");
   const [cards, setCards] = useState([]);            // Préparé pour l'API
   const [selectedTag, setSelectedTag] = useState(""); // filtre simple par tag
   const [isModalUniversOpen, setModalUniversOpen] = useState(false);
+  const [isModalFiltreOpen, setModalFiltreOpen] = useState(false)
    const [title, setTitle] = useState("");
   const [fields, setFields] = useState([]);
+  const [filterFields, setFilterFields] = useState([]);
 
   const handleModalViewUnivers = function(card) { 
     console.log(card)
@@ -49,6 +51,54 @@ const MenuUnivers = () => {
     setFields(useField)
     setModalUniversOpen(true);
   }
+const handleModalViewFilter = () => {
+  
+  const list = typeof listTag !== "undefined" ? listTag : TAGS;
+
+  const fieldsFilter = {
+    flags: {
+      type: "checkBox",
+      list: ["Ami(e)s", "Favoris", "NSFW"],
+      label: "",
+      key: "flags",
+    },
+
+    // Filtrer par tag (ton select simple basé sur config.value)
+    tagsUnivers: {
+      type: "select",
+      value: listTag,                // ex: ["rp-francais","fantastiques",...]
+      label: "Filtrer par tag :",
+      key: "selectedTagFilter",
+    },
+
+    // Ligne "Trier par : Amis"
+    sortScope: {
+      type: "select",
+      value: [ "Tous","Henel", "Nanako", "Mon Cul"],
+      label: "Filtrer par ami(e) :",
+      key: "scope",
+    },
+
+    // Ligne "Trier par : Nouveau  Descendant"
+    orderBy: {
+      type: "select",
+      value: ["Nouveau", "Popularité", "Membres"],
+      label: "Trier par :",
+      key: "orderBy",
+    },
+    orderDir: {
+      type: "select",
+      value: ["Descendant", "Ascendant"],
+      label: "",
+      key: "orderDir",
+    },
+  };
+
+  setFilterFields(fieldsFilter);         // ⬅️ on envoie tout l'objet (pas un tableau)
+  setModalFiltreOpen(true);
+};
+
+
 
   const [favs, setFavs] = useState(() => {
     try { return JSON.parse(localStorage.getItem("univers_favs") || "[]"); }
@@ -56,15 +106,7 @@ const MenuUnivers = () => {
   });
 
 
-    const fieldsModale =   {
-    'modules': {
-      type: "checkBox",
-      list: ["general", "character", "story", "power", "gallery"],
-      label: "",
-      key: "selectedModules"
-
-    }
-  }
+  
 
   // 🔹 Simule les univers où l'user a une fiche attachée
   const [myUniverseIds] = useState([1, 5, 9]); // <-- à remplacer par API plus tard
@@ -133,7 +175,7 @@ const MenuUnivers = () => {
     const list = cards.filter((c) => {
       const okQuery =
         !q ||
-        c.title.toLowerCase().includes(q) ||
+        c.name.toLowerCase().includes(q) ||
         (c.tags || []).some((t) => t.toLowerCase().includes(q));
       const okTag = !selectedTag || (c.tags || []).includes(selectedTag);
       return okQuery && okTag;
@@ -152,7 +194,7 @@ const MenuUnivers = () => {
       {/* ===== Headers ===== */}
       <div className="menu-header">
         <div className="menu-header-content">
-          <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
+          <button className="filter-button" onClick={handleModalViewFilter} title="Filtrer">
             <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
@@ -161,7 +203,7 @@ const MenuUnivers = () => {
 
       <div className="menu-header-mobil">
         <div className="menu-header-content">
-          <button className="filter-button" onClick={handleFilterClick} title="Filtrer">
+          <button className="filter-button" onClick={handleModalViewFilter} title="Filtrer">
             <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
@@ -173,7 +215,7 @@ const MenuUnivers = () => {
 
       {/* ===== Tags ===== */}
       <div className="univers-tags" role="toolbar" aria-label="Filtres par tags">
-        {TAGS.map((tag) => (
+        {listTag.map((tag) => (
           <button
             key={tag}
             className={`univers-tag ${selectedTag === tag ? "is-active" : ""}`}
@@ -198,7 +240,10 @@ const MenuUnivers = () => {
                 <button
                   className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
                   aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
-                  onClick={() => toggleFav(card.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();   
+                    toggleFav(card.id);
+                  }}
                   title="Favori"
                 >
                   <FaStar size={16} />
@@ -228,14 +273,18 @@ const MenuUnivers = () => {
             className="univers-card"
             onClick={() => handleModalViewUnivers(card)}
           >
-                          <button
-                className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
-                aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
-                onClick={() => toggleFav(card.id)}
-                title="Favori"
-              >
-                <FaStar size={16} />
-              </button>
+            <button
+              className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
+              aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
+              onClick={(e) => {
+                e.stopPropagation();   // ⛔ empêche le click d'atteindre <article>
+                toggleFav(card.id);
+              }}
+              title="Favori"
+            >
+              <FaStar size={16} />
+            </button>
+
 
             <div
               className="univers-card-bg"
@@ -247,7 +296,6 @@ const MenuUnivers = () => {
           </article>
         ))}
       </section>
-        <button className="univer-btn-view" onClick={handleModalViewUnivers}> choco </button>
 
       {isModalUniversOpen && (
         <ModalGeneric
@@ -259,6 +307,21 @@ const MenuUnivers = () => {
           textButtonValidate="Visiter"
           name="previewUnivers"
         />
+      )}
+
+      {isModalFiltreOpen && (
+        <ModalGeneric
+          onClose={() => setModalFiltreOpen(false)}
+          handleSubmit={console.log}
+          fields={filterFields}
+          title={"Filtre"}
+          noButtonCancel={true}
+          textButtonValidate="Rechercher"
+          name="previewFilter"
+        />
+
+
+
       )}
     </div>
   );
