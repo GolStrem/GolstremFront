@@ -466,7 +466,46 @@
 
 
 
+.select-CreateUnivers{
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  background-color: var(--color-input-bg);
+  border: none;
+  width: 150px;
+}
 
+.select-CreateUnivers option{
+  background-color: var(--color-background);
+}
+
+.selectVisibily{
+  display: flex;
+}
+
+.tagsUnivers{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  max-height: 100px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.4) transparent;
+  overflow-y: auto;
+  background-color: var(--color-input-bg);
+  border-radius: 5px;
+}
+
+#NomUnivers{
+  margin-left: 0px;
+}
+
+.univCreatebutton{
+  display: flex;
+  position: fixed;
+  bottom: 20px;
+}
 
 
 

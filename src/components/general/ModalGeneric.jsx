@@ -419,21 +419,26 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 					dangerouslySetInnerHTML={{ __html: config.value }}
 					/>
 				);
-			case "select":
-				return (
-					<div  className={`selectGeneric ${key}`}>
-						
-						{config.label !== "" && (<label for ={key}>{config.label}</label>)}
+			case "select": {
+			const id = `select-${key}`;
+			return (
+				<div key={key} className={`selectGeneric ${key}`}>
+				{config.label !== "" && <label htmlFor={id}>{config.label}</label>}
 
-						<select key={key} name={key} className="filter-select">
-						{config.value.map((val, index) => (
-							<option value={index} className={`option  ${val}`}> {val}</option>
-						))}
-						</select>
-					</div>
-				);
+				<select id={id} name={key} className={`filter-select select-${key}`}>
+					{Array.isArray(config.value) &&
+					config.value.map((val, idx) => (
+						<option key={`${key}-opt-${idx}`} value={val}>
+						{val}
+						</option>
+					))}
+				</select>
+				</div>
+			);
+			}
 			default:
-				return null;
+			return null;
+
 		}
 	};
 
