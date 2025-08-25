@@ -486,7 +486,6 @@
 }
 
 .tagsUnivers{
-  display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   max-height: 100px;
@@ -495,6 +494,9 @@
   overflow-y: auto;
   background-color: var(--color-input-bg);
   border-radius: 5px;
+}
+.label-selectVisibily{
+  min-width: 70px !important;
 }
 
 #NomUnivers{
@@ -507,6 +509,11 @@
   bottom: 20px;
 }
 
+
+.select-selectVisibily{
+  min-width: 150px !important;
+  border-radius: 5px;
+}
 
 
 
