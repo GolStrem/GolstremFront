@@ -2,7 +2,7 @@
 export { default as TaskApi } from './api/TaskApi';
 export { default as ApiService } from './api/ApiService';
 export { default as ApiFiche } from './api/ApiFiche';
-
+export { default as ApiUnivers } from './api/ApiUnivers';
 
 
 export { default as useSystemThemeSync } from './useSystemThemeSync';

@@ -4,6 +4,7 @@ import { SearchBar, ModalGeneric } from "@components";
 import { FaFilter, FaStar } from "react-icons/fa";
 import { ffimg, forum, jeux, plateau, discordimg } from "@assets";
 import "./MenuUnivers.css";
+import { ApiUnivers } from "@service"
 
 const listTag = ["rp-francais", "fantastiques", "discord", "anglais", "jeu de table", "WoW", "ffxiv"];
 
@@ -17,7 +18,16 @@ const MenuUnivers = () => {
    const [title, setTitle] = useState("");
   const [fields, setFields] = useState([]);
 
+  const [param, setParam] = useState({limit: 30, p: 0})
+
   const list = typeof listTag !== "undefined" ? listTag : TAGS;
+
+  const handlePage = (p) => {
+    setParam((prev) => ({
+      ...prev,
+      p: p
+    }));
+  };
 
   const handleModalViewUnivers = function(card) { 
     console.log(card)
@@ -25,8 +35,8 @@ const MenuUnivers = () => {
     const textHtml = `
     <div>
       <div class="univerOwner">
-        <div class="nameOwner">${card.nameOwner} </div>
-        <img src="${card.imageOwner}" class="imgOwner"/>
+        <div class="nameOwner">${card.ownerPseudo} </div>
+        <img src="${card.ownerImage}" class="imgOwner"/>
       </div>
 
       <div class= "descriUnivers">
@@ -34,6 +44,7 @@ const MenuUnivers = () => {
       </div>
     </div>
     `
+    const tags =card.tags.map(tag => {return tag.name})
 
     const useField = {
       'imageUnivers':{
@@ -46,7 +57,7 @@ const MenuUnivers = () => {
       },
       'tagUnivers':{
         type:"tags",
-        value: card.tags
+        value: tags
       }
 
     }
@@ -140,6 +151,24 @@ const MenuUnivers = () => {
       },
     };
 
+  const handleSubmitFilter = (formValues) => {
+      const useParam = {
+        limit: 5,
+        p: 0,
+        ...(search ? { search } : {}),
+        sort: formValues.orderBy === "Popularité" ? "stars" : "createdAt",
+        order: formValues.orderDir === "Ascendant" ? "asc" : "desc",
+        filter: {
+          ...(formValues.flags?.includes("Favoris") ? { star: 1 } : {}),
+          ...(formValues.flags?.includes("NSFW") ? { nfsw: 1 } : {}),
+          ...(formValues.flags?.includes("Ami(e)s") ? { withFriends: 1 } : {}),
+          byFriend: formValues.scope !== "Tous" ? formValues.scope : null,
+          byTag: formValues.selectedTagFilter || null
+        }
+      };
+      setParam(useParam);
+      setModalFiltreOpen(false);
+    };
 
 
   const [favs, setFavs] = useState(() => {
@@ -162,39 +191,17 @@ const MenuUnivers = () => {
     let isMounted = true;
 
 
-
-    // TODO: remplace ceci par ton appel API (ex: ApiUnivers.list())
-       const mockData = [
-      { id: 1, description: 'ptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite descriptionptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Final Fantasy XIV", image: ffimg, tags: ["ffxiv", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques"] },
-      { id: 2, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "RP sur table",      image: plateau, tags: ["rp-francais", "jeu de table"] },
-      { id: 3, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "World of Warcraft", image: ffimg, tags: ["ffxiv", "fantastiques"] },
-      { id: 4, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Conan exile", image: ffimg, tags: ["ffxiv", "fantastiques", "fantastiques", "fantastiques", "fantastiques", "fantastiques"] },
-      { id: 5, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Discord",            image: discordimg, tags: ["discord", "anglais"] },
-      { id: 6, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Forum",              image: forum, tags: ["rp-francais"] },
-      { id: 7, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Jeux",               image: jeux, tags: ["fantastiques"] },
-      { id: 8, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Astrem",            image: discordimg, tags: ["discord", "anglais"] },
-      { id: 9, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Golstrem",            image: discordimg, tags: ["discord", "anglais"] },
-      { id: 10, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Academie xxx",            image: discordimg, tags: ["discord", "anglais"] },
-      { id: 11, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 1",               image: jeux, tags: ["fantastiques"] },
-      { id: 12, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 2",               image: jeux, tags: ["fantastiques"] },
-      { id: 13, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 3",               image: jeux, tags: ["fantastiques"] },
-      { id: 14, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 4", image: ffimg, tags: ["ffxiv", "fantastiques"] },
-      { id: 15, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 6",            image: discordimg, tags: ["discord", "anglais"] },
-      { id: 16, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 5",               image: jeux, tags: ["fantastiques"] },
-      { id: 17, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 7",               image: jeux, tags: ["fantastiques"] },
-      { id: 18, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 8",               image: jeux, tags: ["fantastiques"] },
-      { id: 19, description: 'ptite description',nameOwner: 'Zheneos',imageOwner: 'https://i.pinimg.com/736x/a7/b3/ba/a7b3baeb498e942c73b890770f96cac6.jpg', name: "Exemple 9",          image: jeux, tags: ["fantastiques", "anglais"] },
-    ];
-
     (async () => {
-      // const resp = await ApiUnivers.list();
+
+      const resp = await ApiUnivers.getUnivers(param);
+      console.log(resp.data)
+      
       // const payload = resp.data;
-      const payload = mockData; // <- à enlever quand l’API est prête
-      if (isMounted) setCards(payload);
+      if (isMounted) setCards(resp.data);
     })();
 
     return () => { isMounted = false; };
-  }, []);
+  }, [param]);
 
   // Persistance des favoris
   useEffect(() => {
@@ -339,6 +346,11 @@ const MenuUnivers = () => {
         ))}
       </section>
       <button onClick={handleModalViewCreateUniv} title="CreateUniv" className="tmw-toggle univCreatebutton">+</button>
+      <input
+            type="text"
+            value={param.p}
+            onChange={(e) => handlePage(e.target.value)}
+          />
 
       {isModalUniversOpen && (
         <ModalGeneric
@@ -355,7 +367,7 @@ const MenuUnivers = () => {
       {isModalFiltreOpen && (
         <ModalGeneric
           onClose={() => setModalFiltreOpen(false)}
-          handleSubmit={console.log}
+          handleSubmit={handleSubmitFilter}
           fields={fieldsFilter}
           title={"Filtre"}
           noButtonCancel={true}
