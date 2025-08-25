@@ -13,9 +13,11 @@ const MenuUnivers = () => {
   const [selectedTag, setSelectedTag] = useState(""); // filtre simple par tag
   const [isModalUniversOpen, setModalUniversOpen] = useState(false);
   const [isModalFiltreOpen, setModalFiltreOpen] = useState(false)
+  const [isModalCreateUnivOpen, setModalCreateUnivOpen] = useState(false)
    const [title, setTitle] = useState("");
   const [fields, setFields] = useState([]);
-  const [filterFields, setFilterFields] = useState([]);
+
+  const list = typeof listTag !== "undefined" ? listTag : TAGS;
 
   const handleModalViewUnivers = function(card) { 
     console.log(card)
@@ -51,52 +53,92 @@ const MenuUnivers = () => {
     setFields(useField)
     setModalUniversOpen(true);
   }
-const handleModalViewFilter = () => {
-  
-  const list = typeof listTag !== "undefined" ? listTag : TAGS;
 
-  const fieldsFilter = {
-    flags: {
-      type: "checkBox",
-      list: ["Ami(e)s", "Favoris", "NSFW"],
-      label: "",
-      key: "flags",
-    },
-
-    // Filtrer par tag (ton select simple basé sur config.value)
-    tagsUnivers: {
-      type: "select",
-      value: listTag,                // ex: ["rp-francais","fantastiques",...]
-      label: "Filtrer par tag :",
-      key: "selectedTagFilter",
-    },
-
-    // Ligne "Trier par : Amis"
-    sortScope: {
-      type: "select",
-      value: [ "Tous","Henel", "Nanako", "Mon Cul"],
-      label: "Filtrer par ami(e) :",
-      key: "scope",
-    },
-
-    // Ligne "Trier par : Nouveau  Descendant"
-    orderBy: {
-      type: "select",
-      value: ["Nouveau", "Popularité", "Membres"],
-      label: "Trier par :",
-      key: "orderBy",
-    },
-    orderDir: {
-      type: "select",
-      value: ["Descendant", "Ascendant"],
-      label: "",
-      key: "orderDir",
-    },
+  const handleModalViewFilter = () => {
+    setModalFiltreOpen(true);
   };
 
-  setFilterFields(fieldsFilter);         // ⬅️ on envoie tout l'objet (pas un tableau)
-  setModalFiltreOpen(true);
-};
+  const handleModalViewCreateUniv =() => {
+    setModalCreateUnivOpen(true);
+  };
+
+    const fieldsFilter = {
+      flags: {
+        type: "checkBox",
+        list: ["Ami(e)s", "Favoris", "NSFW"],
+        label: "",
+        key: "flags",
+      },
+
+      // Filtrer par tag (ton select simple basé sur config.value)
+      tagsUnivers: {
+        type: "select",
+        value: listTag,                // ex: ["rp-francais","fantastiques",...]
+        label: "Filtrer par tag :",
+        key: "selectedTagFilter",
+      },
+
+      // Ligne "Trier par : Amis"
+      sortScope: {
+        type: "select",
+        value: [ "Tous","Henel", "Nanako", "Mon Cul"],
+        label: "Filtrer par ami(e) :",
+        key: "scope",
+      },
+
+      // Ligne "Trier par : Nouveau  Descendant"
+      orderBy: {
+        type: "select",
+        value: ["Nouveau", "Popularité", "Membres"],
+        label: "Trier par :",
+        key: "orderBy",
+      },
+      orderDir: {
+        type: "select",
+        value: ["Descendant", "Ascendant"],
+        label: "",
+        key: "orderDir",
+      },
+    };
+
+  const createUnivers = {
+
+      NomUnivers: { 
+        type: "inputText", 
+        label: "Nom de l'Univers"
+      },
+
+      descriptionUnivers: { 
+        type: "textarea", 
+        label: "description de l'Univers:" 
+      },
+
+      image: { 
+        type: "inputUrl", 
+        label: "imgUrl" 
+      },
+
+      tagsUnivers: {
+        type: "checkBox",
+        list: listTag,                
+        label: "Tags (10max) :",
+        key: "selectedTagFilter",
+      },
+      
+      selectVisibily: {
+        type: "select",
+        value: [ "Public","Priver"],
+        label: "Visibilité :",
+        key: "visibiltyUnivers",
+      },
+
+      flagsCreate: {
+        type: "checkBox",
+        list: ["NSFW"],
+        label: "",
+        key: "flags",
+      },
+    };
 
 
 
@@ -296,6 +338,7 @@ const handleModalViewFilter = () => {
           </article>
         ))}
       </section>
+      <button onClick={handleModalViewCreateUniv} title="CreateUniv" className="tmw-toggle univCreatebutton">+</button>
 
       {isModalUniversOpen && (
         <ModalGeneric
@@ -313,16 +356,27 @@ const handleModalViewFilter = () => {
         <ModalGeneric
           onClose={() => setModalFiltreOpen(false)}
           handleSubmit={console.log}
-          fields={filterFields}
+          fields={fieldsFilter}
           title={"Filtre"}
           noButtonCancel={true}
           textButtonValidate="Rechercher"
           name="previewFilter"
         />
-
-
-
       )}
+
+            {isModalCreateUnivOpen && (
+        <ModalGeneric
+          onClose={() => setModalCreateUnivOpen(false)}
+          handleSubmit={console.log}
+          fields={createUnivers}
+          title={"Création d'univers"}
+          noButtonCancel={false}
+          textButtonValidate="Créer"
+          name="CreateUnivers"
+        />
+        )}
+
+            
     </div>
   );
 };
