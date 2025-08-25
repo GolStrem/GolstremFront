@@ -152,25 +152,20 @@ const MenuUnivers = () => {
     };
 
   const handleSubmitFilter = (formValues) => {
-      // formValues est l’objet que ta ModalGeneric renverra
-      // ex: { flags: ["Ami(e)s","NSFW"], selectedTagFilter: "rp-francais", scope: "Henel", orderBy: "Popularité", orderDir: "Ascendant" }
-
       const useParam = {
         limit: 5,
         p: 0,
-        search: search || "",
+        ...(search ? { search } : {}),
         sort: formValues.orderBy === "Popularité" ? "stars" : "createdAt",
         order: formValues.orderDir === "Ascendant" ? "asc" : "desc",
         filter: {
-          star: formValues.flags?.includes("Favoris") ? 1 : 0,
-          nfsw: formValues.flags?.includes("NSFW") ? 1 : 0,
-          withFriends: formValues.flags?.includes("Ami(e)s") ? 1 : 0,
+          ...(formValues.flags?.includes("Favoris") ? { star: 1 } : {}),
+          ...(formValues.flags?.includes("NSFW") ? { nfsw: 1 } : {}),
+          ...(formValues.flags?.includes("Ami(e)s") ? { withFriends: 1 } : {}),
           byFriend: formValues.scope !== "Tous" ? formValues.scope : null,
           byTag: formValues.selectedTagFilter || null
         }
       };
-
-      console.log("✅ Param envoyé :", useParam, formValues);
       setParam(useParam);
       setModalFiltreOpen(false);
     };
@@ -206,7 +201,7 @@ const MenuUnivers = () => {
     })();
 
     return () => { isMounted = false; };
-  }, [param.p]);
+  }, [param]);
 
   // Persistance des favoris
   useEffect(() => {
