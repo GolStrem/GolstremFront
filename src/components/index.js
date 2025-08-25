@@ -92,5 +92,6 @@ export { default as FicheNav } from './fiche/FicheNav'
 
 
 export {default as ModalGeneric } from './general/ModalGeneric'
+export { default as Pagination } from './general/Pagination'
 export { default as ToolbarTipTap } from './general/ToolbarTipTap'
 export { default as BackLocation } from './general/BackLocation'

@@ -78,6 +78,10 @@ const realApi = {
     return api.patch('/module/move', {idModule, newPos})
   },
 
+  getFriends() {
+    return api.get('/user/friend');
+  },
+
   logout,
   getToken,
   setToken,
