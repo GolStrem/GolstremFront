@@ -6,7 +6,7 @@ import "./MenuUnivers.css";
 import { ApiUnivers, ApiService } from "@service"
 import { createUniversFilterFields, createUniversCreateFields } from "@components/general/fieldModal";
 
-const listTag = ["rp-francais", "fantastiques", "discord", "anglais", "jeu de table", "WoW", "ffxiv"];
+const listTag = ["Francais", "Fantastique", "Discord", "Anglais", "Jeu de table", "Word of Warcraft", "Final Fantasy XIV"];
 
 const MenuUnivers = () => {
   const [search, setSearch] = useState("");
@@ -19,7 +19,7 @@ const MenuUnivers = () => {
   const [fields, setFields] = useState([]);
   const [isLoading, setIsLoading] = useState(true);  // État de loading initial
 
-  const [param, setParam] = useState({limit: 30, p: 0});
+  const [param, setParam] = useState({limit: 10, p: 0});
   const [totalPages, setTotalPages] = useState(12); // si l'API renvoie totalPages, on le mettra à jour
   const [fieldsFilter, setFieldsFilter] = useState([]);
   const [createUnivers, setCreateUnivers] = useState([]);
@@ -99,7 +99,7 @@ const MenuUnivers = () => {
     });
 
     const useParam = {
-      limit: 30,
+      limit: 10,
       p: 0,
       ...(search ? { search } : {}),
       sort: formValues.orderBy === "Popularité" ? "stars" : "createdAt",
@@ -115,6 +115,32 @@ const MenuUnivers = () => {
     setParam(useParam);
     setModalFiltreOpen(false);
   };
+
+  const handleSubmitCreateUnivers = async (formValues) => {
+  // Préparer le payload pour l'API
+  const payload = {
+    name: formValues.NomUnivers,
+    description: formValues.descriptionUnivers,
+    image: formValues.image || "", // ou null
+    visibility: formValues.selectVisibily === "Public" ? "0" : "1",
+    nfsw: formValues.flags?.includes("NSFW") ? "1" : "0",
+    tags: formValues.selectedTagFilter || []
+  };
+
+  try {
+    const response = await ApiUnivers.createUnivers(payload);
+    console.log("Univers créé :", response.data);
+
+    // Optionnel : fermer la modal et reset le formulaire
+    setModalCreateUnivOpen(false);
+
+    // Recharger la liste des univers
+    setParam((prev) => ({ ...prev })); // force le useEffect à reload
+  } catch (err) {
+    console.error("Erreur création univers :", err.response?.data || err.message);
+  }
+};
+
 
   const [favs, setFavs] = useState(() => {
     try { return JSON.parse(localStorage.getItem("univers_favs") || "[]"); }
@@ -214,6 +240,29 @@ const MenuUnivers = () => {
     });
   }, [cards, search, selectedTag, favs]);
 
+    const handleSearch = (value) => {
+    setSearch(value);  
+
+    
+    setParam((prev) => ({
+      ...prev,
+      search: value.trim(),
+      p: 0, 
+    }));
+  };
+
+  const handleTag = (value) => {
+    setSelectedTag(value); // Met à jour le tag sélectionné localement
+
+    setParam((prev) => ({
+      ...prev,
+      filter: {
+        ...(prev.filter || {}),  // récupère l'ancien filtre s'il existe
+        byTag: value ? tagsMapping[value.trim()] : null, // null si aucune sélection
+      },
+      p: 0, // retourne à la page 0
+    }));
+  };
 
 
 
@@ -234,7 +283,7 @@ const MenuUnivers = () => {
           <button className="filter-button" onClick={handleModalViewFilter} title="Filtrer">
             <FaFilter size={16} />
           </button>
-          <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
+          <SearchBar value={search} onChange={handleSearch} onClear={() => handleSearch("")} />
         </div>
       </div>
 
@@ -243,7 +292,7 @@ const MenuUnivers = () => {
           <button className="filter-button" onClick={handleModalViewFilter} title="Filtrer">
             <FaFilter size={16} />
           </button>
-          <SearchBar value={search} onChange={setSearch} onClear={() => setSearch("")} />
+          <SearchBar value={search} onChange={handleSearch} onClear={() => handleSearch("")} />
         </div>
       </div>
 
@@ -256,7 +305,7 @@ const MenuUnivers = () => {
           <button
             key={tag}
             className={`univers-tag ${selectedTag === tag ? "is-active" : ""}`}
-            onClick={() => setSelectedTag(selectedTag === tag ? "" : tag)}
+            onClick={() => handleTag(selectedTag === tag ? "" : tag)}
           >
             #{tag}
           </button>
@@ -368,7 +417,7 @@ const MenuUnivers = () => {
             {isModalCreateUnivOpen && (
         <ModalGeneric
           onClose={() => setModalCreateUnivOpen(false)}
-          handleSubmit={console.log}
+          handleSubmit={handleSubmitCreateUnivers}
           fields={createUnivers}
           title={"Création d'univers"}
           noButtonCancel={false}
