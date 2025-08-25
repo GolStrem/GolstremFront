@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./MenuFiche.css";
-import { SearchBar, ModalGeneric } from "@components";
+import { SearchBar, ModalGeneric, Pagination } from "@components";
 import { FaFilter, FaStar } from "react-icons/fa";
-import { ffimg, forum, jeux, plateau, discordimg } from "@assets";
 import "./MenuUnivers.css";
-import { ApiUnivers } from "@service"
+import { ApiUnivers, ApiService } from "@service"
+import { createUniversFilterFields, createUniversCreateFields } from "@components/general/fieldModal";
 
 const listTag = ["rp-francais", "fantastiques", "discord", "anglais", "jeu de table", "WoW", "ffxiv"];
 
@@ -17,10 +17,14 @@ const MenuUnivers = () => {
   const [isModalCreateUnivOpen, setModalCreateUnivOpen] = useState(false)
   const [title, setTitle] = useState("");
   const [fields, setFields] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);  // État de loading initial
 
   const [param, setParam] = useState({limit: 30, p: 0});
   const [totalPages, setTotalPages] = useState(12); // si l'API renvoie totalPages, on le mettra à jour
-
+  const [fieldsFilter, setFieldsFilter] = useState([]);
+  const [createUnivers, setCreateUnivers] = useState([]);
+  const [friendsMapping, setFriendsMapping] = useState({}); // Mapping nom -> id pour les amis
+  const [tagsMapping, setTagsMapping] = useState({}); // Mapping nom -> id pour les tags
   // ➜ Mémoire du filtre appliqué
   const [activeFilter, setActiveFilter] = useState({
     flags: [],               // ["Ami(e)s", "Favoris", "NSFW"]
@@ -30,7 +34,6 @@ const MenuUnivers = () => {
     orderDir: "Descendant",  // "Descendant" | "Ascendant"
   });
 
-  const list = typeof listTag !== "undefined" ? listTag : [];
 
   const handlePage = (p) => {
     const page = Number(p);
@@ -73,91 +76,24 @@ const MenuUnivers = () => {
     setModalCreateUnivOpen(true);
   };
 
-  // ⚙️ Définition des champs de filtre (inchangé structurellement)
-  //    On garde cet objet "statique" et on passe les valeurs via initialFilterValues
-  const fieldsFilter = {
-    flags: {
-      type: "checkBox",
-      list: ["Ami(e)s", "Favoris", "NSFW"],
-      label: "",
-      key: "flags",
-    },
-    tagsUnivers: {
-      type: "select",
-      value: ["", ...listTag], // Ajout d'une option vide en premier
-      label: "Filtrer par tag :",
-      key: "selectedTagFilter",
-    },
-    sortScope: {
-      type: "select",
-      value: [ "Tous","Henel", "Nanako", "Mon Cul"],
-      label: "Filtrer par ami(e) :",
-      key: "scope",
-    },
-    orderBy: {
-      type: "select",
-      value: ["Nouveau", "Popularité", "Membres"],
-      label: "Trier par :",
-      key: "orderBy",
-    },
-    orderDir: {
-      type: "select",
-      value: ["Descendant", "Ascendant"],
-      label: "",
-      key: "orderDir",
-    },
-  };
-
+  // ⚙️ Définition des champs de filtre avec la nouvelle fonction
   // ✅ Valeurs initiales injectées dans la modale (sans modifier ModalGeneric)
   const initialFilterValues = {
     flags: activeFilter.flags,
-    selectedTagFilter: activeFilter.selectedTagFilter,
-    scope: activeFilter.scope,
+    tagsUnivers: activeFilter.selectedTagFilter,
+    sortScope: activeFilter.scope,
     orderBy: activeFilter.orderBy,
     orderDir: activeFilter.orderDir,
   };
 
   
 
-  const createUnivers = {
-    NomUnivers: { 
-      type: "inputText", 
-      label: "Nom de l'Univers"
-    },
-    descriptionUnivers: { 
-      type: "textarea", 
-      label: "description de l'Univers:" 
-    },
-    image: { 
-      type: "inputUrl", 
-      label: "imgUrl" 
-    },
-    tagsUnivers: {
-      type: "checkBox",
-      list: listTag,                
-      label: "Tags (10max) :",
-      key: "selectedTagFilter",
-    },
-    selectVisibily: {
-      type: "select",
-      value: [ "Public","Priver"],
-      label: "Visibilité :",
-      key: "visibiltyUnivers",
-    },
-    flagsCreate: {
-      type: "checkBox",
-      list: ["NSFW"],
-      label: "",
-      key: "flags",
-    },
-  };
 
   const handleSubmitFilter = (formValues) => {
-    // 🧠 Sauvegarde des valeurs pour réouverture
     setActiveFilter({
       flags: formValues.flags ?? [],
-      selectedTagFilter: formValues.selectedTagFilter ?? "",
-      scope: formValues.scope ?? "Tous",
+      selectedTagFilter: formValues.tagsUnivers ?? "",
+      scope: formValues.sortScope ?? "Tous",
       orderBy: formValues.orderBy ?? "Nouveau",
       orderDir: formValues.orderDir ?? "Descendant",
     });
@@ -172,8 +108,8 @@ const MenuUnivers = () => {
         ...(formValues.flags?.includes("Favoris") ? { star: 1 } : {}),
         ...(formValues.flags?.includes("NSFW") ? { nfsw: 1 } : {}),
         ...(formValues.flags?.includes("Ami(e)s") ? { withFriends: 1 } : {}),
-        byFriend: formValues.scope !== "Tous" ? formValues.scope : null,
-        byTag: formValues.selectedTagFilter && formValues.selectedTagFilter !== "" ? formValues.selectedTagFilter : null
+        byFriend: formValues.sortScope !== "Tous" ? friendsMapping[formValues.sortScope] : null,
+        byTag: formValues.tagsUnivers && formValues.tagsUnivers !== "" ? tagsMapping[formValues.tagsUnivers] : null
       }
     };
     setParam(useParam);
@@ -188,8 +124,47 @@ const MenuUnivers = () => {
   // 🔹 Simule les univers où l'user a une fiche attachée
   const [myUniverseIds] = useState([1, 5, 9]); // <-- à remplacer par API plus tard
 
-  // ====== Chargement des cartes (préparé pour API) ======
+  // ====== Chargement initial de la page ======
   useEffect(() => {
+    const initializePage = async () => {
+      setIsLoading(true);
+      try {
+        const tags = await ApiUnivers.getTags();
+        const listTag = tags.data.map(tag => tag.name);
+        
+        const friends = await ApiService.getFriends();
+        const listFriend = friends.data.map(friend => friend.pseudo);
+        
+        // Création des mappings nom -> id
+        const tagsMap = {};
+        tags.data.forEach(tag => {
+          tagsMap[tag.name] = tag.id;
+        });
+        
+        const friendsMap = {};
+        friends.data.forEach(friend => {
+          friendsMap[friend.pseudo] = friend.id;
+        });
+        
+        setTagsMapping(tagsMap);
+        setFriendsMapping(friendsMap);
+        setFieldsFilter(createUniversFilterFields(listTag, listFriend));
+        setCreateUnivers(createUniversCreateFields(listTag));
+      } catch (error) {
+        console.error("Erreur lors du chargement initial:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializePage();
+  }, []);
+
+  // ====== Chargement des cartes lors des changements de paramètres ======
+  useEffect(() => {
+    // Ne pas recharger si c'est le chargement initial
+    if (isLoading) return;
+    
     let isMounted = true;
     (async () => {
       const resp = await ApiUnivers.getUnivers(param);
@@ -202,7 +177,7 @@ const MenuUnivers = () => {
       }
     })();
     return () => { isMounted = false; };
-  }, [param]);
+  }, [param, isLoading]);
 
   // Persistance des favoris
   useEffect(() => {
@@ -239,52 +214,20 @@ const MenuUnivers = () => {
     });
   }, [cards, search, selectedTag, favs]);
 
-  // 🔹 Génération des boutons de pagination (1 2 3 ... N)
-  const renderPagination = () => {
-    const currentPage = param.p;
-    const pages = [];
-    const maxToShow = 5;
-    let start = Math.max(0, currentPage - 2);
-    let end = Math.min(totalPages - 1, currentPage + 2);
 
-    if (end - start < maxToShow - 1) {
-      if (start === 0) end = Math.min(totalPages - 1, start + (maxToShow - 1));
-      else if (end === totalPages - 1) start = Math.max(0, end - (maxToShow - 1));
-    }
-
-    if (start > 0) {
-      pages.push(<button key={0} onClick={() => handlePage(0)} className={currentPage === 0 ? "active" : ""}>1</button>);
-      if (start > 1) pages.push(<span key="start-ellipsis">...</span>);
-    }
-
-    for (let i = start; i <= end; i++) {
-      pages.push(
-        <button key={i} onClick={() => handlePage(i)} className={currentPage === i ? "active" : ""}>
-          {i + 1}
-        </button>
-      );
-    }
-
-    if (end < totalPages - 1) {
-      if (end < totalPages - 2) pages.push(<span key="end-ellipsis">...</span>);
-      pages.push(
-        <button
-          key={totalPages - 1}
-          onClick={() => handlePage(totalPages - 1)}
-          className={currentPage === totalPages - 1 ? "active" : ""}
-        >
-          {totalPages}
-        </button>
-      );
-    }
-
-    return <div className="pagination">{pages}</div>;
-  };
 
 
 
   return (
     <div className="univers-page">
+      {/* ===== Loading ===== */}
+      {isLoading && (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Chargement des univers...</p>
+        </div>
+      )}
+
       {/* ===== Headers ===== */}
       <div className="menu-header">
         <div className="menu-header-content">
@@ -390,13 +333,12 @@ const MenuUnivers = () => {
           </article>
         ))}
       </section>
-      <button onClick={handleModalViewCreateUniv} title="CreateUniv" className="tmw-toggle univCreatebutton">+</button>
-      <input
-            type="text"
-            value={param.p}
-            onChange={(e) => handlePage(e.target.value)}
-          />
-       {renderPagination()}
+             <button onClick={handleModalViewCreateUniv} title="CreateUniv" className="tmw-toggle univCreatebutton">+</button>
+       <Pagination 
+         currentPage={param.p}
+         totalPages={totalPages}
+         onPageChange={handlePage}
+       />
 
       {isModalUniversOpen && (
         <ModalGeneric
@@ -413,7 +355,7 @@ const MenuUnivers = () => {
       {isModalFiltreOpen && (
         <ModalGeneric
           onClose={() => setModalFiltreOpen(false)}
-          initialFilterValues={initialFilterValues}
+          initialData={initialFilterValues}
           handleSubmit={handleSubmitFilter}
           fields={fieldsFilter}
           title={"Filtre"}

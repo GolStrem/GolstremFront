@@ -425,7 +425,13 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 				<div key={key} className={`selectGeneric ${key}`}>
 				{config.label !== "" && <label htmlFor={id} className={`label-${key}`}>{config.label}</label>}
 
-				<select id={id} name={key} className={`filter-select select-${key}`}>
+				<select 
+					id={id} 
+					name={key} 
+					className={`filter-select select-${key}`}
+					value={values[key] || ""}
+					onChange={handleChange(key)}
+				>
 					{Array.isArray(config.value) &&
 					config.value.map((val, idx) => (
 						<option key={`${key}-opt-${idx}`} value={val}>
