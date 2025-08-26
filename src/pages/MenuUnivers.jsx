@@ -210,7 +210,16 @@ const MenuUnivers = () => {
     localStorage.setItem("univers_favs", JSON.stringify(favs));
   }, [favs]);
 
+// en haut de ton composant
+const favCooldownRef = React.useRef(new Set());
+
   const toggleFav = async (id) => {
+    // ✅ Vérifie si un cooldown est en cours pour cet univers
+    if (favCooldownRef.current.has(id)) return;
+
+    favCooldownRef.current.add(id);
+    setTimeout(() => favCooldownRef.current.delete(id), 1500); // cooldown 2s
+
     const card = cards.find((c) => c.id === id);
     if (!card) return;
 
@@ -240,6 +249,7 @@ const MenuUnivers = () => {
       );
     }
   };
+
 
 
   // 🔹 “Mes univers”
