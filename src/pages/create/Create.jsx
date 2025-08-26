@@ -45,7 +45,7 @@ const Create = () => {
       </div>
 
 
-      <div className="ln-backText">
+      <div className="ln-backText">1
           <GoldenStremE alt={t('decorationAlt')} className="ln-tgold" />
           <GoldenStremV alt={t('decorationAlt')} className="ln-tgold" />
           <GoldenStremV alt={t('decorationAlt')} className="ln-tgold" />
