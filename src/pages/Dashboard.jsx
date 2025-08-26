@@ -42,22 +42,10 @@ const Dashboard = () => {
 
   const links = [
     {
-      to: workspaceId ? `/workspace/${encodeURIComponent(workspaceId)}` : "#",
-      label: t("general.workspace"),
-      icon: <FaTasks />,
-      active: location.pathname.includes("/workspace"),
-    },
-    {
       to: "/fiches",
       label: t("general.fiche"),
       icon: <FaBook />,
       active: location.pathname === "/fiches",
-    },
-    {
-      to: "/inventaire",
-      label: t("general.inventaire"),
-      icon: <FaBoxOpen />,
-      active: location.pathname === "/inventaire",
     },
     {
       to: "/univers",
@@ -66,11 +54,23 @@ const Dashboard = () => {
       active: location.pathname === "/univers",
     },
     {
+      to: "/inventaire",
+      label: t("general.inventaire"),
+      icon: <FaBoxOpen />,
+      active: location.pathname === "/inventaire",
+    },
+    {
       to: "/maitre",
       label: t("general.maitre"),
       icon: <FaCrown />,
       active: location.pathname === "/maitre",
     },
+    {
+      to: workspaceId ? `/workspace/${encodeURIComponent(workspaceId)}` : "#",
+      label: t("general.workspace"),
+      icon: <FaTasks />,
+      active: location.pathname.includes("/workspace"),
+    }
   ];
 
   useEffect(() => {
