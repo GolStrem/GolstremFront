@@ -10,8 +10,8 @@ const listTag = ["Francais", "Fantastique", "Discord", "Anglais", "Jeu de table"
 
 const MenuUnivers = () => {
   const [search, setSearch] = useState("");
-  const [cards, setCards] = useState([]);            // Préparé pour l'API
-  const [selectedTag, setSelectedTag] = useState(""); // filtre simple par tag
+  const [cards, setCards] = useState([]);            
+  const [selectedTag, setSelectedTag] = useState(""); 
   const [isModalUniversOpen, setModalUniversOpen] = useState(false);
   const [isModalFiltreOpen, setModalFiltreOpen] = useState(false)
   const [isModalCreateUnivOpen, setModalCreateUnivOpen] = useState(false)
@@ -19,8 +19,8 @@ const MenuUnivers = () => {
   const [fields, setFields] = useState([]);
   const [isLoading, setIsLoading] = useState(true);  // État de loading initial
 
-  const [param, setParam] = useState({limit: 10, p: 0});
-  const [totalPages, setTotalPages] = useState(12); // si l'API renvoie totalPages, on le mettra à jour
+  const [param, setParam] = useState({limit: 30, p: 0});
+  const [totalPages, setTotalPages] = useState(0); // si l'API renvoie totalPages, on le mettra à jour
   const [fieldsFilter, setFieldsFilter] = useState([]);
   const [createUnivers, setCreateUnivers] = useState([]);
   const [friendsMapping, setFriendsMapping] = useState({}); // Mapping nom -> id pour les amis
@@ -99,7 +99,7 @@ const MenuUnivers = () => {
     });
 
     const useParam = {
-      limit: 10,
+      limit: 30,
       p: 0,
       ...(search ? { search } : {}),
       sort: formValues.orderBy === "Popularité" ? "stars" : "createdAt",
@@ -194,11 +194,11 @@ const MenuUnivers = () => {
     let isMounted = true;
     (async () => {
       const resp = await ApiUnivers.getUnivers(param);
-      // resp attendu : { data: [...], totalPages?: number }
+
       if (isMounted) {
-        setCards(resp.data);
-        if (typeof resp.totalPages === "number") {
-          setTotalPages(resp.totalPages);
+        setCards(resp.data.data);
+        if (typeof resp.data.pagination.pages === "number") {
+          setTotalPages(resp.data.pagination.pages);
         }
       }
     })();
