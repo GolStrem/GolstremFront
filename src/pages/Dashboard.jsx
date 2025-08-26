@@ -57,13 +57,13 @@ const Dashboard = () => {
       to: "/inventaire",
       label: t("general.inventaire"),
       icon: <FaBoxOpen />,
-      active: location.pathname === "/inventaire",
+      active: location.pathname === "/create",
     },
     {
       to: "/maitre",
       label: t("general.maitre"),
       icon: <FaCrown />,
-      active: location.pathname === "/maitre",
+      active: location.pathname === "/create",
     },
     {
       to: workspaceId ? `/workspace/${encodeURIComponent(workspaceId)}` : "#",

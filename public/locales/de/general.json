@@ -67,7 +67,11 @@
     "changeLockscreenBackground": "Sperrbildschirm-Hintergrund ändern",
     "lightLockBackground": "Heller Hintergrund",
     "darkLockBackground": "Dunkler Hintergrund",
-    "hideClock": "Uhr ausblenden"
+    "hideClock": "Uhr ausblenden",
+
+    "createTitle": "Seite im Aufbau",
+    "createSubtitle": "Vielen Dank für Ihre Geduld"
+
 
   }
 }

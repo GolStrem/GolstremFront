@@ -10,6 +10,7 @@ import LnResetPasswordModal from './components/login/LnResetPasswordModal';
 import MenuFiche from './pages/fiche/MenuFiche';
 import LockScreen from './pages/LockScreen';
 import MenuUnivers from './pages/univers/MenuUnivers';
+import Create from './pages/create/Create.jsx';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -95,11 +96,9 @@ const routes = [
     {
     path: '/ficheDetail/:id',
     element: (
-      
         <Layout>
           <Fiche />
         </Layout>
-      
     ),
   },
       {
@@ -115,6 +114,14 @@ const routes = [
   {
     path: '*',
     element: <Error />,
+  },
+      {
+    path: '/create',
+    element: (
+        <Layout>
+          <Create />
+        </Layout>
+    ),
   },
 ];
 

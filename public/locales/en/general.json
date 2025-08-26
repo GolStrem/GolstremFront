@@ -67,7 +67,10 @@
     "changeLockscreenBackground": "Change lock screen background",
     "lightLockBackground": "Light background",
     "darkLockBackground": "Dark background",
-    "hideClock": "Hide clock"
+    "hideClock": "Hide clock",
+
+    "createTitle": "Page under construction",
+    "createSubtitle": "Thank you for your patience"
 
   }
 }

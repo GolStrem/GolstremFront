@@ -68,7 +68,10 @@
     "changeLockscreenBackground": "Changer le fond d'écran du verrouillage",
     "lightLockBackground": "Fond clair ",
     "darkLockBackground": "Fond sombre ",
-    "hideClock": "Désactiver l'horloge"
+    "hideClock": "Désactiver l'horloge",
+
+    "createTitle": "Page en cours de création",
+    "createSubtitle": "Merci de votre patience"
 
   }
 }
