@@ -9,14 +9,14 @@ import {
   BackLocation
 } from "@components";
 import "./CreateFiche.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ApiFiche, ApiService } from "@service"
 import { useTranslation } from "react-i18next";
 
 const CreateFiche = () => {
   const { id: ficheId } = useParams();
   const { t } = useTranslation("common");
-
+  const navigate = useNavigate();
   const [characterData, setCharacterData] = useState({});
   const [index, setIndex] = useState({});
   const [img, setImg] = useState({});
@@ -95,10 +95,10 @@ const CreateFiche = () => {
 
   // Ouvre la modale de sélection au premier accès à cette fiche (clé par ficheId)
   
-  const openModuleSelectorIfFirstVisit = () => {
+  const openModuleSelectorIfFirstVisit = (droit) => {
     try {
       const key = `cf_seen_fiche_${ficheId}`;
-      if (!localStorage.getItem(key)) {
+      if (droit === "write" && !localStorage.getItem(key)) {
         localStorage.setItem(key, "1");
         setModuleSelectorOpen(true);
       }
@@ -162,8 +162,13 @@ const CreateFiche = () => {
 
   useEffect(() => {
     const fetchFiche = async () => {
+      
       try {
         const { data } = await ApiFiche.getFicheDetail(ficheId);
+        if (!data){
+          navigate("/error")
+
+        }
         if (data.module.length === 0) {
           const module = await ApiService.createModule(1, ficheId, "general")
           const transformed = Object.entries(module.data).map(([id, obj]) => ({
@@ -173,6 +178,7 @@ const CreateFiche = () => {
           }));
           data.module.push(transformed[0])
         }
+        
 
 
         const style = document.createElement("style");
@@ -212,8 +218,8 @@ const CreateFiche = () => {
         setImg(parsedData.image)
         setCharacterData(parsedData);
         setIsLoading(false);
-        // Ouvrir la sélection des modules lors de la toute première visite
-        openModuleSelectorIfFirstVisit();
+        // Ouvrir la sélection des modules lors de la toute première visite (si droit = write)
+        openModuleSelectorIfFirstVisit(data.droit);
       } catch (error) {
         console.error("erreur", error);
         setIsLoading(false);
