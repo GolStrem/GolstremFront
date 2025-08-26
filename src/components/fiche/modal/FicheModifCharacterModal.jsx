@@ -13,7 +13,7 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
   const { t } = useTranslation("modal");
   const [prenom, setPrenom] = useState("");
   const [image, setImage] = useState("");
-  const [visibility, setVisibility] = useState("2");
+  const [visibility, setVisibility] = useState("0");
   const [couleur, setCouleur] = useState("#FF8C00");
 
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
       setPrenom(fiche.name || "");
       setImage(fiche.image || "");
       setCouleur(fiche.color || "#FF8C00");
-      setVisibility(fiche.visibility != null ? String(fiche.visibility) : "2");
+      setVisibility(fiche.visibility != null ? String(fiche.visibility) : "0");
     }
   }, [fiche]);
 
@@ -124,9 +124,9 @@ const FicheModifCharacterModal = ({ fiche, onClose, onUpdate }) => {
               onChange={(e) => setVisibility(e.target.value)}
               className="fiche-select"
             >
-              <option value="0">Privé</option>
+              <option value="2">Privé</option>
               <option value="1">Ami/Serveur</option>
-              <option value="2">Public</option>
+              <option value="0">Public</option>
             </select>
           </label>
 

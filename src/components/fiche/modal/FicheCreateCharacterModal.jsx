@@ -9,7 +9,7 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
   const { t: tCommon } = useTranslation("common");
   const [prenom, setPrenom] = useState("");
   const [image, setImage] = useState("");
-  const [visibility, setVisibility] = useState("2"); // "2" Public (cf. options ci-dessous)
+  const [visibility, setVisibility] = useState("0"); // "2" Public (cf. options ci-dessous)
   const [couleur, setCouleur] = useState("#FF8C00");
 
   const [loading, setLoading] = useState(false);
@@ -92,9 +92,9 @@ const FicheCreateCharacterModal = ({ onClose, onCreate }) => {
               className="fiche-select"
             >
               {/* Garde la même convention que tes autres écrans : 0 Privé, 1 Amis, 2 Public */}
-              <option value="0">{tCommon("private")}</option>
+              <option value="2">{tCommon("private")}</option>
               <option value="1">{tCommon("friends")}</option>
-              <option value="2">{tCommon("public")}</option>
+              <option value="0">{tCommon("public")}</option>
             </select>
           </label>
 
