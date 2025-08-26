@@ -82,6 +82,18 @@ const realApi = {
     return api.get('/user/friend');
   },
 
+  getFriendsRequest() {
+    return api.get('/user/friend/request');
+  },
+
+  sendFriendsRequest(payload){
+    return api.post('/user/friend', payload)
+  },
+  
+  deleteFriends(id) {
+    return api.delete(`/user/friend/${id}`);
+  },
+
   logout,
   getToken,
   setToken,
