@@ -25,6 +25,10 @@ const MenuUnivers = () => {
   const [createUnivers, setCreateUnivers] = useState([]);
   const [friendsMapping, setFriendsMapping] = useState({}); // Mapping nom -> id pour les amis
   const [tagsMapping, setTagsMapping] = useState({}); // Mapping nom -> id pour les tags
+  const [myPage, setMypage] = useState(0);
+  const [myTotalPage, setMyTotalPage] = useState(0);
+  const [myCards, setMyCards] = useState([]);
+
   // ➜ Mémoire du filtre appliqué
   const [activeFilter, setActiveFilter] = useState({
     flags: [],               // ["Ami(e)s", "Favoris", "NSFW"]
@@ -41,6 +45,14 @@ const MenuUnivers = () => {
       setParam((prev) => ({ ...prev, p: page }));
     }
   };
+    const myHandlePage = (p) => {
+    const page = Number(p);
+    if (!Number.isNaN(page) && page >= 0 && page < myTotalPage) {
+      setMypage(page);
+    }
+  };
+  
+
 
   const handleModalViewUnivers = function(card) { 
     setTitle(card.name);
@@ -147,8 +159,6 @@ const MenuUnivers = () => {
     catch { return []; }
   });
 
-  // 🔹 Simule les univers où l'user a une fiche attachée
-  const [myUniverseIds] = useState([1, 5, 9]); // <-- à remplacer par API plus tard
 
   // ====== Chargement initial de la page ======
   useEffect(() => {
@@ -251,11 +261,25 @@ const favCooldownRef = React.useRef(new Set());
   };
 
 
+  useEffect(() => {
+    // Ne pas recharger si c'est le chargement initial
+    if (isLoading) return;
+    
+    let isMounted = true;
+    (async () => {
+      const resp = await ApiUnivers.getUnivers({p:myPage,limit:6,filter:{withMe: 1, nfsw: 1}});
 
-  // 🔹 “Mes univers”
-  const myUniversCards = useMemo(() => {
-    return cards.filter(c => myUniverseIds.includes(c.id));
-  }, [cards, myUniverseIds]);
+      if (isMounted) {
+        setMyCards(resp.data.data);
+        if (typeof resp.data.pagination.pages === "number") {
+          setMyTotalPage(resp.data.pagination.pages);
+        }
+      }
+    })();
+    return () => { isMounted = false; };
+
+  }, [myPage, isLoading]);
+
 
   // Filtrage par recherche + tag sélectionné (favoris en haut)
   const filteredCards = useMemo(() => {
@@ -351,11 +375,11 @@ const favCooldownRef = React.useRef(new Set());
       </div>
 
       {/* ===== Mes univers ===== */}
-      {myUniversCards.length > 0 && (
+      {myCards.length > 0 && (
         <>
           <h2 className="univers-subtitle">Mes univers</h2>
           <section className="univers-grid myuni" aria-label="Mes univers">
-            {myUniversCards.map((card) => (
+            {myCards.map((card) => (
               <article
                 key={`my-${card.id}`} 
                 className="univers-card"
@@ -383,6 +407,7 @@ const favCooldownRef = React.useRef(new Set());
               </article>
             ))}
           </section>
+           <Pagination  currentPage={myPage} totalPages={myTotalPage} onPageChange={myHandlePage} />
         </>
       )}
 
