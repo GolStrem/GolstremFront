@@ -75,5 +75,29 @@
   "color": "Colore:",
   "private": "Privato",
   "friends": "Amici/Server",
-  "public": "Pubblico"
+  "public": "Pubblico",
+
+
+  "titleFriend": "Amici",
+  "all": "Tutti",
+  "remove": "Rimuovere",
+  "requests": "Richieste",
+
+  "titleNotification": "Notifiche",
+  "unread": "Non lette",
+  "titleFiltres": "Filtri",
+
+  "univers": "Universi",
+  "fiches": "Schede",
+  "messages": "Messaggi",
+  "system": "Sistema",
+  "emailBis": "Email",
+  "push": "Push",
+  "discordBis": "Discord",
+  "enabled": "Attivato",
+  "disabled": "Disattivato",
+  "accept": "Accettare",
+  "refuse": "Rifiutare"
+
+
 }

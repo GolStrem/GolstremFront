@@ -10,9 +10,11 @@ import {
   FaDiscord
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Notifications = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation("general");
 
   // Onglets & filtres (placeholder pour future API)
   const [tab, setTab] = useState("all"); // "all" | "unread"
@@ -36,7 +38,7 @@ const Notifications = () => {
       <div className="notif-header">
         <div className="notif-title">
           <FaBell />
-          <h1>Notifications</h1>
+          <h1>{t("titleNotification")}</h1>
           <span className="notif-counter">0</span>
         </div>
 
@@ -46,13 +48,13 @@ const Notifications = () => {
               className={`tab ${tab === "all" ? "is-active" : ""}`}
               onClick={() => setTab("all")}
             >
-              Toutes
+              {t("all")}
             </button>
             <button
               className={`tab ${tab === "unread" ? "is-active" : ""}`}
               onClick={() => setTab("unread")}
             >
-              Non lues
+              {t("unread")}
             </button>
           </div>
 
@@ -63,25 +65,25 @@ const Notifications = () => {
               aria-expanded={filterOpen}
             >
               <FaFilter />
-              Filtres
+              {t("titleFiltres")}
             </button>
             {filterOpen && (
               <div className="filter-panel" role="menu">
                 <label className="check">
                   <input type="checkbox" defaultChecked />
-                  Univers
+                  {t("univers")}
                 </label>
                 <label className="check">
                   <input type="checkbox" defaultChecked />
-                  Fiches
+                  {t("fiches")}
                 </label>
                 <label className="check">
                   <input type="checkbox" />
-                  Messages
+                  {t("gmessages")}
                 </label>
                 <label className="check">
                   <input type="checkbox" />
-                  Système
+                  {t("system")}
                 </label>
               </div>
             )}
@@ -97,8 +99,8 @@ const Notifications = () => {
               <FaEnvelope />
             </div>
             <div className="pref-label">
-              <strong>Email</strong>
-              <span>{channels.email ? "Activé" : "Désactivé"}</span>
+              <strong>{t("emailBis")}</strong>
+              <span>{channels.email ? t("enabled") : t("disabled")}</span>
             </div>
             <div className={`pref-toggle ${channels.email ? "on" : ""}`}>
               <span />
@@ -110,8 +112,8 @@ const Notifications = () => {
               <FaMobileAlt />
             </div>
             <div className="pref-label">
-              <strong>Push</strong>
-              <span>{channels.push ? "Activé" : "Désactivé"}</span>
+              <strong>{t("push")}</strong>
+              <span>{channels.push ? t("enabled") : t("disabled")}</span>
             </div>
             <div className={`pref-toggle ${channels.push ? "on" : ""}`}>
               <span />
@@ -123,8 +125,8 @@ const Notifications = () => {
               <FaDiscord />
             </div>
             <div className="pref-label">
-              <strong>Discord</strong>
-              <span>{channels.discord ? "Activé" : "Désactivé"}</span>
+              <strong>{t("discordBis")}</strong>
+              <span>{channels.discord ? t("enabled") : t("disabled")}</span>
             </div>
             <div className={`pref-toggle ${channels.discord ? "on" : ""}`}>
               <span />
@@ -144,18 +146,15 @@ const Notifications = () => {
             <div className="empty-illu">
               <FaInbox />
             </div>
-            <h2>Rien à signaler</h2>
-            <p>
-              Vous n’avez pas encore de notifications. Quand il y aura du
-              nouveau, cela s’affichera ici.
-            </p>
+            <h2>{t("general.nothing")}</h2>
+            <p>{t("general.text")}</p>
             <div className="empty-actions">
               <button className="btn primary" onClick={() => navigate("/config")}>
                 <FaCheckCircle />
-                Activer les notifications
+                {t("general.enableBtn")}
               </button>
               <button className="btn ghost" onClick={() => navigate("/friends")}>
-                Inviter des amis
+                {t("general.inviteBtn")}
               </button>
             </div>
           </div>

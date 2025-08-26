@@ -13,6 +13,7 @@ import {
   FaFileAlt,
   FaGlobe
 } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const mockFriends = [
   { id: 1, pseudo: "Henel", avatar: null },
@@ -27,6 +28,8 @@ const mockRequests = [
 ];
 
 const Friends = () => {
+  const { t } = useTranslation("general");
+
   const [tab, setTab] = useState("all"); // "all" | "requests"
   const [search, setSearch] = useState("");
   const [friends, setFriends] = useState(mockFriends);
@@ -76,7 +79,7 @@ const Friends = () => {
       <div className="fr-header">
         <div className="fr-header-left">
           <FaUserFriends />
-          <h1>Amis</h1>
+          <h1>{t("titleFriend")}</h1>
           <span className="fr-badge">{friends.length}</span>
         </div>
 
@@ -86,13 +89,13 @@ const Friends = () => {
               className={`fr-tab ${tab === "all" ? "is-active" : ""}`}
               onClick={() => setTab("all")}
             >
-              Tous
+              {t("all")}
             </button>
             <button
               className={`fr-tab ${tab === "requests" ? "is-active" : ""}`}
               onClick={() => setTab("requests")}
             >
-              Demandes {hasRequests ? <span className="fr-dot" /> : null}
+              {t("requests")} {hasRequests ? <span className="fr-dot" /> : null}
             </button>
           </div>
 
@@ -100,7 +103,7 @@ const Friends = () => {
             <FaSearch />
             <input
               type="text"
-              placeholder="Rechercher un ami…"
+              placeholder={t("general.searchPlaceholderFriend")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -115,21 +118,22 @@ const Friends = () => {
             <FaUserPlus />
           </div>
           <div className="fr-ic-body">
-            <strong>Inviter un ami</strong>
-            <span>Par pseudo</span>
+            <strong>{t("general.inviteTitle")}</strong>
+            <span>{t("general.inviteSubtitle")}</span>
           </div>
           <input
             name="invite"
             className="fr-ic-input"
             type="text"
-            placeholder="Ex. Kara#1234"
+            placeholder={t("general.invitePlaceholder")}
           />
-          <button className="fr-btn fr-primary" type="submit">Envoyer</button>
+          <button className="fr-btn fr-primary" type="submit">{t("send")}</button>
         </form>
       </section>
 
       {/* Contenu */}
       <section className="fr-content">
+        <h2 className="fr-h2">{t("general.sectionTitle")}</h2>
         {tab === "requests" ? (
           hasRequests ? (
             <div className="fr-request-list">
@@ -144,14 +148,14 @@ const Friends = () => {
                   </div>
                   <div className="fr-ri-body">
                     <strong>{r.pseudo}</strong>
-                    <span>Souhaite vous ajouter</span>
+                    <span>{t("general.requestText")}</span>
                   </div>
                   <div className="fr-ri-actions">
                     <button className="fr-btn fr-success" onClick={() => acceptRequest(r.id)}>
-                      <FaCheck /> Accepter
+                      <FaCheck /> {t("accept")}
                     </button>
                     <button className="fr-btn fr-ghost" onClick={() => declineRequest(r.id)}>
-                      <FaTimes /> Refuser
+                      <FaTimes /> {t("refuse")}
                     </button>
                   </div>
                 </article>
@@ -160,8 +164,8 @@ const Friends = () => {
           ) : (
             <div className="fr-empty-state">
               <div className="fr-empty-icon"><FaEnvelope /></div>
-              <h2>Aucune demande</h2>
-              <p>Quand quelqu’un vous enverra une demande, elle s’affichera ici.</p>
+              <h2>{t("general.noRequestsTitle")}</h2>
+              <p>{t("general.noRequestsText")}</p>
             </div>
           )
         ) : hasFriends ? (
@@ -184,16 +188,13 @@ const Friends = () => {
 
                 <div className="fr-actions-row">
                   <button className="fr-btn fr-btn--fiche">
-                    <FaFileAlt /> Fiche
+                    <FaFileAlt /> {t("general.fiche")}
                   </button>
                   <button className="fr-btn fr-btn--univers">
-                    <FaGlobe /> Univers
+                    <FaGlobe /> {t("general.univers")}
                   </button>
                   <button className="fr-btn" onClick={() => removeFriend(f.id)}>
-                    <FaUserMinus /> Retirer
-                  </button>
-                  <button className="fr-btn fr-danger" onClick={() => blockFriend(f.id)}>
-                    <FaBan /> Bloquer
+                    <FaUserMinus /> {t("remove")}
                   </button>
                 </div>
               </article>
@@ -202,8 +203,8 @@ const Friends = () => {
         ) : (
           <div className="fr-empty-state">
             <div className="fr-empty-icon"><FaUserFriends /></div>
-            <h2>Aucun ami pour le moment</h2>
-            <p>Invitez vos amis pour commencer à jouer et à échanger ensemble.</p>
+            <h2>{t("general.noFriendsTitle")}</h2>
+            <p>{t("general.noFriendsText")}</p>
           </div>
         )}
       </section>

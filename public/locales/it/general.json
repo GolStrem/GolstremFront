@@ -72,9 +72,25 @@
 
     "createTitle": "Pagina in fase di creazione",
     "createSubtitle": "Grazie per la vostra pazienza",
-
     "friends": "Amici",
-    "notifications": "Notifiche"
+    "notifications": "Notifiche",
+
+    "searchPlaceholderFriend": "Cerca un amico…",
+    "inviteTitle": "Invita un amico",
+    "inviteSubtitle": "Per pseudonimo",
+    "invitePlaceholder": "Es. Kara#1234",
+    "sectionTitle": "I MIEI AMICI",
+    "requestText": "Vuole aggiungerti",
+    "noRequestsTitle": "Nessuna richiesta",
+    "noRequestsText": "Quando qualcuno ti invierà una richiesta, apparirà qui.",
+    "noFriendsTitle": "Nessun amico al momento",
+    "noFriendsText": "Invita i tuoi amici per iniziare a giocare e a interagire insieme.",
+
+
+    "nothing": "Niente da segnalare",
+    "text": "Non hai ancora notifiche. Quando ci saranno novità, appariranno qui.",
+    "enableBtn": "Attiva le notifiche",
+    "inviteBtn": "Invita amici"
 
 
 

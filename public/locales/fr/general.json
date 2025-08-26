@@ -73,7 +73,28 @@
     "createTitle": "Page en cours de création",
     "createSubtitle": "Merci de votre patience",
     "friends": "Amis",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+
+
+
+    "searchPlaceholderFriend": "Rechercher un ami…",
+    "inviteTitle": "Inviter un ami",
+    "inviteSubtitle": "Par pseudo",
+    "invitePlaceholder": "Ex. Kara#1234",
+    "sectionTitle": "MES AMIS",
+    "requestText": "Souhaite vous ajouter",
+    "noRequestsTitle": "Aucune demande",
+    "noRequestsText": "Quand quelqu’un vous enverra une demande, elle s’affichera ici.",
+    "noFriendsTitle": "Aucun ami pour le moment",
+    "noFriendsText": "Invitez vos amis pour commencer à jouer et à échanger ensemble.",
+
+    "nothing": "Rien à signaler",
+    "text": "Vous n’avez pas encore de notifications. Quand il y aura du nouveau, cela s’affichera ici.",
+    "enableBtn": "Activer les notifications",
+    "inviteBtn": "Inviter des amis"
+
+
+
 
   }
 }

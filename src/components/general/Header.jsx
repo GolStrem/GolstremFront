@@ -87,12 +87,12 @@ const Header = () => {
               <FaUserFriends /> {t("general.friends")}
             </button>
 
-            <button
+            {/* <button
               className="dropdown-item"
               onClick={() => navigate("/notifications")}
             >
               <FaBell /> {t("general.notifications")}
-            </button>
+            </button> */}
 
             <button
               className="dropdown-item red"
