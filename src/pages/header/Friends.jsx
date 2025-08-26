@@ -1,74 +1,120 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import "./Friends.css";
 import {
   FaUserFriends,
   FaSearch,
   FaUserPlus,
   FaUserMinus,
-  FaBan,
   FaTimes,
   FaCheck,
-  FaEllipsisH,
   FaEnvelope,
   FaFileAlt,
   FaGlobe
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-
-const mockFriends = [
-  { id: 1, pseudo: "Henel", avatar: null },
-  { id: 2, pseudo: "Hemae", avatar: null },
-  { id: 3, pseudo: "Zheneos", avatar: null },
-  { id: 4, pseudo: "Riven", avatar: null },
-];
-
-const mockRequests = [
-  { id: 11, pseudo: "Kara", avatar: null },
-  { id: 12, pseudo: "Alen", avatar: null },
-];
+import { ApiService } from "@service/"
 
 const Friends = () => {
   const { t } = useTranslation("general");
 
   const [tab, setTab] = useState("all"); // "all" | "requests"
   const [search, setSearch] = useState("");
-  const [friends, setFriends] = useState(mockFriends);
-  const [requests, setRequests] = useState(mockRequests);
+  const [friends, setFriends] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [inviteSuccess, setInviteSuccess] = useState(undefined);
 
+
+  // === Fetch initial friends & requests ===
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const friendsData = await ApiService.getFriends();
+        const requestsData = await ApiService.getFriendsRequest();
+
+        setFriends(friendsData.data || []);
+        setRequests(requestsData.data || []);
+      } catch (error) {
+        console.error("Erreur lors du fetch des amis :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // === Filtrage par recherche ===
   const filteredFriends = useMemo(() => {
     const q = search.trim().toLowerCase();
-    let list = friends;
-    if (q) list = list.filter((f) => f.pseudo.toLowerCase().includes(q));
-    return list;
+    if (!q) return friends;
+    return friends.filter((f) => f.pseudo.toLowerCase().includes(q));
   }, [friends, search]);
 
-  const acceptRequest = (id) => {
-    const req = requests.find((r) => r.id === id);
-    if (!req) return;
-    setRequests((prev) => prev.filter((r) => r.id !== id));
-    setFriends((prev) => [{ id: Date.now(), pseudo: req.pseudo, avatar: null }, ...prev]);
+  // === Actions ===
+  const acceptRequest = async (id) => {
+    try {
+      await ApiService.sendFriendsRequest({ idReceiver: id });
+      const req = requests.find((r) => r.id === id);
+      if (!req) return;
+
+      setRequests((prev) => prev.filter((r) => r.id !== id));
+      setFriends((prev) => [{ id: req.id, pseudo: req.pseudo, avatar: req.avatar }, ...prev]);
+    } catch (error) {
+      console.error("Erreur lors de l'acceptation :", error);
+    }
   };
 
-  const declineRequest = (id) => {
-    setRequests((prev) => prev.filter((r) => r.id !== id));
+  const declineRequest = async (id) => {
+    try {
+      await ApiService.deleteFriends(id);
+      setRequests((prev) => prev.filter((r) => r.id !== id));
+    } catch (error) {
+      console.error("Erreur lors du refus :", error);
+    }
   };
 
-  const removeFriend = (id) => {
-    setFriends((prev) => prev.filter((f) => f.id !== id));
+  const removeFriend = async (id) => {
+    try {
+      await ApiService.deleteFriends(id);
+      setFriends((prev) => prev.filter((f) => f.id !== id));
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+    }
   };
 
-  const blockFriend = (id) => {
-    setFriends((prev) => prev.filter((f) => f.id !== id));
-  };
+const inviteFriend = async (e) => {
+  e.preventDefault();
+  const form = new FormData(e.currentTarget);
+  const pseudo = String(form.get("invite") || "").trim();
+  if (!pseudo) return;
 
-  const inviteFriend = (e) => {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const value = String(form.get("invite") || "").trim();
-    if (!value) return;
-    console.log("Invite/search by pseudo:", value);
-    e.currentTarget.reset();
-  };
+  try {
+    const res = await ApiService.getUserByPseudo(pseudo);
+    const user = res.data[0];
+    if (!user?.id) {
+      console.error("Utilisateur introuvable");
+      return;
+    }
+
+    await ApiService.sendFriendsRequest({ idReceiver: user.id });
+
+    // ✅ Feedback succès
+    setInviteSuccess(true);
+
+    // Reset du champ
+    setSearch("")
+
+    // Supprime le message après 2s
+    setTimeout(() => setInviteSuccess(false), 2000);
+  } catch (error) {
+    console.error("Erreur lors de l'invitation :", error);
+    setInviteSuccess(false);
+  }
+};
+
+
+
+  if (loading) return <p>{t("general.loading")}…</p>;
 
   const hasFriends = filteredFriends.length > 0;
   const hasRequests = requests.length > 0;
@@ -123,17 +169,34 @@ const Friends = () => {
           </div>
           <input
             name="invite"
-            className="fr-ic-input"
+            className={`fr-ic-input ${
+              inviteSuccess === true
+                ? "success"
+                : inviteSuccess === false
+                ? "error"
+                : ""
+            }`}
             type="text"
             placeholder={t("general.invitePlaceholder")}
           />
-          <button className="fr-btn fr-primary" type="submit">{t("send")}</button>
+          <button className="fr-btn fr-primary" type="submit">
+            {t("send")}
+          </button>
+
+          {inviteSuccess === true && (
+            <span className="invite-success-message">Demande envoyée ✔</span>
+          )}
+          {inviteSuccess === false && (
+            <span className="invite-error-message">Erreur lors de l'envoi ❌</span>
+          )}
         </form>
       </section>
+
 
       {/* Contenu */}
       <section className="fr-content">
         <h2 className="fr-h2">{t("general.sectionTitle")}</h2>
+
         {tab === "requests" ? (
           hasRequests ? (
             <div className="fr-request-list">
