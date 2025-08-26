@@ -210,9 +210,37 @@ const MenuUnivers = () => {
     localStorage.setItem("univers_favs", JSON.stringify(favs));
   }, [favs]);
 
-  const toggleFav = (id) => {
-    setFavs((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  const toggleFav = async (id) => {
+    const card = cards.find((c) => c.id === id);
+    if (!card) return;
+
+    const newHasStar = card.hasStar === 1 ? 0 : 1;
+
+    // Mise à jour optimiste
+    setCards((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, hasStar: newHasStar } : c
+      )
+    );
+
+    try {
+      if (newHasStar === 1) {
+        await ApiUnivers.addStar(id);
+      } else {
+        await ApiUnivers.removeStar(id);
+      }
+    } catch (err) {
+      console.error("Erreur toggle fav:", err);
+
+      // rollback si erreur
+      setCards((prev) =>
+        prev.map((c) =>
+          c.id === id ? { ...c, hasStar: card.hasStar } : c
+        )
+      );
+    }
   };
+
 
   // 🔹 “Mes univers”
   const myUniversCards = useMemo(() => {
@@ -324,7 +352,7 @@ const MenuUnivers = () => {
                 onClick={() => handleModalViewUnivers(card)}
               >
                 <button
-                  className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
+                  className={`fav-btn ${card.hasStar === 1 ? "is-fav" : ""}`}
                   aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
                   onClick={(e) => {
                     e.stopPropagation();   
@@ -360,7 +388,7 @@ const MenuUnivers = () => {
             onClick={() => handleModalViewUnivers(card)}
           >
             <button
-              className={`fav-btn ${favs.includes(card.id) ? "is-fav" : ""}`}
+              className={`fav-btn ${card.hasStar === 1 ? "is-fav" : ""}`}
               aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
               onClick={(e) => {
                 e.stopPropagation();   // ⛔ empêche le click d'atteindre <article>
