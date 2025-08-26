@@ -71,7 +71,9 @@
     "hideClock": "Désactiver l'horloge",
 
     "createTitle": "Page en cours de création",
-    "createSubtitle": "Merci de votre patience"
+    "createSubtitle": "Merci de votre patience",
+    "friends": "Amis",
+    "notifications": "Notifications"
 
   }
 }

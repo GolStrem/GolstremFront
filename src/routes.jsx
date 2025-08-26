@@ -11,11 +11,13 @@ import MenuFiche from './pages/fiche/MenuFiche';
 import LockScreen from './pages/LockScreen';
 import MenuUnivers from './pages/univers/MenuUnivers';
 import Create from './pages/create/Create.jsx';
+import Config from './pages/header/Config.jsx'
+import Notifications from './pages/header/Notifications.jsx'
+import Friends from './pages/header/Friends.jsx'
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Workspace = lazy(() => import('./pages/Workspace'));
-const Config = lazy(() => import('./pages/Config'));
 const Fiche = lazy(() => import ('./pages/fiche/CreateFiche'))
 
 const routes = [
@@ -107,6 +109,26 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <MenuUnivers />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/friends',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <Friends />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/notifications',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <Notifications />
         </Layout>
       </ProtectedRoute>
     ),

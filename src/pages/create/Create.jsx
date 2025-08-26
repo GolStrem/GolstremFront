@@ -16,10 +16,11 @@ const Create = () => {
   const navigate = useNavigate();
 
 
-
-  const handleLoginClick = () => {
-    navigate("/login");
+  const handleRedirect = () => {
+    navigate(isAuthenticated ? '/dashboard' : '/');
   };
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  
 
   return (
     <div className="home-page">
@@ -35,9 +36,14 @@ const Create = () => {
       </div>
 
       <div className="home-content">
-        <div className="home-content-box">
+        <div className="home-content-box crea">
         <h1 className="home-title">{t("general.createTitle")}</h1>
         <p className="home-subtitle">{t("general.createSubtitle")}</p>
+              
+      <button className="redirect-button cre" onClick={handleRedirect}>
+        {isAuthenticated ? t('general.notFoundDashboard') : t('general.notFoundHome')}
+      </button>
+
         </div>
                  <div className="home-img">
            <img src={raw} alt="Fond personnage" className="home-perso" />

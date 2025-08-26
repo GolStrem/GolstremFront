@@ -71,7 +71,11 @@
     "hideClock": "Nascondi orologio",
 
     "createTitle": "Pagina in fase di creazione",
-    "createSubtitle": "Grazie per la vostra pazienza"
+    "createSubtitle": "Grazie per la vostra pazienza",
+
+    "friends": "Amici",
+    "notifications": "Notifiche"
+
 
 
   }

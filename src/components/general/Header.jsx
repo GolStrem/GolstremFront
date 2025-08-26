@@ -7,7 +7,9 @@ import {
   FaSignOutAlt,
   FaChevronDown,
   FaTools,
-  FaHome
+  FaHome,
+  FaUserFriends,
+  FaBell
 } from "react-icons/fa";
 import { persistor, toggleTheme, logout } from "@store";
 import avatarImg from "@assets/avatar.png";
@@ -54,15 +56,19 @@ const Header = () => {
     <header className="header">
       <div className="header-right" ref={menuRef}>
         {isAuthenticated && (
-        <div className="user-menu" onClick={toggleMenu}>
-          <img src={avatar || avatarImg} alt={t("general.avatarAlt")} className="avatar" />
-          <span className="username">
-            {pseudo
-              ? pseudo.charAt(0).toUpperCase() + pseudo.slice(1)
-              : t("general.profile")}
-          </span>
-          <FaChevronDown />
-        </div>
+          <div className="user-menu" onClick={toggleMenu}>
+            <img
+              src={avatar || avatarImg}
+              alt={t("general.avatarAlt")}
+              className="avatar"
+            />
+            <span className="username">
+              {pseudo
+                ? pseudo.charAt(0).toUpperCase() + pseudo.slice(1)
+                : t("general.profile")}
+            </span>
+            <FaChevronDown />
+          </div>
         )}
 
         {menuOpen && (
@@ -72,6 +78,20 @@ const Header = () => {
               onClick={() => navigate("/dashboard")}
             >
               <FaHome /> {t("general.dashboard")}
+            </button>
+
+            <button
+              className="dropdown-item"
+              onClick={() => navigate("/friends")}
+            >
+              <FaUserFriends /> {t("general.friends")}
+            </button>
+
+            <button
+              className="dropdown-item"
+              onClick={() => navigate("/notifications")}
+            >
+              <FaBell /> {t("general.notifications")}
             </button>
 
             <button

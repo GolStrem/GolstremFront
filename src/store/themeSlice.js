@@ -68,6 +68,27 @@ function switchColor(theme) {
   document.documentElement.style.setProperty("--color-cancel-bg", '#bdc3c7');
   document.documentElement.style.setProperty("--color-cancel-text", '#000');
 
+    // Surfaces
+  document.documentElement.style.setProperty("--surface-1", theme === 'dark' ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)");
+  document.documentElement.style.setProperty("--surface-2", theme === 'dark' ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)");
+  document.documentElement.style.setProperty("--surface-3", theme === 'dark' ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)");
+
+  // Bordures
+  document.documentElement.style.setProperty("--border-weak", theme === 'dark' ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)");
+  document.documentElement.style.setProperty("--border-strong", theme === 'dark' ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)");
+
+  // Boutons génériques
+  document.documentElement.style.setProperty("--btn-bg", "var(--surface-2)");
+  document.documentElement.style.setProperty("--btn-border", "var(--border-strong)");
+
+  // Accents (Fiche / Univers)
+  document.documentElement.style.setProperty("--accent-fiche-border", "rgba(247, 208, 56, 0.5)");
+  document.documentElement.style.setProperty("--accent-fiche-bg", theme === 'dark' ? "rgba(247, 208, 56, 0.10)" : "rgba(247, 208, 56, 0.12)");
+
+  document.documentElement.style.setProperty("--accent-univers-border", "rgba(88, 101, 242, 0.45)");
+  document.documentElement.style.setProperty("--accent-univers-bg", theme === 'dark' ? "rgba(88,101,242,0.12)" : "rgba(88,101,242,0.14)");
+
+
 }
 
 

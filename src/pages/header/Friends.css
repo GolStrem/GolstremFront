@@ -1,0 +1,432 @@
+.fr-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  color: var(--color-text);
+}
+
+/* Header */
+.fr-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap; /* wrap propre sur petits écrans */
+}
+
+.fr-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fr-header-left h1 {
+  margin: 0;
+  font-size: clamp(1.1rem, 1.2vw + 0.8rem, 1.4rem);
+}
+
+.fr-badge {
+  background: var(--jaune);
+  color: var(--noir, #111);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.fr-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto; /* pousse à droite quand il y a de la place */
+  flex-wrap: wrap;
+}
+
+/* Tabs */
+.fr-tabs {
+  display: inline-flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border-weak);
+  border-radius: 10px;
+  overflow: auto; /* scroll horizontal si besoin */
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+.fr-tabs::-webkit-scrollbar { display: none; }
+
+.fr-tab {
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.fr-tab.is-active {
+  background: var(--surface-3);
+  font-weight: 700;
+}
+
+.fr-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  background: var(--jaune);
+  border-radius: 50%;
+}
+
+/* Searchbar */
+.fr-searchbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+}
+
+.fr-searchbar input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+  min-width: 200px;
+}
+
+/* Actions (invitation) */
+.fr-actions .fr-invite-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-weak);
+  border-radius: 14px;
+  flex-wrap: wrap; /* passe en 2 lignes si manque d’espace */
+}
+
+.fr-ic-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  flex: 0 0 48px;
+}
+
+.fr-ic-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.fr-ic-body span {
+  opacity: 0.85;
+  font-size: 0.92rem;
+  margin-left: 0;
+}
+
+.fr-ic-input {
+  background: var(--color-input-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--color-text);
+  flex: 1 1 220px; /* s’étire */
+  min-width: 180px;
+}
+
+/* Boutons */
+.fr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform 0.08s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.fr-btn:hover {
+  background: var(--btn-hover-bg);
+  transform: translateY(-1px);
+}
+
+.fr-btn:active { transform: translateY(0); }
+
+.fr-primary {
+  background: var(--jaune);
+  color: var(--noir, #111);
+  border-color: var(--jaune);
+  font-weight: 700;
+}
+
+.fr-success {
+  background: rgba(46, 204, 113, 0.2);
+  border-color: rgba(46, 204, 113, 0.35);
+}
+
+.fr-ghost { background: transparent; }
+
+.fr-danger {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.35);
+}
+
+/* Accents pour actions clés */
+.fr-btn--fiche {
+  border-color: var(--accent-fiche-border);
+  background: var(--accent-fiche-bg);
+}
+.fr-btn--fiche:hover { background: var(--accent-fiche-bg); filter: brightness(1.08); }
+
+.fr-btn--univers {
+  border-color: var(--accent-univers-border);
+  background: var(--accent-univers-bg);
+}
+.fr-btn--univers:hover { background: var(--accent-univers-bg); filter: brightness(1.08); }
+
+/* Contenu */
+.fr-content { min-height: 40vh; }
+
+/* Demandes d'amis (flex) */
+.fr-request-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fr-request-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-weak);
+  border-radius: 14px;
+  flex-wrap: wrap;
+}
+
+.fr-ri-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  flex: 1 1 auto;
+}
+
+.fr-ri-body span {
+  opacity: 0.85;
+  font-size: 0.92rem;
+  margin-left: 0;
+}
+
+.fr-ri-actions {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+/* Grille amis → container flex wrap */
+.fr-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Carte ami (flex) */
+.fr-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-weak);
+  border-radius: 14px;
+  transition: box-shadow 0.15s ease, transform 0.12s ease;
+  width: calc(33.333% - 8px); /* 3 par ligne par défaut */
+  box-sizing: border-box;
+}
+
+.fr-card:hover {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Ligne supérieure (avatar + nom) */
+.fr-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto; /* occupe l’espace */
+  min-width: 0;
+}
+
+.fr-info .fr-name {
+  display: block;
+  margin-bottom: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.fr-menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+}
+
+/* Avatar */
+.fr-avatar,
+.fr-avatar-fallback {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--surface-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex: 0 0 52px;
+}
+
+.fr-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ligne d'actions */
+.fr-actions-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: auto; /* colle à droite */
+}
+
+/* Empty state */
+.fr-empty-state {
+  text-align: center;
+  max-width: 520px;
+  margin: 40px auto 60px;
+  padding: 24px 18px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-weak);
+  border-radius: 16px;
+}
+
+.fr-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 12px;
+  border-radius: 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-weak);
+}
+
+/* =========================
+   BREAKPOINTS (flex-first)
+   ========================= */
+
+/* ≤ 1200px : 2 cartes par ligne */
+@media (max-width: 1200px) {
+  .fr-card { width: calc(50% - 6px); }
+}
+@media (max-width: 1550px) {
+    .fr-card{
+        flex-direction: column;
+        align-items: flex-start;
+
+    }
+}
+/* ≤ 980px : header resp + 2 cartes */
+@media (max-width: 980px) {
+  .fr-header-right {
+    margin-left: 0;
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+  .fr-card { width: calc(50% - 6px); }
+}
+
+/* ≤ 768px : header en colonne, searchbar pleine largeur, invite wrap propre */
+@media (max-width: 768px) {
+  .fr-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fr-header-right { gap: 10px; }
+  .fr-tabs {  order: 1; }
+  .fr-searchbar { width: 100%; order: 2; }
+
+  .fr-actions .fr-invite-card {
+    justify-content: space-between;
+  }
+}
+
+/* ≤ 620px : 1 carte par ligne + compaction */
+@media (max-width: 620px) {
+.fr-invite-card{
+        justify-content: flex-start;
+    }
+
+  .fr-card { width: 100%; 
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    }
+
+  .fr-avatar,
+  .fr-avatar-fallback {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .fr-actions-row .fr-btn {
+    padding: 6px 10px;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+
+  .fr-searchbar input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .fr-ic-input {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}
+
+/* ≤ 420px : paddings réduits */
+@media (max-width: 420px) {
+  .fr-page { padding: 14px; }
+  .fr-header-left h1 { font-size: 1.1rem; }
+  .fr-btn { padding: 6px 10px; }
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .fr-btn,
+  .fr-card { transition: none; }
+}

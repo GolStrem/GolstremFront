@@ -70,7 +70,10 @@
     "hideClock": "Hide clock",
 
     "createTitle": "Page under construction",
-    "createSubtitle": "Thank you for your patience"
+    "createSubtitle": "Thank you for your patience",
+    "friends": "Friends",
+    "notifications": "Notifications"
+
 
   }
 }

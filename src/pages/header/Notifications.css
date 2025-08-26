@@ -1,0 +1,230 @@
+.notification-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+/* Header */
+.notif-header {
+  position: sticky;
+  top: 0;
+  padding: 12px 0;
+  z-index: 5;
+}
+
+.notif-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.notif-title h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+.notif-title svg {
+  font-size: 1.2rem;
+}
+.notif-counter {
+  margin-left: 6px;
+  background: var(--jaune, #f7d038);
+  color: var(--noir, #111);
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+}
+
+/* Actions (tabs + filtres) */
+.notif-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 12px;
+}
+
+.tabs {
+  display: inline-flex;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tab {
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  background: transparent;
+  border: none;
+  color: var(--text, #e8e8e8);
+  cursor: pointer;
+}
+.tab.is-active {
+  background: rgba(255,255,255,0.1);
+  font-weight: 700;
+}
+
+.filters {
+  position: relative;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: var(--text, #e8e8e8);
+  cursor: pointer;
+}
+.btn.filter-btn svg {
+  opacity: 0.9;
+}
+.filter-panel {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  min-width: 220px;
+  background: var(--panel, #1a1a1a);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.filter-panel .check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  font-size: 0.95rem;
+  color: var(--text, #e8e8e8);
+}
+
+/* Préférences rapides */
+.notif-preferences .pref-card {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 12px;
+}
+.pref-item {
+  display: grid;
+  grid-template-columns: 44px 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.pref-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+}
+.pref-icon.on {
+  background: rgba(247, 208, 56, 0.2);
+  outline: 1px solid var(--jaune, #f7d038);
+}
+.pref-label strong {
+  display: block;
+  margin-bottom: 2px;
+}
+.pref-label span {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+.pref-toggle {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+}
+.pref-toggle.on {
+  background: var(--jaune, #f7d038);
+}
+.pref-toggle span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+.pref-toggle.on span {
+  transform: translateX(20px);
+}
+
+/* Contenu */
+.notif-content {
+  min-height: 40vh;
+  display: grid;
+  place-items: center;
+}
+
+.empty-state {
+  text-align: center;
+  max-width: 560px;
+  margin: 40px auto 60px;
+  padding: 24px 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+}
+.empty-illu {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 12px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.empty-illu svg {
+  font-size: 28px;
+  opacity: 0.9;
+}
+.empty-state h2 {
+  font-size: 1.3rem;
+  margin: 10px 0 6px;
+}
+.empty-state p {
+  opacity: 0.85;
+  margin: 0 0 16px;
+}
+.empty-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn.primary {
+  background: var(--jaune, #f7d038);
+  color: var(--noir, #111);
+  border-color: var(--jaune, #f7d038);
+  font-weight: 700;
+}
+.btn.ghost {
+  background: transparent;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .notif-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .notif-preferences .pref-card {
+    grid-template-columns: 1fr;
+  }
+}

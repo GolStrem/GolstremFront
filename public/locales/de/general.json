@@ -70,7 +70,11 @@
     "hideClock": "Uhr ausblenden",
 
     "createTitle": "Seite im Aufbau",
-    "createSubtitle": "Vielen Dank für Ihre Geduld"
+    "createSubtitle": "Vielen Dank für Ihre Geduld",
+
+    "friends": "Freunde",
+    "notifications": "Benachrichtigungen"
+
 
 
   }
