@@ -12,7 +12,6 @@ import { FaFilter } from "react-icons/fa";
 
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
-// ⬇️ Handlers purs (aucun appel API)
 import useFicheHandlers from "@service/handler/useFicheHandler";
 
 const MenuFiche = () => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
-import { BaseModal, ToolbarTipTap } from "@components";
+import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter  } from "@components";
 import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
 import "../fiche/modal/FicheEditModal.css";
@@ -7,7 +7,6 @@ import "./ModalGeneric.css"
 import { FaEye } from "react-icons/fa";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { TextImgPlus, TextTextAreaPlus, CheckBox, Chapter } from "./ModalGeneric/index.js";
 import { useTranslation } from "react-i18next";
 
 

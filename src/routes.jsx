@@ -7,10 +7,9 @@ import Accueil from './pages/accueil';
 import Error from './pages/NotFound';
 import LoginNew from './pages/LoginNew';
 import LnResetPasswordModal from './components/login/LnResetPasswordModal'; 
-import MenuFiche from './pages/MenuFiche';
+import MenuFiche from './pages/fiche/MenuFiche';
 import LockScreen from './pages/LockScreen';
-import Univers from './pages/MenuUnivers';
-import MenuUnivers from './pages/MenuUnivers';
+import MenuUnivers from './pages/univers/MenuUnivers';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));

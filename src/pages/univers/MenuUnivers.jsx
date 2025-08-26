@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-import "./MenuFiche.css";
+import "../fiche/MenuFiche.css";
 import { SearchBar, ModalGeneric, Pagination } from "@components";
 import { FaFilter, FaStar } from "react-icons/fa";
 import "./MenuUnivers.css";
 import { ApiUnivers, ApiService } from "@service"
-import { createUniversFilterFields, createUniversCreateFields } from "@components/general/fieldModal";
+import { createUniversFilterFields, createUniversCreateFields } from "@components";
 
 const listTag = ["Francais", "Fantastique", "Discord", "Anglais", "Jeu de table", "Word of Warcraft", "Final Fantasy XIV"];
 

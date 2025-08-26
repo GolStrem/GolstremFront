@@ -1,5 +1,3 @@
-export { default as SearchBar } from './general/SearchBar';
-
 
 // Login
 export { default as fieldsConfigLogin } from './login/fieldsConfigLogin';
@@ -89,9 +87,19 @@ export { default as FicheCardGallery } from './fiche/module/FicheCardGallery'
 export { default as FicheNav } from './fiche/FicheNav'
 
 
+//GENERAL 
+export { default as BackLocation } from './general/BackLocation';
+export { default as Header } from './general/Header';
+export { default as Layout } from './general/Layout';
+export { default as ModalGeneric } from './general/ModalGeneric';
+export { default as Pagination } from './general/Pagination';
+export { default as SearchBar } from './general/SearchBar';
+export { default as ToolbarTipTap } from './general/ToolbarTipTap';
+export { createUniversFilterFields, createUniversCreateFields, createFieldConfig } from './general/fieldModal/universFields.js';
 
 
-export {default as ModalGeneric } from './general/ModalGeneric'
-export { default as Pagination } from './general/Pagination'
-export { default as ToolbarTipTap } from './general/ToolbarTipTap'
-export { default as BackLocation } from './general/BackLocation'
+export { default as TextImgPlus } from './general/ModalGeneric/TextImgPlus';
+export { default as TextTextAreaPlus } from './general/ModalGeneric/TextTextAreaPlus';
+export { default as CheckBox } from './general/ModalGeneric/CheckBox';
+export { default as Chapter } from './general/ModalGeneric/Chapter';
+
