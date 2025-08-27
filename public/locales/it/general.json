@@ -90,7 +90,13 @@
     "nothing": "Niente da segnalare",
     "text": "Non hai ancora notifiche. Quando ci saranno novità, appariranno qui.",
     "enableBtn": "Attiva le notifiche",
-    "inviteBtn": "Invita amici"
+    "inviteBtn": "Invita amici",
+    
+    "inviteSuccess": "Richiesta inviata ✔",
+    "inviteError": "Errore durante l'invio ❌",
+    "userNotFoundError": "Utente non trovato",
+    "friendRequestSent": "Richiesta di amicizia inviata con successo",
+    "friendRequestError": "Errore nell'invio della richiesta di amicizia"
 
 
 

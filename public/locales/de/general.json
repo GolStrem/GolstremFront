@@ -89,7 +89,13 @@
     "nothing": "Nichts zu melden",
     "text": "Du hast noch keine Benachrichtigungen. Sobald es Neuigkeiten gibt, erscheinen sie hier.",
     "enableBtn": "Benachrichtigungen aktivieren",
-    "inviteBtn": "Freunde einladen"
+    "inviteBtn": "Freunde einladen",
+    
+    "inviteSuccess": "Anfrage gesendet ✔",
+    "inviteError": "Fehler beim Senden ❌",
+    "userNotFoundError": "Benutzer nicht gefunden",
+    "friendRequestSent": "Freundschaftsanfrage erfolgreich gesendet",
+    "friendRequestError": "Fehler beim Senden der Freundschaftsanfrage"
 
 
 

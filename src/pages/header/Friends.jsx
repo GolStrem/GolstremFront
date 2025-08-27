@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Friends.css";
 import {
   FaUserFriends,
@@ -16,6 +17,7 @@ import { ApiService } from "@service/"
 
 const Friends = () => {
   const { t } = useTranslation("general");
+  const navigate = useNavigate();
 
   const [tab, setTab] = useState("all"); // "all" | "requests"
   const [search, setSearch] = useState("");
@@ -23,6 +25,7 @@ const Friends = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [inviteSuccess, setInviteSuccess] = useState(undefined);
+  const [inviteInput, setInviteInput] = useState("");
 
 
   // === Fetch initial friends & requests ===
@@ -82,10 +85,17 @@ const Friends = () => {
     }
   };
 
+  const handleFicheClick = (friendId) => {
+    navigate(`/fiches/owner/${friendId}`);
+  };
+
+  const handleUniversClick = (friendId) => {
+    navigate(`/univers?param[filter][byFriend]=${friendId}`);
+  };
+
 const inviteFriend = async (e) => {
   e.preventDefault();
-  const form = new FormData(e.currentTarget);
-  const pseudo = String(form.get("invite") || "").trim();
+  const pseudo = inviteInput.trim();
   if (!pseudo) return;
 
   try {
@@ -93,6 +103,7 @@ const inviteFriend = async (e) => {
     const user = res.data[0];
     if (!user?.id) {
       console.error("Utilisateur introuvable");
+      setInviteSuccess(false);
       return;
     }
 
@@ -102,13 +113,16 @@ const inviteFriend = async (e) => {
     setInviteSuccess(true);
 
     // Reset du champ
-    setSearch("")
+    setInviteInput("");
 
     // Supprime le message après 2s
-    setTimeout(() => setInviteSuccess(false), 2000);
+    setTimeout(() => setInviteSuccess(undefined), 2000);
   } catch (error) {
     console.error("Erreur lors de l'invitation :", error);
     setInviteSuccess(false);
+    
+    // Supprime le message d'erreur après 2s
+    setTimeout(() => setInviteSuccess(undefined), 2000);
   }
 };
 
@@ -177,6 +191,8 @@ const inviteFriend = async (e) => {
                 : ""
             }`}
             type="text"
+            value={inviteInput}
+            onChange={(e) => setInviteInput(e.target.value)}
             placeholder={t("general.invitePlaceholder")}
           />
           <button className="fr-btn fr-primary" type="submit">
@@ -186,10 +202,10 @@ const inviteFriend = async (e) => {
       </section>
       
       {inviteSuccess === true && (
-            <span className="invite-success-message">Demande envoyée ✔</span>
+            <span className="invite-success-message">{t("general.inviteSuccess")}</span>
           )}
           {inviteSuccess === false && (
-            <span className="invite-error-message">Erreur lors de l'envoi ❌</span>
+            <span className="invite-error-message">{t("general.inviteError")}</span>
           )}
 
 
@@ -203,8 +219,8 @@ const inviteFriend = async (e) => {
               {requests.map((r) => (
                 <article className="fr-request-item" key={r.id}>
                   <div className="fr-avatar">
-                    {r.avatar ? (
-                      <img src={r.avatar} alt={r.pseudo} />
+                    {r.image ? (
+                      <img src={r.image} alt={r.pseudo} />
                     ) : (
                       <div className="fr-avatar-fallback">{r.pseudo[0]?.toUpperCase()}</div>
                     )}
@@ -237,8 +253,8 @@ const inviteFriend = async (e) => {
               <article className="fr-card" key={f.id}>
                 <div className="fr-card-top">
                   <div className="fr-avatar-wrap">
-                    {f.avatar ? (
-                      <img src={f.avatar} alt={f.pseudo} />
+                    {f.image ? (
+                      <img src={f.image} alt={f.pseudo} />
                     ) : (
                       <div className="fr-avatar-fallback">{f.pseudo[0]?.toUpperCase()}</div>
                     )}
@@ -250,10 +266,10 @@ const inviteFriend = async (e) => {
                 </div>
 
                 <div className="fr-actions-row">
-                  <button className="fr-btn fr-btn--fiche">
+                  <button className="fr-btn fr-btn--fiche" onClick={() => handleFicheClick(f.id)}>
                     <FaFileAlt /> {t("general.fiche")}
                   </button>
-                  <button className="fr-btn fr-btn--univers">
+                  <button className="fr-btn fr-btn--univers" onClick={() => handleUniversClick(f.id)}>
                     <FaGlobe /> {t("general.univers")}
                   </button>
                   <button className="fr-btn" onClick={() => removeFriend(f.id)}>

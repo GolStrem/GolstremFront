@@ -88,7 +88,13 @@
     "nothing": "Nothing to report",
     "text": "You don’t have any notifications yet. When there’s something new, it will appear here.",
     "enableBtn": "Enable notifications",
-    "inviteBtn": "Invite friends"
+    "inviteBtn": "Invite friends",
+    
+    "inviteSuccess": "Request sent ✔",
+    "inviteError": "Error while sending ❌",
+    "userNotFoundError": "User not found",
+    "friendRequestSent": "Friend request sent successfully",
+    "friendRequestError": "Error sending friend request"
 
 
   }

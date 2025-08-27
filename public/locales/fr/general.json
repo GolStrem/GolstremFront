@@ -91,7 +91,13 @@
     "nothing": "Rien à signaler",
     "text": "Vous n’avez pas encore de notifications. Quand il y aura du nouveau, cela s’affichera ici.",
     "enableBtn": "Activer les notifications",
-    "inviteBtn": "Inviter des amis"
+    "inviteBtn": "Inviter des amis",
+    
+    "inviteSuccess": "Demande envoyée ✔",
+    "inviteError": "Erreur lors de l'envoi ❌",
+    "userNotFoundError": "Utilisateur introuvable",
+    "friendRequestSent": "Demande d'ami envoyée avec succès",
+    "friendRequestError": "Erreur lors de l'envoi de la demande d'ami"
 
 
 
