@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaSun, FaMoon, FaUserAlt, FaPlus } from "react-icons/fa";
+import { FaSun, FaMoon, FaUserAlt, FaPlus, FaDiscord } from "react-icons/fa";
 import { golstremb, golden, raw } from "@assets";
 import { LnModal } from '@components';
 import { toggleTheme } from '@store/index';
@@ -16,13 +16,20 @@ const LoginNew = () => {
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.theme.mode);
 
-  // Utilisation optimisée des icônes
-
-
   const [modal, setModal] = useState(null); // 'login' | 'register' | null
   const openLogin    = () => setModal('login');
   const openRegister = () => setModal('register');
   const closeModal   = () => setModal(null);
+
+  const CLIENT_ID   = import.meta.env.VITE_DISCORD_CLIENT_ID;
+  const REDIRECT_URI = import.meta.env.VITE_DISCORD_REDIRECT_URI;
+
+  const discordUrl =
+  `https://discord.com/oauth2/authorize` +
+  `?client_id=${CLIENT_ID}` +
+  `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+  `&response_type=code` +
+  `&scope=identify%20email`;
 
   const navigate = useNavigate();
 
@@ -62,6 +69,12 @@ const LoginNew = () => {
           <FaPlus className="ln-ico" />
           <span>{t('login.nouveauCompte')}</span>
         </button>
+
+        <button className="ln-discord ln-connexion" onClick={() => (window.location.href = discordUrl)}>
+          <span className="ln-ico"><FaDiscord className="ln-ico" /></span>
+          <span>{t('discordBis')}</span>
+        </button>
+
       </div>
 
       {modal && <LnModal type={modal} onClose={closeModal} />}

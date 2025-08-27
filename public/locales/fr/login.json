@@ -35,6 +35,7 @@
     "passwordVeryStrong": "Très fort",
     "requiredPassword": "Mot de passe requis",
     "requiredUsername": "Pseudo requis",
-    "usernameRules": "3-20 caractères, lettres/chiffres/underscore uniquement"
+    "usernameRules": "3-20 caractères, lettres/chiffres/underscore uniquement",
+    "connexionDiscord": "connecte toi connard"
   }
 }
