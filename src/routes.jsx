@@ -19,6 +19,7 @@ import Friends from './pages/header/Friends.jsx'
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Workspace = lazy(() => import('./pages/Workspace'));
 const Fiche = lazy(() => import ('./pages/fiche/CreateFiche'))
+const Univers = lazy(() => import('./pages/univers/Univers'))
 
 const routes = [
   {
@@ -129,6 +130,16 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <Notifications />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/univers/:id',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <Univers />
         </Layout>
       </ProtectedRoute>
     ),

@@ -5,6 +5,7 @@ import { FaFilter, FaStar } from "react-icons/fa";
 import "./MenuUnivers.css";
 import { ApiUnivers, ApiService } from "@service"
 import { createUniversFilterFields, createUniversCreateFields } from "@components";
+import { useNavigate } from "react-router-dom";
 
 const listTag = ["Francais", "Fantastique", "Discord", "Anglais", "Jeu de table", "Word of Warcraft", "Final Fantasy XIV"];
 
@@ -64,6 +65,9 @@ const MenuUnivers = () => {
   const [myPage, setMypage] = useState(0);
   const [myTotalPage, setMyTotalPage] = useState(0);
   const [myCards, setMyCards] = useState([]);
+  const [idUnivers, setIdUnivers] = useState(0);
+  const navigate = useNavigate(); // <-- le hook à utiliser
+
 
   // ➜ Mémoire du filtre appliqué
   const [activeFilter, setActiveFilter] = useState({
@@ -91,6 +95,7 @@ const MenuUnivers = () => {
 
 
   const handleModalViewUnivers = function(card) { 
+    setIdUnivers(card.id)
     setTitle(card.name);
     const textHtml = `
     <div>
@@ -123,6 +128,11 @@ const MenuUnivers = () => {
   const handleModalViewCreateUniv =() => {
     setModalCreateUnivOpen(true);
   };
+
+  const handleGoUnivers =()=>{
+    navigate(`${idUnivers}`)
+  
+  }
 
   // ⚙️ Définition des champs de filtre avec la nouvelle fonction
   // ✅ Valeurs initiales injectées dans la modale (sans modifier ModalGeneric)
@@ -521,7 +531,7 @@ const favCooldownRef = React.useRef(new Set());
       {isModalUniversOpen && (
         <ModalGeneric
           onClose={() => setModalUniversOpen(false)}
-          handleSubmit={console.log}
+          handleSubmit={handleGoUnivers}
           fields={fields}
           title={title}
           noButtonCancel={true}
