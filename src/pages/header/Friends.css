@@ -50,15 +50,23 @@
 
 /* Message vert sous le champ */
 .invite-success-message {
-  display: block;        /* important pour qu'il prenne une ligne */
-  margin-top: 4px;       /* espace sous l'input */
-  font-size: 0.85rem;
+  display: flex   ;     /* important pour qu'il prenne une ligne */
+  margin-top: -10px;       /* espace sous l'input */
+  font-size: 1rem;
   color: #4caf50;
   font-weight: 500;
   opacity: 1;
   transition: opacity 0.3s;
+  align-items: center;
+  justify-content: center;
 }
-
+.invite-error-message{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-top: -10px;
+}
 
 /* Tabs */
 .fr-tabs {

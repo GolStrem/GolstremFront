@@ -182,15 +182,15 @@ const inviteFriend = async (e) => {
           <button className="fr-btn fr-primary" type="submit">
             {t("send")}
           </button>
-
-          {inviteSuccess === true && (
+        </form>
+      </section>
+      
+      {inviteSuccess === true && (
             <span className="invite-success-message">Demande envoyée ✔</span>
           )}
           {inviteSuccess === false && (
             <span className="invite-error-message">Erreur lors de l'envoi ❌</span>
           )}
-        </form>
-      </section>
 
 
       {/* Contenu */}
