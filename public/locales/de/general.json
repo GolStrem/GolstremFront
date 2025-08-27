@@ -67,7 +67,37 @@
     "changeLockscreenBackground": "Sperrbildschirm-Hintergrund ändern",
     "lightLockBackground": "Heller Hintergrund",
     "darkLockBackground": "Dunkler Hintergrund",
-    "hideClock": "Uhr ausblenden"
+    "hideClock": "Uhr ausblenden",
+
+    "createTitle": "Seite im Aufbau",
+    "createSubtitle": "Vielen Dank für Ihre Geduld",
+
+    "friends": "Freunde",
+    "notifications": "Mitteilungen",
+
+    "searchPlaceholderFriend": "Einen Freund suchen…",
+    "inviteTitle": "Einen Freund einladen",
+    "inviteSubtitle": "Nach Benutzername",
+    "invitePlaceholder": "z. B. Kara#1234",
+    "sectionTitle": "MEINE FREUNDE",
+    "requestText": "Möchte dich hinzufügen",
+    "noRequestsTitle": "Keine Anfragen",
+    "noRequestsText": "Wenn dir jemand eine Anfrage sendet, wird sie hier angezeigt.",
+    "noFriendsTitle": "Noch keine Freunde",
+    "noFriendsText": "Lade deine Freunde ein, um gemeinsam zu spielen und euch auszutauschen.",
+
+    "nothing": "Nichts zu melden",
+    "text": "Du hast noch keine Benachrichtigungen. Sobald es Neuigkeiten gibt, erscheinen sie hier.",
+    "enableBtn": "Benachrichtigungen aktivieren",
+    "inviteBtn": "Freunde einladen",
+    
+    "inviteSuccess": "Anfrage gesendet ✔",
+    "inviteError": "Fehler beim Senden ❌",
+    "userNotFoundError": "Benutzer nicht gefunden",
+    "friendRequestSent": "Freundschaftsanfrage erfolgreich gesendet",
+    "friendRequestError": "Fehler beim Senden der Freundschaftsanfrage"
+
+
 
   }
 }

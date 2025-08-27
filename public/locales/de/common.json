@@ -75,5 +75,28 @@
   "color": "Farbe:",
   "private": "Privat",
   "friends": "Freunde/Server",
-  "public": "Öffentlich"
+  "public": "Öffentlich",
+
+  "titleFriend": "Freunde",
+  "all": "Alle",
+  "remove": "Entfernen",
+  "requests": "Anfragen",
+
+  "titleNotification": "Mitteilungen",
+  "unread": "Ungelesen",
+  "titleFiltres": "Filter",
+
+  "univers": "Universen",
+  "fiches": "Karten",
+  "messages": "Nachrichten",
+  "system": "System",
+  "emailBis": "E-Mail",
+  "push": "Push",
+  "discordBis": "Discord",
+  "enabled": "Aktiviert",
+  "disabled": "Deaktiviert",
+  "accept": "Annehmen",
+  "refuse": "Ablehnen"
+
+
 }

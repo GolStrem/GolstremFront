@@ -54,13 +54,13 @@ const Dashboard = () => {
       active: location.pathname === "/univers",
     },
     {
-      to: "/inventaire",
+      to: "/create",
       label: t("general.inventaire"),
       icon: <FaBoxOpen />,
       active: location.pathname === "/inventaire",
     },
     {
-      to: "/maitre",
+      to: "/create",
       label: t("general.maitre"),
       icon: <FaCrown />,
       active: location.pathname === "/maitre",

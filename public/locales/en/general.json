@@ -67,7 +67,35 @@
     "changeLockscreenBackground": "Change lock screen background",
     "lightLockBackground": "Light background",
     "darkLockBackground": "Dark background",
-    "hideClock": "Hide clock"
+    "hideClock": "Hide clock",
+
+    "createTitle": "Page under construction",
+    "createSubtitle": "Thank you for your patience",
+    "friends": "Friends",
+    "notifications": "Notifications",
+
+    "searchPlaceholderFriend": "Search for a friend…",
+    "inviteTitle": "Invite a friend",
+    "inviteSubtitle": "By username",
+    "invitePlaceholder": "Ex. Kara#1234",
+    "sectionTitle": "MY FRIENDS",
+    "requestText": "Wants to add you",
+    "noRequestsTitle": "No requests",
+    "noRequestsText": "When someone sends you a request, it will appear here.",
+    "noFriendsTitle": "No friends yet",
+    "noFriendsText": "Invite your friends to start playing and interacting together.",
+
+    "nothing": "Nothing to report",
+    "text": "You don’t have any notifications yet. When there’s something new, it will appear here.",
+    "enableBtn": "Enable notifications",
+    "inviteBtn": "Invite friends",
+    
+    "inviteSuccess": "Request sent ✔",
+    "inviteError": "Error while sending ❌",
+    "userNotFoundError": "User not found",
+    "friendRequestSent": "Friend request sent successfully",
+    "friendRequestError": "Error sending friend request"
+
 
   }
 }

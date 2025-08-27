@@ -1,14 +1,50 @@
 import React, { useState, useEffect, useMemo } from "react";
-import "./MenuFiche.css";
+import "../fiche/MenuFiche.css";
 import { SearchBar, ModalGeneric, Pagination } from "@components";
 import { FaFilter, FaStar } from "react-icons/fa";
 import "./MenuUnivers.css";
 import { ApiUnivers, ApiService } from "@service"
-import { createUniversFilterFields, createUniversCreateFields } from "@components/general/fieldModal";
+import { createUniversFilterFields, createUniversCreateFields } from "@components";
 
 const listTag = ["Francais", "Fantastique", "Discord", "Anglais", "Jeu de table", "Word of Warcraft", "Final Fantasy XIV"];
 
 const MenuUnivers = () => {
+  
+  // Récupération des paramètres imbriqués de l'URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const params = {};
+  
+  for (const [key, value] of urlParams) {
+    // On récupère toutes les parties dans les []
+    const parts = key.split(/\[|\]/).filter(Boolean);
+    
+    // On construit l'objet dynamiquement
+    let current = params;
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (i === parts.length - 1) {
+        // Dernière clé → on assigne la valeur
+        current[part] = value;
+      } else {
+        // Si l'objet n'existe pas encore, on le crée
+        current[part] = current[part] || {};
+        current = current[part];
+      }
+    }
+  }
+  
+  
+  let initialParam = { limit: 30, p: 0 };
+  
+  // Si on a des paramètres de filtre dans l'URL, on les utilise
+  if (params) {
+    initialParam = {
+      ...initialParam,
+      ...params.param
+    };
+  }
+  
+
   const [search, setSearch] = useState("");
   const [cards, setCards] = useState([]);            
   const [selectedTag, setSelectedTag] = useState(""); 
@@ -19,7 +55,7 @@ const MenuUnivers = () => {
   const [fields, setFields] = useState([]);
   const [isLoading, setIsLoading] = useState(true);  // État de loading initial
 
-  const [param, setParam] = useState({limit: 30, p: 0});
+  const [param, setParam] = useState(initialParam);
   const [totalPages, setTotalPages] = useState(0); // si l'API renvoie totalPages, on le mettra à jour
   const [fieldsFilter, setFieldsFilter] = useState([]);
   const [createUnivers, setCreateUnivers] = useState([]);
@@ -90,13 +126,13 @@ const MenuUnivers = () => {
 
   // ⚙️ Définition des champs de filtre avec la nouvelle fonction
   // ✅ Valeurs initiales injectées dans la modale (sans modifier ModalGeneric)
-  const initialFilterValues = {
+  const initialFilterValues = useMemo(() => ({
     flags: activeFilter.flags,
     tagsUnivers: activeFilter.selectedTagFilter,
     sortScope: activeFilter.scope,
     orderBy: activeFilter.orderBy,
     orderDir: activeFilter.orderDir,
-  };
+  }), [activeFilter]);
 
   
 
@@ -186,6 +222,33 @@ const MenuUnivers = () => {
         setFriendsMapping(friendsMap);
         setFieldsFilter(createUniversFilterFields(listTag, listFriend));
         setCreateUnivers(createUniversCreateFields(listTag));
+        
+        // Mise à jour de activeFilter pour les paramètres nécessitant les mappings
+        if (params.param && params.param.filter) {
+          const urlParams = params.param;
+          const updates = {};
+          
+          // Gestion du filtre par ami (nécessite friendsMap)
+          if (urlParams.filter.byFriend) {
+            const friendName = Object.keys(friendsMap).find(name => friendsMap[name] === parseInt(urlParams.filter.byFriend));
+            if (friendName) {
+              updates.scope = friendName;
+            }
+          }
+          
+          // Gestion du filtre par tag (nécessite tagsMap)
+          if (urlParams.filter.byTag) {
+            const tagName = Object.keys(tagsMap).find(name => tagsMap[name] === parseInt(urlParams.filter.byTag));
+            if (tagName) {
+              updates.selectedTagFilter = tagName;
+            }
+          }
+          
+          // Mise à jour seulement si on a des changements
+          if (Object.keys(updates).length > 0) {
+            setActiveFilter(prev => ({ ...prev, ...updates }));
+          }
+        }
       } catch (error) {
         console.error("Erreur lors du chargement initial:", error);
       } finally {
@@ -230,16 +293,17 @@ const favCooldownRef = React.useRef(new Set());
     favCooldownRef.current.add(id);
     setTimeout(() => favCooldownRef.current.delete(id), 1500); // cooldown 2s
 
-    const card = cards.find((c) => c.id === id);
-    if (!card) return;
+    const cardInAll = cards.find((c) => c.id === id) || myCards.find((c) => c.id === id);
+    if (!cardInAll) return;
 
-    const newHasStar = card.hasStar === 1 ? 0 : 1;
+    const newHasStar = cardInAll.hasStar === 1 ? 0 : 1;
 
-    // Mise à jour optimiste
+    // Mise à jour optimiste sur les deux listes
     setCards((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, hasStar: newHasStar } : c
-      )
+      prev.map((c) => (c.id === id ? { ...c, hasStar: newHasStar } : c))
+    );
+    setMyCards((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, hasStar: newHasStar } : c))
     );
 
     try {
@@ -251,11 +315,12 @@ const favCooldownRef = React.useRef(new Set());
     } catch (err) {
       console.error("Erreur toggle fav:", err);
 
-      // rollback si erreur
+      // rollback si erreur sur les deux listes
       setCards((prev) =>
-        prev.map((c) =>
-          c.id === id ? { ...c, hasStar: card.hasStar } : c
-        )
+        prev.map((c) => (c.id === id ? { ...c, hasStar: cardInAll.hasStar } : c))
+      );
+      setMyCards((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, hasStar: cardInAll.hasStar } : c))
       );
     }
   };
@@ -389,13 +454,14 @@ const favCooldownRef = React.useRef(new Set());
                   className={`fav-btn ${card.hasStar === 1 ? "is-fav" : ""}`}
                   aria-label={favs.includes(card.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
                   onClick={(e) => {
-                    e.stopPropagation();   
+                    e.stopPropagation();   // ⛔ empêche le click d'atteindre <article>
                     toggleFav(card.id);
                   }}
                   title="Favori"
                 >
                   <FaStar size={16} />
                 </button>
+
 
                 <div
                   className="univers-card-bg"
