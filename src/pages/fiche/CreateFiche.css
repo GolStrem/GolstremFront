@@ -46,6 +46,7 @@
   z-index: 2;
   overflow: visible;
   max-width: clamp(600px, 65vw, 1500px);
+  height: 100%;
 
 }
 .cf-card::before {
