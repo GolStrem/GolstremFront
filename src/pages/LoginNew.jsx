@@ -6,6 +6,10 @@ import { LnModal } from '@components';
 import { toggleTheme } from '@store/index';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ApiService } from '@service';
+import { login as loginAction } from '@store/authSlice';
+import { setTheme } from '@store/themeSlice';
+
 
 import './LoginNew.css';
 import { GoldenStremC, GoldenStremE, GoldenStremP, GoldenStremV } from '@assets';
@@ -34,11 +38,47 @@ const LoginNew = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token !== null) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+    const handleAuth = async () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const token = searchParams.get("token");
+  
+      if (token) {
+        // 1) On enregistre le token
+        localStorage.setItem("token", token);
+        window.history.replaceState({}, document.title, window.location.pathname);
+  
+        // 2) On récupère les infos utilisateur
+        const { data } = await ApiService.getUserDetail();
+        delete data.friends;
+        for (const [key, value] of Object.entries(data)) {
+          localStorage.setItem(key, value);
+        }
+  
+        // 3) Theme
+        dispatch(setTheme(localStorage.getItem("theme")));
+        document.documentElement.style.setProperty("--jaune", localStorage.getItem("color"));
+  
+        // 4) Redux auth
+        dispatch(
+          loginAction({
+            token: ApiService.getToken(),
+            ...data
+          })
+        );
+  
+        // 5) Redirection
+        navigate("/dashboard");
+      } 
+      else {
+        // Si pas de token dans l'URL mais déjà connecté
+        const existingToken = localStorage.getItem("token");
+        if (existingToken) {
+          navigate("/dashboard");
+        }
+      }
+    };
+    handleAuth();
+  }, [navigate, dispatch]);
 
   return (
     <div className="loginNew">

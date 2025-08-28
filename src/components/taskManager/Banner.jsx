@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { TaskApi, UserInfo, Socket } from "@service";
 import { AddUserModal, BoardCardAccess, SearchBar } from "@components";
 import { FaUserPlus } from "react-icons/fa";
-import { banner } from "@assets";
+const banner = "/images/banner.jpg";
 import "./Banner.css";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";

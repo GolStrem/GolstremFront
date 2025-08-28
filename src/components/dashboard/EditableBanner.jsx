@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ApiService } from "@service";
 import { DashBanner, BannerModal } from "@components";
-import { banner as defaultBanner } from "@assets";
+const defaultBanner = "/images/banner.jpg";
 
 const EditableBanner = ({ id, extra, title, className = "" }) => {
   const parsedExtra = typeof extra === "string" ? JSON.parse(extra) : extra || {};

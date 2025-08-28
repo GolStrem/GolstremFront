@@ -4,8 +4,9 @@ import golstremb from './golstremb.svg';
 import logo from './logo.png';
 import styleModal from './styleModal.svg';
 import avatar from './avatar.png';
-import banner1 from './banner.jpg'
-import banner from './banner1.jpg'
+// Les banners sont maintenant dans public/images/
+// import banner1 from './banner.jpg'
+// import banner from './banner1.jpg'
 import trombone from './icons/trombone.svg'
 import cadre from'./icons/cadre.svg'
 import raw from './raw.png'
@@ -40,8 +41,8 @@ export {
   logo,
   styleModal,
   avatar,
-  banner1,
-  banner,
+  // banner1,
+  // banner,
   cadre,
   trombone,
   WarningIcon,
