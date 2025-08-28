@@ -11,7 +11,7 @@ import {
   FaCrown,
 } from "react-icons/fa";
 import { BannerModal, DashboardManager, ModuleSelectorModal } from "@components";
-import banner from "@assets/banner.jpg";
+const banner = "/images/banner.jpg";
 import avatarDefault from "@assets/avatar.png";
 
 import "./Dashboard.css";

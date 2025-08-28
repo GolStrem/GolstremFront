@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { TaskApi, Socket, ApiService } from "@service";
-import { banner as defaultBanner } from "@assets";
+const defaultBanner = "/images/banner.jpg";
 import { BannerModal, EditableBanner } from "@components";
 import "./Dash.css";
 import { useNavigate } from "react-router-dom";
