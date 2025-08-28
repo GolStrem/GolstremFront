@@ -79,11 +79,31 @@ export const createUniversCreateFields = (listTag = []) => {
 };
 
 /**
- * Fonction utilitaire pour créer des configurations de champs avec des valeurs par défaut
- * @param {Object} config - Configuration de base
- * @param {Object} overrides - Valeurs à remplacer
- * @returns {Object} Configuration finale
+ * Configuration des champs pour la modal de suppression d'univers
+ * @returns {Object} Configuration des champs de suppression
  */
+export const createUniversDeleteFields = () => {
+  return {
+    confirmation: {
+      type: "html",
+      value: `
+        <div style="text-align: center; padding: 20px; max-height: 300px; overflow-y: auto;">
+          <h3 style="color: #ff4444; margin-bottom: 20px; font-size: 1.5rem; font-weight: 700;">
+            Confirmer la suppression
+          </h3>
+          <p style="color: #fff; margin-bottom: 15px; font-size: 1rem; line-height: 1.5;">
+            Êtes-vous sûr de vouloir supprimer cet univers ?
+          </p>
+          <p style="color: #ffaa00; font-weight: 600; font-size: 0.9rem;">
+            ⚠️ Cette action est irréversible.
+          </p>
+        </div>
+      `
+    }
+  };
+};
+
+
 export const createFieldConfig = (config, overrides = {}) => {
   return {
     ...config,
