@@ -10,7 +10,8 @@ const realApi = {
   deleteUnivers:(universId) => api.delete(`/univers/${universId}`),
   getTags: () => api.get('data/tags'),
   addStar: (universId) =>api.post(`/univers/${universId}/star`),
-  removeStar: (universId) => api.delete(`/univers/${universId}/star`)
+  removeStar: (universId) => api.delete(`/univers/${universId}/star`),
+  getDetailUnivers: (universId) => api.get(`/univers/${universId}`)
 };
 
 const ApiUnivers = realApi;

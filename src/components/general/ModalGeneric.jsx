@@ -448,7 +448,7 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 	};
 
 	return (
-		<BaseModal onClose={handleClose} className="tmedit cf-modal-large" noClose={noClose}>
+		<BaseModal onClose={handleClose} className={`tmedit cf-modal-large master-${name}`} noClose={noClose}>
 			{title && <h2 className={`h2-${name}`}>{t(title)}</h2>}
 			<form className={`tm-modal-form ${name}`} onSubmit={(e) => e.preventDefault()}>
 				{Object.entries(fields).map(([key, config]) => renderField(key, config))}

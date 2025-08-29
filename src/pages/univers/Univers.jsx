@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import "./Univers.css";
 import { ffimg } from "@assets";
 import { ModalGeneric } from "@components";
-import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit } from "react-icons/fa";
+import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
-
+import { ApiUnivers, ApiService } from "@service";
 
 const CATEGORIES = [
   { key: "fiches",            label: "Fiches",               to: "/univers/fiches" },
@@ -16,63 +16,212 @@ const CATEGORIES = [
   { key: "Gallerie", label: "Gallerie",  to: "/univers/gallerie" }
 ];
 
-// Configuration des boutons d'action
-const ACTION_BUTTONS = [
-  {
-    icon: FaPaintBrush,
-    title: "Modifier les images",
-    ariaLabel: "Ouvrir la fenêtre de modification des images",
-    onClick: (setIsEditImagesOpen) => () => setIsEditImagesOpen(true),
-    className: "UniId-dot"
-  },
-  {
-    icon: FaEyeSlash,
-    title: "Désactiver/Réactiver l'image d'arrière-plan",
-    ariaLabel: "Basculer l'image d'arrière-plan",
-    onClick: (_, toggleBackground) => toggleBackground,
-    className: "UniId-dot"
-  },
-  {
-    icon: FaTrash,
-    title: "Supprimer l'univers",
-    ariaLabel: "Supprimer l'univers",
-    onClick: (_, __, setIsDeleteModalOpen) => () => setIsDeleteModalOpen(true),
-    className: "UniId-dot UniId-dot-danger"
-  },
-  {
-    icon: FaEdit,
-    title: "Modifier les informations de l'univers",
-    ariaLabel: "Modifier les informations de l'univers",
-    onClick: (_, __, ___, setIsEditInfoOpen) => () => setIsEditInfoOpen(true),
-    className: "UniId-dot UniId-dot-info"
-  }
-];
+
 
 const Univers = () => {
   const navigate = useNavigate();
+  const { id: universId } = useParams(); // Récupérer l'ID de l'univers depuis l'URL
   const [isEditImagesOpen, setIsEditImagesOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditInfoOpen, setIsEditInfoOpen] = useState(false);
   const [isBackgroundDisabled, setIsBackgroundDisabled] = useState(false);
-  const [droits, setDroits] = useState("write")
+  const [isSelectCategoriesOpen, setIsSelectCategoriesOpen] = useState(false);
+  const [visibleCategories, setVisibleCategories] = useState(() => CATEGORIES.map(c => c.label));
+  const [droits, setDroits] = useState("write");
+  const [error, setError] = useState(null);
+  const [universData, setUniversData] = useState({});
+  const [listModule, setListModule] = useState([]);
   const [images, setImages] = useState({
-    bgImage: "https://i.pinimg.com/1200x/88/1e/7e/881e7edfb44d95af1ca9ff72455c3152.jpg",
-    fiches: "https://i.pinimg.com/1200x/88/1e/7e/881e7edfb44d95af1ca9ff72455c3152.jpg",
-    encyclopedie: "https://i.pinimg.com/1200x/3b/4f/b2/3b4fb215d37f317b19b6c3bbe1fb45ab.jpg",
-    etablissement: "https://i.pinimg.com/736x/0b/65/c9/0b65c9b4e68b043afe1e8650612d7729.jpg",
-    ouverture: "https://i.pinimg.com/1200x/cd/e9/fb/cde9fb533e796a92f05b282e2d73f186.jpg",
-    tableau: "https://i.pinimg.com/1200x/49/a5/fb/49a5fbf5e163b86e21626b2db4bb4e57.jpg",
-    gallerie: "https://i.pinimg.com/736x/e0/db/db/e0dbdb2927e1b15fa28b4245da1e425f.jpg",
+    bgImage: "",
+    fiches: "",
+    encyclopedie: "",
+    etablissement: "",
+    ouverture: "",
+    tableau: "",
+    gallerie: "",
   });
 
+
+
   const [universInfo, setUniversInfo] = useState({
-    NomUnivers: "Golstrem",
-    descriptionUnivers: "ici sera reférencé les établissements et les fiches des personnes/établissement qui auront passer la validation",
-    image: "https://i.pinimg.com/1200x/88/1e/7e/881e7edfb44d95af1ca9ff72455c3152.jpg",
+    NomUnivers: "",
+    descriptionUnivers: "",
+    image: "",
     tagsUnivers: [],
     selectVisibily: "Public",
     flagsCreate: []
   });
+
+  // Mapping des modules disponibles pour les univers
+  const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery", "misc"];
+
+  // Fonction pour traiter les modules et extraire les images
+  const processModules = useCallback((modules) => {
+    const processedImages = {};
+    
+    modules.forEach(module => {
+      try {
+        const extra = JSON.parse(module.extra || '{}');
+        const moduleKey = module.name === 'fiche' ? 'fiches' : 
+                         module.name === 'gallery' ? 'gallerie' : 
+                         module.name === 'inscription' ? 'ouverture' : 
+                         module.name === 'questLog' ? 'tableau' : 
+                         module.name;
+        
+        if (extra.image) {
+          processedImages[moduleKey] = extra.image;
+        }
+      } catch (e) {
+        console.error(`Erreur lors du parsing du module ${module.name}:`, e);
+      }
+    });
+    
+    return processedImages;
+  }, []);
+
+  // Fonction pour mettre à jour les catégories visibles
+  const updateVisibleCategories = useCallback((modules) => {
+    const availableCategories = CATEGORIES.filter(cat => {
+      const moduleName = cat.key === 'tableau-affichage' ? 'questLog' : 
+                       cat.key === 'Gallerie' ? 'gallery' : 
+                       cat.key === 'ouverture' ? 'inscription' : 
+                       cat.key === 'fiches' ? 'fiche' : 
+                       cat.key;
+      return modules.includes(moduleName);
+    }).map(cat => cat.label);
+    
+    setVisibleCategories(availableCategories);
+  }, []);
+
+  // Fonction pour gérer la sélection des modules
+  const handleSaveModuleSelector = useCallback(async (modules) => {
+    let newModules = Array.isArray(modules?.selectedModules) ? [...modules.selectedModules] : [];
+    const oldModules = Array.isArray(listModule) ? [...listModule] : [];
+
+    // Ne garder que les modules supportés et dédoublonner
+    newModules = [...new Set(newModules.filter((m) => availableModules.includes(m)))];
+
+    // Si rien sélectionné, on force "misc"
+    if (newModules.length === 0) {
+      newModules = ["misc"];
+    }
+
+    try {
+      // Supprimer les modules non sélectionnés
+      for (const oldModule of oldModules) {
+        if (!newModules.includes(oldModule)) {
+          const moduleToDelete = universData.module?.find((m) => m.name === oldModule);
+          if (moduleToDelete) {
+            await ApiService.deleteModule(moduleToDelete.id);
+            setUniversData((prev) => ({
+              ...prev,
+              module: prev.module.filter((m) => m.id !== moduleToDelete.id),
+            }));
+          }
+        }
+      }
+
+      // Créer les nouveaux modules manquants
+      for (const mod of newModules) {
+        if (!oldModules.includes(mod)) {
+          const createdModule = await ApiService.createModule(2, universId, mod);
+          const transformed = Object.entries(createdModule.data).map(([id, obj]) => ({
+            id: Number(id),
+            name: obj.name,
+            extra: JSON.parse(obj.extra),
+          }));
+
+          setUniversData((prev) => ({
+            ...prev,
+            module: [...prev.module, transformed[0]],
+          }));
+        }
+      }
+
+      // Mettre à jour la liste + fermer la modale
+      setListModule(newModules);
+      setIsSelectCategoriesOpen(false);
+
+      // Mettre à jour les catégories visibles
+      updateVisibleCategories(newModules);
+    } catch (error) {
+      console.error("Erreur lors de la gestion des modules:", error);
+    }
+  }, [listModule, universData.module, universId, updateVisibleCategories]);
+
+  // Récupération des données de l'univers depuis l'API
+  useEffect(() => {
+    const fetchUniversData = async () => {
+      if (!universId) {
+        return;
+      }
+
+      try {
+        
+        setError(null);
+        
+        const response = await ApiUnivers.getDetailUnivers(universId);
+        const data = response.data;
+        
+        // Parse sécurisé des champs extra
+        const safeParse = (val) => {
+          if (val == null) return {};
+          if (typeof val === 'object') return val;
+          try {
+            const parsed = JSON.parse(val);
+            return parsed && typeof parsed === 'object' ? parsed : {};
+          } catch (e) {
+            return {};
+          }
+        };
+
+        const parsedData = {
+          ...data,
+          module: Array.isArray(data.module)
+            ? data.module.map((m) => ({ ...m, extra: safeParse(m.extra) }))
+            : [],
+        };
+
+        // Mise à jour des informations de l'univers
+        setUniversInfo({
+          NomUnivers: data.name || "Univers",
+          descriptionUnivers: data.description || "",
+          image: data.image || "",
+          tagsUnivers: [],
+          selectVisibily: "Public",
+          flagsCreate: []
+        });
+        
+        // Mise à jour des droits
+        setDroits(data.droit || "read");
+        
+        // Traitement des modules pour extraire les images
+        if (parsedData.module && Array.isArray(parsedData.module)) {
+          const processedImages = processModules(parsedData.module);
+          setImages(prev => ({
+            ...prev,
+            bgImage: data.background || prev.bgImage,
+            ...processedImages
+          }));
+
+          // Mettre à jour la liste des modules
+          const moduleList = parsedData.module.map((m) => m.name);
+          setListModule(moduleList);
+          
+          // Mettre à jour les catégories visibles
+          updateVisibleCategories(moduleList);
+        }
+        
+        setUniversData(parsedData);
+        
+      } catch (err) {
+        console.error("Erreur lors de la récupération des données de l'univers:", err);
+        setError("Erreur lors du chargement de l'univers");
+      }
+    };
+
+    fetchUniversData();
+  }, [universId, processModules, updateVisibleCategories]);
 
   const fields = useMemo(() => ({
     bgImage: { type: "inputUrl", label: "Image d'arrière-plan" },
@@ -87,6 +236,16 @@ const Univers = () => {
   const deleteFields = useMemo(() => createUniversDeleteFields(), []);
   const infoFields = useMemo(() => createUniversCreateFields([]), []);
 
+  const categoriesFields = useMemo(() => ({
+    selectedModules: {
+      type: "checkBox",
+      list: availableModules,
+      label: "Modules à afficher :",
+      key: "selectedModules",
+    }
+  }), []);
+
+  // Fonctions de soumission des modales
   const handleSubmitImages = (values) => {
     setImages(prev => ({ ...prev, ...values }));
     setIsEditImagesOpen(false);
@@ -97,6 +256,10 @@ const Univers = () => {
     setIsEditInfoOpen(false);
   };
 
+  const handleSubmitCategories = (values) => {
+    handleSaveModuleSelector(values);
+  };
+
   const handleDeleteUnivers = () => {
     // Ici vous pouvez ajouter la logique pour supprimer l'univers
     console.log("Suppression de l'univers...");
@@ -104,14 +267,54 @@ const Univers = () => {
     // navigate("/"); // Rediriger vers la page d'accueil ou la liste des univers
   };
 
-  const toggleBackground = () => {
-    setIsBackgroundDisabled(prev => !prev);
-  };
 
-  const resolveKey = (key) => {
-    if (key === "tableau-affichage") return "tableau";
-    return String(key || "").toLowerCase();
-  };
+
+  const resolveKey = useCallback((key) => {
+    // Mapping des clés de catégories vers les noms de modules de l'API
+    const keyMapping = {
+      "tableau-affichage": "questLog",
+      "Gallerie": "gallery",
+      "ouverture": "inscription",
+      "fiches": "fiche"
+    };
+    
+    const moduleName = keyMapping[key] || key;
+    
+    // Mapping inverse pour obtenir la clé d'image
+    const imageKeyMapping = {
+      "questLog": "tableau",
+      "gallery": "gallerie",
+      "inscription": "ouverture",
+      "fiche": "fiches"
+    };
+    
+    return imageKeyMapping[moduleName] || String(key || "").toLowerCase();
+  }, []);
+
+  // Fonctions de gestion des clics pour les boutons d'action
+  const handleEditImages = () => setIsEditImagesOpen(true);
+  const handleToggleBackground = () => setIsBackgroundDisabled(prev => !prev);
+  const handleOpenDeleteModal = () => setIsDeleteModalOpen(true);
+  const handleEditInfo = () => setIsEditInfoOpen(true);
+  const handleSelectCategories = () => setIsSelectCategoriesOpen(true);
+
+  // Fonctions de fermeture des modales
+  const handleCloseEditImages = () => setIsEditImagesOpen(false);
+  const handleCloseDeleteModal = () => setIsDeleteModalOpen(false);
+  const handleCloseEditInfo = () => setIsEditInfoOpen(false);
+  const handleCloseSelectCategories = () => setIsSelectCategoriesOpen(false);
+
+  // Affichage de l'erreur
+  if (error) {
+    return (
+      <div className="UniId-page">
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <p style={{ color: 'red' }}>{error}</p>
+          <button onClick={() => window.location.reload()}>Réessayer</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -123,23 +326,57 @@ const Univers = () => {
         backgroundPosition: "center",
       } : undefined}
     >
-      {droits === "write" && (
+      {droits !== "read" && (
         <div className="UniId-left-dots">
-          {ACTION_BUTTONS.map((button, index) => {
-            const IconComponent = button.icon;
-            return (
-              <button
-                key={index}
-                type="button"
-                className={button.className}
-                title={button.title}
-                onClick={button.onClick(setIsEditImagesOpen, toggleBackground, setIsDeleteModalOpen, setIsEditInfoOpen)}
-                aria-label={button.ariaLabel}
-              >
-                <IconComponent size={12} />
-              </button>
-            );
-          })}
+          <button
+            type="button"
+            className="UniId-dot"
+            title="Modifier les images"
+            onClick={handleEditImages}
+            aria-label="Ouvrir la fenêtre de modification des images"
+          >
+            <FaPaintBrush size={12} />
+          </button>
+          
+          <button
+            type="button"
+            className="UniId-dot"
+            title="Désactiver/Réactiver l'image d'arrière-plan"
+            onClick={handleToggleBackground}
+            aria-label="Basculer l'image d'arrière-plan"
+          >
+            <FaEyeSlash size={12} />
+          </button>
+          
+          <button
+            type="button"
+            className="UniId-dot UniId-dot-danger"
+            title="Supprimer l'univers"
+            onClick={handleOpenDeleteModal}
+            aria-label="Supprimer l'univers"
+          >
+            <FaTrash size={12} />
+          </button>
+          
+          <button
+            type="button"
+            className="UniId-dot UniId-dot-info"
+            title="Modifier les informations de l'univers"
+            onClick={handleEditInfo}
+            aria-label="Modifier les informations de l'univers"
+          >
+            <FaEdit size={12} />
+          </button>
+          
+          <button
+            type="button"
+            className="UniId-dot"
+            title="Sélectionner les catégories affichées"
+            onClick={handleSelectCategories}
+            aria-label="Sélectionner les catégories affichées"
+          >
+            <FaListUl size={12} />
+          </button>
         </div>
       )}
 
@@ -147,7 +384,7 @@ const Univers = () => {
       <p className="UniId-text">{universInfo.descriptionUnivers}</p>
 
       <div className="UniId-grid">
-        {CATEGORIES.map((item) => (
+        {CATEGORIES.filter((item) => visibleCategories.includes(item.label)).map((item) => (
           <button
             key={item.key}
             className="UniId-card"
@@ -160,48 +397,55 @@ const Univers = () => {
         ))}
       </div>
 
-      {isEditImagesOpen && (
-        <ModalGeneric
-          onClose={() => setIsEditImagesOpen(false)}
-          handleSubmit={handleSubmitImages}
-          initialData={images}
-          fields={fields}
-          name="univers-images-modal"
-          isOpen={true}
-          title="Images"
-          textButtonValidate="save"
-        />
-      )}
+      <ModalGeneric
+        onClose={handleCloseEditImages}
+        handleSubmit={handleSubmitImages}
+        initialData={images}
+        fields={fields}
+        name="univers-images-modal"
+        isOpen={isEditImagesOpen}
+        title="Images"
+        textButtonValidate="save"
+      />
 
       {/* Modal de confirmation de suppression */}
-      {isDeleteModalOpen && (
-        <ModalGeneric
-          onClose={() => setIsDeleteModalOpen(false)}
-          handleSubmit={handleDeleteUnivers}
-          initialData={{}}
-          fields={deleteFields}
-          name="univers-delete-modal"
-          isOpen={true}
-          title=""
-          textButtonValidate="Supprimer"
-          noButtonCancel={false}
-        />
-      )}
+      <ModalGeneric
+        onClose={handleCloseDeleteModal}
+        handleSubmit={handleDeleteUnivers}
+        initialData={{}}
+        fields={deleteFields}
+        name="univers-delete-modal"
+        isOpen={isDeleteModalOpen}
+        title=""
+        textButtonValidate="Supprimer"
+        noButtonCancel={false}
+      />
 
       {/* Modal de modification des informations */}
-      {isEditInfoOpen && (
-        <ModalGeneric
-          onClose={() => setIsEditInfoOpen(false)}
-          handleSubmit={handleSubmitInfo}
-          initialData={universInfo}
-          fields={infoFields}
-          name="univers-info-modal"
-          isOpen={true}
-          title="Modifier l'univers"
-          textButtonValidate="Sauvegarder"
-          noButtonCancel={false}
-        />
-      )}
+      <ModalGeneric
+        onClose={handleCloseEditInfo}
+        handleSubmit={handleSubmitInfo}
+        initialData={universInfo}
+        fields={infoFields}
+        name="univers-info-modal"
+        isOpen={isEditInfoOpen}
+        title="Modifier l'univers"
+        textButtonValidate="Sauvegarder"
+        noButtonCancel={false}
+      />
+
+      {/* Modal de sélection des catégories affichées */}
+      <ModalGeneric
+        onClose={handleCloseSelectCategories}
+        handleSubmit={handleSubmitCategories}
+        initialData={{ selectedModules: listModule }}
+        fields={categoriesFields}
+        name="univers-select-categories-modal"
+        isOpen={isSelectCategoriesOpen}
+        title="Sélectionner les modules"
+        textButtonValidate="Sauvegarder"
+        noButtonCancel={false}
+      />
     </div>
   );
 };

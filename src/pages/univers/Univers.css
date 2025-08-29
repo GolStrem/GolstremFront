@@ -96,7 +96,10 @@
   box-shadow: 0 10px 22px rgba(0,0,0,0.25);
   isolation: isolate;
 }
-
+.master-univers-delete-modal{
+  max-height: none !important;
+  min-height: auto !important;
+}
 .UniId-card::before {
   content:"";
   position:absolute; inset:0;
