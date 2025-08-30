@@ -505,6 +505,29 @@ const Univers = () => {
     );
   }
 
+  const nav = [
+    {
+      name: "editImage",
+	    handle: handleEditImages,
+	    html: <FaPaintBrush size={12} />
+    },
+	  {
+      name: "editInfo",
+	    handle: handleEditInfo,
+	    html: <FaEdit size={12} />
+    },
+	  {
+      name: "selectCategories",
+	    handle: handleSelectCategories,
+	    html: <FaListUl size={12} />
+    },
+	  {
+      name: "openDeleteModal",
+	    handle: handleOpenDeleteModal,
+	    html: <FaTrash size={12} />
+    },
+  ]
+
   return (
     <div
       className="UniId-page"
@@ -606,6 +629,7 @@ const Univers = () => {
          isOpen={isEditImagesOpen}
          title="Images"
          textButtonValidate={isImagesLoading ? "Sauvegarde..." : "Sauvegarder"}
+         nav={nav}
        />
 
              {/* Modal de confirmation de suppression */}
@@ -619,6 +643,7 @@ const Univers = () => {
          title="Confirmer la suppression"
          textButtonValidate={isDeleteLoading ? "Suppression..." : "Supprimer"}
          noButtonCancel={false}
+         nav={nav}
        />
 
              {/* Modal de modification des informations */}
@@ -632,6 +657,7 @@ const Univers = () => {
          title="Modifier l'univers"
          textButtonValidate={isInfoLoading ? "Sauvegarde..." : "Sauvegarder"}
          noButtonCancel={false}
+         nav={nav}
        />
 
       {/* Modal de sélection des catégories affichées */}
@@ -645,6 +671,7 @@ const Univers = () => {
         title="Sélectionner les modules"
         textButtonValidate="Sauvegarder"
         noButtonCancel={false}
+        nav={nav}
       />
     </div>
   );

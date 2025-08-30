@@ -10,7 +10,19 @@ import StarterKit from "@tiptap/starter-kit";
 import { useTranslation } from "react-i18next";
 
 
-const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, name = "", noClose = false, isOpen = undefined, title = undefined, noButtonCancel= false, textButtonValidate= 'save' }) => {
+const ModalGeneric = ({ 
+	onClose, 
+	handleSubmit, 
+	initialData = {}, 
+	fields = {}, 
+	name = "", 
+	noClose = false, 
+	isOpen = undefined, 
+	title = undefined, 
+	noButtonCancel= false, 
+	textButtonValidate= 'save',
+	nav = []
+}) => {
 	if (isOpen !== undefined && !isOpen) return null;
 	
 	const [previewSrc, setPreviewSrc] = useState(null);
@@ -447,8 +459,20 @@ const ModalGeneric = ({ onClose, handleSubmit, initialData = {}, fields = {}, na
 		}
 	};
 
+	const closeBefore = (handle) => () => {
+		handleClose()
+		handle()
+	}
+
 	return (
 		<BaseModal onClose={handleClose} className={`tmedit cf-modal-large master-${name}`} noClose={noClose}>
+			<div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '20px' }}>
+				{nav.map((item) => (
+					<button key={item.name} onClick={closeBefore(item.handle)}>
+						{item.html}
+					</button>
+				))}
+			</div>
 			{title && <h2 className={`h2-${name}`}>{t(title)}</h2>}
 			<form className={`tm-modal-form ${name}`} onSubmit={(e) => e.preventDefault()}>
 				{Object.entries(fields).map(([key, config]) => renderField(key, config))}
