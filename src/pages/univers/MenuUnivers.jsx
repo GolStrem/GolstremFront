@@ -186,7 +186,9 @@ const MenuUnivers = () => {
     name: formValues.NomUnivers,
     description: formValues.descriptionUnivers,
     image: formValues.image || "", // ou null
-    visibility: formValues.selectVisibily === "Public" ? "0" : "1",
+    visibility: (formValues.selectVisibily === "" || formValues.selectVisibily === "Public") 
+      ? 0 : formValues.selectVisibily === "Sur invitation" ? 1 : 2,
+    
     nfsw: formValues.flags?.includes("NSFW") ? "1" : "0",
     tags: formValues.selectedTagFilter || []
   };

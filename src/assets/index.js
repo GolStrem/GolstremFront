@@ -27,6 +27,7 @@ import ffimg from "./img-univers/ffimg.png"
 import forum from "./img-univers/forum.png"
 import jeux from "./img-univers/jeux.png"
 import plateau from "./img-univers/plateau.png"
+import dossier from "./dossier.svg"
 
 export {
   discordimg,
@@ -53,5 +54,6 @@ export {
   GoldenStremE,
   GoldenStremV,
   GoldenStremP,
-  GoldenLogo
+  GoldenLogo,
+  dossier
 };

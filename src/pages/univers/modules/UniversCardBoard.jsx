@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const UniversCardBord = () => {
+const UniversCardBoard = () => {
 
   return (
     <div className="univers-board">
@@ -10,4 +10,4 @@ const UniversCardBord = () => {
   );
 };
 
-export default UniversCardBord;
+export default UniversCardBoard;

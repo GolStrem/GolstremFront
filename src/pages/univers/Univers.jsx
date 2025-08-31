@@ -8,20 +8,20 @@ import { createUniversDeleteFields, createUniversCreateFields } from "@component
 import { ApiUnivers, ApiService } from "@service";
 
 
-const CATEGORIES = [
-  { key: "fiches",            label: "Fiches",               to: "/univers/fiches" },
-  { key: "encyclopedie",      label: "Encyclopédie",         to: "/univers/encyclopedie" },
-  { key: "etablissement",     label: "Établissement",        to: "/univers/etablissements" },
-  { key: "ouverture",         label: "Ouverture / Inscription",to: "/univers/:id/ouvertures" },
-  { key: "tableau-affichage", label: "Tableau d'affichage",  to: "/univers/tableau" },
-  { key: "Gallerie", label: "Gallerie",  to: "/univers/gallerie" }
-];
-
-
-
 const Univers = () => {
   const navigate = useNavigate();
   const { id: universId } = useParams(); // Récupérer l'ID de l'univers depuis l'URL
+  
+  const CATEGORIES = useMemo(() => [
+    { key: "fiches",            label: "Fiches",               to: `/univers/fiches` },
+    { key: "encyclopedie",      label: "Encyclopédie",         to: `/univers/${universId}/encyclopedie` },
+    { key: "etablissement",     label: "Établissement",        to: `/univers/${universId}/establishment` },
+    { key: "ouverture",         label: "Ouverture / Inscription",to: `/univers/${universId}/opening` },
+    { key: "tableau-affichage", label: "Tableau d'affichage",  to: `/univers/${universId}/board` },
+    { key: "Gallerie", label: "Gallerie",  to: `/univers/${universId}/gallerie` }
+  ], [universId]);
+
+
   const [isEditImagesOpen, setIsEditImagesOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditInfoOpen, setIsEditInfoOpen] = useState(false);
@@ -52,8 +52,8 @@ const Univers = () => {
     descriptionUnivers: "",
     image: "",
     tagsUnivers: [],
-    selectVisibily: "Public",
-    flagsCreate: []
+    selectVisibily: "",
+    flags: []
   });
 
   // Mapping des modules disponibles pour les univers
@@ -203,15 +203,17 @@ const Univers = () => {
             : [],
         };
 
+
         // Mise à jour des informations de l'univers
-        setUniversInfo({
+        const newUniversInfo = {
           NomUnivers: data.name || "Univers",
           descriptionUnivers: data.description || "",
           image: data.image || "",
           tagsUnivers: [],
-          selectVisibily: "Public",
-          flagsCreate: []
-        });
+          selectVisibily: data.visibility === 0 ? "Public" : data.visibility === 1 ? "Sur invitation" : "Priver",
+          flags: data.nfsw === 1 ? ["NSFW"] : []
+        };
+        setUniversInfo(newUniversInfo);
         
         // Mise à jour des droits
         setDroits(data.droit || "read");
@@ -372,7 +374,9 @@ const Univers = () => {
       const payload = {
         name: values.NomUnivers,
         description: values.descriptionUnivers,
-        image: values.image || null
+        image: values.image || null,
+        visibility: values.selectVisibily === "Public" ? 0 : values.selectVisibily === "Sur invitation" ? 1 : 2,
+        nfsw: values.flags?.includes("NSFW") ? 1 : 0
       };
       
       
@@ -382,23 +386,9 @@ const Univers = () => {
       // Mettre à jour l'état local
       setUniversInfo(prev => ({ ...prev, ...values }));
       
-
-      const response = await ApiUnivers.getDetailUnivers(universId);
-      const data = response.data;
-      
-      // Mettre à jour les informations de l'univers
-      setUniversInfo({
-        NomUnivers: data.name || "Univers",
-        descriptionUnivers: data.description || "",
-        image: data.image || "",
-        tagsUnivers: [],
-        selectVisibily: "Public",
-        flagsCreate: []
-      });
-      
       // Mettre à jour le titre de la page
-      if (data.name) {
-        document.title = data.name;
+      if (values.NomUnivers) {
+        document.title = values.NomUnivers;
       }
 
       setIsEditInfoOpen(false);
@@ -466,7 +456,9 @@ const Univers = () => {
   const handleEditImages = () => setIsEditImagesOpen(true);
   const handleToggleBackground = () => setIsBackgroundDisabled(prev => !prev);
   const handleOpenDeleteModal = () => setIsDeleteModalOpen(true);
-  const handleEditInfo = () => setIsEditInfoOpen(true);
+  const handleEditInfo = () => {
+    setIsEditInfoOpen(true);
+  };
   const handleSelectCategories = () => setIsSelectCategoriesOpen(true);
 
   // Fonctions de fermeture des modales
@@ -586,7 +578,7 @@ const Univers = () => {
          handleSubmit={handleSubmitImages}
          initialData={images}
          fields={fields}
-         name="univers-images-modal"
+         name={`univers-images-modal-${universId}`}
          isOpen={isEditImagesOpen}
          title="Images"
          textButtonValidate={isImagesLoading ? "Sauvegarde..." : "Sauvegarder"}
@@ -612,7 +604,7 @@ const Univers = () => {
          handleSubmit={handleSubmitInfo}
          initialData={universInfo}
          fields={infoFields}
-         name="univers-info-modal"
+         name={`univers-info-modal-${universId}`}
          isOpen={isEditInfoOpen}
          title="Modifier l'univers"
          textButtonValidate={isInfoLoading ? "Sauvegarde..." : "Sauvegarder"}
@@ -626,7 +618,7 @@ const Univers = () => {
         handleSubmit={handleSubmitCategories}
         initialData={{ selectedModules: listModule }}
         fields={categoriesFields}
-        name="univers-select-categories-modal"
+        name={`univers-select-categories-modal-${universId}`}
         isOpen={isSelectCategoriesOpen}
         title=""
         textButtonValidate="Sauvegarder"
