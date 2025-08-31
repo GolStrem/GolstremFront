@@ -14,6 +14,11 @@ import Create from './pages/create/Create.jsx';
 import Config from './pages/header/Config.jsx'
 import Notifications from './pages/header/Notifications.jsx'
 import Friends from './pages/header/Friends.jsx'
+import UniversCardInscription  from  './pages/univers/modules/UniversCardInscription';
+import UniversCardGallerie from  './pages/univers/modules/UniversCardGallerie';
+import UniversCardEtablissement from  './pages/univers/modules/UniversCardEtablissement';
+import UniversCardEncyclopedie from  './pages/univers/modules/UniversCardEncyclopedie';
+import UniversCardBoard from  './pages/univers/modules/UniversCardBoard';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -140,6 +145,56 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <Univers />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+    {
+    path: '/univers/:id/opening',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardInscription />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+      {
+    path: '/univers/:id/gallerie',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardGallerie/>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/univers/:id/establishment',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardEtablissement/>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/univers/:id/encyclopedie',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardEncyclopedie/>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/univers/:id/board',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardBoard/>
         </Layout>
       </ProtectedRoute>
     ),

@@ -65,11 +65,11 @@ export const createUniversCreateFields = (listTag = []) => {
     },
     selectVisibily: {
       type: "select",
-      value: ["Public", "Priver"],
+      value: ["Public", "Sur invitation", "Priver" ],
       label: "Visibilité :",
       key: "visibiltyUnivers",
     },
-    flagsCreate: {
+    flags: {
       type: "checkBox",
       list: ["NSFW"],
       label: "",

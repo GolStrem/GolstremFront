@@ -74,7 +74,7 @@
   grid-template-columns: repeat(3, 1fr);
   position: relative;
   margin-top: 40px;
-  margin-bottom: 40px;
+
 }
 
 /* Carte */
@@ -96,7 +96,10 @@
   box-shadow: 0 10px 22px rgba(0,0,0,0.25);
   isolation: isolate;
 }
-
+.master-univers-delete-modal{
+  max-height: none !important;
+  min-height: auto !important;
+}
 .UniId-card::before {
   content:"";
   position:absolute; inset:0;
@@ -140,6 +143,43 @@
   margin-left: 0;
   width: 97%;
 }
+
+
+
+
+.button-nav-uni{
+  background-color: transparent;
+  border: 2px solid var(--jaune, #f7d038);
+  font-size: 20px;
+  margin-left: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: -22px;
+  border-end-end-radius: 20%;
+  border-end-start-radius: 20%;
+
+}
+.button-nav-uni:hover{
+  background-color: var(--color-input-bg);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Responsive */
 @media (max-width: 1024px) {
