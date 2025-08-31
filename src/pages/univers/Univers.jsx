@@ -56,7 +56,7 @@ const Univers = () => {
   });
 
   // Mapping des modules disponibles pour les univers
-  const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery", "misc"];
+  const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery"];
 
   // Fonction pour traiter les modules et extraire les images
   const processModules = useCallback((modules) => {
@@ -509,7 +509,7 @@ const Univers = () => {
     {
       name: "editImage",
 	    handle: handleEditImages,
-	    html: <FaPaintBrush size={12} />
+	    html: <FaPaintBrush size={12} />,
     },
 	  {
       name: "editInfo",
@@ -520,12 +520,8 @@ const Univers = () => {
       name: "selectCategories",
 	    handle: handleSelectCategories,
 	    html: <FaListUl size={12} />
-    },
-	  {
-      name: "openDeleteModal",
-	    handle: handleOpenDeleteModal,
-	    html: <FaTrash size={12} />
-    },
+    }
+
   ]
 
   return (
@@ -540,12 +536,13 @@ const Univers = () => {
     >
       {droits !== "read" && (
         <div className="UniId-left-dots">
+         
           <button
             type="button"
             className="UniId-dot"
-            title="Modifier les images"
-            onClick={handleEditImages}
-            aria-label="Ouvrir la fenêtre de modification des images"
+            title="Sélectionner les catégories affichées"
+            onClick={handleSelectCategories}
+            aria-label="Sélectionner les catégories affichées"
           >
             <FaPaintBrush size={12} />
           </button>
@@ -570,25 +567,7 @@ const Univers = () => {
             <FaTrash size={12} />
           </button>
           
-          <button
-            type="button"
-            className="UniId-dot UniId-dot-info"
-            title="Modifier les informations de l'univers"
-            onClick={handleEditInfo}
-            aria-label="Modifier les informations de l'univers"
-          >
-            <FaEdit size={12} />
-          </button>
-          
-          <button
-            type="button"
-            className="UniId-dot"
-            title="Sélectionner les catégories affichées"
-            onClick={handleSelectCategories}
-            aria-label="Sélectionner les catégories affichées"
-          >
-            <FaListUl size={12} />
-          </button>
+      
         </div>
       )}
 
@@ -640,10 +619,9 @@ const Univers = () => {
          fields={deleteFields}
          name="univers-delete-modal"
          isOpen={isDeleteModalOpen}
-         title="Confirmer la suppression"
+         title=""
          textButtonValidate={isDeleteLoading ? "Suppression..." : "Supprimer"}
          noButtonCancel={false}
-         nav={nav}
        />
 
              {/* Modal de modification des informations */}
@@ -668,7 +646,7 @@ const Univers = () => {
         fields={categoriesFields}
         name="univers-select-categories-modal"
         isOpen={isSelectCategoriesOpen}
-        title="Sélectionner les modules"
+        title=""
         textButtonValidate="Sauvegarder"
         noButtonCancel={false}
         nav={nav}
