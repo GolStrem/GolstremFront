@@ -14,6 +14,7 @@ import Create from './pages/create/Create.jsx';
 import Config from './pages/header/Config.jsx'
 import Notifications from './pages/header/Notifications.jsx'
 import Friends from './pages/header/Friends.jsx'
+import { UniversCardInscription } from  '@components';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -140,6 +141,16 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <Univers />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+    {
+    path: '/univers/:id/ouvertures',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardInscription />
         </Layout>
       </ProtectedRoute>
     ),

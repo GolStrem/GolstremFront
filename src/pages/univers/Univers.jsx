@@ -2,16 +2,17 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Univers.css";
 import { ffimg } from "@assets";
-import { ModalGeneric } from "@components";
+import { ModalGeneric, BackLocation } from "@components";
 import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
 import { ApiUnivers, ApiService } from "@service";
+
 
 const CATEGORIES = [
   { key: "fiches",            label: "Fiches",               to: "/univers/fiches" },
   { key: "encyclopedie",      label: "Encyclopédie",         to: "/univers/encyclopedie" },
   { key: "etablissement",     label: "Établissement",        to: "/univers/etablissements" },
-  { key: "ouverture",         label: "Ouverture / Inscription",to: "/univers/ouvertures" },
+  { key: "ouverture",         label: "Ouverture / Inscription",to: "/univers/:id/ouvertures" },
   { key: "tableau-affichage", label: "Tableau d'affichage",  to: "/univers/tableau" },
   { key: "Gallerie", label: "Gallerie",  to: "/univers/gallerie" }
 ];
@@ -62,7 +63,7 @@ const Univers = () => {
   const processModules = useCallback((modules) => {
     const processedImages = {};
     
-    console.log("processModules appelé avec:", modules);
+
     
     modules.forEach(module => {
       try {
@@ -76,7 +77,7 @@ const Univers = () => {
           extra = {};
         }
         
-        console.log(`Module ${module.name} - Extra traité:`, extra);
+
         
         // Mapping des noms de modules vers les clés d'images
         const moduleKey = module.name === 'fiche' ? 'fiches' : 
@@ -87,17 +88,15 @@ const Univers = () => {
         
         if (extra.image) {
           processedImages[moduleKey] = extra.image;
-          console.log(`Image trouvée pour ${moduleKey}:`, extra.image);
-        } else {
-          console.log(`Aucune image trouvée pour ${moduleKey}`);
-        }
+
+        } 
       } catch (e) {
         console.error(`Erreur lors du parsing du module ${module.name}:`, e);
         console.error(`Valeur extra:`, module.extra);
       }
     });
     
-    console.log("Images traitées:", processedImages);
+
     return processedImages;
   }, []);
 
@@ -219,19 +218,15 @@ const Univers = () => {
         
         // Traitement des modules pour extraire les images
         if (parsedData.module && Array.isArray(parsedData.module)) {
-          console.log("Modules trouvés:", parsedData.module);
-          console.log("Background de l'univers:", data.background);
-          
+ 
           const processedImages = processModules(parsedData.module);
-          console.log("Images traitées dans useEffect:", processedImages);
-          
+ 
           setImages(prev => {
             const newImages = {
               ...prev,
               bgImage: data.background || prev.bgImage,
               ...processedImages
             };
-            console.log("Nouvel état des images:", newImages);
             return newImages;
           });
 
@@ -280,11 +275,9 @@ const Univers = () => {
   const handleSubmitImages = async (values) => {
     setIsImagesLoading(true);
     try {
-      console.log("Début de la sauvegarde des images:", values);
       
       // Mise à jour de l'image de l'univers (background)
       if (values.bgImage !== images.bgImage) {
-        console.log("Mise à jour du background:", values.bgImage);
         await ApiUnivers.editUnivers(universId, {
           background: values.bgImage || null
         });
@@ -308,15 +301,12 @@ const Univers = () => {
         
         const moduleName = imageToModuleMapping[imageKey];
         if (moduleName && imageUrl !== images[imageKey]) {
-          console.log(`Mise à jour du module ${moduleName} avec l'image:`, imageUrl);
+
           
           const moduleToUpdate = universData.module?.find(m => m.name === moduleName);
           if (moduleToUpdate) {
             const currentExtra = moduleToUpdate.extra || {};
             const newExtra = { ...currentExtra, image: imageUrl || "" };
-            
-            console.log(`Module ${moduleName} - Extra actuel:`, currentExtra);
-            console.log(`Module ${moduleName} - Nouveau extra:`, newExtra);
             
             moduleUpdates.push(
               ApiService.updateModule(moduleToUpdate.id, {
@@ -331,16 +321,13 @@ const Univers = () => {
 
       // Exécuter toutes les mises à jour de modules en parallèle
       if (moduleUpdates.length > 0) {
-        console.log("Exécution des mises à jour de modules:", moduleUpdates.length);
         await Promise.all(moduleUpdates);
-        console.log("Toutes les mises à jour de modules sont terminées");
       }
 
       // Mettre à jour l'état local
       setImages(prev => ({ ...prev, ...values }));
       
       // Recharger les données de l'univers pour s'assurer de la synchronisation
-      console.log("Rechargement des données de l'univers...");
       const response = await ApiUnivers.getDetailUnivers(universId);
       const data = response.data;
       
@@ -366,7 +353,7 @@ const Univers = () => {
         }));
       }
 
-      console.log("Sauvegarde terminée avec succès");
+
       setIsEditImagesOpen(false);
     } catch (error) {
       console.error("Erreur lors de la mise à jour des images:", error);
@@ -379,7 +366,7 @@ const Univers = () => {
   const handleSubmitInfo = async (values) => {
     setIsInfoLoading(true);
     try {
-      console.log("Début de la sauvegarde des informations:", values);
+
       
       // Préparer le payload pour l'API
       const payload = {
@@ -388,7 +375,6 @@ const Univers = () => {
         image: values.image || null
       };
       
-      console.log("Payload pour l'API:", payload);
       
       // Mettre à jour l'univers via l'API
       await ApiUnivers.editUnivers(universId, payload);
@@ -396,8 +382,7 @@ const Univers = () => {
       // Mettre à jour l'état local
       setUniversInfo(prev => ({ ...prev, ...values }));
       
-      // Recharger les données de l'univers pour s'assurer de la synchronisation
-      console.log("Rechargement des données de l'univers...");
+
       const response = await ApiUnivers.getDetailUnivers(universId);
       const data = response.data;
       
@@ -415,8 +400,7 @@ const Univers = () => {
       if (data.name) {
         document.title = data.name;
       }
-      
-      console.log("Sauvegarde des informations terminée avec succès");
+
       setIsEditInfoOpen(false);
     } catch (error) {
       console.error("Erreur lors de la mise à jour des informations:", error);
@@ -433,12 +417,11 @@ const Univers = () => {
   const handleDeleteUnivers = async () => {
     setIsDeleteLoading(true);
     try {
-      console.log("Début de la suppression de l'univers:", universId);
+
       
       // Supprimer l'univers via l'API
       await ApiUnivers.deleteUnivers(universId);
       
-      console.log("Univers supprimé avec succès");
       
       // Fermer la modal
       setIsDeleteModalOpen(false);
@@ -476,7 +459,6 @@ const Univers = () => {
     };
     
     const imageKey = imageKeyMapping[moduleName] || String(key || "").toLowerCase();
-    console.log(`resolveKey: ${key} -> ${moduleName} -> ${imageKey}`);
     return imageKey;
   }, []);
 
@@ -534,6 +516,7 @@ const Univers = () => {
         backgroundPosition: "center",
       } : undefined}
     >
+      <BackLocation fallbackPath="/univers" />
       {droits !== "read" && (
         <div className="UniId-left-dots">
          
@@ -583,7 +566,6 @@ const Univers = () => {
          {CATEGORIES.filter((item) => visibleCategories.includes(item.label)).map((item) => {
            const imageKey = resolveKey(item.key);
            const imageUrl = images[imageKey] || ffimg;
-           console.log(`Rendu carte ${item.label}: clé=${imageKey}, image=${imageUrl}`);
            
            return (
              <button

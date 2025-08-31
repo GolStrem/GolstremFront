@@ -3,9 +3,10 @@ import "../fiche/MenuFiche.css";
 import { SearchBar, ModalGeneric, Pagination } from "@components";
 import { FaFilter, FaStar } from "react-icons/fa";
 import "./MenuUnivers.css";
-import { ApiUnivers, ApiService } from "@service"
+import { ApiUnivers, ApiService, useNavigatePage } from "@service"
 import { createUniversFilterFields, createUniversCreateFields } from "@components";
 import { useNavigate } from "react-router-dom";
+
 
 const listTag = ["Francais", "Fantastique", "Discord", "Anglais", "Jeu de table", "Word of Warcraft", "Final Fantasy XIV"];
 
@@ -67,6 +68,10 @@ const MenuUnivers = () => {
   const [myCards, setMyCards] = useState([]);
   const [idUnivers, setIdUnivers] = useState(0);
   const navigate = useNavigate(); // <-- le hook à utiliser
+  const navigatePage = useNavigatePage();
+  const [universVisibility, setUniversVisibility] = useState("0");
+
+
 
 
   // ➜ Mémoire du filtre appliqué
@@ -97,6 +102,7 @@ const MenuUnivers = () => {
   const handleModalViewUnivers = function(card) { 
     setIdUnivers(card.id)
     setTitle(card.name);
+    setUniversVisibility(card.visibility || "0");
     const textHtml = `
     <div>
       <div class="univerOwner">
@@ -130,7 +136,7 @@ const MenuUnivers = () => {
   };
 
   const handleGoUnivers =()=>{
-    navigate(`${idUnivers}`)
+    navigatePage(`${idUnivers}`)
   
   }
 
@@ -187,7 +193,6 @@ const MenuUnivers = () => {
 
   try {
     const response = await ApiUnivers.createUnivers(payload);
-    console.log("Univers créé :", response.data);
 
     // Optionnel : fermer la modal et reset le formulaire
     setModalCreateUnivOpen(false);
@@ -535,7 +540,7 @@ const favCooldownRef = React.useRef(new Set());
           fields={fields}
           title={title}
           noButtonCancel={true}
-          textButtonValidate="Visiter"
+          textButtonValidate={universVisibility === "1" || universVisibility === 1 ? "Demander l'accès" : "Visiter"}
           name="previewUnivers"
         />
       )}

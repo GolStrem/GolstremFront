@@ -19,3 +19,5 @@ export { normalize } from './utils/Normalize'
 export { default as isValidImageUrl} from './hook/validators'
 export { default as useGhostDragAndDrop} from './hook/useGhostDragAndDrop'
 export { default as useHorizontalScroll} from './hook/useHorizontalScroll'
+
+export { default as useNavigatePage } from './utils/NavigatePage'

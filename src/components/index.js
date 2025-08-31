@@ -102,4 +102,9 @@ export { default as TextImgPlus } from './general/ModalGeneric/TextImgPlus';
 export { default as TextTextAreaPlus } from './general/ModalGeneric/TextTextAreaPlus';
 export { default as CheckBox } from './general/ModalGeneric/CheckBox';
 export { default as Chapter } from './general/ModalGeneric/Chapter';
+export { default as UniversCardInscription } from './univers/modules/UniversCardInscription'
+export { default as UniversCardGallerie } from './univers/modules/UniversCardGallerie'
+export { default as UniversCardEtablissement } from './univers/modules/UniversCardEtablissement'
+export { default as UniversCardEncyclopedie } from './univers/modules/UniversCardEncyclopedie'
+export { default as UniversCardBord } from './univers/modules/UniversCardBord'
 

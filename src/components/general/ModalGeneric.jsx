@@ -468,7 +468,7 @@ const ModalGeneric = ({
 		<BaseModal onClose={handleClose} className={`tmedit cf-modal-large master-${name}`} noClose={noClose}>
 			<div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '20px' }}>
 				{nav.map((item) => (
-					<button key={item.name} onClick={closeBefore(item.handle)} className="button-nav-uni">
+					<button key={item.name} onClick={closeBefore(item.handle)} className="button-nav-uni" title={item.name}>
 						{item.html}
 					</button>
 				))}
