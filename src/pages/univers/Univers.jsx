@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./Univers.css";
 import { ffimg } from "@assets";
 import { ModalGeneric, BackLocation } from "@components";
 import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
-import { ApiUnivers, ApiService } from "@service";
+import { ApiUnivers, ApiService, useNavigatePage } from "@service";
 
 
 const Univers = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigatePage();
   const { id: universId } = useParams(); // Récupérer l'ID de l'univers depuis l'URL
   
   const CATEGORIES = useMemo(() => [

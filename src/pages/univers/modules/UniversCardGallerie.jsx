@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Masonry from "react-masonry-css";
 import { dossier }from "@assets"; // ajuste si ton alias exporte différemment
 import "./UniversCardGallerie.css";
+import { BackLocation } from "@components/index";
+import { useNavigatePage } from "@service";
 
 const DEFAULT_IMAGES = [
   "https://i.pinimg.com/736x/e0/db/db/e0dbdb2927e1b15fa28b4245da1e425f.jpg",
@@ -38,11 +40,39 @@ const UniversCardGallerie = ({
   onOpenFolder,
   onAddClick,
 }) => {
+  const navigatePage = useNavigatePage();
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // Fonction pour ouvrir l'aperçu d'une image
+  const handleImageClick = (imageSrc, imageIndex) => {
+    setSelectedImage({ src: imageSrc, index: imageIndex });
+  };
+
+  // Fonction pour fermer l'aperçu
+  const closePreview = () => {
+    setSelectedImage(null);
+  };
+
+  // Gestion de la touche Échap
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && selectedImage) {
+        closePreview();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedImage]);
+
   return (
     <div
       className="uni-gallerie"
       style={bg ? { ["--uni-bg"]: `url(${bg})` } : undefined}
     >
+      <BackLocation />
       <header className="uni-gal-header">
         <h1>{title}</h1>
       </header>
@@ -68,7 +98,12 @@ const UniversCardGallerie = ({
         columnClassName="uni-masonry_column"
       >
         {images.map((src, idx) => (
-          <div className="uni-card" key={src + idx}>
+          <div 
+            className="uni-card" 
+            key={src + idx}
+            onClick={() => handleImageClick(src, idx)}
+            style={{ cursor: 'pointer' }}
+          >
             <img
               src={src}
               alt={`Galerie image ${idx + 1}`}
@@ -85,11 +120,68 @@ const UniversCardGallerie = ({
         title="Ajouter des images"
         onClick={onAddClick}
         aria-label="Ajouter"
-      >
-        +
-      </button>
-    </div>
-  );
-};
+              >
+         +
+       </button>
+
+               {/* Modal d'aperçu d'image */}
+        {selectedImage && (
+          <div className="uni-pr-modal" onClick={closePreview}>
+            <div className="uni-pr-content" onClick={(e) => e.stopPropagation()}>
+              {/* Croix de fermeture */}
+              <button 
+                className="uni-pr-close"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closePreview();
+                }}
+                aria-label="Fermer l'aperçu"
+              >
+                ×
+              </button>
+              
+              <img
+                src={selectedImage.src}
+                alt={`Image ${selectedImage.index + 1}`}
+                className="uni-pr-image"
+              />
+              
+              {/* Flèche gauche */}
+              {selectedImage.index > 0 && (
+                <button 
+                  className="uni-pr-arrow uni-pr-left"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImage({ 
+                      src: images[selectedImage.index - 1], 
+                      index: selectedImage.index - 1 
+                    });
+                  }}
+                >
+                  ‹
+                </button>
+              )}
+              
+              {/* Flèche droite */}
+              {selectedImage.index < images.length - 1 && (
+                <button 
+                  className="uni-pr-arrow uni-pr-right"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImage({ 
+                      src: images[selectedImage.index + 1], 
+                      index: selectedImage.index + 1 
+                    });
+                  }}
+                >
+                  ›
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+     </div>
+   );
+ };
 
 export default UniversCardGallerie;
