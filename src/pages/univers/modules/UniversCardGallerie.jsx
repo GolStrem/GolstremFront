@@ -39,13 +39,20 @@ const UniversCardGallerie = ({
   bg, // optionnel: url de fond si tu veux un wallpaper derrière
   onOpenFolder,
   onAddClick,
+  onDeleteImages, // nouvelle prop pour gérer la suppression
+  onDeleteFolders, // nouvelle prop pour gérer la suppression des dossiers
 }) => {
   const navigatePage = useNavigatePage();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [selectedForDeletion, setSelectedForDeletion] = useState(new Set());
+  const [selectedFoldersForDeletion, setSelectedFoldersForDeletion] = useState(new Set());
 
   // Fonction pour ouvrir l'aperçu d'une image
   const handleImageClick = (imageSrc, imageIndex) => {
-    setSelectedImage({ src: imageSrc, index: imageIndex });
+    if (!deleteMode) {
+      setSelectedImage({ src: imageSrc, index: imageIndex });
+    }
   };
 
   // Fonction pour fermer l'aperçu
@@ -67,6 +74,75 @@ const UniversCardGallerie = ({
     };
   }, [selectedImage]);
 
+  // Activer/désactiver le mode suppression
+  const toggleDeleteMode = () => {
+    setDeleteMode(!deleteMode);
+    setSelectedForDeletion(new Set());
+    setSelectedFoldersForDeletion(new Set());
+  };
+
+  // Gérer la sélection d'une image pour suppression
+  const handleImageSelection = (imageIndex) => {
+    const newSelection = new Set(selectedForDeletion);
+    if (newSelection.has(imageIndex)) {
+      newSelection.delete(imageIndex);
+    } else {
+      newSelection.add(imageIndex);
+    }
+    setSelectedForDeletion(newSelection);
+  };
+
+  // Gérer la sélection d'un dossier pour suppression
+  const handleFolderSelection = (folderIndex) => {
+    const newSelection = new Set(selectedFoldersForDeletion);
+    if (newSelection.has(folderIndex)) {
+      newSelection.delete(folderIndex);
+    } else {
+      newSelection.add(folderIndex);
+    }
+    setSelectedFoldersForDeletion(newSelection);
+  };
+
+  // Supprimer les images et dossiers sélectionnés
+  const handleDeleteSelected = () => {
+    let hasDeletions = false;
+    
+    // Supprimer les images sélectionnées
+    if (selectedForDeletion.size > 0) {
+      const selectedIndices = Array.from(selectedForDeletion).sort((a, b) => b - a);
+      if (onDeleteImages) {
+        onDeleteImages(selectedIndices);
+      }
+      hasDeletions = true;
+    }
+    
+    // Supprimer les dossiers sélectionnés
+    if (selectedFoldersForDeletion.size > 0) {
+      const selectedFolderIndices = Array.from(selectedFoldersForDeletion).sort((a, b) => b - a);
+      if (onDeleteFolders) {
+        onDeleteFolders(selectedFolderIndices);
+      }
+      hasDeletions = true;
+    }
+    
+    // Réinitialiser le mode suppression seulement si des éléments ont été supprimés
+    if (hasDeletions) {
+      setDeleteMode(false);
+      setSelectedForDeletion(new Set());
+      setSelectedFoldersForDeletion(new Set());
+    }
+  };
+
+  // Annuler le mode suppression
+  const cancelDeleteMode = () => {
+    setDeleteMode(false);
+    setSelectedForDeletion(new Set());
+    setSelectedFoldersForDeletion(new Set());
+  };
+
+  // Calculer le total des éléments sélectionnés
+  const totalSelected = selectedForDeletion.size + selectedFoldersForDeletion.size;
+
   return (
     <div
       className="uni-gallerie"
@@ -79,16 +155,28 @@ const UniversCardGallerie = ({
 
       <div className="uni-folders">
         {folders.map((f, i) => (
-          <button
-            key={i}
-            className="uni-folder"
-            type="button"
-            onClick={() => onOpenFolder?.(f)}
-            title={f.label}
-          >
-            <img src={dossier} alt="" aria-hidden="true" />
-            <span>{f.label}</span>
-          </button>
+          <div key={i} className={`uni-folder-container ${deleteMode ? 'delete-mode' : ''}`}>
+            {deleteMode && (
+              <div className="uni-folder-checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={selectedFoldersForDeletion.has(i)}
+                  onChange={() => handleFolderSelection(i)}
+                  className="uni-delete-checkbox"
+                />
+              </div>
+            )}
+            <button
+              className="uni-folder"
+              type="button"
+              onClick={() => onOpenFolder?.(f)}
+              title={f.label}
+              disabled={deleteMode}
+            >
+              <img src={dossier} alt="" aria-hidden="true" />
+              <span>{f.label}</span>
+            </button>
+          </div>
         ))}
       </div>
 
@@ -99,11 +187,22 @@ const UniversCardGallerie = ({
       >
         {images.map((src, idx) => (
           <div 
-            className="uni-card" 
+            className={`uni-card ${deleteMode ? 'delete-mode' : ''}`}
             key={src + idx}
             onClick={() => handleImageClick(src, idx)}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: deleteMode ? 'default' : 'pointer' }}
           >
+            {deleteMode && (
+              <div className="uni-checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={selectedForDeletion.has(idx)}
+                  onChange={() => handleImageSelection(idx)}
+                  className="uni-delete-checkbox"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
             <img
               src={src}
               alt={`Galerie image ${idx + 1}`}
@@ -114,74 +213,113 @@ const UniversCardGallerie = ({
         ))}
       </Masonry>
 
-      <button
-        className="uni-fab"
-        type="button"
-        title="Ajouter des images"
-        onClick={onAddClick}
-        aria-label="Ajouter"
-              >
-         +
-       </button>
+      <div className="uni-fab-container">
+        <button
+          className="uni-fab uni-fab-delete"
+          type="button"
+          title="Supprimer des éléments"
+          onClick={toggleDeleteMode}
+          aria-label="Supprimer"
+        >
+          🗑️
+        </button>
+        
+        <button
+          className="uni-fab"
+          type="button"
+          title="Ajouter des images"
+          onClick={onAddClick}
+          aria-label="Ajouter"
+        >
+          +
+        </button>
+      </div>
 
-               {/* Modal d'aperçu d'image */}
-        {selectedImage && (
-          <div className="uni-pr-modal" onClick={closePreview}>
-            <div className="uni-pr-content" onClick={(e) => e.stopPropagation()}>
-              {/* Croix de fermeture */}
+      {/* Barre d'actions pour le mode suppression */}
+      {deleteMode && (
+        <div className="uni-delete-actions">
+          <span className="uni-selection-count">
+            {totalSelected} élément(s) sélectionné(s)
+            {selectedForDeletion.size > 0 && ` (${selectedForDeletion.size} image${selectedForDeletion.size > 1 ? 's' : ''}`}
+            {selectedFoldersForDeletion.size > 0 && `, ${selectedFoldersForDeletion.size} dossier${selectedFoldersForDeletion.size > 1 ? 's' : ''}`}
+            {selectedForDeletion.size > 0 && selectedFoldersForDeletion.size > 0 && ')'}
+          </span>
+          <div className="uni-delete-buttons">
+            <button
+              className="uni-btn-cancel"
+              onClick={cancelDeleteMode}
+            >
+              Annuler
+            </button>
+            <button
+              className="uni-btn-delete"
+              onClick={handleDeleteSelected}
+              disabled={totalSelected === 0}
+            >
+              Supprimer ({totalSelected})
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal d'aperçu d'image */}
+      {selectedImage && (
+        <div className="uni-pr-modal" onClick={closePreview}>
+          <div className="uni-pr-content" onClick={(e) => e.stopPropagation()}>
+            {/* Croix de fermeture */}
+            <button 
+              className="uni-pr-close"
+              onClick={(e) => {
+                e.stopPropagation();
+                closePreview();
+              }}
+              aria-label="Fermer l'aperçu"
+            >
+              ×
+            </button>
+            
+            <img
+              src={selectedImage.src}
+              alt={`Image ${selectedImage.index + 1}`}
+              className="uni-pr-image"
+            />
+            
+            {/* Flèche gauche */}
+            {selectedImage.index > 0 && (
               <button 
-                className="uni-pr-close"
+                className="uni-pr-arrow uni-pr-left"
                 onClick={(e) => {
                   e.stopPropagation();
-                  closePreview();
+                  setSelectedImage({ 
+                    src: images[selectedImage.index - 1], 
+                    index: selectedImage.index - 1 
+                  });
                 }}
-                aria-label="Fermer l'aperçu"
               >
-                ×
+                ‹
               </button>
-              
-              <img
-                src={selectedImage.src}
-                alt={`Image ${selectedImage.index + 1}`}
-                className="uni-pr-image"
-              />
-              
-              {/* Flèche gauche */}
-              {selectedImage.index > 0 && (
-                <button 
-                  className="uni-pr-arrow uni-pr-left"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedImage({ 
-                      src: images[selectedImage.index - 1], 
-                      index: selectedImage.index - 1 
-                    });
-                  }}
-                >
-                  ‹
-                </button>
-              )}
-              
-              {/* Flèche droite */}
-              {selectedImage.index < images.length - 1 && (
-                <button 
-                  className="uni-pr-arrow uni-pr-right"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedImage({ 
-                      src: images[selectedImage.index + 1], 
-                      index: selectedImage.index + 1 
-                    });
-                  }}
-                >
-                  ›
-                </button>
-              )}
-            </div>
+            )}
+            
+            {/* Flèche droite */}
+            {selectedImage.index < images.length - 1 && (
+              <button 
+                className="uni-pr-arrow uni-pr-right"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage({ 
+                    src: images[selectedImage.index + 1], 
+                    index: selectedImage.index + 1 
+                  });
+                }}
+              >
+                ›
+              </button>
+            )}
           </div>
-        )}
-     </div>
-   );
- };
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default UniversCardGallerie;
