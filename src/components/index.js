@@ -99,6 +99,8 @@ export { createUniversFilterFields, createUniversCreateFields, createFieldConfig
 
 
 export { default as TextImgPlus } from './general/ModalGeneric/TextImgPlus';
+export { default as ImgPlus } from './general/ModalGeneric/ImgPlus';
+
 export { default as TextTextAreaPlus } from './general/ModalGeneric/TextTextAreaPlus';
 export { default as CheckBox } from './general/ModalGeneric/CheckBox';
 export { default as Chapter } from './general/ModalGeneric/Chapter';

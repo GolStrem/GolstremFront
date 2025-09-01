@@ -96,7 +96,9 @@
   "enabled": "Aktiviert",
   "disabled": "Deaktiviert",
   "accept": "Annehmen",
-  "refuse": "Ablehnen"
+  "refuse": "Ablehnen",
+
+  "img": "Bild"
 
 
 }

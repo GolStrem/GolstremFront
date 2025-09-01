@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
-import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter  } from "@components";
+import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter, ImgPlus  } from "@components";
 import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
 import "../fiche/modal/FicheEditModal.css";
@@ -93,6 +93,25 @@ const ModalGeneric = ({
 				for (let i = 0; i < existingCount; i++) {
 					output[`inputText${i}`] = initialData[`inputText${i}`] ?? initialData.inputText ?? "";
 					output[`inputTextarea${i}`] = initialData[`inputTextarea${i}`] ?? initialData.inputTextarea ?? "";
+				}
+			} else if (type === "img+") {
+				// Détecter combien de champs URL existent déjà dans initialData
+				const urlKeyBase = "inputUrl";
+				const urlRegex = /^inputUrl(\d+)$/;
+
+				const urlIndexes = Object.keys(initialData)
+					.filter((k) => urlRegex.test(k))
+					.map((k) => Number(k.replace(urlKeyBase, "")))
+					.filter((n) => !Number.isNaN(n));
+
+				const existingCount = Math.max(
+					urlIndexes.length ? Math.max(...urlIndexes) + 1 : 0,
+					1
+				);
+
+				// Créer tous les champs URL nécessaires
+				for (let i = 0; i < existingCount; i++) {
+					output[`inputUrl${i}`] = initialData[`inputUrl${i}`] ?? initialData.inputUrl ?? "";
 				}
 			} else if (type === "chapter") {
 				// Gérer les chapitres - accepter tous les formats de clés
@@ -286,6 +305,7 @@ const ModalGeneric = ({
 	const renderField = (key, config) => {
 		const id = key;
 		const label = config?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
+		console.log(config)
 		switch (config?.type) {
 			case "inputText":
 				return (
@@ -363,6 +383,19 @@ const ModalGeneric = ({
 				return (
 					<div key={key} className="cf-field">
 						<TextImgPlus 
+							config={config}
+							values={values}
+							setValues={setValues}
+							handleChange={handleChange}
+							setPreviewSrc={setPreviewSrc}
+						/>
+					</div>
+				);
+			case "img+":
+				console.log("ouiii")
+				return (
+					<div key={key} className="cf-field">
+						<ImgPlus 
 							config={config}
 							values={values}
 							setValues={setValues}

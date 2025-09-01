@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Masonry from "react-masonry-css";
 import { dossier }from "@assets"; // ajuste si ton alias exporte différemment
 import "./UniversCardGallerie.css";
-import { BackLocation } from "@components/index";
+import { BackLocation, ModalGeneric } from "@components/index";
 import { useNavigatePage } from "@service";
 
 const DEFAULT_IMAGES = [
@@ -47,6 +47,15 @@ const UniversCardGallerie = ({
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedForDeletion, setSelectedForDeletion] = useState(new Set());
   const [selectedFoldersForDeletion, setSelectedFoldersForDeletion] = useState(new Set());
+  const [isAddImagesModalOpen, setIsAddImagesModalOpen] = useState(false);
+
+  // Configuration des champs pour la modal d'ajout d'images
+  const addImagesFields = {
+    inputUrl0: {
+      type: "img+",
+      label: "Image:"
+    }
+  };
 
   // Fonction pour ouvrir l'aperçu d'une image
   const handleImageClick = (imageSrc, imageIndex) => {
@@ -101,6 +110,34 @@ const UniversCardGallerie = ({
       newSelection.add(folderIndex);
     }
     setSelectedFoldersForDeletion(newSelection);
+  };
+
+  // Fonction pour ouvrir la modal d'ajout d'images
+  const handleAddImagesClick = () => {
+    setIsAddImagesModalOpen(true);
+  };
+
+  // Fonction pour gérer la soumission de la modal d'ajout d'images
+  const handleAddImagesSubmit = (formData) => {
+    const newImages = [];
+    
+    // Récupérer toutes les URLs d'images non vides depuis les champs inputUrl
+    Object.keys(formData).forEach(key => {
+      if (key.startsWith('inputUrl') && formData[key] && formData[key].trim() !== '') {
+        newImages.push(formData[key].trim());
+      }
+    });
+
+    // Si on a des nouvelles images, les ajouter à la liste existante
+    if (newImages.length > 0) {
+      // Appeler la fonction de callback si elle existe
+      if (onAddClick && typeof onAddClick === 'function') {
+        onAddClick(newImages);
+      }
+      
+      // Fermer la modal
+      setIsAddImagesModalOpen(false);
+    }
   };
 
   // Supprimer les images et dossiers sélectionnés
@@ -228,7 +265,7 @@ const UniversCardGallerie = ({
           className="uni-fab"
           type="button"
           title="Ajouter des images"
-          onClick={onAddClick}
+          onClick={handleAddImagesClick}
           aria-label="Ajouter"
         >
           +
@@ -317,6 +354,19 @@ const UniversCardGallerie = ({
             )}
           </div>
         </div>
+      )}
+
+      {/* Modal d'ajout d'images */}
+      {isAddImagesModalOpen && (
+        <ModalGeneric
+          onClose={() => setIsAddImagesModalOpen(false)}
+          handleSubmit={handleAddImagesSubmit}
+          fields={addImagesFields}
+          title="Ajouter des images"
+          noButtonCancel={false}
+          textButtonValidate="Ajouter"
+          name="addImages"
+        />
       )}
     </div>
   );
