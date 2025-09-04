@@ -260,7 +260,7 @@
 
 /* Flèches de navigation */
 .uni-pr-arrow {
-  position: absolute;
+  position: fixed;
   top: 50%;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.1);
@@ -276,7 +276,7 @@
   justify-content: center;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
-  z-index: 10;
+  z-index: 10001;
 }
 
 .uni-pr-arrow:hover {
@@ -285,12 +285,12 @@
 }
 
 .uni-pr-left {
-  left: 0;
+  left: 20px;
   border-radius: 0 50% 50% 0;
 }
 
 .uni-pr-right {
-  right: 0;
+  right: 20px;
   border-radius: 50% 0 0 50%;
 }
 
@@ -310,11 +310,11 @@
   }
   
   .uni-pr-left {
-    left: 0;
+    left: 15px;
   }
   
   .uni-pr-right {
-    right: 0;
+    right: 15px;
   }
   
   .uni-pr-close {
@@ -334,11 +334,11 @@
   }
   
   .uni-pr-left {
-    left: 0;
+    left: 10px;
   }
   
   .uni-pr-right {
-    right: 0;
+    right: 10px;
   }
   
   .uni-pr-close {

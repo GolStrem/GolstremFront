@@ -3,8 +3,8 @@ import Masonry from "react-masonry-css";
 import { dossier }from "@assets"; // ajuste si ton alias exporte différemment
 import "./UniversCardGallerie.css";
 import { BackLocation, ModalGeneric } from "@components/index";
-import { useNavigatePage, ApiUnivers } from "@service";
-import { useParams } from "react-router-dom";
+import { ApiUnivers } from "@service";
+import { useParams, useNavigate } from "react-router-dom";
 
 const breakpoints = {
   default: 5,
@@ -25,7 +25,7 @@ const UniversCardGallerie = ({
   onDeleteFolders, // nouvelle prop pour gérer la suppression des dossiers
   universId, // id de l'univers pour alimenter la liste des dossiers via API
 }) => {
-  const navigatePage = useNavigatePage();
+  const navigate = useNavigate();
   const { id: routeUniversId, folder: routeFolder } = useParams() || {};
   const effectiveUniversId = useMemo(() => universId || routeUniversId, [universId, routeUniversId]);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -148,7 +148,7 @@ const UniversCardGallerie = ({
       const first = apiFolders[0];
       const target = first?.value || first?.label;
       if (target) {
-        navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target)}`);
+        navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target)}`);
       }
     }
   }, [routeFolder, effectiveUniversId, apiFolders, displayedImages.length]);
@@ -162,9 +162,9 @@ const UniversCardGallerie = ({
         const otherFolders = apiFolders.filter(f => f.value !== routeFolder);
         if (otherFolders.length > 0) {
           const target = otherFolders[0];
-          navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target.value)}`);
+          navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target.value)}`);
         } else {
-          navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+          navigate(`/univers/${effectiveUniversId}/gallerie`);
         }
       }
     }
@@ -265,7 +265,7 @@ const UniversCardGallerie = ({
       if (folder) {
         onOpenFolderInternal({ value: folder });
         if (effectiveUniversId) {
-          navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(folder)}`);
+          navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(folder)}`);
         }
       }
       try {
@@ -344,16 +344,16 @@ const UniversCardGallerie = ({
             if (remainingFolders.length > 0) {
               const target = remainingFolders[0];
               if (effectiveUniversId) {
-                navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target.value)}`);
+                navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target.value)}`);
               }
             } else {
               setApiImages([]);
-              if (effectiveUniversId) navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+              if (effectiveUniversId) navigate(`/univers/${effectiveUniversId}/gallerie`);
             }
           }
         } else {
           setApiImages([]);
-          if (effectiveUniversId) navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+          if (effectiveUniversId) navigate(`/univers/${effectiveUniversId}/gallerie`);
         }
       }
     } catch (e) {
@@ -404,7 +404,7 @@ const UniversCardGallerie = ({
                 }
                 const target = f.value || f.label;
                 if (target && effectiveUniversId) {
-                  navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target)}`);
+                  navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target)}`);
                 } else {
                   onOpenFolderInternal(f);
                 }
@@ -504,56 +504,56 @@ const UniversCardGallerie = ({
       {/* Modal d'aperçu d'image */}
       {selectedImage && (
         <div className="uni-pr-modal" onClick={closePreview}>
-          <div className="uni-pr-content" onClick={(e) => e.stopPropagation()}>
-            {/* Croix de fermeture */}
+          {/* Croix de fermeture */}
+          <button 
+            className="uni-pr-close"
+            onClick={(e) => {
+              e.stopPropagation();
+              closePreview();
+            }}
+            aria-label="Fermer l'aperçu"
+          >
+            ×
+          </button>
+          
+          {/* Flèche gauche */}
+          {selectedImage.index > 0 && (
             <button 
-              className="uni-pr-close"
+              className="uni-pr-arrow uni-pr-left"
               onClick={(e) => {
                 e.stopPropagation();
-                closePreview();
+                setSelectedImage({
+                  src: displayedImages[selectedImage.index - 1].url,
+                  index: selectedImage.index - 1
+                });
               }}
-              aria-label="Fermer l'aperçu"
             >
-              ×
+              ‹
             </button>
-            
+          )}
+          
+          {/* Flèche droite */}
+          {selectedImage.index < displayedImages.length - 1 && (
+            <button 
+              className="uni-pr-arrow uni-pr-right"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage({
+                  src: displayedImages[selectedImage.index + 1].url,
+                  index: selectedImage.index + 1
+                });
+              }}
+            >
+              ›
+            </button>
+          )}
+          
+          <div className="uni-pr-content" onClick={(e) => e.stopPropagation()}>
             <img
               src={selectedImage.src}
               alt={`Image ${selectedImage.index + 1}`}
               className="uni-pr-image"
             />
-            
-            {/* Flèche gauche */}
-            {selectedImage.index > 0 && (
-              <button 
-                className="uni-pr-arrow uni-pr-left"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedImage({
-                    src: displayedImages[selectedImage.index - 1],
-                    index: selectedImage.index - 1
-                  });
-                }}
-              >
-                ‹
-              </button>
-            )}
-            
-            {/* Flèche droite */}
-            {selectedImage.index < displayedImages.length - 1 && (
-              <button 
-                className="uni-pr-arrow uni-pr-right"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedImage({
-                    src: displayedImages[selectedImage.index + 1],
-                    index: selectedImage.index + 1
-                  });
-                }}
-              >
-                ›
-              </button>
-            )}
           </div>
         </div>
       )}
