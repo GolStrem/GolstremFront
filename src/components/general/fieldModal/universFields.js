@@ -68,6 +68,12 @@ export const createUniversCreateFields = (listTag = []) => {
       value: ["Public", "Sur invitation", "Priver" ],
       label: "Visibilité :",
       key: "visibiltyUnivers",
+    },    
+    selectRegistre: {
+      type: "select",
+      value: ["Accepté automatiquement", "Sous validation", "Refuser tout" ],
+      label: "Nouveau Joueur:",
+      key: "RegistreUnivers",
     },
     flags: {
       type: "checkBox",

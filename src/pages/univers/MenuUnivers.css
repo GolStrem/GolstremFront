@@ -519,7 +519,12 @@
 .selectVisibily{
   display: flex;
 }
-
+#select-selectRegistre{
+  min-width: 190px;
+}
+.selectRegistre{
+  display: flex;
+}
 .tagsUnivers{
   flex-wrap: wrap;
   flex-direction: row;
@@ -532,6 +537,9 @@
 }
 .label-selectVisibily{
   min-width: 70px !important;
+}
+.label-selectRegistre{
+  min-width: 80px;
 }
 
 #NomUnivers{
@@ -550,7 +558,9 @@
   border-radius: 5px;
 }
 
-
+.select-selectRegistre{
+  border-radius: 5px;
+}
 
 
 
