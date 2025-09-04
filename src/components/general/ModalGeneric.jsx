@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
-import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter  } from "@components";
+import React, { useEffect, useState, useRef } from "react";
+import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter, ImgPlus  } from "@components";
 import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
 import "../fiche/modal/FicheEditModal.css";
@@ -21,7 +21,8 @@ const ModalGeneric = ({
 	title = undefined, 
 	noButtonCancel= false, 
 	textButtonValidate= 'save',
-	nav = []
+	nav = [],
+	noMemory = false
 }) => {
 	if (isOpen !== undefined && !isOpen) return null;
 	
@@ -31,13 +32,17 @@ const ModalGeneric = ({
 	
 
 	const [values, setValues] = useState(() => {
-
-		const cookie = Cookies.get(name)
-		if (cookie) {
-			return JSON.parse(cookie)
+		if (!noMemory) {
+			const cookie = Cookies.get(name)
+			if (cookie) {
+				return JSON.parse(cookie)
+			}
 		}
 
+		// Pré-sélectionner le dossier courant pour les champs img+
 		const output = {};
+
+		
 		Object.keys(fields).forEach((key) => {
 			const type = fields[key]?.type;
 			if (type === "texteImg+") {
@@ -94,6 +99,31 @@ const ModalGeneric = ({
 					output[`inputText${i}`] = initialData[`inputText${i}`] ?? initialData.inputText ?? "";
 					output[`inputTextarea${i}`] = initialData[`inputTextarea${i}`] ?? initialData.inputTextarea ?? "";
 				}
+			} else if (type === "img+") {
+				// Détecter combien de champs URL existent déjà dans initialData
+				const urlKeyBase = "inputUrl";
+				const urlRegex = /^inputUrl(\d+)$/;
+
+				const urlIndexes = Object.keys(initialData)
+					.filter((k) => urlRegex.test(k))
+					.map((k) => Number(k.replace(urlKeyBase, "")))
+					.filter((n) => !Number.isNaN(n));
+
+				const existingCount = Math.max(
+					urlIndexes.length ? Math.max(...urlIndexes) + 1 : 0,
+					1
+				);
+
+				// Créer tous les champs URL nécessaires
+				for (let i = 0; i < existingCount; i++) {
+					output[`inputUrl${i}`] = initialData[`inputUrl${i}`] ?? initialData.inputUrl ?? "";
+				}
+				
+				// Pré-sélectionner le dossier courant si configuré
+				const config = fields[key];
+				if (config?.currentFolder && config?.gallerySelectKey) {
+					output[config.gallerySelectKey] = config.currentFolder;
+				}
 			} else if (type === "chapter") {
 				// Gérer les chapitres - accepter tous les formats de clés
 				const allKeys = Object.keys(initialData);
@@ -112,20 +142,24 @@ const ModalGeneric = ({
 			} else {
 				output[key] = initialData[key] ?? "";
 			}
-	});
-				
-
+		});
+		
+		
 		return output;
 	});
 
 	const handleClose = () => {
-		Cookies.set(name, JSON.stringify(values), { expires: 0.0208 }); 
+		if (!noMemory) {
+			Cookies.set(name, JSON.stringify(values), { expires: 0.0208 }); 
+		}
 		onClose()
 	}
 
 	const handleSave = (values) => {
 		handleSubmit(values)
-		Cookies.remove(name)
+		if (!noMemory) {
+			Cookies.remove(name)
+		}
 	}
 
 	// Référence pour éviter la boucle infinie
@@ -232,6 +266,27 @@ const ModalGeneric = ({
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 
+
+	// Gestion des selects génériques: options + saisie "Autre..."
+	const [genericSelectOptions, setGenericSelectOptions] = useState({});
+	const [genericShowOther, setGenericShowOther] = useState({});
+	const [genericOtherInputs, setGenericOtherInputs] = useState({});
+
+
+
+	useEffect(() => {
+		// Initialise les options locales pour les selects génériques
+		const initial = {};
+		Object.entries(fields).forEach(([k, c]) => {
+			if (c?.type === "select") {
+				initial[k] = Array.isArray(c.value) ? c.value : [];
+			}
+		});
+		setGenericSelectOptions(initial);
+		setGenericShowOther({});
+		setGenericOtherInputs({});
+	}, [fields]);
+
 	const handleChange = (key) => (e) => {
 		const nextValue = e?.target?.value ?? "";
 		setValues((prev) => ({ ...prev, [key]: nextValue }));
@@ -247,15 +302,12 @@ const ModalGeneric = ({
 			}
 		}
 
-		// Vérifier les champs dans les composants texteImg+
-		const texteImgFields = Object.entries(fields).filter(([key, config]) => config?.type === "texteImg+");
-		for (const [key] of texteImgFields) {
-			const urlRegex = /^inputUrl(\d+)$/;
-			const urlKeys = Object.keys(values).filter(k => urlRegex.test(k));
-			for (const urlKey of urlKeys) {
-				if (values[urlKey] && !isValidImageUrl(values[urlKey])) {
-					return false;
-				}
+		// Vérifier toutes les clés inputUrlX (utilisées par texteImg+ et img+)
+		const urlRegex = /^inputUrl(\d+)$/;
+		const urlKeys = Object.keys(values).filter(k => urlRegex.test(k));
+		for (const urlKey of urlKeys) {
+			if (values[urlKey] && !isValidImageUrl(values[urlKey])) {
+				return false;
 			}
 		}
 
@@ -371,6 +423,19 @@ const ModalGeneric = ({
 						/>
 					</div>
 				);
+			case "img+":
+				return (
+					<div key={key} className="cf-field">
+						{config.label !== "" && <label className="tm-label label-fiche">{config.label}</label>}
+						<ImgPlus 
+							config={config}
+							values={values}
+							setValues={setValues}
+							handleChange={handleChange}
+							setPreviewSrc={setPreviewSrc}
+						/>
+					</div>
+				);
 			case "textTextArea+":
 					return (
 						<div key={key} className="cf-field">
@@ -432,24 +497,76 @@ const ModalGeneric = ({
 				);
 			case "select": {
 			const id = `select-${key}`;
+			const opts = Array.isArray(genericSelectOptions[key]) ? genericSelectOptions[key] : (Array.isArray(config.value) ? config.value : []);
+			const isOther = !!genericShowOther[key];
+			const withAnother = config.another ?? false;
 			return (
-				<div key={key} className={`selectGeneric ${key}`}>
+				<div key={key} className={`selectGeneric ${key}`} style={{ position: 'relative' }}>
 				{config.label !== "" && <label htmlFor={id} className={`label-${key}`}>{config.label}</label>}
 
 				<select 
 					id={id} 
 					name={key} 
 					className={`filter-select select-${key}`}
-					value={values[key] || ""}
-					onChange={handleChange(key)}
+					value={isOther ? "__other__" : (values[key] || "")}
+					onChange={(e) => {
+						const val = e.target.value;
+						if (val === "__other__") {
+							setGenericShowOther((prev) => ({ ...prev, [key]: true }));
+							setGenericOtherInputs((prev) => ({ ...prev, [key]: "" }));
+						} else {
+							setGenericShowOther((prev) => ({ ...prev, [key]: false }));
+							setValues((prev) => ({ ...prev, [key]: val }));
+						}
+					}}
 				>
-					{Array.isArray(config.value) &&
-					config.value.map((val, idx) => (
+					{opts.map((val, idx) => (
 						<option key={`${key}-opt-${idx}`} value={val}>
 						{val}
 						</option>
 					))}
+					{withAnother && <option value="__other__">Autre...</option>}
 				</select>
+
+				{isOther && (
+					<input
+						type="text"
+						value={genericOtherInputs[key] || ""}
+						onChange={(e) => setGenericOtherInputs((prev) => ({ ...prev, [key]: e.target.value }))}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter') {
+								const newVal = (genericOtherInputs[key] || "").trim();
+								if (!newVal) return;
+								setGenericSelectOptions((prev) => ({ ...prev, [key]: [...(prev[key] || opts), newVal] }));
+								setValues((prev) => ({ ...prev, [key]: newVal }));
+								setGenericShowOther((prev) => ({ ...prev, [key]: false }));
+								setGenericOtherInputs((prev) => ({ ...prev, [key]: "" }));
+							}
+						}}
+						onBlur={() => {
+							const newVal = (genericOtherInputs[key] || "").trim();
+							if (newVal) {
+								setGenericSelectOptions((prev) => ({ ...prev, [key]: [...(prev[key] || opts), newVal] }));
+								setValues((prev) => ({ ...prev, [key]: newVal }));
+							}
+							setGenericShowOther((prev) => ({ ...prev, [key]: false }));
+							setGenericOtherInputs((prev) => ({ ...prev, [key]: "" }));
+						}}
+						style={{
+							position: 'absolute',
+							top: config.label !== "" ? 46 : 0,
+							left: -10,
+							right: 0,
+							padding: '9px',
+							borderRadius: 4,
+							zIndex: 2,
+							width: 115,
+							
+							
+						}}
+						placeholder="Saisir autre..."
+					/>
+				)}
 				</div>
 			);
 			}
@@ -466,13 +583,15 @@ const ModalGeneric = ({
 
 	return (
 		<BaseModal onClose={handleClose} className={`tmedit cf-modal-large master-${name}`} noClose={noClose}>
-			<div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '20px' }}>
-				{nav.map((item) => (
-					<button key={item.name} onClick={closeBefore(item.handle)} className="button-nav-uni" title={item.name}>
-						{item.html}
-					</button>
-				))}
-			</div>
+			{Array.isArray(nav) && nav.length > 0 && (
+				<div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '20px' }}>
+					{nav.map((item) => (
+						<button key={item.name} onClick={closeBefore(item.handle)} className="button-nav-uni" title={item.name}>
+							{item.html}
+						</button>
+					))}
+				</div>
+			)}
 			{title && <h2 className={`h2-${name}`}>{t(title)}</h2>}
 			<form className={`tm-modal-form ${name}`} onSubmit={(e) => e.preventDefault()}>
 				{Object.entries(fields).map(([key, config]) => renderField(key, config))}

@@ -48,6 +48,11 @@
   flex-wrap: wrap;
   margin: 10px 0 22px;
 }
+
+.uni-folder-container {
+  position: relative;
+  display: inline-block;
+}
 .uni-folder {
   display: inline-flex;
   align-items: center;
@@ -59,9 +64,14 @@
   cursor: pointer;
   transition: transform .18s ease, box-shadow .18s ease;
 }
-.uni-folder:hover {
+.uni-folder:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px rgba(0,0,0,.24);
+}
+
+.uni-folder:disabled {
+  cursor: default;
+  opacity: 0.8;
 }
 .uni-folder img {
   width: 52px;
@@ -72,6 +82,50 @@
 .uni-folder span {
   font-weight: 800;
   letter-spacing: .3px;
+}
+
+/* Case à cocher pour les dossiers */
+.uni-folder-checkbox-container {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  z-index: 10;
+}
+.select-imagesgal{
+  padding: 10px;
+  border-radius: 6px;
+  min-width: 120px;
+  cursor: pointer;
+}
+.button-select-gal{
+  background-color: transparent;
+  margin: 8px;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  cursor: pointer;
+  border: 2px solid var(--jaune);
+  border-radius: 8px;
+}
+.button-select-gal:hover{
+  background-color: #00000077;
+}
+.label-gal-select{
+  justify-self: auto !important;
+  margin-left:  0px !important;
+}
+.uni-folder-container.delete-mode .uni-folder-checkbox-container {
+  display: block;
+}
+
+.uni-folder-container:not(.delete-mode) .uni-folder-checkbox-container {
+  display: none;
+}
+.select-selectFolder{
+  display: flex;
+  padding: 10px;
+  border-radius: 6px;
+  width: 150px;
 }
 
 /* Masonry layout */
@@ -94,7 +148,11 @@
   transition: transform .18s ease, box-shadow .18s ease;
   width: 100%;
   margin-top: 20px;
-
+  min-height: 50px;
+}
+.label-selectFolder{
+  align-self: auto !important;
+  margin-left: 0 !important;
 }
 .uni-card:hover {
   transform: translateY(-3px);
@@ -140,4 +198,307 @@
   .uni-folders { gap: 14px; }
   .uni-folder { padding: 10px 12px; }
   .uni-folder img { width: 44px; height: 36px; }
+}
+
+/* Modal d'aperçu d'image */
+.uni-pr-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+.uni-pr-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  background: none;
+}
+
+/* Croix de fermeture */
+.uni-pr-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+  color: var(--color-text);
+  background-color: transparent;
+  font-size: 42px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 15;
+  line-height: 1;
+}
+
+.uni-pr-close:hover {
+
+  transform: scale(1.1);
+}
+
+.uni-pr-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+}
+
+/* Flèches de navigation */
+.uni-pr-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 48px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 10001;
+}
+
+.uni-pr-arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.uni-pr-left {
+  left: 20px;
+  border-radius: 0 50% 50% 0;
+}
+
+.uni-pr-right {
+  right: 20px;
+  border-radius: 50% 0 0 50%;
+}
+
+
+
+/* Responsive pour la modal */
+@media (max-width: 768px) {
+  .uni-pr-image {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+  
+  .uni-pr-arrow {
+    width: 60px;
+    height: 60px;
+    font-size: 36px;
+  }
+  
+  .uni-pr-left {
+    left: 15px;
+  }
+  
+  .uni-pr-right {
+    right: 15px;
+  }
+  
+  .uni-pr-close {
+    top: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .uni-pr-arrow {
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+  }
+  
+  .uni-pr-left {
+    left: 10px;
+  }
+  
+  .uni-pr-right {
+    right: 10px;
+  }
+  
+  .uni-pr-close {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+}
+
+/* Styles pour le mode suppression */
+.uni-fab-container {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 3;
+}
+
+.uni-fab-delete {
+  background: #ff4757;
+  color: white;
+  font-size: 24px;
+  bottom: 83px;
+}
+
+.uni-fab-delete:hover {
+  background: #ff3742;
+}
+
+/* Mode suppression des cartes */
+.uni-card.delete-mode {
+  position: relative;
+  cursor: default;
+}
+
+.uni-card.delete-mode:hover {
+  transform: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+}
+
+.uni-checkbox-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+}
+
+.uni-delete-checkbox {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: #ff4757;
+  transform: scale(1.2);
+}
+
+/* Barre d'actions pour la suppression */
+.uni-delete-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.uni-selection-count {
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.uni-delete-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.uni-btn-cancel,
+.uni-btn-delete {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.uni-btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.uni-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.uni-btn-delete {
+  background: #ff4757;
+  color: white;
+}
+
+.uni-btn-delete:hover:not(:disabled) {
+  background: #ff3742;
+  transform: translateY(-1px);
+}
+
+.uni-btn-delete:disabled {
+  background: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Responsive pour la barre de suppression */
+@media (max-width: 768px) {
+  .uni-delete-actions {
+    padding: 14px 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .uni-delete-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .uni-btn-cancel,
+  .uni-btn-delete {
+    flex: 1;
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .uni-fab-container {
+    right: 18px;
+    bottom: 18px;
+    gap: 10px;
+  }
+  
+  .uni-delete-actions {
+    padding: 12px 18px;
+  }
+  
+  .uni-selection-count {
+    font-size: 14px;
+  }
+  
+  .uni-btn-cancel,
+  .uni-btn-delete {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
 }

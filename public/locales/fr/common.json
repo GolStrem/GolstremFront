@@ -98,5 +98,7 @@
     "enabled": "Activé",
     "disabled": "Désactivé",
     "accept": "Accepter",
-    "refuse": "Refuser"
+    "refuse": "Refuser",
+
+    "img": "Image"
 }

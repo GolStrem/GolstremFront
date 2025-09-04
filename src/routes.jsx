@@ -169,6 +169,16 @@ const routes = [
       </ProtectedRoute>
     ),
   },
+      {
+    path: '/univers/:id/gallerie/:folder',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardGallerie/>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
   {
     path: '/univers/:id/establishment',
     element: (

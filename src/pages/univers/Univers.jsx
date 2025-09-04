@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./Univers.css";
 import { ffimg } from "@assets";
 import { ModalGeneric, BackLocation } from "@components";
 import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
-import { ApiUnivers, ApiService } from "@service";
+import { ApiUnivers, ApiService, useNavigatePage } from "@service";
 
 
 const Univers = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigatePage();
   const { id: universId } = useParams(); // Récupérer l'ID de l'univers depuis l'URL
   
   const CATEGORIES = useMemo(() => [
@@ -53,6 +53,7 @@ const Univers = () => {
     image: "",
     tagsUnivers: [],
     selectVisibily: "",
+    selectRegistre: "",
     flags: []
   });
 
@@ -211,6 +212,7 @@ const Univers = () => {
           image: data.image || "",
           tagsUnivers: [],
           selectVisibily: data.visibility === 0 ? "Public" : data.visibility === 1 ? "Sur invitation" : "Priver",
+          selectRegistre: data.openRegistration === 0 ? "Accepté automatiquement" : data.openRegistration === 1 ? "Sous validation" : "Refuser tout",
           flags: data.nfsw === 1 ? ["NSFW"] : []
         };
         setUniversInfo(newUniversInfo);
@@ -376,6 +378,7 @@ const Univers = () => {
         description: values.descriptionUnivers,
         image: values.image || null,
         visibility: values.selectVisibily === "Public" ? 0 : values.selectVisibily === "Sur invitation" ? 1 : 2,
+        openRegistration: values.selectRegistre === "Accepté automatiquement" ? 0 : values.selectRegistre === "Sous validation" ? 1 : 2,
         nfsw: values.flags?.includes("NSFW") ? 1 : 0
       };
       

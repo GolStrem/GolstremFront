@@ -95,7 +95,9 @@
   "enabled": "Enabled",
   "disabled": "Disabled",
   "accept": "Accept",
-  "refuse": "Decline"
+  "refuse": "Decline",
+
+  "img": "Image"
 
 
 }

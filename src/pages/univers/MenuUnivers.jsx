@@ -182,12 +182,19 @@ const MenuUnivers = () => {
 
   const handleSubmitCreateUnivers = async (formValues) => {
   // Préparer le payload pour l'API
+  const registrationMap = {
+    "Accepté automatiquement": 0,
+    "Sous validation": 1,
+    "Refuser tout": 2,
+  };
+
   const payload = {
     name: formValues.NomUnivers,
     description: formValues.descriptionUnivers,
     image: formValues.image || "", // ou null
     visibility: (formValues.selectVisibily === "" || formValues.selectVisibily === "Public") 
       ? 0 : formValues.selectVisibily === "Sur invitation" ? 1 : 2,
+    openRegistration: registrationMap[formValues.selectRegistre] ?? 0,
     
     nfsw: formValues.flags?.includes("NSFW") ? "1" : "0",
     tags: formValues.selectedTagFilter || []
