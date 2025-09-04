@@ -3,7 +3,7 @@ import Masonry from "react-masonry-css";
 import { dossier }from "@assets"; // ajuste si ton alias exporte différemment
 import "./UniversCardGallerie.css";
 import { BackLocation, ModalGeneric } from "@components/index";
-import { ApiUnivers } from "@service";
+import { ApiUnivers, DroitAccess } from "@service";
 import { useParams, useNavigate } from "react-router-dom";
 
 const breakpoints = {
@@ -42,6 +42,7 @@ const UniversCardGallerie = ({
   // Titre dynamique selon l'état
   const [universName, setUniversName] = useState("");
   const [currentFolderLabel, setCurrentFolderLabel] = useState("");
+  const [droit, setDroit] = useState(null);
   const dynamicTitle = useMemo(() => {
     const base = universName || String(effectiveUniversId || "");
     if (!base) return title;
@@ -70,6 +71,9 @@ const UniversCardGallerie = ({
         const res = await ApiUnivers.getFolderGallerie(effectiveUniversId);
         // Tolérant: accepte un tableau de chaînes, ou un tableau d'objets { name/label, count }
         const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        if (list.length === 0) {
+          list.push("general");
+        }
         const normalized = list.map((item) => {
           if (typeof item === 'string') return { label: item, count: undefined, value: item };
           const name = item?.name || item?.label || item?.folder || "";
@@ -91,6 +95,7 @@ const UniversCardGallerie = ({
       if (!effectiveUniversId) return;
       try {
         const res = await ApiUnivers.getDetailUnivers(effectiveUniversId);
+        setDroit(res?.data?.droit);
         const name = res?.data?.name || String(effectiveUniversId);
         setUniversName(name);
       } catch {
@@ -256,17 +261,15 @@ const UniversCardGallerie = ({
           [formData.selectFolder]: newImages
         };
         await ApiUnivers.massCreateImageGallerie(effectiveUniversId, imagesByFolder);
+        navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(formData.selectFolder)}`);
       }
     } catch (e) {
       console.error("Erreur lors de l'ajout d'images:", e);
     } finally {
       setIsAddImagesModalOpen(false);
       // Rafraîchir le dossier courant et la liste des dossiers
-      if (folder) {
-        onOpenFolderInternal({ value: folder });
-        if (effectiveUniversId) {
-          navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(folder)}`);
-        }
+      if (formData.selectFolder) {
+        onOpenFolderInternal({ value: formData.selectFolder });
       }
       try {
         const res = await ApiUnivers.getFolderGallerie(effectiveUniversId);
@@ -326,6 +329,9 @@ const UniversCardGallerie = ({
         try {
           const res = await ApiUnivers.getFolderGallerie(effectiveUniversId);
           const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+          if (list.length === 0) {
+            list.push("general");
+          }
           const normalized = list.map((item) => {
             if (typeof item === 'string') return { label: item, count: undefined, value: item };
             const name = item?.name || item?.label || item?.folder || "";
@@ -383,7 +389,27 @@ const UniversCardGallerie = ({
 
       <div className="uni-folders">
         {(apiFolders.length > 0 ? apiFolders : folders).map((f, i) => (
-          <div key={i} className={`uni-folder-container ${deleteMode ? 'delete-mode' : ''}`}>
+          <div 
+            key={i} 
+            className={`uni-folder-container ${deleteMode ? 'delete-mode' : ''}`}
+            onClick={() => {
+              if (deleteMode) {
+                handleFolderSelection(i);
+              } else {
+                if (onOpenFolder) {
+                  onOpenFolder(f);
+                  return;
+                }
+                const target = f.value || f.label;
+                if (target && effectiveUniversId) {
+                  navigate(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target)}`);
+                } else {
+                  onOpenFolderInternal(f);
+                }
+              }
+            }}
+            style={{ cursor: deleteMode ? 'pointer' : 'default' }}
+          >
             {deleteMode && (
               <div className="uni-folder-checkbox-container">
                 <input
@@ -391,13 +417,19 @@ const UniversCardGallerie = ({
                   checked={selectedFoldersForDeletion.has(i)}
                   onChange={() => handleFolderSelection(i)}
                   className="uni-delete-checkbox"
+                  onClick={(e) => e.stopPropagation()}
                 />
               </div>
             )}
             <button
               className="uni-folder"
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                if (deleteMode) {
+                  // En mode suppression, ne pas empêcher l'événement de remonter à la div
+                  return;
+                }
+                e.stopPropagation();
                 if (onOpenFolder) {
                   onOpenFolder(f);
                   return;
@@ -410,7 +442,6 @@ const UniversCardGallerie = ({
                 }
               }}
               title={f.label || f.value}
-              disabled={deleteMode}
             >
               <img src={dossier} alt="" aria-hidden="true" />
               <span>{f.label || f.value}</span>
@@ -428,8 +459,14 @@ const UniversCardGallerie = ({
           <div 
             className={`uni-card ${deleteMode ? 'delete-mode' : ''}`}
             key={(imgObj.url || '') + idx}
-            onClick={() => handleImageClick(imgObj.url, idx)}
-            style={{ cursor: deleteMode ? 'default' : 'pointer' }}
+            onClick={() => {
+              if (deleteMode) {
+                handleImageSelection(idx);
+              } else {
+                handleImageClick(imgObj.url, idx);
+              }
+            }}
+            style={{ cursor: 'pointer' }}
           >
             {deleteMode && (
               <div className="uni-checkbox-container">
@@ -453,7 +490,8 @@ const UniversCardGallerie = ({
       </Masonry>
 
       <div className="uni-fab-container">
-        <button
+        {DroitAccess.isOwner(droit) && (
+          <button
           className="uni-fab uni-fab-delete"
           type="button"
           title="Supprimer des éléments"
@@ -462,8 +500,9 @@ const UniversCardGallerie = ({
         >
           🗑️
         </button>
-        
-        <button
+        )}
+        {DroitAccess.hasWriteAccess(droit) && (
+          <button
           className="uni-fab"
           type="button"
           title="Ajouter des images"
@@ -472,6 +511,7 @@ const UniversCardGallerie = ({
         >
           +
         </button>
+        )}
       </div>
 
       {/* Barre d'actions pour le mode suppression */}
