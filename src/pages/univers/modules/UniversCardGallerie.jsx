@@ -50,17 +50,16 @@ const UniversCardGallerie = ({
 
   // Configuration des champs pour la modal d'ajout d'images
   const addImagesFields = useMemo(() => ({
+    selectFolder: {
+      type: "select",
+      label: "Dossier de gallerie",
+      value: apiFolders.map(f => f.label || f.value).filter(Boolean),
+      currentFolder: currentFolder,
+      another: true
+    },
     inputUrl0: {
       type: "img+",
       label: "Image:",
-      // Active le select des dossiers récupéré via API
-      galleryUniversIdKey: "universId",
-      gallerySelectKey: "galleryFolder",
-      gallerySelectLabel: "Dossier de gallerie",
-      // Passer les options de dossiers depuis le composant parent
-      selectOptions: apiFolders.map(f => f.label || f.value).filter(Boolean),
-      // Passer le dossier courant pour le pré-sélectionner
-      currentFolder: currentFolder
     }
   }), [apiFolders, currentFolder]);
   // Charger la liste des dossiers depuis l'API
@@ -253,7 +252,10 @@ const UniversCardGallerie = ({
       if (onAddClick && typeof onAddClick === 'function') {
         onAddClick(newImages, folder);
       } else {
-        await Promise.all(newImages.map((img) => ApiUnivers.createImageGallerie(effectiveUniversId, { folder, image: img })));
+        const imagesByFolder = {
+          [formData.selectFolder]: newImages
+        };
+        await ApiUnivers.massCreateImageGallerie(effectiveUniversId, imagesByFolder);
       }
     } catch (e) {
       console.error("Erreur lors de l'ajout d'images:", e);
@@ -288,24 +290,15 @@ const UniversCardGallerie = ({
         const selectedIndices = Array.from(selectedForDeletion).sort((a, b) => b - a);
         const selectedImages = selectedIndices.map((i) => displayedImages[i]).filter(Boolean);
 
-        const imagesWithId = selectedImages.filter((im) => im?.id != null);
-        const imagesWithoutId = selectedImages.filter((im) => im?.id == null);
+        // Récupérer tous les IDs des images sélectionnées
+        const imageIds = selectedImages
+          .map((im) => im?.id)
+          .filter((id) => id != null);
 
-        // Suppression par ID si disponible
-        if (imagesWithId.length > 0) {
-          await Promise.all(
-            imagesWithId.map((im) => ApiUnivers.deleteImageGallerie(effectiveUniversId, im.id))
-          );
+        // Suppression massive par IDs
+        if (imageIds.length > 0) {
+          await ApiUnivers.massDeleteImageGallerie(effectiveUniversId, { listId: imageIds });
           hasDeletions = true;
-        }
-
-        // Fallback suppression massive par URLs si pas d'ID
-        if (imagesWithoutId.length > 0 && currentFolder) {
-          const urls = imagesWithoutId.map((im) => im.url).filter(Boolean);
-          if (urls.length > 0 && typeof ApiUnivers.massDeleteImageGallerie === 'function') {
-            await ApiUnivers.massDeleteImageGallerie(effectiveUniversId, { folder: currentFolder, images: urls });
-            hasDeletions = true;
-          }
         }
       }
 
@@ -570,12 +563,13 @@ const UniversCardGallerie = ({
         <ModalGeneric
           onClose={() => setIsAddImagesModalOpen(false)}
           handleSubmit={handleAddImagesSubmit}
-          initialData={{ universId: effectiveUniversId }}
+          initialData={{ selectFolder: currentFolder }}
           fields={addImagesFields}
           title="Ajouter des images"
           noButtonCancel={false}
           textButtonValidate="Ajouter"
           name="addImages"
+          noMemory={true}
         />
       )}
     </div>

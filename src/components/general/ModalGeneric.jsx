@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter, ImgPlus  } from "@components";
-import { isValidImageUrl, ApiService, ApiUnivers } from "@service";
+import { isValidImageUrl, ApiService } from "@service";
 import Cookies from "js-cookie";
 import "../fiche/modal/FicheEditModal.css";
 import "./ModalGeneric.css"
@@ -21,7 +21,8 @@ const ModalGeneric = ({
 	title = undefined, 
 	noButtonCancel= false, 
 	textButtonValidate= 'save',
-	nav = []
+	nav = [],
+	noMemory = false
 }) => {
 	if (isOpen !== undefined && !isOpen) return null;
 	
@@ -31,42 +32,16 @@ const ModalGeneric = ({
 	
 
 	const [values, setValues] = useState(() => {
-		// Créer une clé de cookie unique par univers et dossier pour éviter les conflits
-		const universId = initialData?.universId;
-		const currentFolder = Object.keys(fields).find(key => fields[key]?.type === "img+") 
-			? Object.keys(fields).reduce((acc, key) => {
-				const config = fields[key];
-				if (config?.type === "img+" && config?.currentFolder) {
-					return config.currentFolder;
-				}
-				return acc;
-			}, null)
-			: null;
-		
-		const cookieKey = universId && currentFolder 
-			? `${name}_${universId}_${currentFolder}` 
-			: universId 
-			? `${name}_${universId}` 
-			: name;
-
-		const cookie = Cookies.get(cookieKey)
-		if (cookie) {
-			try {
-				const parsed = JSON.parse(cookie)
-				return { ...initialData, ...parsed }
-			} catch (e) {
-				return { ...initialData }
+		if (!noMemory) {
+			const cookie = Cookies.get(name)
+			if (cookie) {
+				return JSON.parse(cookie)
 			}
 		}
 
 		// Pré-sélectionner le dossier courant pour les champs img+
-		const output = { ...initialData };
-		Object.keys(fields).forEach((key) => {
-			const config = fields[key];
-			if (config?.type === "img+" && config?.currentFolder && config?.gallerySelectKey) {
-				output[config.gallerySelectKey] = config.currentFolder;
-			}
-		});
+		const output = {};
+
 		
 		Object.keys(fields).forEach((key) => {
 			const type = fields[key]?.type;
@@ -169,60 +144,22 @@ const ModalGeneric = ({
 			}
 		});
 		
-		// Inclure aussi les clés d'initialData non couvertes par les fields (ex: universId)
-		Object.keys(initialData || {}).forEach((k) => {
-			if (output[k] === undefined) {
-				output[k] = initialData[k];
-			}
-		});
 		
 		return output;
 	});
 
 	const handleClose = () => {
-		// Utiliser la même logique de clé de cookie que dans l'initialisation
-		const universId = initialData?.universId;
-		const currentFolder = Object.keys(fields).find(key => fields[key]?.type === "img+") 
-			? Object.keys(fields).reduce((acc, key) => {
-				const config = fields[key];
-				if (config?.type === "img+" && config?.currentFolder) {
-					return config.currentFolder;
-				}
-				return acc;
-			}, null)
-			: null;
-		
-		const cookieKey = universId && currentFolder 
-			? `${name}_${universId}_${currentFolder}` 
-			: universId 
-			? `${name}_${universId}` 
-			: name;
-			
-		Cookies.set(cookieKey, JSON.stringify(values), { expires: 0.0208 }); 
+		if (!noMemory) {
+			Cookies.set(name, JSON.stringify(values), { expires: 0.0208 }); 
+		}
 		onClose()
 	}
 
 	const handleSave = (values) => {
 		handleSubmit(values)
-		// Utiliser la même logique de clé de cookie que dans l'initialisation
-		const universId = initialData?.universId;
-		const currentFolder = Object.keys(fields).find(key => fields[key]?.type === "img+") 
-			? Object.keys(fields).reduce((acc, key) => {
-				const config = fields[key];
-				if (config?.type === "img+" && config?.currentFolder) {
-					return config.currentFolder;
-				}
-				return acc;
-			}, null)
-			: null;
-		
-		const cookieKey = universId && currentFolder 
-			? `${name}_${universId}_${currentFolder}` 
-			: universId 
-			? `${name}_${universId}` 
-			: name;
-			
-		Cookies.remove(cookieKey)
+		if (!noMemory) {
+			Cookies.remove(name)
+		}
 	}
 
 	// Référence pour éviter la boucle infinie
@@ -329,27 +266,12 @@ const ModalGeneric = ({
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 
-	// Select embarqué pour certains champs (ex: img+)
-	const [dynamicSelects, setDynamicSelects] = useState({});
 
 	// Gestion des selects génériques: options + saisie "Autre..."
 	const [genericSelectOptions, setGenericSelectOptions] = useState({});
 	const [genericShowOther, setGenericShowOther] = useState({});
 	const [genericOtherInputs, setGenericOtherInputs] = useState({});
 
-	useEffect(() => {
-		// Initialise les selects dynamiques pour les champs concernés
-		const initial = {};
-		Object.entries(fields).forEach(([k, c]) => {
-			if (c?.type === "img+") {
-				initial[k] = {
-					options: Array.isArray(c?.selectOptions) ? c.selectOptions : [],
-					newValue: ""
-				};
-			}
-		});
-		setDynamicSelects(initial);
-	}, [fields]);
 
 
 	useEffect(() => {
@@ -416,7 +338,6 @@ const ModalGeneric = ({
 	const renderField = (key, config) => {
 		const id = key;
 		const label = config?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
-		console.log(config)
 		switch (config?.type) {
 			case "inputText":
 				return (
@@ -503,70 +424,9 @@ const ModalGeneric = ({
 					</div>
 				);
 			case "img+":
-				console.log("ouiii")
 				return (
 					<div key={key} className="cf-field">
-						{/* Select unique (API + options ajoutées), avec input à côté pour ajouter */}
-						{config?.galleryUniversIdKey && (
-							<div className={`selectGeneric ${key}-gallery-select`} style={{ marginBottom: 8 }}>
-								{(config?.gallerySelectLabel ?? "") !== "" && (
-									<label className={`label-${key}-gallery label-gal-select`} htmlFor={`gallery-select-${key}`}>
-										{config.gallerySelectLabel}
-									</label>
-								)}
-								<div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-									{(() => {
-										const parentOptions = Array.isArray(config?.selectOptions) ? config.selectOptions : [];
-										const dynOptions = dynamicSelects[key]?.options || [];
-										// Si pas de dossiers, ajouter "general" par défaut
-										const defaultOptions = parentOptions.length === 0 && dynOptions.length === 0 ? ["general"] : [];
-										const merged = [...defaultOptions, ...parentOptions, ...dynOptions.filter((o) => !parentOptions.includes(o))];
-										const selectValueKey = config?.gallerySelectKey || `${key}Folder`;
-										return (
-											<div className="boite-select-gal">
-												<select
-													id={`gallery-select-${key}`}
-													name={`${key}-gallery-select`}
-													className={`filter-select select-${key}-gallery select-imagesgal`}
-													value={values[selectValueKey] || ""}
-													onChange={(e) => setValues((prev) => ({ ...prev, [selectValueKey]: e.target.value }))}
-													disabled={merged.length === 0}
-												>
-													{merged.map((folder, idx) => (
-														<option key={`${key}-gallery-opt-${idx}`} value={folder}>{folder}</option>
-													))}
-												</select>
-												<input
-													type="text"
-													value={dynamicSelects[key]?.newValue || ""}
-													onChange={(e) => setDynamicSelects((prev) => ({
-														...prev,
-														[key]: { ...(prev[key] || { options: [], newValue: "" }), newValue: e.target.value }
-													}))}
-													placeholder="Ajouter une option..."
-												/>
-												<button
-													type="button"
-													className="button-select-gal"
-													onClick={() => {
-														const toAdd = (dynamicSelects[key]?.newValue || "").trim();
-														if (!toAdd) return;
-														setDynamicSelects((prev) => ({
-															...prev,
-															[key]: { options: [ ...(prev[key]?.options || []), toAdd ], newValue: "" }
-														}));
-														const selectValueKey = config?.gallerySelectKey || `${key}Folder`;
-														setValues((prev) => ({ ...prev, [selectValueKey]: toAdd }));
-													}}
-												>
-													Ajouter
-												</button>
-											</div>
-										);
-									})()}
-								</div>
-							</div>
-						)}
+						{config.label !== "" && <label className="tm-label label-fiche">{config.label}</label>}
 						<ImgPlus 
 							config={config}
 							values={values}
@@ -639,6 +499,7 @@ const ModalGeneric = ({
 			const id = `select-${key}`;
 			const opts = Array.isArray(genericSelectOptions[key]) ? genericSelectOptions[key] : (Array.isArray(config.value) ? config.value : []);
 			const isOther = !!genericShowOther[key];
+			const withAnother = config.another ?? false;
 			return (
 				<div key={key} className={`selectGeneric ${key}`} style={{ position: 'relative' }}>
 				{config.label !== "" && <label htmlFor={id} className={`label-${key}`}>{config.label}</label>}
@@ -664,7 +525,7 @@ const ModalGeneric = ({
 						{val}
 						</option>
 					))}
-					<option value="__other__">Autre...</option>
+					{withAnother && <option value="__other__">Autre...</option>}
 				</select>
 
 				{isOther && (

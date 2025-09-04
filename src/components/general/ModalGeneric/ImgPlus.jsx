@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 const ImgPlus = ({ config, values, setValues, handleChange, setPreviewSrc }) => {
     const { t } = useTranslation("modal");
     
-    console.log("ImgPlus component rendered with:", { config, values });
 
     // Détecter combien de champs URL existent déjà
     const urlKeyBase = "inputUrl";
