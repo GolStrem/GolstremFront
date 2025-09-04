@@ -1,28 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Masonry from "react-masonry-css";
 import { dossier }from "@assets"; // ajuste si ton alias exporte différemment
 import "./UniversCardGallerie.css";
 import { BackLocation, ModalGeneric } from "@components/index";
-import { useNavigatePage } from "@service";
-
-const DEFAULT_IMAGES = [
-  "https://i.pinimg.com/736x/e0/db/db/e0dbdb2927e1b15fa28b4245da1e425f.jpg",
-    "https://i.pinimg.com/736x/e0/db/db/e0dbdb2927e1b15fa28b4245da1e425f.jpg",
-  "https://i.pinimg.com/736x/e0/db/db/e0dbdb2927e1b15fa28b4245da1e425f.jpg",
-
-  "https://i.pinimg.com/1200x/88/1e/7e/881e7edfb44d95af1ca9ff72455c3152.jpg",
-  "https://i.pinimg.com/1200x/3b/4f/b2/3b4fb215d37f317b19b6c3bbe1fb45ab.jpg",
-  "https://i.pinimg.com/736x/95/d7/b3/95d7b3c4be244556a893484556dd6a1f.jpg",
-  "https://i.pinimg.com/736x/0b/65/c9/0b65c9b4e68b043afe1e8650612d7729.jpg",
-  "https://i.pinimg.com/1200x/cd/e9/fb/cde9fb533e796a92f05b282e2d73f186.jpg",
-  "https://i.pinimg.com/736x/95/d7/b3/95d7b3c4be244556a893484556dd6a1f.jpg",
-  "https://i.pinimg.com/736x/95/d7/b3/95d7b3c4be244556a893484556dd6a1f.jpg",
-  "https://i.pinimg.com/1200x/49/a5/fb/49a5fbf5e163b86e21626b2db4bb4e57.jpg",
-  "https://i.pinimg.com/1200x/88/1e/7e/881e7edfb44d95af1ca9ff72455c3152.jpg",
-  "https://i.pinimg.com/736x/95/d7/b3/95d7b3c4be244556a893484556dd6a1f.jpg",
-  "https://i.pinimg.com/736x/95/d7/b3/95d7b3c4be244556a893484556dd6a1f.jpg",
-  "https://i.pinimg.com/736x/9c/2b/2a/9c2b2a9785103abcb2a15772a700ca3d.jpg",
-];
+import { useNavigatePage, ApiUnivers } from "@service";
+import { useParams } from "react-router-dom";
 
 const breakpoints = {
   default: 5,
@@ -34,28 +16,138 @@ const breakpoints = {
 
 const UniversCardGallerie = ({
   title = "Gallerie Golstrem",
-  images = DEFAULT_IMAGES,
+ 
   folders = [{ label: "Mes dossiers" }, { label: "SOIREE XXX" }],
   bg, // optionnel: url de fond si tu veux un wallpaper derrière
   onOpenFolder,
   onAddClick,
   onDeleteImages, // nouvelle prop pour gérer la suppression
   onDeleteFolders, // nouvelle prop pour gérer la suppression des dossiers
+  universId, // id de l'univers pour alimenter la liste des dossiers via API
 }) => {
   const navigatePage = useNavigatePage();
+  const { id: routeUniversId, folder: routeFolder } = useParams() || {};
+  const effectiveUniversId = useMemo(() => universId || routeUniversId, [universId, routeUniversId]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedForDeletion, setSelectedForDeletion] = useState(new Set());
   const [selectedFoldersForDeletion, setSelectedFoldersForDeletion] = useState(new Set());
   const [isAddImagesModalOpen, setIsAddImagesModalOpen] = useState(false);
 
+  // Etat provenant de l'API
+  const [apiFolders, setApiFolders] = useState([]);
+  const [currentFolder, setCurrentFolder] = useState(null);
+  const [apiImages, setApiImages] = useState([]);
+
+  // Titre dynamique selon l'état
+  const [universName, setUniversName] = useState("");
+  const [currentFolderLabel, setCurrentFolderLabel] = useState("");
+  const dynamicTitle = useMemo(() => {
+    const base = universName || String(effectiveUniversId || "");
+    if (!base) return title;
+    return currentFolder ? `${base} - ${currentFolderLabel || currentFolder}` : `Gallerie ${base}`;
+  }, [universName, effectiveUniversId, currentFolder, currentFolderLabel, title]);
+
   // Configuration des champs pour la modal d'ajout d'images
   const addImagesFields = {
     inputUrl0: {
       type: "img+",
-      label: "Image:"
+      label: "Image:",
+      // Active le select des dossiers récupéré via API
+      galleryUniversIdKey: "universId",
+      gallerySelectKey: "galleryFolder",
+      gallerySelectLabel: "Dossier de gallerie",
     }
   };
+  // Charger la liste des dossiers depuis l'API
+  useEffect(() => {
+    const loadFolders = async () => {
+      if (!effectiveUniversId) return;
+      try {
+        const res = await ApiUnivers.getFolderGallerie(effectiveUniversId);
+        // Tolérant: accepte un tableau de chaînes, ou un tableau d'objets { name/label, count }
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        const normalized = list.map((item) => {
+          if (typeof item === 'string') return { label: item, count: undefined, value: item };
+          const name = item?.name || item?.label || item?.folder || "";
+          return { label: name, count: item?.count, value: name };
+        });
+        setApiFolders(normalized);
+      } catch (e) {
+        console.error("Erreur chargement dossiers gallerie:", e);
+        setApiFolders([]);
+      }
+    };
+    loadFolders();
+  }, [effectiveUniversId]);
+
+  // Charger le nom de l'univers
+  useEffect(() => {
+    const loadUniversName = async () => {
+      if (!effectiveUniversId) return;
+      try {
+        const res = await ApiUnivers.getDetailUnivers(effectiveUniversId);
+        const name = res?.data?.name || String(effectiveUniversId);
+        setUniversName(name);
+      } catch {
+        setUniversName(String(effectiveUniversId || ""));
+      }
+    };
+    loadUniversName();
+  }, [effectiveUniversId]);
+
+  // Ouvrir un dossier: charger ses images
+  const onOpenFolderInternal = async (folderObj) => {
+    if (!effectiveUniversId || !folderObj?.value) return;
+    try {
+      const res = await ApiUnivers.getImageGallerieByFolder(effectiveUniversId, folderObj.value);
+      const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+      // Tolérant: images soit strings, soit objets { id, url, image, src }
+      const normalized = list
+        .map((it) => {
+          if (typeof it === 'string') return { id: undefined, url: it };
+          const url = it?.url || it?.image || it?.src || "";
+          const id = it?.id ?? it?.imageId ?? it?.galleryId;
+          return { id, url };
+        })
+        .filter((it) => Boolean(it.url));
+      setApiImages(normalized);
+      setCurrentFolder(folderObj.value);
+      setCurrentFolderLabel(folderObj.label || folderObj.value);
+    } catch (e) {
+      console.error("Erreur chargement images du dossier:", e);
+      setApiImages([]);
+      setCurrentFolder(folderObj.value);
+      setCurrentFolderLabel(folderObj.label || folderObj.value);
+    }
+  };
+
+  // Charger automatiquement un dossier si le paramètre d'URL :folder est présent
+  useEffect(() => {
+    if (routeFolder) {
+      // Essayer de résoudre le label depuis la liste
+      const match = (apiFolders || []).find((f) => f?.value === routeFolder || f?.label === routeFolder);
+      if (match) {
+        setCurrentFolderLabel(match.label || match.value);
+        onOpenFolderInternal(match);
+      } else {
+        setCurrentFolderLabel(routeFolder);
+        onOpenFolderInternal({ value: routeFolder, label: routeFolder });
+      }
+    }
+  }, [routeFolder, apiFolders]);
+  const displayedImages = Array.isArray(apiImages) ? apiImages : [];
+
+  // Si on est sur /gallerie (pas de dossier), pas d'images et au moins un dossier, rediriger vers le premier dossier
+  useEffect(() => {
+    if (!routeFolder && effectiveUniversId && Array.isArray(apiFolders) && apiFolders.length > 0 && displayedImages.length === 0) {
+      const first = apiFolders[0];
+      const target = first?.value || first?.label;
+      if (target) {
+        navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target)}`);
+      }
+    }
+  }, [routeFolder, effectiveUniversId, apiFolders, displayedImages.length]);
 
   // Fonction pour ouvrir l'aperçu d'une image
   const handleImageClick = (imageSrc, imageIndex) => {
@@ -82,6 +174,8 @@ const UniversCardGallerie = ({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedImage]);
+
+  
 
   // Activer/désactiver le mode suppression
   const toggleDeleteMode = () => {
@@ -118,55 +212,125 @@ const UniversCardGallerie = ({
   };
 
   // Fonction pour gérer la soumission de la modal d'ajout d'images
-  const handleAddImagesSubmit = (formData) => {
+  const handleAddImagesSubmit = async (formData) => {
     const newImages = [];
-    
-    // Récupérer toutes les URLs d'images non vides depuis les champs inputUrl
     Object.keys(formData).forEach(key => {
       if (key.startsWith('inputUrl') && formData[key] && formData[key].trim() !== '') {
         newImages.push(formData[key].trim());
       }
     });
 
-    // Si on a des nouvelles images, les ajouter à la liste existante
-    if (newImages.length > 0) {
-      // Appeler la fonction de callback si elle existe
-      if (onAddClick && typeof onAddClick === 'function') {
-        onAddClick(newImages);
-      }
-      
-      // Fermer la modal
+    const folder = formData.galleryFolder || currentFolder;
+    if (!effectiveUniversId || !folder || newImages.length === 0) {
       setIsAddImagesModalOpen(false);
+      return;
+    }
+
+    try {
+      // Si un callback externe est fourni, le prioriser
+      if (onAddClick && typeof onAddClick === 'function') {
+        onAddClick(newImages, folder);
+      } else {
+        await Promise.all(newImages.map((img) => ApiUnivers.createImageGallerie(effectiveUniversId, { folder, image: img })));
+      }
+    } catch (e) {
+      console.error("Erreur lors de l'ajout d'images:", e);
+    } finally {
+      setIsAddImagesModalOpen(false);
+      // Rafraîchir le dossier courant et la liste des dossiers
+      if (folder) {
+        onOpenFolderInternal({ value: folder });
+      }
+      try {
+        const res = await ApiUnivers.getFolderGallerie(effectiveUniversId);
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        const normalized = list.map((item) => {
+          if (typeof item === 'string') return { label: item, count: undefined, value: item };
+          const name = item?.name || item?.label || item?.folder || "";
+          return { label: name, count: item?.count, value: name };
+        });
+        setApiFolders(normalized);
+      } catch {}
     }
   };
 
   // Supprimer les images et dossiers sélectionnés
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     let hasDeletions = false;
-    
-    // Supprimer les images sélectionnées
-    if (selectedForDeletion.size > 0) {
-      const selectedIndices = Array.from(selectedForDeletion).sort((a, b) => b - a);
-      if (onDeleteImages) {
-        onDeleteImages(selectedIndices);
+    try {
+      // Supprimer les images sélectionnées
+      if (selectedForDeletion.size > 0 && effectiveUniversId) {
+        const selectedIndices = Array.from(selectedForDeletion).sort((a, b) => b - a);
+        const selectedImages = selectedIndices.map((i) => displayedImages[i]).filter(Boolean);
+
+        const imagesWithId = selectedImages.filter((im) => im?.id != null);
+        const imagesWithoutId = selectedImages.filter((im) => im?.id == null);
+
+        // Suppression par ID si disponible
+        if (imagesWithId.length > 0) {
+          await Promise.all(
+            imagesWithId.map((im) => ApiUnivers.deleteImageGallerie(effectiveUniversId, im.id))
+          );
+          hasDeletions = true;
+        }
+
+        // Fallback suppression massive par URLs si pas d'ID
+        if (imagesWithoutId.length > 0 && currentFolder) {
+          const urls = imagesWithoutId.map((im) => im.url).filter(Boolean);
+          if (urls.length > 0 && typeof ApiUnivers.massDeleteImageGallerie === 'function') {
+            await ApiUnivers.massDeleteImageGallerie(effectiveUniversId, { folder: currentFolder, images: urls });
+            hasDeletions = true;
+          }
+        }
       }
-      hasDeletions = true;
-    }
-    
-    // Supprimer les dossiers sélectionnés
-    if (selectedFoldersForDeletion.size > 0) {
-      const selectedFolderIndices = Array.from(selectedFoldersForDeletion).sort((a, b) => b - a);
-      if (onDeleteFolders) {
-        onDeleteFolders(selectedFolderIndices);
+
+      // Supprimer les dossiers sélectionnés
+      if (selectedFoldersForDeletion.size > 0 && effectiveUniversId) {
+        const selectedFolderIndices = Array.from(selectedFoldersForDeletion).sort((a, b) => b - a);
+        const foldersList = (apiFolders.length > 0 ? apiFolders : folders);
+        const names = selectedFolderIndices
+          .map((idx) => foldersList[idx])
+          .map((f) => f?.value || f?.label)
+          .filter(Boolean);
+        if (names.length > 0) {
+          await Promise.all(names.map((name) => ApiUnivers.deleteImageGallerieByFolder(effectiveUniversId, name)));
+          hasDeletions = true;
+        }
       }
-      hasDeletions = true;
-    }
-    
-    // Réinitialiser le mode suppression seulement si des éléments ont été supprimés
-    if (hasDeletions) {
-      setDeleteMode(false);
-      setSelectedForDeletion(new Set());
-      setSelectedFoldersForDeletion(new Set());
+
+      // Rafraîchir l'état si suppression effectuée
+      if (hasDeletions) {
+        setDeleteMode(false);
+        setSelectedForDeletion(new Set());
+        setSelectedFoldersForDeletion(new Set());
+
+        // Refresh dossiers
+        try {
+          const res = await ApiUnivers.getFolderGallerie(effectiveUniversId);
+          const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+          const normalized = list.map((item) => {
+            if (typeof item === 'string') return { label: item, count: undefined, value: item };
+            const name = item?.name || item?.label || item?.folder || "";
+            return { label: name, count: item?.count, value: name };
+          });
+          setApiFolders(normalized);
+        } catch {}
+
+        // Refresh images du dossier courant si toujours présent, sinon redirect vers /gallerie
+        if (currentFolder) {
+          try {
+            await onOpenFolderInternal({ value: currentFolder });
+          } catch {
+            // en cas d'erreur on redirige
+            if (effectiveUniversId) navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+          }
+        } else {
+          setApiImages([]);
+          if (effectiveUniversId) navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+        }
+      }
+    } catch (e) {
+      console.error('Erreur lors de la suppression:', e);
     }
   };
 
@@ -187,11 +351,11 @@ const UniversCardGallerie = ({
     >
       <BackLocation />
       <header className="uni-gal-header">
-        <h1>{title}</h1>
+        <h1>{dynamicTitle}</h1>
       </header>
 
       <div className="uni-folders">
-        {folders.map((f, i) => (
+        {(apiFolders.length > 0 ? apiFolders : folders).map((f, i) => (
           <div key={i} className={`uni-folder-container ${deleteMode ? 'delete-mode' : ''}`}>
             {deleteMode && (
               <div className="uni-folder-checkbox-container">
@@ -206,12 +370,23 @@ const UniversCardGallerie = ({
             <button
               className="uni-folder"
               type="button"
-              onClick={() => onOpenFolder?.(f)}
-              title={f.label}
+              onClick={() => {
+                if (onOpenFolder) {
+                  onOpenFolder(f);
+                  return;
+                }
+                const target = f.value || f.label;
+                if (target && effectiveUniversId) {
+                  navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target)}`);
+                } else {
+                  onOpenFolderInternal(f);
+                }
+              }}
+              title={f.label || f.value}
               disabled={deleteMode}
             >
               <img src={dossier} alt="" aria-hidden="true" />
-              <span>{f.label}</span>
+              <span>{f.label || f.value}</span>
             </button>
           </div>
         ))}
@@ -222,11 +397,11 @@ const UniversCardGallerie = ({
         className="uni-masonry"
         columnClassName="uni-masonry_column"
       >
-        {images.map((src, idx) => (
+        {displayedImages.map((imgObj, idx) => (
           <div 
             className={`uni-card ${deleteMode ? 'delete-mode' : ''}`}
-            key={src + idx}
-            onClick={() => handleImageClick(src, idx)}
+            key={(imgObj.url || '') + idx}
+            onClick={() => handleImageClick(imgObj.url, idx)}
             style={{ cursor: deleteMode ? 'default' : 'pointer' }}
           >
             {deleteMode && (
@@ -241,7 +416,7 @@ const UniversCardGallerie = ({
               </div>
             )}
             <img
-              src={src}
+              src={imgObj.url}
               alt={`Galerie image ${idx + 1}`}
               loading="lazy"
               decoding="async"
@@ -327,9 +502,9 @@ const UniversCardGallerie = ({
                 className="uni-pr-arrow uni-pr-left"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedImage({ 
-                    src: images[selectedImage.index - 1], 
-                    index: selectedImage.index - 1 
+                  setSelectedImage({
+                    src: displayedImages[selectedImage.index - 1],
+                    index: selectedImage.index - 1
                   });
                 }}
               >
@@ -338,14 +513,14 @@ const UniversCardGallerie = ({
             )}
             
             {/* Flèche droite */}
-            {selectedImage.index < images.length - 1 && (
+            {selectedImage.index < displayedImages.length - 1 && (
               <button 
                 className="uni-pr-arrow uni-pr-right"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedImage({ 
-                    src: images[selectedImage.index + 1], 
-                    index: selectedImage.index + 1 
+                  setSelectedImage({
+                    src: displayedImages[selectedImage.index + 1],
+                    index: selectedImage.index + 1
                   });
                 }}
               >
@@ -361,6 +536,7 @@ const UniversCardGallerie = ({
         <ModalGeneric
           onClose={() => setIsAddImagesModalOpen(false)}
           handleSubmit={handleAddImagesSubmit}
+          initialData={{ universId: effectiveUniversId }}
           fields={addImagesFields}
           title="Ajouter des images"
           noButtonCancel={false}

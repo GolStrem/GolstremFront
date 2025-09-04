@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
 import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter, ImgPlus  } from "@components";
-import { isValidImageUrl, ApiService } from "@service";
+import { isValidImageUrl, ApiService, ApiUnivers } from "@service";
 import Cookies from "js-cookie";
 import "../fiche/modal/FicheEditModal.css";
 import "./ModalGeneric.css"
@@ -251,6 +251,70 @@ const ModalGeneric = ({
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 
+	// Select embarqué pour certains champs (ex: img+)
+	const [dynamicSelects, setDynamicSelects] = useState({});
+	// Dossiers de gallerie récupérés via API par champ
+	const [galleryFolders, setGalleryFolders] = useState({});
+
+	// Gestion des selects génériques: options + saisie "Autre..."
+	const [genericSelectOptions, setGenericSelectOptions] = useState({});
+	const [genericShowOther, setGenericShowOther] = useState({});
+	const [genericOtherInputs, setGenericOtherInputs] = useState({});
+
+	useEffect(() => {
+		// Initialise les selects dynamiques pour les champs concernés
+		const initial = {};
+		Object.entries(fields).forEach(([k, c]) => {
+			if (c?.type === "img+") {
+				initial[k] = {
+					options: Array.isArray(c?.selectOptions) ? c.selectOptions : [],
+					newValue: ""
+				};
+			}
+		});
+		setDynamicSelects(initial);
+	}, [fields]);
+
+	// Chargement des dossiers de galerie depuis l'API selon l'universId fourni par le formulaire
+	useEffect(() => {
+		const controller = new AbortController();
+		const load = async () => {
+			const updates = {};
+			for (const [k, c] of Object.entries(fields)) {
+				if (c?.type === "img+" && c?.galleryUniversIdKey) {
+					const universId = values[c.galleryUniversIdKey];
+					if (!universId) continue;
+					try {
+						const res = await ApiUnivers.getFolderGallerie(universId);
+						const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+						updates[k] = list;
+					} catch (e) {
+						console.error("Erreur chargement folders gallerie", e);
+						updates[k] = [];
+					}
+				}
+			}
+			if (Object.keys(updates).length > 0) {
+				setGalleryFolders((prev) => ({ ...prev, ...updates }));
+			}
+		};
+		load();
+		return () => controller.abort();
+	}, [fields, values]);
+
+	useEffect(() => {
+		// Initialise les options locales pour les selects génériques
+		const initial = {};
+		Object.entries(fields).forEach(([k, c]) => {
+			if (c?.type === "select") {
+				initial[k] = Array.isArray(c.value) ? c.value : [];
+			}
+		});
+		setGenericSelectOptions(initial);
+		setGenericShowOther({});
+		setGenericOtherInputs({});
+	}, [fields]);
+
 	const handleChange = (key) => (e) => {
 		const nextValue = e?.target?.value ?? "";
 		setValues((prev) => ({ ...prev, [key]: nextValue }));
@@ -402,6 +466,77 @@ const ModalGeneric = ({
 							handleChange={handleChange}
 							setPreviewSrc={setPreviewSrc}
 						/>
+						{/* Select API dossiers galerie si demandé */}
+						{config?.galleryUniversIdKey && (
+							<div className={`selectGeneric ${key}-gallery-select`} style={{ marginTop: 8 }}>
+								{(config?.gallerySelectLabel ?? "") !== "" && (
+									<label className={`label-${key}-gallery`} htmlFor={`gallery-select-${key}`}>
+										{config.gallerySelectLabel}
+									</label>
+								)}
+								<select
+									id={`gallery-select-${key}`}
+									name={`${key}-gallery-select`}
+									className={`filter-select select-${key}-gallery`}
+									value={values[config?.gallerySelectKey || `${key}Folder`] || ""}
+									onChange={(e) => setValues((prev) => ({ ...prev, [config?.gallerySelectKey || `${key}Folder`]: e.target.value }))}
+									disabled={!Array.isArray(galleryFolders[key]) || galleryFolders[key].length === 0}
+								>
+									{Array.isArray(galleryFolders[key]) && galleryFolders[key].map((folder, idx) => (
+										<option key={`${key}-gallery-opt-${idx}`} value={folder}>{folder}</option>
+									))}
+								</select>
+							</div>
+						)}
+						{/* Select embarqué avec ajout d'options */}
+						{dynamicSelects[key] && (
+							<div className={`selectGeneric ${key}-embedded-select`}>
+								{(config?.selectLabel ?? "") !== "" && (
+									<label className={`label-${key}-embedded`} htmlFor={`embedded-select-${key}`}>
+										{config.selectLabel}
+									</label>
+								)}
+								<div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 6 }}>
+									<select
+										id={`embedded-select-${key}`}
+										name={`${key}-embedded-select`}
+										className={`filter-select select-${key}-embedded`}
+										value={values[config?.selectKey || `${key}Select`] || ""}
+										onChange={(e) => {
+											const val = e.target.value;
+											setValues((prev) => ({ ...prev, [config?.selectKey || `${key}Select`]: val }));
+										}}
+									>
+										{dynamicSelects[key].options.map((val, idx) => (
+											<option key={`${key}-emb-opt-${idx}`} value={val}>{val}</option>
+										))}
+									</select>
+									<input 
+										type="text" 
+										value={dynamicSelects[key].newValue}
+										onChange={(e) => setDynamicSelects((prev) => ({
+											...prev,
+											[key]: { ...prev[key], newValue: e.target.value }
+										}))}
+										placeholder="Ajouter une option..."
+									/>
+									<button 
+										type="button"
+										onClick={() => {
+											const toAdd = (dynamicSelects[key].newValue || "").trim();
+											if (!toAdd) return;
+											setDynamicSelects((prev) => ({
+												...prev,
+												[key]: { options: [...prev[key].options, toAdd], newValue: "" }
+											}));
+											setValues((prev) => ({ ...prev, [config?.selectKey || `${key}Select`]: toAdd }));
+										}}
+									>
+										Ajouter
+									</button>
+								</div>
+							</div>
+						)}
 					</div>
 				);
 			case "textTextArea+":
@@ -465,24 +600,75 @@ const ModalGeneric = ({
 				);
 			case "select": {
 			const id = `select-${key}`;
+			const opts = Array.isArray(genericSelectOptions[key]) ? genericSelectOptions[key] : (Array.isArray(config.value) ? config.value : []);
+			const isOther = !!genericShowOther[key];
 			return (
-				<div key={key} className={`selectGeneric ${key}`}>
+				<div key={key} className={`selectGeneric ${key}`} style={{ position: 'relative' }}>
 				{config.label !== "" && <label htmlFor={id} className={`label-${key}`}>{config.label}</label>}
 
 				<select 
 					id={id} 
 					name={key} 
 					className={`filter-select select-${key}`}
-					value={values[key] || ""}
-					onChange={handleChange(key)}
+					value={isOther ? "__other__" : (values[key] || "")}
+					onChange={(e) => {
+						const val = e.target.value;
+						if (val === "__other__") {
+							setGenericShowOther((prev) => ({ ...prev, [key]: true }));
+							setGenericOtherInputs((prev) => ({ ...prev, [key]: "" }));
+						} else {
+							setGenericShowOther((prev) => ({ ...prev, [key]: false }));
+							setValues((prev) => ({ ...prev, [key]: val }));
+						}
+					}}
 				>
-					{Array.isArray(config.value) &&
-					config.value.map((val, idx) => (
+					{opts.map((val, idx) => (
 						<option key={`${key}-opt-${idx}`} value={val}>
 						{val}
 						</option>
 					))}
+					<option value="__other__">Autre...</option>
 				</select>
+
+				{isOther && (
+					<input
+						type="text"
+						value={genericOtherInputs[key] || ""}
+						onChange={(e) => setGenericOtherInputs((prev) => ({ ...prev, [key]: e.target.value }))}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter') {
+								const newVal = (genericOtherInputs[key] || "").trim();
+								if (!newVal) return;
+								setGenericSelectOptions((prev) => ({ ...prev, [key]: [...(prev[key] || opts), newVal] }));
+								setValues((prev) => ({ ...prev, [key]: newVal }));
+								setGenericShowOther((prev) => ({ ...prev, [key]: false }));
+								setGenericOtherInputs((prev) => ({ ...prev, [key]: "" }));
+							}
+						}}
+						onBlur={() => {
+							const newVal = (genericOtherInputs[key] || "").trim();
+							if (newVal) {
+								setGenericSelectOptions((prev) => ({ ...prev, [key]: [...(prev[key] || opts), newVal] }));
+								setValues((prev) => ({ ...prev, [key]: newVal }));
+							}
+							setGenericShowOther((prev) => ({ ...prev, [key]: false }));
+							setGenericOtherInputs((prev) => ({ ...prev, [key]: "" }));
+						}}
+						style={{
+							position: 'absolute',
+							top: config.label !== "" ? 28 : 0,
+							left: 0,
+							right: 0,
+							height: '100%',
+							padding: '8px 12px',
+							border: '1px solid #ccc',
+							borderRadius: 4,
+							background: 'white',
+							zIndex: 2
+						}}
+						placeholder="Saisir autre..."
+					/>
+				)}
 				</div>
 			);
 			}
