@@ -1,22 +1,16 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import "./BackLocation.css";
 
 const BackLocation = ({ className = "", title = "Retour" }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Utilisation optimisée des icônes
-
-
-  // Sauvegarder la page d'origine si elle est fournie
-  if (location.state?.from !== undefined) {
-    localStorage.setItem('lastPage', location.state?.from);
-  }
 
   const handleGoBack = () => {
-    navigate(localStorage.getItem('lastPage') ?? '/fiches');
+    const pilePage = JSON.parse(localStorage.getItem('pilePage') ?? '[]')
+    const newPage = pilePage.pop()
+    localStorage.setItem('pilePage', JSON.stringify(pilePage))
+    navigate(newPage ?? '/dashboard');
   };
 
   return (
