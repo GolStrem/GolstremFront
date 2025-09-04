@@ -59,7 +59,7 @@ const UniversCardGallerie = ({
     },
     inputUrl0: {
       type: "img+",
-      label: "Image:",
+      label: " ",
     }
   }), [apiFolders, currentFolder]);
   // Charger la liste des dossiers depuis l'API

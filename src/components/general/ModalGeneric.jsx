@@ -554,15 +554,15 @@ const ModalGeneric = ({
 						}}
 						style={{
 							position: 'absolute',
-							top: config.label !== "" ? 28 : 0,
-							left: 0,
+							top: config.label !== "" ? 46 : 0,
+							left: -10,
 							right: 0,
-							height: '100%',
-							padding: '8px 12px',
-							border: '1px solid #ccc',
+							padding: '9px',
 							borderRadius: 4,
-							background: 'white',
-							zIndex: 2
+							zIndex: 2,
+							width: 115,
+							
+							
 						}}
 						placeholder="Saisir autre..."
 					/>
