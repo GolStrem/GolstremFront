@@ -31,8 +31,25 @@ const ModalGeneric = ({
 	
 
 	const [values, setValues] = useState(() => {
+		// Créer une clé de cookie unique par univers et dossier pour éviter les conflits
+		const universId = initialData?.universId;
+		const currentFolder = Object.keys(fields).find(key => fields[key]?.type === "img+") 
+			? Object.keys(fields).reduce((acc, key) => {
+				const config = fields[key];
+				if (config?.type === "img+" && config?.currentFolder) {
+					return config.currentFolder;
+				}
+				return acc;
+			}, null)
+			: null;
+		
+		const cookieKey = universId && currentFolder 
+			? `${name}_${universId}_${currentFolder}` 
+			: universId 
+			? `${name}_${universId}` 
+			: name;
 
-		const cookie = Cookies.get(name)
+		const cookie = Cookies.get(cookieKey)
 		if (cookie) {
 			try {
 				const parsed = JSON.parse(cookie)
@@ -42,7 +59,15 @@ const ModalGeneric = ({
 			}
 		}
 
-		const output = {};
+		// Pré-sélectionner le dossier courant pour les champs img+
+		const output = { ...initialData };
+		Object.keys(fields).forEach((key) => {
+			const config = fields[key];
+			if (config?.type === "img+" && config?.currentFolder && config?.gallerySelectKey) {
+				output[config.gallerySelectKey] = config.currentFolder;
+			}
+		});
+		
 		Object.keys(fields).forEach((key) => {
 			const type = fields[key]?.type;
 			if (type === "texteImg+") {
@@ -118,6 +143,12 @@ const ModalGeneric = ({
 				for (let i = 0; i < existingCount; i++) {
 					output[`inputUrl${i}`] = initialData[`inputUrl${i}`] ?? initialData.inputUrl ?? "";
 				}
+				
+				// Pré-sélectionner le dossier courant si configuré
+				const config = fields[key];
+				if (config?.currentFolder && config?.gallerySelectKey) {
+					output[config.gallerySelectKey] = config.currentFolder;
+				}
 			} else if (type === "chapter") {
 				// Gérer les chapitres - accepter tous les formats de clés
 				const allKeys = Object.keys(initialData);
@@ -137,24 +168,61 @@ const ModalGeneric = ({
 				output[key] = initialData[key] ?? "";
 			}
 		});
+		
 		// Inclure aussi les clés d'initialData non couvertes par les fields (ex: universId)
 		Object.keys(initialData || {}).forEach((k) => {
 			if (output[k] === undefined) {
 				output[k] = initialData[k];
 			}
 		});
-
+		
 		return output;
 	});
 
 	const handleClose = () => {
-		Cookies.set(name, JSON.stringify(values), { expires: 0.0208 }); 
+		// Utiliser la même logique de clé de cookie que dans l'initialisation
+		const universId = initialData?.universId;
+		const currentFolder = Object.keys(fields).find(key => fields[key]?.type === "img+") 
+			? Object.keys(fields).reduce((acc, key) => {
+				const config = fields[key];
+				if (config?.type === "img+" && config?.currentFolder) {
+					return config.currentFolder;
+				}
+				return acc;
+			}, null)
+			: null;
+		
+		const cookieKey = universId && currentFolder 
+			? `${name}_${universId}_${currentFolder}` 
+			: universId 
+			? `${name}_${universId}` 
+			: name;
+			
+		Cookies.set(cookieKey, JSON.stringify(values), { expires: 0.0208 }); 
 		onClose()
 	}
 
 	const handleSave = (values) => {
 		handleSubmit(values)
-		Cookies.remove(name)
+		// Utiliser la même logique de clé de cookie que dans l'initialisation
+		const universId = initialData?.universId;
+		const currentFolder = Object.keys(fields).find(key => fields[key]?.type === "img+") 
+			? Object.keys(fields).reduce((acc, key) => {
+				const config = fields[key];
+				if (config?.type === "img+" && config?.currentFolder) {
+					return config.currentFolder;
+				}
+				return acc;
+			}, null)
+			: null;
+		
+		const cookieKey = universId && currentFolder 
+			? `${name}_${universId}_${currentFolder}` 
+			: universId 
+			? `${name}_${universId}` 
+			: name;
+			
+		Cookies.remove(cookieKey)
 	}
 
 	// Référence pour éviter la boucle infinie
@@ -263,8 +331,6 @@ const ModalGeneric = ({
 
 	// Select embarqué pour certains champs (ex: img+)
 	const [dynamicSelects, setDynamicSelects] = useState({});
-	// Dossiers de gallerie récupérés via API par champ
-	const [galleryFolders, setGalleryFolders] = useState({});
 
 	// Gestion des selects génériques: options + saisie "Autre..."
 	const [genericSelectOptions, setGenericSelectOptions] = useState({});
@@ -285,38 +351,6 @@ const ModalGeneric = ({
 		setDynamicSelects(initial);
 	}, [fields]);
 
-	// Chargement des dossiers de galerie depuis l'API selon l'universId fourni par le formulaire
-	useEffect(() => {
-		const controller = new AbortController();
-		const load = async () => {
-			const updates = {};
-			for (const [k, c] of Object.entries(fields)) {
-				if (c?.type === "img+" && c?.galleryUniversIdKey) {
-					const universId = values[c.galleryUniversIdKey];
-					if (!universId) continue;
-					try {
-						const res = await ApiUnivers.getFolderGallerie(universId);
-						const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
-						const names = list
-							.map((item) => {
-								if (typeof item === 'string') return item;
-								return item?.name || item?.label || item?.folder || "";
-							})
-							.filter(Boolean);
-						updates[k] = names;
-					} catch (e) {
-						console.error("Erreur chargement folders gallerie", e);
-						updates[k] = [];
-					}
-				}
-			}
-			if (Object.keys(updates).length > 0) {
-				setGalleryFolders((prev) => ({ ...prev, ...updates }));
-			}
-		};
-		load();
-		return () => controller.abort();
-	}, [fields, values]);
 
 	useEffect(() => {
 		// Initialise les options locales pour les selects génériques
@@ -482,9 +516,11 @@ const ModalGeneric = ({
 								)}
 								<div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
 									{(() => {
-										const apiOptions = Array.isArray(galleryFolders[key]) ? galleryFolders[key] : [];
+										const parentOptions = Array.isArray(config?.selectOptions) ? config.selectOptions : [];
 										const dynOptions = dynamicSelects[key]?.options || [];
-										const merged = [...apiOptions, ...dynOptions.filter((o) => !apiOptions.includes(o))];
+										// Si pas de dossiers, ajouter "general" par défaut
+										const defaultOptions = parentOptions.length === 0 && dynOptions.length === 0 ? ["general"] : [];
+										const merged = [...defaultOptions, ...parentOptions, ...dynOptions.filter((o) => !parentOptions.includes(o))];
 										const selectValueKey = config?.gallerySelectKey || `${key}Folder`;
 										return (
 											<div className="boite-select-gal">

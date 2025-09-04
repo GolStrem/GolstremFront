@@ -49,7 +49,7 @@ const UniversCardGallerie = ({
   }, [universName, effectiveUniversId, currentFolder, currentFolderLabel, title]);
 
   // Configuration des champs pour la modal d'ajout d'images
-  const addImagesFields = {
+  const addImagesFields = useMemo(() => ({
     inputUrl0: {
       type: "img+",
       label: "Image:",
@@ -57,8 +57,12 @@ const UniversCardGallerie = ({
       galleryUniversIdKey: "universId",
       gallerySelectKey: "galleryFolder",
       gallerySelectLabel: "Dossier de gallerie",
+      // Passer les options de dossiers depuis le composant parent
+      selectOptions: apiFolders.map(f => f.label || f.value).filter(Boolean),
+      // Passer le dossier courant pour le pré-sélectionner
+      currentFolder: currentFolder
     }
-  };
+  }), [apiFolders, currentFolder]);
   // Charger la liste des dossiers depuis l'API
   useEffect(() => {
     const loadFolders = async () => {
@@ -150,6 +154,23 @@ const UniversCardGallerie = ({
     }
   }, [routeFolder, effectiveUniversId, apiFolders, displayedImages.length]);
 
+  // Si on est dans un dossier vide, rediriger vers un autre dossier ou /gallerie
+  useEffect(() => {
+    if (routeFolder && effectiveUniversId && displayedImages.length === 0 && apiFolders.length > 0) {
+      const currentFolderExists = apiFolders.some(f => f.value === routeFolder);
+      if (!currentFolderExists) {
+        // Le dossier courant n'existe plus, rediriger vers un autre
+        const otherFolders = apiFolders.filter(f => f.value !== routeFolder);
+        if (otherFolders.length > 0) {
+          const target = otherFolders[0];
+          navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target.value)}`);
+        } else {
+          navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+        }
+      }
+    }
+  }, [routeFolder, effectiveUniversId, displayedImages.length, apiFolders]);
+
   // Fonction pour ouvrir l'aperçu d'une image
   const handleImageClick = (imageSrc, imageIndex) => {
     if (!deleteMode) {
@@ -221,8 +242,8 @@ const UniversCardGallerie = ({
       }
     });
 
-    const folder = formData.galleryFolder || currentFolder;
-    if (!effectiveUniversId || !folder || newImages.length === 0) {
+    const folder = formData.galleryFolder || currentFolder || "general";
+    if (!effectiveUniversId || newImages.length === 0) {
       setIsAddImagesModalOpen(false);
       return;
     }
@@ -320,13 +341,22 @@ const UniversCardGallerie = ({
           setApiFolders(normalized);
         } catch {}
 
-        // Refresh images du dossier courant si toujours présent, sinon redirect vers /gallerie
+        // Refresh images du dossier courant si toujours présent, sinon redirect vers un autre dossier ou /gallerie
         if (currentFolder) {
           try {
             await onOpenFolderInternal({ value: currentFolder });
           } catch {
-            // en cas d'erreur on redirige
-            if (effectiveUniversId) navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+            // en cas d'erreur, essayer de rediriger vers un autre dossier
+            const remainingFolders = apiFolders.filter(f => f.value !== currentFolder);
+            if (remainingFolders.length > 0) {
+              const target = remainingFolders[0];
+              if (effectiveUniversId) {
+                navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(target.value)}`);
+              }
+            } else {
+              setApiImages([]);
+              if (effectiveUniversId) navigatePage(`/univers/${effectiveUniversId}/gallerie`);
+            }
           }
         } else {
           setApiImages([]);
