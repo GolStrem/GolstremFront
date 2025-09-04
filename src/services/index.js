@@ -14,6 +14,7 @@ export { default as useFicheHandler } from './handler/useFicheHandler';
 export { default as ProtectedRoute} from './ProtectedRoute';
 
 export { normalize } from './utils/Normalize'
+export { default as DroitAccess } from './utils/DroitAccess'
 
 
 export { default as isValidImageUrl} from './hook/validators'
