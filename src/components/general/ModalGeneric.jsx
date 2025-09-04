@@ -34,7 +34,12 @@ const ModalGeneric = ({
 
 		const cookie = Cookies.get(name)
 		if (cookie) {
-			return JSON.parse(cookie)
+			try {
+				const parsed = JSON.parse(cookie)
+				return { ...initialData, ...parsed }
+			} catch (e) {
+				return { ...initialData }
+			}
 		}
 
 		const output = {};
@@ -131,8 +136,13 @@ const ModalGeneric = ({
 			} else {
 				output[key] = initialData[key] ?? "";
 			}
-	});
-				
+		});
+		// Inclure aussi les clés d'initialData non couvertes par les fields (ex: universId)
+		Object.keys(initialData || {}).forEach((k) => {
+			if (output[k] === undefined) {
+				output[k] = initialData[k];
+			}
+		});
 
 		return output;
 	});
@@ -287,7 +297,13 @@ const ModalGeneric = ({
 					try {
 						const res = await ApiUnivers.getFolderGallerie(universId);
 						const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
-						updates[k] = list;
+						const names = list
+							.map((item) => {
+								if (typeof item === 'string') return item;
+								return item?.name || item?.label || item?.folder || "";
+							})
+							.filter(Boolean);
+						updates[k] = names;
 					} catch (e) {
 						console.error("Erreur chargement folders gallerie", e);
 						updates[k] = [];
@@ -330,15 +346,12 @@ const ModalGeneric = ({
 			}
 		}
 
-		// Vérifier les champs dans les composants texteImg+
-		const texteImgFields = Object.entries(fields).filter(([key, config]) => config?.type === "texteImg+");
-		for (const [key] of texteImgFields) {
-			const urlRegex = /^inputUrl(\d+)$/;
-			const urlKeys = Object.keys(values).filter(k => urlRegex.test(k));
-			for (const urlKey of urlKeys) {
-				if (values[urlKey] && !isValidImageUrl(values[urlKey])) {
-					return false;
-				}
+		// Vérifier toutes les clés inputUrlX (utilisées par texteImg+ et img+)
+		const urlRegex = /^inputUrl(\d+)$/;
+		const urlKeys = Object.keys(values).filter(k => urlRegex.test(k));
+		for (const urlKey of urlKeys) {
+			if (values[urlKey] && !isValidImageUrl(values[urlKey])) {
+				return false;
 			}
 		}
 
@@ -459,6 +472,65 @@ const ModalGeneric = ({
 				console.log("ouiii")
 				return (
 					<div key={key} className="cf-field">
+						{/* Select unique (API + options ajoutées), avec input à côté pour ajouter */}
+						{config?.galleryUniversIdKey && (
+							<div className={`selectGeneric ${key}-gallery-select`} style={{ marginBottom: 8 }}>
+								{(config?.gallerySelectLabel ?? "") !== "" && (
+									<label className={`label-${key}-gallery label-gal-select`} htmlFor={`gallery-select-${key}`}>
+										{config.gallerySelectLabel}
+									</label>
+								)}
+								<div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+									{(() => {
+										const apiOptions = Array.isArray(galleryFolders[key]) ? galleryFolders[key] : [];
+										const dynOptions = dynamicSelects[key]?.options || [];
+										const merged = [...apiOptions, ...dynOptions.filter((o) => !apiOptions.includes(o))];
+										const selectValueKey = config?.gallerySelectKey || `${key}Folder`;
+										return (
+											<div className="boite-select-gal">
+												<select
+													id={`gallery-select-${key}`}
+													name={`${key}-gallery-select`}
+													className={`filter-select select-${key}-gallery select-imagesgal`}
+													value={values[selectValueKey] || ""}
+													onChange={(e) => setValues((prev) => ({ ...prev, [selectValueKey]: e.target.value }))}
+													disabled={merged.length === 0}
+												>
+													{merged.map((folder, idx) => (
+														<option key={`${key}-gallery-opt-${idx}`} value={folder}>{folder}</option>
+													))}
+												</select>
+												<input
+													type="text"
+													value={dynamicSelects[key]?.newValue || ""}
+													onChange={(e) => setDynamicSelects((prev) => ({
+														...prev,
+														[key]: { ...(prev[key] || { options: [], newValue: "" }), newValue: e.target.value }
+													}))}
+													placeholder="Ajouter une option..."
+												/>
+												<button
+													type="button"
+													className="button-select-gal"
+													onClick={() => {
+														const toAdd = (dynamicSelects[key]?.newValue || "").trim();
+														if (!toAdd) return;
+														setDynamicSelects((prev) => ({
+															...prev,
+															[key]: { options: [ ...(prev[key]?.options || []), toAdd ], newValue: "" }
+														}));
+														const selectValueKey = config?.gallerySelectKey || `${key}Folder`;
+														setValues((prev) => ({ ...prev, [selectValueKey]: toAdd }));
+													}}
+												>
+													Ajouter
+												</button>
+											</div>
+										);
+									})()}
+								</div>
+							</div>
+						)}
 						<ImgPlus 
 							config={config}
 							values={values}
@@ -466,77 +538,6 @@ const ModalGeneric = ({
 							handleChange={handleChange}
 							setPreviewSrc={setPreviewSrc}
 						/>
-						{/* Select API dossiers galerie si demandé */}
-						{config?.galleryUniversIdKey && (
-							<div className={`selectGeneric ${key}-gallery-select`} style={{ marginTop: 8 }}>
-								{(config?.gallerySelectLabel ?? "") !== "" && (
-									<label className={`label-${key}-gallery`} htmlFor={`gallery-select-${key}`}>
-										{config.gallerySelectLabel}
-									</label>
-								)}
-								<select
-									id={`gallery-select-${key}`}
-									name={`${key}-gallery-select`}
-									className={`filter-select select-${key}-gallery`}
-									value={values[config?.gallerySelectKey || `${key}Folder`] || ""}
-									onChange={(e) => setValues((prev) => ({ ...prev, [config?.gallerySelectKey || `${key}Folder`]: e.target.value }))}
-									disabled={!Array.isArray(galleryFolders[key]) || galleryFolders[key].length === 0}
-								>
-									{Array.isArray(galleryFolders[key]) && galleryFolders[key].map((folder, idx) => (
-										<option key={`${key}-gallery-opt-${idx}`} value={folder}>{folder}</option>
-									))}
-								</select>
-							</div>
-						)}
-						{/* Select embarqué avec ajout d'options */}
-						{dynamicSelects[key] && (
-							<div className={`selectGeneric ${key}-embedded-select`}>
-								{(config?.selectLabel ?? "") !== "" && (
-									<label className={`label-${key}-embedded`} htmlFor={`embedded-select-${key}`}>
-										{config.selectLabel}
-									</label>
-								)}
-								<div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 6 }}>
-									<select
-										id={`embedded-select-${key}`}
-										name={`${key}-embedded-select`}
-										className={`filter-select select-${key}-embedded`}
-										value={values[config?.selectKey || `${key}Select`] || ""}
-										onChange={(e) => {
-											const val = e.target.value;
-											setValues((prev) => ({ ...prev, [config?.selectKey || `${key}Select`]: val }));
-										}}
-									>
-										{dynamicSelects[key].options.map((val, idx) => (
-											<option key={`${key}-emb-opt-${idx}`} value={val}>{val}</option>
-										))}
-									</select>
-									<input 
-										type="text" 
-										value={dynamicSelects[key].newValue}
-										onChange={(e) => setDynamicSelects((prev) => ({
-											...prev,
-											[key]: { ...prev[key], newValue: e.target.value }
-										}))}
-										placeholder="Ajouter une option..."
-									/>
-									<button 
-										type="button"
-										onClick={() => {
-											const toAdd = (dynamicSelects[key].newValue || "").trim();
-											if (!toAdd) return;
-											setDynamicSelects((prev) => ({
-												...prev,
-												[key]: { options: [...prev[key].options, toAdd], newValue: "" }
-											}));
-											setValues((prev) => ({ ...prev, [config?.selectKey || `${key}Select`]: toAdd }));
-										}}
-									>
-										Ajouter
-									</button>
-								</div>
-							</div>
-						)}
 					</div>
 				);
 			case "textTextArea+":
@@ -685,13 +686,15 @@ const ModalGeneric = ({
 
 	return (
 		<BaseModal onClose={handleClose} className={`tmedit cf-modal-large master-${name}`} noClose={noClose}>
-			<div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '20px' }}>
-				{nav.map((item) => (
-					<button key={item.name} onClick={closeBefore(item.handle)} className="button-nav-uni" title={item.name}>
-						{item.html}
-					</button>
-				))}
-			</div>
+			{Array.isArray(nav) && nav.length > 0 && (
+				<div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '20px' }}>
+					{nav.map((item) => (
+						<button key={item.name} onClick={closeBefore(item.handle)} className="button-nav-uni" title={item.name}>
+							{item.html}
+						</button>
+					))}
+				</div>
+			)}
 			{title && <h2 className={`h2-${name}`}>{t(title)}</h2>}
 			<form className={`tm-modal-form ${name}`} onSubmit={(e) => e.preventDefault()}>
 				{Object.entries(fields).map(([key, config]) => renderField(key, config))}

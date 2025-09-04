@@ -91,7 +91,29 @@
   left: -8px;
   z-index: 10;
 }
-
+.select-imagesgal{
+  padding: 10px;
+  border-radius: 6px;
+  min-width: 120px;
+  cursor: pointer;
+}
+.button-select-gal{
+  background-color: transparent;
+  margin: 8px;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  cursor: pointer;
+  border: 2px solid var(--jaune);
+  border-radius: 8px;
+}
+.button-select-gal:hover{
+  background-color: #00000077;
+}
+.label-gal-select{
+  justify-self: auto !important;
+  margin-left:  0px !important;
+}
 .uni-folder-container.delete-mode .uni-folder-checkbox-container {
   display: block;
 }

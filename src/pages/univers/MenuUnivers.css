@@ -522,6 +522,8 @@
 #select-selectRegistre{
   min-width: 190px;
 }
+
+
 .selectRegistre{
   display: flex;
 }
@@ -561,7 +563,6 @@
 .select-selectRegistre{
   border-radius: 5px;
 }
-
 
 
 

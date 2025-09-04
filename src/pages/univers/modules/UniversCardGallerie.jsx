@@ -17,7 +17,7 @@ const breakpoints = {
 const UniversCardGallerie = ({
   title = "Gallerie Golstrem",
  
-  folders = [{ label: "Mes dossiers" }, { label: "SOIREE XXX" }],
+  folders = [],
   bg, // optionnel: url de fond si tu veux un wallpaper derrière
   onOpenFolder,
   onAddClick,
@@ -70,7 +70,8 @@ const UniversCardGallerie = ({
         const normalized = list.map((item) => {
           if (typeof item === 'string') return { label: item, count: undefined, value: item };
           const name = item?.name || item?.label || item?.folder || "";
-          return { label: name, count: item?.count, value: name };
+          const count = item?.count ?? item?.nbr;
+          return { label: name, count, value: name };
         });
         setApiFolders(normalized);
       } catch (e) {
@@ -240,6 +241,9 @@ const UniversCardGallerie = ({
       // Rafraîchir le dossier courant et la liste des dossiers
       if (folder) {
         onOpenFolderInternal({ value: folder });
+        if (effectiveUniversId) {
+          navigatePage(`/univers/${effectiveUniversId}/gallerie/${encodeURIComponent(folder)}`);
+        }
       }
       try {
         const res = await ApiUnivers.getFolderGallerie(effectiveUniversId);
