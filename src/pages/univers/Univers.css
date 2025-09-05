@@ -2,7 +2,6 @@
 .UniId-page {
   position: relative;
   min-height: 100dvh;
-  background: var(--app-bg, var(--noir, #111));
   color: var(--text, #fff);
   display: flex;
   flex-direction: column;
@@ -17,8 +16,14 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--title-color, #fff);
+  color: var(--color-text);
 }
+.UniId-group {
+  width: 100%;
+  background: var(--color-univers-gradient);
+}
+
+
 
 /* Colonne de carrés décoratifs à gauche */
 .UniId-left-dots {
@@ -27,6 +32,7 @@
   bottom: 20px;
   display: grid;
   gap: 10px;
+  z-index: 50;
 }
 .UniId-left-dots .UniId-dot {
   width: 30px;
@@ -64,6 +70,7 @@
 }
 .UniId-text{
   text-align: center;
+  color: var(--color-text);
 }
 /* Grille des cartes */
 .UniId-grid {
@@ -192,18 +199,19 @@
 
 @media (max-width: 768px) {
   .UniId-page {
-    padding: 20px 15px;
     min-height: auto;
   }
   
   .UniId-title {
+    padding-top: 60px;
     margin: 0 auto 15px;
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: 2rem;
   }
   
   .UniId-text {
     margin-bottom: 15px;
     padding: 0 15px;
+
   }
   
   .UniId-grid {
@@ -213,13 +221,13 @@
 
 @media (max-width: 560px) {
   .UniId-page {
-    padding: 15px 10px;
+
     min-height: auto;
   }
   
   .UniId-title {
     margin: 0 auto 10px;
-    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-size: 2rem;
   }
   
   .UniId-text {
@@ -234,9 +242,7 @@
     margin: 10px auto 20px auto;
   }
   
-  .UniId-left-dots { 
-    display: none; 
-  }
+
   
   .UniId-card { 
     height: 160px; 

@@ -548,14 +548,15 @@ const Univers = () => {
       
         </div>
       )}
-
-             <h1 className="UniId-title">{universInfo.NomUnivers}</h1>
-       {universInfo.descriptionUnivers && universInfo.descriptionUnivers.trim() !== '' && universInfo.descriptionUnivers !== '<p></p>' && (
-         <div 
-           className="UniId-text" 
-           dangerouslySetInnerHTML={{ __html: universInfo.descriptionUnivers }} 
-         />
-       )}
+        <div className="UniId-group">
+            <h1 className="UniId-title">{universInfo.NomUnivers}</h1>
+        {universInfo.descriptionUnivers && universInfo.descriptionUnivers.trim() !== '' && universInfo.descriptionUnivers !== '<p></p>' && (
+          <div 
+            className="UniId-text" 
+            dangerouslySetInnerHTML={{ __html: universInfo.descriptionUnivers }} 
+          />
+        )}
+       </div>
 
              <div className="UniId-grid">
          {CATEGORIES.filter((item) => visibleCategories.includes(item.label)).map((item) => {

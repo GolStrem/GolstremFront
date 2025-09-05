@@ -65,7 +65,7 @@ function switchColor(theme) {
   document.documentElement.style.setProperty("--color-story-select", theme === 'dark' ? '#4b4b4bff' : '#f0f0f0');
 
   document.documentElement.style.setProperty("--color-home-gradient", theme === 'dark' ? 'linear-gradient(135deg, #121212, #222)' : 'linear-gradient(135deg, #f5f5f5, #e0e0e0)');
-
+  document.documentElement.style.setProperty("--color-univers-gradient", theme === 'dark' ? 'linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%)' : 'linear-gradient(to bottom, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%)');
   document.documentElement.style.setProperty("--color-cancel-bg", '#bdc3c7');
   document.documentElement.style.setProperty("--color-cancel-text", '#000');
 
