@@ -199,7 +199,7 @@
 
 @media (max-width: 768px) {
   .UniId-page {
-    min-height: auto;
+
   }
   
   .UniId-title {
@@ -222,7 +222,6 @@
 @media (max-width: 560px) {
   .UniId-page {
 
-    min-height: auto;
   }
   
   .UniId-title {

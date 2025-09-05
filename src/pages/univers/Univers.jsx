@@ -525,6 +525,7 @@ const Univers = () => {
             <FaPaintBrush size={12} />
           </button>
           
+          
           <button
             type="button"
             className="UniId-dot"
@@ -535,6 +536,7 @@ const Univers = () => {
             <FaEyeSlash size={12} />
           </button>
           
+          {droits === "owner" && (
           <button
             type="button"
             className="UniId-dot UniId-dot-danger"
@@ -544,7 +546,7 @@ const Univers = () => {
           >
             <FaTrash size={12} />
           </button>
-          
+          )}
       
         </div>
       )}
