@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { useAutoTextColor } from '@service'
 import {
   FaCheck,
   FaTimes,
@@ -10,6 +11,11 @@ import {
   FaEye,
 } from "react-icons/fa";
 import "./UniversCardInscription.css";
+import { BackLocation, SearchBar } from "@components/index";
+import Masonry from "react-masonry-css";
+
+
+
 
 const TABS = [
   { key: "join",  label: "Adhésions", icon: <FaUsers /> , hint: "Demandes pour rejoindre l’univers" },
@@ -25,7 +31,10 @@ const mockData = {
     { id: 3, title: "Henelks", requester: "Henelks",  createdAt: "2025-09-05T09:11:00Z", status: "pending" },
   ],
   ficheRequests: [
-    { id: 11, title: "Fiche: Henel Aemue", requester: "Henel", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
+    { id: 11, title: "Henel Aemue", requester: "Henel", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
+    { id: 12, title: "Henel Aemue", requester: "Bouboute du 27", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
+    { id: 13, title: "Henel Aemue", requester: "Hemael", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
+    { id: 14, title: "Henel Aemue", requester: "Zheneos", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
   ],
   placeRequests: [
     { id: 21, title: "Taverne du Lotus Noir", requester: "Kara", message: "Lieu social central avec mini-events.", createdAt: "2025-09-01T18:00:00Z", status: "pending" },
@@ -34,6 +43,28 @@ const mockData = {
     { id: 31, title: "La Lame d’Orichalque", requester: "Alen", message: "Suite de 3 étapes, difficulté moyenne.", createdAt: "2025-09-03T08:30:00Z", status: "pending" },
   ],
 };
+
+const TabButton = ({ tab, isActive, onClick, count }) => {
+  // Recalcule si l’onglet actif change ou si le count change
+  const { ref, color } = useAutoTextColor([isActive, count]);
+
+  return (
+    <button
+      role="tab"
+      aria-selected={isActive}
+      className={`UniIn-tab ${isActive ? "active" : ""}`}
+      onClick={onClick}
+      title={tab.hint}
+    >
+      <span className="UniIn-tabIcon">{tab.icon}</span>
+      <span className="UniIn-tabLabel">{tab.label}</span>
+      <span ref={ref} className="UniIn-tabCount" style={{ color }}>
+        {count}
+      </span>
+    </button>
+  );
+};
+
 
 const UniversCardInscription = ({
   universeId,
@@ -72,6 +103,18 @@ const UniversCardInscription = ({
     lieux: lists.lieux.length,
     quete: lists.quete.length,
   };
+
+  const handleSearch = (value) => {
+    setSearch(value);  
+
+    
+    setParam((prev) => ({
+      ...prev,
+      search: value.trim(),
+      p: 0, 
+    }));
+  };
+
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -122,42 +165,39 @@ const UniversCardInscription = ({
   const currentIds = filtered.map((x) => x.id);
   const allChecked = currentIds.length > 0 && currentIds.every((id) => selected[active].has(id));
 
+
+
+
+
+
   return (
     <div className="UniIn-container" data-universe={universeId ?? ""}>
       {/* Header */}
+      <BackLocation/>
       <header className="UniIn-header">
         <div className="UniIn-title">
           <h1>Inscriptions & Demandes</h1>
           <span className="UniIn-subtitle">Gérez les validations de votre univers</span>
         </div>
 
-        <div className="UniIn-search">
-          <FaSearch />
-          <input
-            placeholder="Rechercher une demande…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="">
+          <SearchBar value={search} onChange={handleSearch} onClear={() => handleSearch("")} />
         </div>
       </header>
 
       {/* Tabs */}
-      <nav className="UniIn-tabs" role="tablist" aria-label="Catégories de demandes">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            role="tab"
-            aria-selected={active === t.key}
-            className={`UniIn-tab ${active === t.key ? "active" : ""}`}
-            onClick={() => setActive(t.key)}
-            title={t.hint}
-          >
-            <span className="UniIn-tabIcon">{t.icon}</span>
-            <span className="UniIn-tabLabel">{t.label}</span>
-            <span className="UniIn-tabCount">{counts[t.key]}</span>
-          </button>
-        ))}
-      </nav>
+     <nav className="UniIn-tabs" role="tablist" aria-label="Catégories de demandes">
+      {TABS.map((t) => (
+        <TabButton
+          key={t.key}
+          tab={t}
+          isActive={active === t.key}
+          onClick={() => setActive(t.key)}
+          count={counts[t.key]}
+        />
+      ))}
+    </nav>
+
 
       {/* Bulk actions */}
       <div className="UniIn-bulkbar">
@@ -219,20 +259,26 @@ const UniversCardInscription = ({
               </div>
 
               <div className="UniIn-cardBody">
-                <div className="UniIn-cardTitle">
-                  <strong>{it.title}</strong>
+                <div className="UniIn-cardBody2"> 
+
+                  <div className="UniIn-cardTitle">
+                    <strong>{it.title}</strong>
+                  </div>
+                  <div className="UniIn-meta">
+                    <span className={`UniIn-status UniIn-${it.status || "pending"}`}>
+                      {it.status === "approved" ? "Approuvée" : it.status === "rejected" ? "Refusée" : "En attente"}
+                    </span>
+                    {it.createdAt && (
+                      <time dateTime={it.createdAt}>
+                        {new Date(it.createdAt).toLocaleString()}
+                      </time>
+                    )}
                 </div>
+
+                </div>
+                
                 {it.message && <p className="UniIn-cardMsg">{it.message}</p>}
-                <div className="UniIn-meta">
-                  <span className={`UniIn-status UniIn-${it.status || "pending"}`}>
-                    {it.status === "approved" ? "Approuvée" : it.status === "rejected" ? "Refusée" : "En attente"}
-                  </span>
-                  {it.createdAt && (
-                    <time dateTime={it.createdAt}>
-                      {new Date(it.createdAt).toLocaleString()}
-                    </time>
-                  )}
-                </div>
+                
               </div>
 
               <div className="UniIn-cardActions">
