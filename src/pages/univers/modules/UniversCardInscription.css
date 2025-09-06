@@ -1,0 +1,417 @@
+/* Palette et layout */
+.UniIn-container {
+  --UniIn-danger: #e74c3c;
+  --UniIn-success: #27ae60;
+  --UniIn-border: rgba(255,255,255,0.08);
+
+  color: var(--color-text);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  
+}
+
+/* Header */
+.UniIn-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center !important;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 30px;
+}
+.UniIn-title h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+.UniIn-title{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.UniIn-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+.UniIn-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--UniIn-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.UniIn-search svg { opacity: 0.8; }
+.UniIn-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+  width: 100%;
+}
+
+/* Tabs */
+.UniIn-tabs {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+  margin: 8px 0 12px;
+  justify-content: center;
+  
+}
+.UniIn-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--UniIn-border);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+  width: 15%;
+  min-width: 160px;
+}
+.UniIn-tab.active {
+  border-color: var(--jaune);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--jaune) 20%, transparent);
+  transform: translateY(-1px);
+}
+.UniIn-tabIcon { opacity: 0.9; }
+.UniIn-tabLabel { font-weight: 600; }
+.UniIn-tabCount {
+  margin-left: auto;
+  background: var(--jaune);
+  color: var(--UniIn-noir);
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Bulk bar */
+.UniIn-bulkbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(
+  to right,
+  color-mix(in srgb, var(--jaune) 10%, transparent),
+  transparent
+);
+
+  border: 1px dashed var(--UniIn-border);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+.UniIn-checkall {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.UniIn-bulkActions { display: flex; gap: 8px; }
+.UniIn-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--UniIn-border);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.UniIn-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.UniIn-btn svg { font-size: 0.9rem; }
+.UniIn-btn.UniIn-approve { border-color: color-mix(in oklab, var(--UniIn-success) 60%, var(--UniIn-border)); }
+.UniIn-btn.UniIn-reject  { border-color: color-mix(in oklab, var(--UniIn-danger) 60%, var(--UniIn-border)); }
+
+/* List & cards */
+.UniIn-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+  gap: 16px;
+}
+
+/* Masonry styles */
+.UniIn-masonry {
+  display: flex;
+  margin-left: -16px; /* gutter size offset */
+  width: auto;
+}
+
+.UniIn-masonry-column {
+  padding-left: 16px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Force 1 colonne à partir de 850px */
+@media (max-width: 850px) {
+  .UniIn-masonry {
+    display: block !important;
+    margin-left: 0 !important;
+  }
+  
+  .UniIn-masonry-column {
+    width: 100% !important;
+    padding-left: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .UniIn-masonry .UniIn-card {
+    margin-bottom: 16px;
+  }
+}
+
+/* Ajustement de la largeur des colonnes à partir de 851px */
+@media (min-width: 851px) {
+  .UniIn-masonry-column {
+    width: 48% !important;
+  }
+}
+
+/* Ensure cards maintain their styling within masonry */
+.UniIn-masonry .UniIn-card {
+  margin-bottom: 16px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  
+}
+.UniIn-card {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  background: var(--color-input-bg);
+  border: 1px solid var(--UniIn-border);
+  border-radius: 14px;
+  padding: 12px;
+}
+.UniIn-cardLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.UniIn-cardLeft input {
+  z-index: 20;
+}
+.UniIn-avatar {
+  width: 38px; height: 38px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--UniIn-border);
+  display: grid; place-items: center;
+  background-color: var(--color-background);
+  margin-left: -18px;
+}
+.UniIn-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.UniIn-avatarFallback {
+  font-weight: 800;
+  color: var(--jaune);
+}
+
+.UniIn-cardBody { 
+  min-width: 0;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  align-content: center; 
+  gap: 5px;
+  flex-wrap:wrap;
+  text-align: center;
+  
+
+}
+.UniIn-cardBody2 { 
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  align-content: center; 
+  gap: 5px;
+  
+}
+.UniIn-cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-right: 10px;
+}
+.UniIn-cardTitle strong { font-size: 1rem; }
+.UniIn-chip {
+  font-size: 0.8rem;
+  color: var(--UniIn-noir);
+  background: var(--jaune);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 700;
+}
+.UniIn-cardMsg {
+  color: var(--color-text);
+  line-height: 1.3;
+  text-align:initial;
+}
+.UniIn-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+.UniIn-status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--UniIn-border);
+}
+.UniIn-pending  { background: var(--color-background); color: var(--color-text); border: 2px solid var(--jaune); }
+.UniIn-approved { background: var(--color-background); color: var(--UniIn-success); }
+.UniIn-rejected { background: var(--color-background); color: var(--UniIn-danger); }
+
+.UniIn-cardActions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.UniIn-iconBtn {
+  display: inline-grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--UniIn-border);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.UniIn-iconBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+.UniIn-iconBtn.UniIn-approve { border-color: color-mix(in oklab, var(--UniIn-success) 60%, var(--UniIn-border)); }
+.UniIn-iconBtn.UniIn-reject  { border-color: color-mix(in oklab, var(--UniIn-danger) 60%, var(--UniIn-border)); }
+.UniIn-iconEye1 { border-color: blue }
+
+/* Empty */
+.UniIn-empty {
+  text-align: center;
+  padding: 24px 12px;
+  border: 1px dashed var(--UniIn-border);
+  border-radius: 12px;
+  color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .UniIn-header { grid-template-columns: 1fr; }
+}
+@media (max-width: 710px) {
+  .UniIn-header {margin-top: 50px; }
+}
+
+@media (max-width: 850px) {
+    .UniIn-header{
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        margin-bottom: 30px;
+    }
+  /* Tabs en grille 2x2 */
+  .UniIn-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .UniIn-cardBody{
+    justify-content: space-between;
+  }
+  .UniIn-tab {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* List forcée à 1 colonne */
+  .UniIn-list {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Masonry sur mobile */
+  .UniIn-masonry {
+    margin-left: 0;
+  }
+  
+  .UniIn-masonry-column {
+    padding-left: 0;
+    width: 100% !important;
+  }
+
+  /* Carte et actions */
+  .UniIn-card { grid-template-columns: auto 1fr; }
+  .UniIn-cardActions { grid-column: 1 / -1; justify-content: flex-end; }
+
+  /* Meta à la ligne */
+  .UniIn-meta {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 593px) {
+
+    .UniIn-meta {
+    
+    align-items: center;
+    flex-wrap: wrap;
+    
+    gap: 4px;
+  }
+  .UniIn-cardBody2{
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .UniIn-cardLeft{
+    align-items: flex-start;
+  }
+
+}
+
+@media (max-width: 382px) {
+
+  .UniIn-header{
+    margin-top: 60px;
+    align-items: center;
+  }
+  .UniIn-tab {
+    min-width: 100px;
+  }
+
+  .UniIn-card{
+    gap: 0;
+  }
+
+
+  .UniIn-btn.UniIn-reject {
+    font-size: 0; /* cache le texte sans supprimer le svg */
+
+  }
+  .UniIn-btn.UniIn-reject svg {
+    font-size: 1.2rem; /* garde la taille de l’icône */
+    margin-right: -8px;   /* supprime l’espace réservé au texte */
+  }
+
+  .UniIn-btn.UniIn-approve {
+    font-size: 0; /* cache le texte sans supprimer le svg */
+
+  }
+  .UniIn-btn.UniIn-approve svg {
+    font-size: 1.2rem; /* garde la taille de l’icône */
+    margin-right: -8px;   /* supprime l’espace réservé au texte */
+  }
+
+}
+

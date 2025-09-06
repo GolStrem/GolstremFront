@@ -20,5 +20,6 @@ export { default as DroitAccess } from './utils/DroitAccess'
 export { default as isValidImageUrl} from './hook/validators'
 export { default as useGhostDragAndDrop} from './hook/useGhostDragAndDrop'
 export { default as useHorizontalScroll} from './hook/useHorizontalScroll'
+export { useAutoTextColor } from './hook/useAutoTextColor'
 
 export { default as useNavigatePage } from './utils/NavigatePage'
