@@ -239,75 +239,81 @@ const UniversCardInscription = ({
             Aucune demande à afficher pour « {TABS.find(t => t.key === active)?.label} ».
           </div>
         ) : (
-          filtered.map((it) => (
-            <article key={it.id} className="UniIn-card">
-              <div className="UniIn-cardLeft">
-                <input
-                  type="checkbox"
-                  checked={selected[active].has(it.id)}
-                  onChange={() => toggleOne(active, it.id)}
-                />
-                <div className="UniIn-avatar">
-                  {it.avatar ? (
-                    <img src={it.avatar} alt={it.requester ?? it.title} />
-                  ) : (
-                    <div className="UniIn-avatarFallback">
-                      {(it.requester ?? it.title)?.[0]?.toUpperCase()}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="UniIn-cardBody">
-                <div className="UniIn-cardBody2"> 
-
-                  <div className="UniIn-cardTitle">
-                    <strong>{it.title}</strong>
-                  </div>
-                  <div className="UniIn-meta">
-                    <span className={`UniIn-status UniIn-${it.status || "pending"}`}>
-                      {it.status === "approved" ? "Approuvée" : it.status === "rejected" ? "Refusée" : "En attente"}
-                    </span>
-                    {it.createdAt && (
-                      <time dateTime={it.createdAt}>
-                        {new Date(it.createdAt).toLocaleString()}
-                      </time>
+          <Masonry
+            breakpointCols={2}
+            className="UniIn-masonry"
+            columnClassName="UniIn-masonry-column"
+          >
+            {filtered.map((it) => (
+              <article key={it.id} className="UniIn-card">
+                <div className="UniIn-cardLeft">
+                  <input
+                    type="checkbox"
+                    checked={selected[active].has(it.id)}
+                    onChange={() => toggleOne(active, it.id)}
+                  />
+                  <div className="UniIn-avatar">
+                    {it.avatar ? (
+                      <img src={it.avatar} alt={it.requester ?? it.title} />
+                    ) : (
+                      <div className="UniIn-avatarFallback">
+                        {(it.requester ?? it.title)?.[0]?.toUpperCase()}
+                      </div>
                     )}
+                  </div>
                 </div>
 
-                </div>
-                
-                {it.message && <p className="UniIn-cardMsg">{it.message}</p>}
-                
-              </div>
+                <div className="UniIn-cardBody">
+                  <div className="UniIn-cardBody2"> 
 
-              <div className="UniIn-cardActions">
-                {active !== "join" && (
+                    <div className="UniIn-cardTitle">
+                      <strong>{it.title}</strong>
+                    </div>
+                    <div className="UniIn-meta">
+                      <span className={`UniIn-status UniIn-${it.status || "pending"}`}>
+                        {it.status === "approved" ? "Approuvée" : it.status === "rejected" ? "Refusée" : "En attente"}
+                      </span>
+                      {it.createdAt && (
+                        <time dateTime={it.createdAt}>
+                          {new Date(it.createdAt).toLocaleString()}
+                        </time>
+                      )}
+                  </div>
+
+                  </div>
+                  
+                  {it.message && <p className="UniIn-cardMsg">{it.message}</p>}
+                  
+                </div>
+
+                <div className="UniIn-cardActions">
+                  {active !== "join" && (
+                    <button
+                      className="UniIn-iconBtn UniIn-iconEye1"
+                      title="Voir la demande"
+                      onClick={() => window?.open?.("#", "_blank")}
+                    >
+                      <FaEye />
+                    </button>
+                  )}
                   <button
-                    className="UniIn-iconBtn UniIn-iconEye1"
-                    title="Voir la demande"
-                    onClick={() => window?.open?.("#", "_blank")}
+                    className="UniIn-iconBtn UniIn-approve"
+                    title="Accepter"
+                    onClick={() => approveOne(active, it.id)}
                   >
-                    <FaEye />
+                    <FaCheck />
                   </button>
-                )}
-                <button
-                  className="UniIn-iconBtn UniIn-approve"
-                  title="Accepter"
-                  onClick={() => approveOne(active, it.id)}
-                >
-                  <FaCheck />
-                </button>
-                <button
-                  className="UniIn-iconBtn UniIn-reject"
-                  title="Refuser"
-                  onClick={() => rejectOne(active, it.id)}
-                >
-                  <FaTimes />
-                </button>
-              </div>
-            </article>
-          ))
+                  <button
+                    className="UniIn-iconBtn UniIn-reject"
+                    title="Refuser"
+                    onClick={() => rejectOne(active, it.id)}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+              </article>
+            ))}
+          </Masonry>
         )}
       </section>
     </div>

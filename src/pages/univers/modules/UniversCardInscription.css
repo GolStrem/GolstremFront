@@ -8,6 +8,7 @@
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  
 }
 
 /* Header */
@@ -138,6 +139,51 @@
   grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
   gap: 16px;
 }
+
+/* Masonry styles */
+.UniIn-masonry {
+  display: flex;
+  margin-left: -16px; /* gutter size offset */
+  width: auto;
+}
+
+.UniIn-masonry-column {
+  padding-left: 16px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Force 1 colonne à partir de 850px */
+@media (max-width: 850px) {
+  .UniIn-masonry {
+    display: block !important;
+    margin-left: 0 !important;
+  }
+  
+  .UniIn-masonry-column {
+    width: 100% !important;
+    padding-left: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .UniIn-masonry .UniIn-card {
+    margin-bottom: 16px;
+  }
+}
+
+/* Ajustement de la largeur des colonnes à partir de 851px */
+@media (min-width: 851px) {
+  .UniIn-masonry-column {
+    width: 48% !important;
+  }
+}
+
+/* Ensure cards maintain their styling within masonry */
+.UniIn-masonry .UniIn-card {
+  margin-bottom: 16px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  
+}
 .UniIn-card {
   display: flex;
   gap: 10px;
@@ -178,6 +224,7 @@
   align-content: center; 
   gap: 5px;
   flex-wrap:wrap;
+  text-align: center;
   
 
 }
@@ -208,6 +255,7 @@
 .UniIn-cardMsg {
   color: var(--color-text);
   line-height: 1.3;
+  text-align:initial;
 }
 .UniIn-meta {
   display: flex;
@@ -266,7 +314,7 @@
   .UniIn-header {margin-top: 50px; }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 850px) {
     .UniIn-header{
         display: flex;
         flex-direction: column;
@@ -290,6 +338,16 @@
   /* List forcée à 1 colonne */
   .UniIn-list {
     grid-template-columns: 1fr;
+  }
+  
+  /* Masonry sur mobile */
+  .UniIn-masonry {
+    margin-left: 0;
+  }
+  
+  .UniIn-masonry-column {
+    padding-left: 0;
+    width: 100% !important;
   }
 
   /* Carte et actions */
