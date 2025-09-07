@@ -22,6 +22,11 @@ const realApi = {
   deleteImageGallerieByFolder: (universId, nameFolder) => api.delete(`univers/${universId}/gallery/folder/${nameFolder}`),
   deleteImageGallerieByFolder: (universId, nameFolder) => api.delete(`univers/${universId}/gallery/folder/${nameFolder}`),
   massDeleteImageGallerie: (universId, payload) => api.post(`univers/${universId}/gallery/delete`, payload),
+  
+  getInscriptionUnivers: (universId, params) => api.get (`/univers/${universId}/user`,{ params }),
+  putInscriptionUnivers: (universId, userId, payload ) => api.put (`/univers/${universId}/user/${userId}`, payload),
+  deleteInscriptionUnivers: (universId, userId) => api.delete (`/univers/${universId}/user/${userId}`),
+  postInscriptionUnivers: (universId) => api.post (`/univers/${universId}/user`),
 };
 
 const ApiUnivers = realApi;

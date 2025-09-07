@@ -53,6 +53,7 @@ const MenuUnivers = () => {
   const [isModalUniversOpen, setModalUniversOpen] = useState(false);
   const [isModalFiltreOpen, setModalFiltreOpen] = useState(false)
   const [isModalCreateUnivOpen, setModalCreateUnivOpen] = useState(false)
+  const [isRequestModalOpen, setRequestModalOpen] = useState(false)
   const [title, setTitle] = useState("");
   const [fields, setFields] = useState([]);
   const [isLoading, setIsLoading] = useState(true);  // État de loading initial
@@ -69,7 +70,18 @@ const MenuUnivers = () => {
   const [idUnivers, setIdUnivers] = useState(0);
   const navigate = useNavigate(); // <-- le hook à utiliser
   const navigatePage = useNavigatePage();
-  const [universVisibility, setUniversVisibility] = useState("0");
+  const [universVisibility, setUniversVisibility] = useState(0);
+  const [openRegistration, setOpenRegistration] = useState(0);
+  // Suivi des demandes d'accès envoyées
+  const [requestedSet, setRequestedSet] = useState(() => {
+    try {
+      const raw = localStorage.getItem("univers_requested") || "[]";
+      return new Set(JSON.parse(raw));
+    } catch {
+      return new Set();
+    }
+  });
+  const [hasRequestedAccess, setHasRequestedAccess] = useState(false);
 
 
 
@@ -102,7 +114,9 @@ const MenuUnivers = () => {
   const handleModalViewUnivers = function(card) { 
     setIdUnivers(card.id)
     setTitle(card.name);
-    setUniversVisibility(card.visibility || "0");
+    setUniversVisibility(Number(card.visibility) || 0);
+    setOpenRegistration(Number(card.openRegistration) || 0);
+    setHasRequestedAccess(requestedSet.has(card.id));
     const textHtml = `
     <div>
       <div class="univerOwner">
@@ -135,9 +149,32 @@ const MenuUnivers = () => {
     setModalCreateUnivOpen(true);
   };
 
-  const handleGoUnivers =()=>{
-    navigatePage(`${idUnivers}`)
-  
+  const handleGoUnivers = async () => {
+    try {
+      if (universVisibility === 0) {
+        setModalUniversOpen(false);
+        navigatePage(`${idUnivers}`);
+        return;
+      }
+
+      if (universVisibility === "1" || universVisibility === 1) {
+        await ApiUnivers.postInscriptionUnivers(idUnivers);
+      }
+
+      if (openRegistration === 0) {
+        // Accès direct après POST (s'il y a lieu)
+        setModalUniversOpen(false);
+        navigatePage(`${idUnivers}`);
+      } else if (openRegistration === 1) {
+        // Sous validation: afficher un message de confirmation et ne pas entrer
+        setRequestModalOpen(true);
+      } else if (openRegistration === 2) {
+        // Refuser tout: rien à faire, pas de bouton (géré dans l'affichage)
+        return;
+      }
+    } catch (err) {
+      console.error("Erreur lors de la demande d'accès:", err?.response?.data || err?.message);
+    }
   }
 
   // ⚙️ Définition des champs de filtre avec la nouvelle fonction
@@ -428,6 +465,24 @@ const favCooldownRef = React.useRef(new Set());
         </div>
       )}
 
+      {isRequestModalOpen && (
+        <ModalGeneric
+          onClose={() => setRequestModalOpen(false)}
+          handleSubmit={() => setRequestModalOpen(false)}
+          fields={{
+            info: {
+              type: "html",
+              value:
+                "<div style=\"padding:8px 0\">Demande envoyée. Vous pourrez entrer quand l'owner aura accepté.</div>",
+            },
+          }}
+          title={"Demande envoyée"}
+          noButtonCancel={true}
+          textButtonValidate="OK"
+          name="requestSent"
+        />
+      )}
+
       {/* ===== Headers ===== */}
       <div className="menu-header">
         <div className="menu-header-content">
@@ -549,7 +604,14 @@ const favCooldownRef = React.useRef(new Set());
           fields={fields}
           title={title}
           noButtonCancel={true}
-          textButtonValidate={universVisibility === "1" || universVisibility === 1 ? "Demander l'accès" : "Visiter"}
+          hidePrimary={openRegistration === 2 && universVisibility === 1}
+          textButtonValidate={
+            openRegistration === 0 || universVisibility === 0
+              ? "Visiter"
+              : openRegistration === 1
+                ? "Demander l'accès"
+                : ""
+          }
           name="previewUnivers"
         />
       )}

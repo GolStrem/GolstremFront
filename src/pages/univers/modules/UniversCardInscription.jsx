@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useAutoTextColor } from '@service'
 import {
   FaCheck,
@@ -12,6 +13,7 @@ import {
 } from "react-icons/fa";
 import "./UniversCardInscription.css";
 import { BackLocation, SearchBar } from "@components/index";
+import { ApiUnivers, DroitAccess } from "@service";
 import Masonry from "react-masonry-css";
 
 
@@ -25,23 +27,40 @@ const TABS = [
 ];
 
 const mockData = {
-  joinRequests: [
-    { id: 1, title: "Riven", requester: "Riven",  createdAt: "2025-09-03T19:22:00Z", status: "pending" },
-    { id: 2, title: "Zheneos", requester: "Zheneos",  createdAt: "2025-09-04T09:11:00Z", status: "pending" },
-    { id: 3, title: "Henelks", requester: "Henelks",  createdAt: "2025-09-05T09:11:00Z", status: "pending" },
-  ],
-  ficheRequests: [
-    { id: 11, title: "Henel Aemue", requester: "Henel", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-    { id: 12, title: "Henel Aemue", requester: "Bouboute du 27", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-    { id: 13, title: "Henel Aemue", requester: "Hemael", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-    { id: 14, title: "Henel Aemue", requester: "Zheneos", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-  ],
-  placeRequests: [
-    { id: 21, title: "Taverne du Lotus Noir", requester: "Kara", message: "Lieu social central avec mini-events.", createdAt: "2025-09-01T18:00:00Z", status: "pending" },
-  ],
-  questRequests: [
-    { id: 31, title: "La Lame d’Orichalque", requester: "Alen", message: "Suite de 3 étapes, difficulté moyenne.", createdAt: "2025-09-03T08:30:00Z", status: "pending" },
-  ],
+  join: [],
+  fiche: [],
+  lieux: [],
+  quete: [],
+};
+
+// Normalise les données de l'API vers le format interne de la vue
+const normalizeApiData = (data) => {
+  // Nouveau format: tableau d'utilisateurs en attente
+  if (Array.isArray(data)) {
+    const pending = data.filter((u) => u?.state === -1);
+    return {
+      join: pending.map((u) => ({
+        id: u.id,
+        title: u.pseudo ?? `Utilisateur ${u.id}`,
+        requester: u.pseudo ?? "",
+        avatar: u.image ?? null,
+        status: u.state === 1 ? "approved" : u.state === 0 ? "rejected" : "pending",
+        createdAt: u.createdAt ?? null,
+        message: u.message ?? null,
+      })),
+      fiche: [],
+      lieux: [],
+      quete: [],
+    };
+  }
+
+  // Anciens formats pris en charge
+  return {
+    join:  data?.join  ?? data?.adhesions ?? data?.joinRequests ?? mockData.join,
+    fiche: data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? mockData.fiche,
+    lieux: data?.lieux ?? data?.places    ?? data?.placeRequests ?? mockData.lieux,
+    quete: data?.quete ?? data?.quests    ?? data?.questRequests ?? mockData.quete,
+  };
 };
 
 const TabButton = ({ tab, isActive, onClick, count }) => {
@@ -73,29 +92,51 @@ const UniversCardInscription = ({
   onApproveMany,
   onRejectMany,
 }) => {
+  const params = useParams();
+  const currentUniverseId = universeId ?? params?.id;
   const [active, setActive] = useState("join");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState({ join: new Set(), fiche: new Set(), lieux: new Set(), quete: new Set() });
   const [lists, setLists] = useState({ join: [], fiche: [], lieux: [], quete: [] });
   const [loading, setLoading] = useState(true);
+  const [droit, setDroit] = useState(null);
 
-  // Charger les données mock via useEffect
+
+  // Charger depuis l'API
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
+    const run = async () => {
+      try {
+        setLoading(true);
+        const { data } = await ApiUnivers.getInscriptionUnivers(currentUniverseId, { search });
+        if (cancelled) return;
+        const next = normalizeApiData(data);
+        setLists(next);
+      } catch (e) {
+        // Fallback silencieux sur mock en cas d'erreur
+        if (!cancelled) setLists(mockData);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    if (currentUniverseId) run();
+    return () => { cancelled = true; };
+  }, [currentUniverseId, search]);
 
-    // Simule un appel API avec délai
-    const timer = setTimeout(() => {
-      setLists({
-        join:  mockData.joinRequests,
-        fiche: mockData.ficheRequests,
-        lieux: mockData.placeRequests,
-        quete: mockData.questRequests,
-      });
-      setLoading(false);
-    }, 500);
+  useEffect(() => {
+    const loadUnivers = async () => {
+      if (!currentUniverseId) return;
+      try {
+        const res = await ApiUnivers.getDetailUnivers(currentUniverseId);
+        setDroit(res?.data?.droit);
+        console.log(res);
+       
+      } catch {
 
-    return () => clearTimeout(timer);
-  }, [universeId]);
+      }
+    };
+    loadUnivers();
+  }, [currentUniverseId]);
 
   const counts = {
     join:  lists.join.length,
@@ -105,14 +146,7 @@ const UniversCardInscription = ({
   };
 
   const handleSearch = (value) => {
-    setSearch(value);  
-
-    
-    setParam((prev) => ({
-      ...prev,
-      search: value.trim(),
-      p: 0, 
-    }));
+    setSearch(value);
   };
 
 
@@ -145,21 +179,58 @@ const UniversCardInscription = ({
     });
   };
 
-  const approveOne = (tabKey, id) => onApprove?.(tabKey, id);
-  const rejectOne = (tabKey, id) => onReject?.(tabKey, id);
-
-  const approveSelected = (tabKey) => {
-    const ids = Array.from(selected[tabKey]);
-    if (ids.length === 0) return;
-    onApproveMany?.(tabKey, ids);
-    setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+  const refresh = async () => {
+    try {
+      const { data } = await ApiUnivers.getInscriptionUnivers(currentUniverseId, { search });
+      const next = normalizeApiData(data);
+      setLists(next);
+    } catch {}
   };
 
-  const rejectSelected = (tabKey) => {
+  const approveOne = async (tabKey, id) => {
+    try {
+      setLoading(true);
+      await ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 });
+      await refresh();
+      onApprove?.(tabKey, id);
+    } catch {} finally { setLoading(false); }
+  };
+
+  const rejectOne = async (tabKey, id) => {
+    try {
+      setLoading(true);
+      await ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id);
+      await refresh();
+      onReject?.(tabKey, id);
+    } catch {} finally { setLoading(false); }
+  };
+
+  const approveSelected = async (tabKey) => {
     const ids = Array.from(selected[tabKey]);
     if (ids.length === 0) return;
-    onRejectMany?.(tabKey, ids);
-    setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+    try {
+      setLoading(true);
+      await Promise.all(ids.map((id) => ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 })));
+      await refresh();
+      onApproveMany?.(tabKey, ids);
+    } catch {} finally {
+      setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+      setLoading(false);
+    }
+  };
+
+  const rejectSelected = async (tabKey) => {
+    const ids = Array.from(selected[tabKey]);
+    if (ids.length === 0) return;
+    try {
+      setLoading(true);
+      await Promise.all(ids.map((id) => ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id)));
+      await refresh();
+      onRejectMany?.(tabKey, ids);
+    } catch {} finally {
+      setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+      setLoading(false);
+    }
   };
 
   const currentIds = filtered.map((x) => x.id);
@@ -171,7 +242,7 @@ const UniversCardInscription = ({
 
 
   return (
-    <div className="UniIn-container" data-universe={universeId ?? ""}>
+    <div className="UniIn-container" data-universe={currentUniverseId ?? ""}>
       {/* Header */}
       <BackLocation/>
       <header className="UniIn-header">
@@ -202,14 +273,16 @@ const UniversCardInscription = ({
       {/* Bulk actions */}
       <div className="UniIn-bulkbar">
         <label className="UniIn-checkall">
+          
           <input
             type="checkbox"
             checked={allChecked}
             onChange={() => toggleAll(active, currentIds)}
           />
+          
           <span>Tout sélectionner</span>
         </label>
-
+        {DroitAccess.hasWriteAccess(droit) && (
         <div className="UniIn-bulkActions">
           <button
             className="UniIn-btn UniIn-approve"
@@ -228,6 +301,7 @@ const UniversCardInscription = ({
             Refuser
           </button>
         </div>
+        )}
       </div>
 
       {/* List */}
@@ -247,11 +321,13 @@ const UniversCardInscription = ({
             {filtered.map((it) => (
               <article key={it.id} className="UniIn-card">
                 <div className="UniIn-cardLeft">
+                  
                   <input
                     type="checkbox"
                     checked={selected[active].has(it.id)}
                     onChange={() => toggleOne(active, it.id)}
                   />
+                  
                   <div className="UniIn-avatar">
                     {it.avatar ? (
                       <img src={it.avatar} alt={it.requester ?? it.title} />
@@ -287,6 +363,7 @@ const UniversCardInscription = ({
                 </div>
 
                 <div className="UniIn-cardActions">
+                  
                   {active !== "join" && (
                     <button
                       className="UniIn-iconBtn UniIn-iconEye1"
@@ -296,6 +373,7 @@ const UniversCardInscription = ({
                       <FaEye />
                     </button>
                   )}
+                  {DroitAccess.hasWriteAccess(droit) && (
                   <button
                     className="UniIn-iconBtn UniIn-approve"
                     title="Accepter"
@@ -303,6 +381,8 @@ const UniversCardInscription = ({
                   >
                     <FaCheck />
                   </button>
+                  )}
+                  {DroitAccess.hasWriteAccess(droit) && (
                   <button
                     className="UniIn-iconBtn UniIn-reject"
                     title="Refuser"
@@ -310,7 +390,9 @@ const UniversCardInscription = ({
                   >
                     <FaTimes />
                   </button>
+                  )}
                 </div>
+
               </article>
             ))}
           </Masonry>
