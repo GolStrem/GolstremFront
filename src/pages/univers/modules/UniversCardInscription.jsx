@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useAutoTextColor } from '@service'
 import {
   FaCheck,
@@ -12,7 +13,7 @@ import {
 } from "react-icons/fa";
 import "./UniversCardInscription.css";
 import { BackLocation, SearchBar } from "@components/index";
-import { ApiUnivers } from "@service";
+import { ApiUnivers, DroitAccess } from "@service";
 import Masonry from "react-masonry-css";
 
 
@@ -30,6 +31,36 @@ const mockData = {
   fiche: [],
   lieux: [],
   quete: [],
+};
+
+// Normalise les données de l'API vers le format interne de la vue
+const normalizeApiData = (data) => {
+  // Nouveau format: tableau d'utilisateurs en attente
+  if (Array.isArray(data)) {
+    const pending = data.filter((u) => u?.state === -1);
+    return {
+      join: pending.map((u) => ({
+        id: u.id,
+        title: u.pseudo ?? `Utilisateur ${u.id}`,
+        requester: u.pseudo ?? "",
+        avatar: u.image ?? null,
+        status: u.state === 1 ? "approved" : u.state === 0 ? "rejected" : "pending",
+        createdAt: u.createdAt ?? null,
+        message: u.message ?? null,
+      })),
+      fiche: [],
+      lieux: [],
+      quete: [],
+    };
+  }
+
+  // Anciens formats pris en charge
+  return {
+    join:  data?.join  ?? data?.adhesions ?? data?.joinRequests ?? mockData.join,
+    fiche: data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? mockData.fiche,
+    lieux: data?.lieux ?? data?.places    ?? data?.placeRequests ?? mockData.lieux,
+    quete: data?.quete ?? data?.quests    ?? data?.questRequests ?? mockData.quete,
+  };
 };
 
 const TabButton = ({ tab, isActive, onClick, count }) => {
@@ -61,11 +92,15 @@ const UniversCardInscription = ({
   onApproveMany,
   onRejectMany,
 }) => {
+  const params = useParams();
+  const currentUniverseId = universeId ?? params?.id;
   const [active, setActive] = useState("join");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState({ join: new Set(), fiche: new Set(), lieux: new Set(), quete: new Set() });
   const [lists, setLists] = useState({ join: [], fiche: [], lieux: [], quete: [] });
   const [loading, setLoading] = useState(true);
+  const [droit, setDroit] = useState(null);
+
 
   // Charger depuis l'API
   useEffect(() => {
@@ -73,14 +108,9 @@ const UniversCardInscription = ({
     const run = async () => {
       try {
         setLoading(true);
-        const { data } = await ApiUnivers.getInscriptionUnivers(universeId, { search });
+        const { data } = await ApiUnivers.getInscriptionUnivers(currentUniverseId, { search });
         if (cancelled) return;
-        const next = {
-          join:  data?.join  ?? data?.adhesions ?? data?.joinRequests ?? mockData.join,
-          fiche: data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? mockData.fiche,
-          lieux: data?.lieux ?? data?.places    ?? data?.placeRequests ?? mockData.lieux,
-          quete: data?.quete ?? data?.quests    ?? data?.questRequests ?? mockData.quete,
-        };
+        const next = normalizeApiData(data);
         setLists(next);
       } catch (e) {
         // Fallback silencieux sur mock en cas d'erreur
@@ -89,9 +119,9 @@ const UniversCardInscription = ({
         if (!cancelled) setLoading(false);
       }
     };
-    if (universeId) run();
+    if (currentUniverseId) run();
     return () => { cancelled = true; };
-  }, [universeId, search]);
+  }, [currentUniverseId, search]);
 
   const counts = {
     join:  lists.join.length,
@@ -136,13 +166,8 @@ const UniversCardInscription = ({
 
   const refresh = async () => {
     try {
-      const { data } = await ApiUnivers.getInscriptionUnivers(universeId, { search });
-      const next = {
-        join:  data?.join  ?? data?.adhesions ?? data?.joinRequests ?? mockData.join,
-        fiche: data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? mockData.fiche,
-        lieux: data?.lieux ?? data?.places    ?? data?.placeRequests ?? mockData.lieux,
-        quete: data?.quete ?? data?.quests    ?? data?.questRequests ?? mockData.quete,
-      };
+      const { data } = await ApiUnivers.getInscriptionUnivers(currentUniverseId, { search });
+      const next = normalizeApiData(data);
       setLists(next);
     } catch {}
   };
@@ -150,7 +175,7 @@ const UniversCardInscription = ({
   const approveOne = async (tabKey, id) => {
     try {
       setLoading(true);
-      await ApiUnivers.putInscriptionUnivers(universeId, id, { status: 'approved', type: tabKey });
+      await ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 });
       await refresh();
       onApprove?.(tabKey, id);
     } catch {} finally { setLoading(false); }
@@ -159,7 +184,7 @@ const UniversCardInscription = ({
   const rejectOne = async (tabKey, id) => {
     try {
       setLoading(true);
-      await ApiUnivers.deleteInscriptionUnivers(universeId, id);
+      await ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id);
       await refresh();
       onReject?.(tabKey, id);
     } catch {} finally { setLoading(false); }
@@ -170,7 +195,7 @@ const UniversCardInscription = ({
     if (ids.length === 0) return;
     try {
       setLoading(true);
-      await Promise.all(ids.map((id) => ApiUnivers.putInscriptionUnivers(universeId, id, { status: 'approved', type: tabKey })));
+      await Promise.all(ids.map((id) => ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 })));
       await refresh();
       onApproveMany?.(tabKey, ids);
     } catch {} finally {
@@ -184,7 +209,7 @@ const UniversCardInscription = ({
     if (ids.length === 0) return;
     try {
       setLoading(true);
-      await Promise.all(ids.map((id) => ApiUnivers.deleteInscriptionUnivers(universeId, id)));
+      await Promise.all(ids.map((id) => ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id)));
       await refresh();
       onRejectMany?.(tabKey, ids);
     } catch {} finally {
@@ -202,7 +227,7 @@ const UniversCardInscription = ({
 
 
   return (
-    <div className="UniIn-container" data-universe={universeId ?? ""}>
+    <div className="UniIn-container" data-universe={currentUniverseId ?? ""}>
       {/* Header */}
       <BackLocation/>
       <header className="UniIn-header">
@@ -233,14 +258,16 @@ const UniversCardInscription = ({
       {/* Bulk actions */}
       <div className="UniIn-bulkbar">
         <label className="UniIn-checkall">
+          
           <input
             type="checkbox"
             checked={allChecked}
             onChange={() => toggleAll(active, currentIds)}
           />
+          
           <span>Tout sélectionner</span>
         </label>
-
+        {DroitAccess.hasWriteAccess(droit) && (
         <div className="UniIn-bulkActions">
           <button
             className="UniIn-btn UniIn-approve"
@@ -259,6 +286,7 @@ const UniversCardInscription = ({
             Refuser
           </button>
         </div>
+        )}
       </div>
 
       {/* List */}
@@ -278,11 +306,13 @@ const UniversCardInscription = ({
             {filtered.map((it) => (
               <article key={it.id} className="UniIn-card">
                 <div className="UniIn-cardLeft">
+                  
                   <input
                     type="checkbox"
                     checked={selected[active].has(it.id)}
                     onChange={() => toggleOne(active, it.id)}
                   />
+                  
                   <div className="UniIn-avatar">
                     {it.avatar ? (
                       <img src={it.avatar} alt={it.requester ?? it.title} />
@@ -318,6 +348,7 @@ const UniversCardInscription = ({
                 </div>
 
                 <div className="UniIn-cardActions">
+                  
                   {active !== "join" && (
                     <button
                       className="UniIn-iconBtn UniIn-iconEye1"
@@ -327,6 +358,7 @@ const UniversCardInscription = ({
                       <FaEye />
                     </button>
                   )}
+                  {DroitAccess.hasWriteAccess(droit) && (
                   <button
                     className="UniIn-iconBtn UniIn-approve"
                     title="Accepter"
@@ -334,6 +366,8 @@ const UniversCardInscription = ({
                   >
                     <FaCheck />
                   </button>
+                  )}
+                  {DroitAccess.hasWriteAccess(droit) && (
                   <button
                     className="UniIn-iconBtn UniIn-reject"
                     title="Refuser"
@@ -341,7 +375,9 @@ const UniversCardInscription = ({
                   >
                     <FaTimes />
                   </button>
+                  )}
                 </div>
+
               </article>
             ))}
           </Masonry>
