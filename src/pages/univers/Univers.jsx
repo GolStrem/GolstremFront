@@ -35,6 +35,7 @@ const Univers = () => {
   const [error, setError] = useState(null);
   const [universData, setUniversData] = useState({});
   const [listModule, setListModule] = useState([]);
+  const [tagsMapping, setTagsMapping] = useState({}); 
   const [images, setImages] = useState({
     bgImage: "",
     fiches: "",
@@ -51,11 +52,15 @@ const Univers = () => {
     NomUnivers: "",
     descriptionUnivers: "",
     image: "",
-    tagsUnivers: [],
+    selectedTagFilter: [],
     selectVisibily: "",
     selectRegistre: "",
     flags: []
   });
+
+  const [isLoading, setIsLoading] = useState(true);  // État de loading initial
+  const [createUnivers, setCreateUnivers] = useState([]);
+
 
   // Mapping des modules disponibles pour les univers
   const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery"];
@@ -171,6 +176,34 @@ const Univers = () => {
     }
   }, [listModule, universData.module, universId, updateVisibleCategories]);
 
+    // ====== Chargement initial de la page ======
+    useEffect(() => {
+      const initializePage = async () => {
+        setIsLoading(true);
+        try {
+          const tags = await ApiUnivers.getTags();
+          const listTag = tags.data.map(tag => tag.name);
+          
+          
+          // Création des mappings nom -> id
+          const tagsMap = {};
+          tags.data.forEach(tag => {
+            tagsMap[tag.name] = tag.id;
+          });
+          
+          setTagsMapping(tagsMap);
+          setCreateUnivers(createUniversCreateFields(listTag));
+          
+        } catch (error) {
+          console.error("Erreur lors du chargement initial:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+  
+      initializePage();
+    }, []);
+    
   // Récupération des données de l'univers depuis l'API
   useEffect(() => {
     const fetchUniversData = async () => {
@@ -210,7 +243,7 @@ const Univers = () => {
           NomUnivers: data.name || "Univers",
           descriptionUnivers: data.description || "",
           image: data.image || "",
-          tagsUnivers: [],
+          selectedTagFilter: data.tags.map(tag => tag.name),
           selectVisibily: data.visibility === 0 ? "Public" : data.visibility === 1 ? "Sur invitation" : "Priver",
           selectRegistre: data.openRegistration === 0 ? "Accepté automatiquement" : data.openRegistration === 1 ? "Sous validation" : "Refuser tout",
           flags: data.nfsw === 1 ? ["NSFW"] : []
@@ -379,7 +412,8 @@ const Univers = () => {
         image: values.image || null,
         visibility: values.selectVisibily === "Public" ? 0 : values.selectVisibily === "Sur invitation" ? 1 : 2,
         openRegistration: values.selectRegistre === "Accepté automatiquement" ? 0 : values.selectRegistre === "Sous validation" ? 1 : 2,
-        nfsw: values.flags?.includes("NSFW") ? 1 : 0
+        nfsw: values.flags?.includes("NSFW") ? 1 : 0,
+        tags: values.selectedTagFilter || []
       };
       
       
@@ -578,8 +612,8 @@ const Univers = () => {
            );
          })}
        </div>
-
-             <ModalGeneric
+       <ModalGeneric
+         noClose={true}
          onClose={handleCloseEditImages}
          handleSubmit={handleSubmitImages}
          initialData={images}
@@ -592,7 +626,7 @@ const Univers = () => {
        />
 
              {/* Modal de confirmation de suppression */}
-       <ModalGeneric
+        <ModalGeneric
          onClose={handleCloseDeleteModal}
          handleSubmit={handleDeleteUnivers}
          initialData={{}}
@@ -605,12 +639,13 @@ const Univers = () => {
        />
 
              {/* Modal de modification des informations */}
-       <ModalGeneric
+        <ModalGeneric
+         noClose={true}
          onClose={handleCloseEditInfo}
          handleSubmit={handleSubmitInfo}
          initialData={universInfo}
-         fields={infoFields}
-         name={`univers-info-modal-${universId}`}
+         fields={createUnivers}
+         name={`univers-info-modal-${universId}-edit`}
          isOpen={isEditInfoOpen}
          title="Modifier l'univers"
          textButtonValidate={isInfoLoading ? "Sauvegarde..." : "Sauvegarder"}
@@ -620,6 +655,7 @@ const Univers = () => {
 
       {/* Modal de sélection des catégories affichées */}
       <ModalGeneric
+        noClose={true}
         onClose={handleCloseSelectCategories}
         handleSubmit={handleSubmitCategories}
         initialData={{ selectedModules: listModule }}
