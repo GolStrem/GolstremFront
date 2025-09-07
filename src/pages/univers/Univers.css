@@ -21,6 +21,9 @@
 .UniId-group {
   width: 100%;
   background: var(--color-univers-gradient);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 
@@ -69,9 +72,11 @@
   background: #5ba0f2;
 }
 .UniId-text{
-  text-align: center;
+  text-align: justify;
   color: var(--color-text);
+  max-width: 1100px;
 }
+
 /* Grille des cartes */
 .UniId-grid {
   width: min(2000px, 92%);
@@ -198,9 +203,7 @@
 }
 
 @media (max-width: 768px) {
-  .UniId-page {
 
-  }
   
   .UniId-title {
     padding-top: 60px;
@@ -220,9 +223,7 @@
 }
 
 @media (max-width: 560px) {
-  .UniId-page {
 
-  }
   
   .UniId-title {
     margin: 0 auto 10px;
