@@ -53,6 +53,7 @@ const MenuUnivers = () => {
   const [isModalUniversOpen, setModalUniversOpen] = useState(false);
   const [isModalFiltreOpen, setModalFiltreOpen] = useState(false)
   const [isModalCreateUnivOpen, setModalCreateUnivOpen] = useState(false)
+  const [isRequestModalOpen, setRequestModalOpen] = useState(false)
   const [title, setTitle] = useState("");
   const [fields, setFields] = useState([]);
   const [isLoading, setIsLoading] = useState(true);  // État de loading initial
@@ -166,7 +167,7 @@ const MenuUnivers = () => {
         navigatePage(`${idUnivers}`);
       } else if (openRegistration === 1) {
         // Sous validation: afficher un message de confirmation et ne pas entrer
-        alert("Demande envoyée. Vous pourrez entrer quand l'owner aura accepté.");
+        setRequestModalOpen(true);
       } else if (openRegistration === 2) {
         // Refuser tout: rien à faire, pas de bouton (géré dans l'affichage)
         return;
@@ -462,6 +463,24 @@ const favCooldownRef = React.useRef(new Set());
           <div className="loading-spinner"></div>
           <p>Chargement des univers...</p>
         </div>
+      )}
+
+      {isRequestModalOpen && (
+        <ModalGeneric
+          onClose={() => setRequestModalOpen(false)}
+          handleSubmit={() => setRequestModalOpen(false)}
+          fields={{
+            info: {
+              type: "html",
+              value:
+                "<div style=\"padding:8px 0\">Demande envoyée. Vous pourrez entrer quand l'owner aura accepté.</div>",
+            },
+          }}
+          title={"Demande envoyée"}
+          noButtonCancel={true}
+          textButtonValidate="OK"
+          name="requestSent"
+        />
       )}
 
       {/* ===== Headers ===== */}

@@ -123,6 +123,21 @@ const UniversCardInscription = ({
     return () => { cancelled = true; };
   }, [currentUniverseId, search]);
 
+  useEffect(() => {
+    const loadUnivers = async () => {
+      if (!currentUniverseId) return;
+      try {
+        const res = await ApiUnivers.getDetailUnivers(currentUniverseId);
+        setDroit(res?.data?.droit);
+        console.log(res);
+       
+      } catch {
+
+      }
+    };
+    loadUnivers();
+  }, [currentUniverseId]);
+
   const counts = {
     join:  lists.join.length,
     fiche: lists.fiche.length,
