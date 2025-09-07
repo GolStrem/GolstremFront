@@ -69,7 +69,7 @@ const MenuUnivers = () => {
   const [idUnivers, setIdUnivers] = useState(0);
   const navigate = useNavigate(); // <-- le hook à utiliser
   const navigatePage = useNavigatePage();
-  const [universVisibility, setUniversVisibility] = useState("0");
+  const [universVisibility, setUniversVisibility] = useState(0);
   const [openRegistration, setOpenRegistration] = useState(0);
   // Suivi des demandes d'accès envoyées
   const [requestedSet, setRequestedSet] = useState(() => {
@@ -113,8 +113,8 @@ const MenuUnivers = () => {
   const handleModalViewUnivers = function(card) { 
     setIdUnivers(card.id)
     setTitle(card.name);
-    setUniversVisibility(card.visibility || "0");
-    setOpenRegistration(typeof card.openRegistration === 'number' ? card.openRegistration : 0);
+    setUniversVisibility(Number(card.visibility) || 0);
+    setOpenRegistration(Number(card.openRegistration) || 0);
     setHasRequestedAccess(requestedSet.has(card.id));
     const textHtml = `
     <div>
@@ -150,7 +150,12 @@ const MenuUnivers = () => {
 
   const handleGoUnivers = async () => {
     try {
-      // Si visibilité = Sur invitation, on crée d'abord la demande d'accès
+      if (universVisibility === 0) {
+        setModalUniversOpen(false);
+        navigatePage(`${idUnivers}`);
+        return;
+      }
+
       if (universVisibility === "1" || universVisibility === 1) {
         await ApiUnivers.postInscriptionUnivers(idUnivers);
       }
@@ -580,9 +585,9 @@ const favCooldownRef = React.useRef(new Set());
           fields={fields}
           title={title}
           noButtonCancel={true}
-          hidePrimary={openRegistration === 2}
+          hidePrimary={openRegistration === 2 && universVisibility === 1}
           textButtonValidate={
-            openRegistration === 0
+            openRegistration === 0 || universVisibility === 0
               ? "Visiter"
               : openRegistration === 1
                 ? "Demander l'accès"
