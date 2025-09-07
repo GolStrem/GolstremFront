@@ -22,7 +22,8 @@ const ModalGeneric = ({
 	noButtonCancel= false, 
 	textButtonValidate= 'save',
 	nav = [],
-	noMemory = false
+	noMemory = false,
+	hidePrimary = false
 }) => {
 	if (isOpen !== undefined && !isOpen) return null;
 	
@@ -598,14 +599,16 @@ const ModalGeneric = ({
 			</form>
 			{error && <span className="tm-error">{error}</span>}
 			<div className="tm-modal-buttons">
-				<button 
-					className="tm-primary" 
-					onClick={onSubmit} 
-					disabled={loading || !validateAllUrlFields()}
-					title={!validateAllUrlFields() ? t("invalidUrlList") : ""}
-				>
-					{loading ? t("saving") : t(textButtonValidate)}
-				</button>
+				{!hidePrimary && (
+					<button 
+						className="tm-primary" 
+						onClick={onSubmit} 
+						disabled={loading || !validateAllUrlFields()}
+						title={!validateAllUrlFields() ? t("invalidUrlList") : ""}
+					>
+						{loading ? t("saving") : t(textButtonValidate)}
+					</button>
+				)}
 				{ !noButtonCancel &&  (
 					<button onClick={handleClose} disabled={loading}>{t("cancel")}</button>
 				)}

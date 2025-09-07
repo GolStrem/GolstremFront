@@ -70,6 +70,17 @@ const MenuUnivers = () => {
   const navigate = useNavigate(); // <-- le hook à utiliser
   const navigatePage = useNavigatePage();
   const [universVisibility, setUniversVisibility] = useState("0");
+  const [openRegistration, setOpenRegistration] = useState(0);
+  // Suivi des demandes d'accès envoyées
+  const [requestedSet, setRequestedSet] = useState(() => {
+    try {
+      const raw = localStorage.getItem("univers_requested") || "[]";
+      return new Set(JSON.parse(raw));
+    } catch {
+      return new Set();
+    }
+  });
+  const [hasRequestedAccess, setHasRequestedAccess] = useState(false);
 
 
 
@@ -103,6 +114,8 @@ const MenuUnivers = () => {
     setIdUnivers(card.id)
     setTitle(card.name);
     setUniversVisibility(card.visibility || "0");
+    setOpenRegistration(typeof card.openRegistration === 'number' ? card.openRegistration : 0);
+    setHasRequestedAccess(requestedSet.has(card.id));
     const textHtml = `
     <div>
       <div class="univerOwner">
@@ -135,9 +148,27 @@ const MenuUnivers = () => {
     setModalCreateUnivOpen(true);
   };
 
-  const handleGoUnivers =()=>{
-    navigatePage(`${idUnivers}`)
-  
+  const handleGoUnivers = async () => {
+    try {
+      // Si visibilité = Sur invitation, on crée d'abord la demande d'accès
+      if (universVisibility === "1" || universVisibility === 1) {
+        await ApiUnivers.postInscriptionUnivers(idUnivers);
+      }
+
+      if (openRegistration === 0) {
+        // Accès direct après POST (s'il y a lieu)
+        setModalUniversOpen(false);
+        navigatePage(`${idUnivers}`);
+      } else if (openRegistration === 1) {
+        // Sous validation: afficher un message de confirmation et ne pas entrer
+        alert("Demande envoyée. Vous pourrez entrer quand l'owner aura accepté.");
+      } else if (openRegistration === 2) {
+        // Refuser tout: rien à faire, pas de bouton (géré dans l'affichage)
+        return;
+      }
+    } catch (err) {
+      console.error("Erreur lors de la demande d'accès:", err?.response?.data || err?.message);
+    }
   }
 
   // ⚙️ Définition des champs de filtre avec la nouvelle fonction
@@ -549,7 +580,14 @@ const favCooldownRef = React.useRef(new Set());
           fields={fields}
           title={title}
           noButtonCancel={true}
-          textButtonValidate={universVisibility === "1" || universVisibility === 1 ? "Demander l'accès" : "Visiter"}
+          hidePrimary={openRegistration === 2}
+          textButtonValidate={
+            openRegistration === 0
+              ? "Visiter"
+              : openRegistration === 1
+                ? "Demander l'accès"
+                : ""
+          }
           name="previewUnivers"
         />
       )}

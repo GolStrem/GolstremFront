@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import "./UniversCardInscription.css";
 import { BackLocation, SearchBar } from "@components/index";
+import { ApiUnivers } from "@service";
 import Masonry from "react-masonry-css";
 
 
@@ -25,23 +26,10 @@ const TABS = [
 ];
 
 const mockData = {
-  joinRequests: [
-    { id: 1, title: "Riven", requester: "Riven",  createdAt: "2025-09-03T19:22:00Z", status: "pending" },
-    { id: 2, title: "Zheneos", requester: "Zheneos",  createdAt: "2025-09-04T09:11:00Z", status: "pending" },
-    { id: 3, title: "Henelks", requester: "Henelks",  createdAt: "2025-09-05T09:11:00Z", status: "pending" },
-  ],
-  ficheRequests: [
-    { id: 11, title: "Henel Aemue", requester: "Henel", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-    { id: 12, title: "Henel Aemue", requester: "Bouboute du 27", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-    { id: 13, title: "Henel Aemue", requester: "Hemael", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-    { id: 14, title: "Henel Aemue", requester: "Zheneos", message: "Fiche v2 (ajout background).", createdAt: "2025-09-02T14:05:00Z", status: "pending" },
-  ],
-  placeRequests: [
-    { id: 21, title: "Taverne du Lotus Noir", requester: "Kara", message: "Lieu social central avec mini-events.", createdAt: "2025-09-01T18:00:00Z", status: "pending" },
-  ],
-  questRequests: [
-    { id: 31, title: "La Lame d’Orichalque", requester: "Alen", message: "Suite de 3 étapes, difficulté moyenne.", createdAt: "2025-09-03T08:30:00Z", status: "pending" },
-  ],
+  join: [],
+  fiche: [],
+  lieux: [],
+  quete: [],
 };
 
 const TabButton = ({ tab, isActive, onClick, count }) => {
@@ -79,23 +67,31 @@ const UniversCardInscription = ({
   const [lists, setLists] = useState({ join: [], fiche: [], lieux: [], quete: [] });
   const [loading, setLoading] = useState(true);
 
-  // Charger les données mock via useEffect
+  // Charger depuis l'API
   useEffect(() => {
-    setLoading(true);
-
-    // Simule un appel API avec délai
-    const timer = setTimeout(() => {
-      setLists({
-        join:  mockData.joinRequests,
-        fiche: mockData.ficheRequests,
-        lieux: mockData.placeRequests,
-        quete: mockData.questRequests,
-      });
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [universeId]);
+    let cancelled = false;
+    const run = async () => {
+      try {
+        setLoading(true);
+        const { data } = await ApiUnivers.getInscriptionUnivers(universeId, { search });
+        if (cancelled) return;
+        const next = {
+          join:  data?.join  ?? data?.adhesions ?? data?.joinRequests ?? mockData.join,
+          fiche: data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? mockData.fiche,
+          lieux: data?.lieux ?? data?.places    ?? data?.placeRequests ?? mockData.lieux,
+          quete: data?.quete ?? data?.quests    ?? data?.questRequests ?? mockData.quete,
+        };
+        setLists(next);
+      } catch (e) {
+        // Fallback silencieux sur mock en cas d'erreur
+        if (!cancelled) setLists(mockData);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    if (universeId) run();
+    return () => { cancelled = true; };
+  }, [universeId, search]);
 
   const counts = {
     join:  lists.join.length,
@@ -105,14 +101,7 @@ const UniversCardInscription = ({
   };
 
   const handleSearch = (value) => {
-    setSearch(value);  
-
-    
-    setParam((prev) => ({
-      ...prev,
-      search: value.trim(),
-      p: 0, 
-    }));
+    setSearch(value);
   };
 
 
@@ -145,21 +134,63 @@ const UniversCardInscription = ({
     });
   };
 
-  const approveOne = (tabKey, id) => onApprove?.(tabKey, id);
-  const rejectOne = (tabKey, id) => onReject?.(tabKey, id);
-
-  const approveSelected = (tabKey) => {
-    const ids = Array.from(selected[tabKey]);
-    if (ids.length === 0) return;
-    onApproveMany?.(tabKey, ids);
-    setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+  const refresh = async () => {
+    try {
+      const { data } = await ApiUnivers.getInscriptionUnivers(universeId, { search });
+      const next = {
+        join:  data?.join  ?? data?.adhesions ?? data?.joinRequests ?? mockData.join,
+        fiche: data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? mockData.fiche,
+        lieux: data?.lieux ?? data?.places    ?? data?.placeRequests ?? mockData.lieux,
+        quete: data?.quete ?? data?.quests    ?? data?.questRequests ?? mockData.quete,
+      };
+      setLists(next);
+    } catch {}
   };
 
-  const rejectSelected = (tabKey) => {
+  const approveOne = async (tabKey, id) => {
+    try {
+      setLoading(true);
+      await ApiUnivers.putInscriptionUnivers(universeId, id, { status: 'approved', type: tabKey });
+      await refresh();
+      onApprove?.(tabKey, id);
+    } catch {} finally { setLoading(false); }
+  };
+
+  const rejectOne = async (tabKey, id) => {
+    try {
+      setLoading(true);
+      await ApiUnivers.deleteInscriptionUnivers(universeId, id);
+      await refresh();
+      onReject?.(tabKey, id);
+    } catch {} finally { setLoading(false); }
+  };
+
+  const approveSelected = async (tabKey) => {
     const ids = Array.from(selected[tabKey]);
     if (ids.length === 0) return;
-    onRejectMany?.(tabKey, ids);
-    setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+    try {
+      setLoading(true);
+      await Promise.all(ids.map((id) => ApiUnivers.putInscriptionUnivers(universeId, id, { status: 'approved', type: tabKey })));
+      await refresh();
+      onApproveMany?.(tabKey, ids);
+    } catch {} finally {
+      setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+      setLoading(false);
+    }
+  };
+
+  const rejectSelected = async (tabKey) => {
+    const ids = Array.from(selected[tabKey]);
+    if (ids.length === 0) return;
+    try {
+      setLoading(true);
+      await Promise.all(ids.map((id) => ApiUnivers.deleteInscriptionUnivers(universeId, id)));
+      await refresh();
+      onRejectMany?.(tabKey, ids);
+    } catch {} finally {
+      setSelected((p) => ({ ...p, [tabKey]: new Set() }));
+      setLoading(false);
+    }
   };
 
   const currentIds = filtered.map((x) => x.id);
