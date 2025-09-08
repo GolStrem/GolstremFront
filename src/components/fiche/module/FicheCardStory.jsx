@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { FicheNav } from "@components"; 
 import "../../../pages/fiche/CreateFiche.css";
-import { ApiService } from "@service";
+import { ApiService, PurifyHtml } from "@service";
 import "./FicheCard.css"
 import { useTranslation } from "react-i18next";
 
@@ -183,7 +183,7 @@ const FicheCardStory = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
           {/* Contenu du chapitre sélectionné */}
           {selectedChapter && resolvedValues[selectedChapter] && (
             <div className="cf-text storytext">
-              <div dangerouslySetInnerHTML={{ __html: resolvedValues[selectedChapter] }} />
+              <div dangerouslySetInnerHTML={{ __html: PurifyHtml(resolvedValues[selectedChapter] )}} />
             </div>
           )}
         </>

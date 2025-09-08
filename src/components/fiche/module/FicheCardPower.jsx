@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { FicheNav } from "@components"; 
 import "../../../pages/fiche/CreateFiche.css";
-import { ApiService } from "@service";
+import { ApiService, PurifyHtml } from "@service";
 import "./FicheCard.css";
 import { useTranslation } from "react-i18next";
 
@@ -189,7 +189,7 @@ const FicheCardPower = ({ activeTab, indexModule, setActiveTab, data, onEdit }) 
             <div className="cf-text power-content">
               {selectedPowerData.description && hasContent(selectedPowerData.description) && (
                 <div className="power-description">
-                  <div dangerouslySetInnerHTML={{ __html: selectedPowerData.description }} />
+                  <div dangerouslySetInnerHTML={{ __html: PurifyHtml(selectedPowerData.description )}} />
                 </div>
               )}
             </div>

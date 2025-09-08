@@ -1,7 +1,7 @@
 import { FicheNav } from "@components"; 
 import "./FicheCard.css"
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { ApiService } from "@service";
+import { ApiService, PurifyHtml } from "@service";
 import { useTranslation } from "react-i18next";
 
 const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit }) => {
@@ -123,7 +123,7 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
             <h2>{t("characterTrait")}</h2>
             <div className="cf-rank">
               {isLoading ? t("loading") : (
-                <div dangerouslySetInnerHTML={{ __html: resolvedValues.personalité }} />
+                <div dangerouslySetInnerHTML={{ __html: PurifyHtml(resolvedValues.personalité) }} />
               )}
             </div>
           </>
@@ -134,7 +134,7 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
             <h3>{t("fear")}</h3>
             <div className="cf-rank">
               {isLoading ? t("loading") : (
-                <div dangerouslySetInnerHTML={{ __html: resolvedValues.peur }} />
+                <div dangerouslySetInnerHTML={{ __html: PurifyHtml(resolvedValues.peur) }} />
               )}
             </div>
           </>
@@ -145,7 +145,7 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
             <h3>{t("motivation")}</h3>
             <div className="cf-rank">
               {isLoading ? t("loading") : (
-                <div dangerouslySetInnerHTML={{ __html: resolvedValues.motivation }} />
+                <div dangerouslySetInnerHTML={{ __html: PurifyHtml(resolvedValues.motivation) }} />
               )}
             </div>
           </>
@@ -156,7 +156,7 @@ const FicheCardCharacter= ({ activeTab, indexModule, setActiveTab, data, onEdit 
             <h3>{t("other")}</h3>
             <div className="cf-rank">
               {isLoading ? t("loading") : (
-                <div dangerouslySetInnerHTML={{ __html: resolvedValues.another }} />
+                <div dangerouslySetInnerHTML={{ __html: PurifyHtml(resolvedValues.another) }} />
               )}
             </div>
           </>

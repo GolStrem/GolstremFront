@@ -5,7 +5,7 @@ import { ffimg } from "@assets";
 import { ModalGeneric, BackLocation } from "@components";
 import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
-import { ApiUnivers, ApiService, useNavigatePage } from "@service";
+import { ApiUnivers, ApiService, useNavigatePage, PurifyHtml } from "@service";
 
 
 const Univers = () => {
@@ -555,7 +555,7 @@ const Univers = () => {
         {universInfo.descriptionUnivers && universInfo.descriptionUnivers.trim() !== '' && universInfo.descriptionUnivers !== '<p></p>' && (
           <div 
             className="UniId-text" 
-            dangerouslySetInnerHTML={{ __html: universInfo.descriptionUnivers }} 
+            dangerouslySetInnerHTML={{ __html: PurifyHtml(universInfo.descriptionUnivers )}} 
           />
         )}
        </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { BaseModal, ToolbarTipTap, TextImgPlus, TextTextAreaPlus, CheckBox, Chapter, ImgPlus  } from "@components";
-import { isValidImageUrl, ApiService } from "@service";
+import { isValidImageUrl, ApiService, PurifyHtml } from "@service";
 import Cookies from "js-cookie";
 import "../fiche/modal/FicheEditModal.css";
 import "./ModalGeneric.css"
@@ -493,7 +493,7 @@ const ModalGeneric = ({
 					<div
 					key={key}
 					className={`htmlGeneric ${key}`}
-					dangerouslySetInnerHTML={{ __html: config.value }}
+					dangerouslySetInnerHTML={{ __html: PurifyHtml(config.value )}}
 					/>
 				);
 			case "select": {

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { FicheNav } from "@components"; 
 import "../../../pages/fiche/CreateFiche.css";
-import { ApiService } from "@service";
+import { ApiService, PurifyHtml } from "@service";
 import "./FicheCard.css"
 import { useTranslation } from "react-i18next";
 
@@ -131,7 +131,7 @@ const FicheCardGeneral = ({ activeTab, indexModule, setActiveTab, data, onEdit }
           <h2 className="cf-h2">{t("about")}</h2> 
           <div className="cf-about-display">
             {isLoading ? t("loading") : (
-              <div dangerouslySetInnerHTML={{ __html: resolvedValues.about }} />
+              <div dangerouslySetInnerHTML={{ __html: PurifyHtml(resolvedValues.about )}} />
             )}
           </div> 
         </section> 
