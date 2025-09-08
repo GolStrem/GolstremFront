@@ -19,6 +19,8 @@ import UniversCardGallerie from  './pages/univers/modules/UniversCardGallerie';
 import UniversCardEtablissement from  './pages/univers/modules/UniversCardEtablissement';
 import UniversCardEncyclopedie from  './pages/univers/modules/UniversCardEncyclopedie';
 import UniversCardBoard from  './pages/univers/modules/UniversCardBoard';
+import UniversCardMembres from  './pages/univers/modules/UniversCardMembres';
+import UniversCardAdministration from  './pages/univers/modules/UniversCardAdministration';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -205,6 +207,26 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <UniversCardBoard/>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/univers/:id/membres',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardMembres/>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/univers/:id/administration',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardAdministration/>
         </Layout>
       </ProtectedRoute>
     ),
