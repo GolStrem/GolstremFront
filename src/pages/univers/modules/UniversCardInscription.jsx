@@ -129,7 +129,6 @@ const UniversCardInscription = ({
       try {
         const res = await ApiUnivers.getDetailUnivers(currentUniverseId);
         setDroit(res?.data?.droit);
-        console.log(res);
        
       } catch {
 

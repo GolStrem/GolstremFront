@@ -24,3 +24,4 @@ export { useAutoTextColor } from './hook/useAutoTextColor'
 
 export { default as useNavigatePage } from './utils/NavigatePage'
 export { default as PurifyHtml } from './utils/PurifyHtml'
+export { default as Capitalize } from './utils/Capitalize'

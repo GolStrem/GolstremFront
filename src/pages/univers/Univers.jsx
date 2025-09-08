@@ -13,13 +13,16 @@ const Univers = () => {
   const { id: universId } = useParams(); // Récupérer l'ID de l'univers depuis l'URL
   
   const CATEGORIES = useMemo(() => [
-    { key: "fiches",            label: "Fiches",               to: `/univers/fiches` },
+    { key: "fiches",            label: "Fiches",               to: `/univers/${universId}/fiches` },
     { key: "encyclopedie",      label: "Encyclopédie",         to: `/univers/${universId}/encyclopedie` },
     { key: "etablissement",     label: "Établissement",        to: `/univers/${universId}/establishment` },
     { key: "ouverture",         label: "Ouverture / Inscription",to: `/univers/${universId}/opening` },
     { key: "tableau-affichage", label: "Tableau d'affichage",  to: `/univers/${universId}/board` },
-    { key: "Gallerie", label: "Gallerie",  to: `/univers/${universId}/gallerie` }
+    { key: "Gallerie", label: "Gallerie",  to: `/univers/${universId}/gallerie` },
+    { key: "membres", label: "Membres",  to: `/univers/${universId}/membres` },
+    { key: "administration", label: "Administration",  to: `/univers/${universId}/administration` }
   ], [universId]);
+                  
 
 
   const [isEditImagesOpen, setIsEditImagesOpen] = useState(false);
@@ -44,6 +47,8 @@ const Univers = () => {
     ouverture: "",
     tableau: "",
     gallerie: "",
+    administration: "",
+    membres: ""
   });
 
 
@@ -63,7 +68,7 @@ const Univers = () => {
 
 
   // Mapping des modules disponibles pour les univers
-  const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery"];
+  const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery", "membres", "administration"];
 
   // Fonction pour traiter les modules et extraire les images
   const processModules = useCallback((modules) => {
@@ -90,6 +95,8 @@ const Univers = () => {
                          module.name === 'gallery' ? 'gallerie' : 
                          module.name === 'inscription' ? 'ouverture' : 
                          module.name === 'questLog' ? 'tableau' : 
+                         module.name === 'membres' ? 'membres' :
+                         module.name === 'administration' ? 'administration' :
                          module.name;
         
         if (extra.image) {
@@ -294,6 +301,8 @@ const Univers = () => {
     ouverture: { type: "inputUrl", label: " Ouverture / Inscription" },
     tableau: { type: "inputUrl", label: "Tableau d'affichage" },
     gallerie: { type: "inputUrl", label: "Gallerie" },
+    membres: { type: "inputUrl", label: "Membres" },
+    administration: { type: "inputUrl", label: "Administration" },
   }), []);
 
   const deleteFields = useMemo(() => createUniversDeleteFields(), []);
@@ -330,7 +339,9 @@ const Univers = () => {
         etablissement: 'etablissement',
         ouverture: 'inscription',
         tableau: 'questLog',
-        gallerie: 'gallery'
+        gallerie: 'gallery',
+        membres: 'membres',
+        administration: 'administration'
       };
 
       for (const [imageKey, imageUrl] of Object.entries(values)) {
@@ -472,7 +483,9 @@ const Univers = () => {
       "tableau-affichage": "questLog",
       "Gallerie": "gallery",
       "ouverture": "inscription",
-      "fiches": "fiche"
+      "fiches": "fiche",
+      "membres": "membres",
+      "administration": "administration"
     };
     
     const moduleName = keyMapping[key] || key;
@@ -482,7 +495,9 @@ const Univers = () => {
       "questLog": "tableau",
       "gallery": "gallerie",
       "inscription": "ouverture",
-      "fiche": "fiches"
+      "fiche": "fiches",
+      "membres": "membres",
+      "administration": "administration"
     };
     
     const imageKey = imageKeyMapping[moduleName] || String(key || "").toLowerCase();

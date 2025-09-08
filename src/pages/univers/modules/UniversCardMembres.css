@@ -1,0 +1,212 @@
+.UniMe-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  color: var(--color-text);
+}
+
+.UniMe-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+#unime-sort-select{
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  width: 150px;
+
+}
+.UniMe-title {
+  margin: 0 auto 20px;
+  text-align: center;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin-bottom: 0;
+}
+
+.UniMe-subtitle {
+  opacity: 0.9;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.UniMe-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.UniMe-search { 
+  min-width: 240px; 
+}
+
+.UniMe-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.UniMe-sort select {
+  border-radius: 999px;
+  padding: 8px 10px;
+}
+
+.UniMe-joinBtn {
+  border-radius: 999px;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+}
+.UniMe-joinBtn.join { background: #2a7ade; color: #fff; }
+.UniMe-joinBtn.leave { background: #c0392b; color: #fff; }
+
+.UniMe-loading,
+.UniMe-empty {
+  text-align: center;
+  padding: 40px 0;
+  opacity: 0.8;
+}
+
+.UniMe-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.UniMe-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  border-radius: 999px;
+  background: var(--color-input-bg);
+  border: 2px solid var(--jaune); /* rappel du jaune d’Univers */
+  position: relative;
+  transition: box-shadow 0.15s ease, transform 0.12s ease;
+  
+}
+.UniMe-roleText{
+    border-radius: 999px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    background: var(--color-background);
+    font-size: 0.9rem;
+}
+.UniMe-roleBg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  font-size: clamp(1.6rem, 11vw, 7rem);
+  color: rgba(255,255,255,0.06);
+  pointer-events: none;
+  user-select: none;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.UniMe-avatar {
+  width: 80px;
+  height: 80px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+}
+
+/* Ajouts pour l'avatar avec couronne */
+.UniMe-avatarWrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.UniMe-crown {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--jaune);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+  font-size: 30px;
+
+}
+
+.UniMe-main {
+  display: flex;
+  align-items: center;
+}
+.UniMe-item:hover {
+  transform: scale(1.01);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+}
+
+.UniMe-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.UniMe-actionsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+.UniMe-roleSelect select {
+  border-radius: 999px;
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  padding: 8px 10px;
+}
+
+.UniMe-chip {
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border: none;
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.UniMe-friend {
+  background: #2a7ade;
+  color: #fff;
+}
+
+.UniMe-danger {
+  background: #c0392b;
+  color: #fff;
+}
+
+/* Bouton rejoindre/quitter docké en bas à gauche */
+.UniMe-joinBtnDock {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 20;
+  border-radius: 999px;
+  padding: 10px 16px;
+  border: 2px solid var(--jaune);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+
+
