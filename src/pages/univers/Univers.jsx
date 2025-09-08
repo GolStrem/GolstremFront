@@ -13,7 +13,7 @@ const Univers = () => {
   const { id: universId } = useParams(); // Récupérer l'ID de l'univers depuis l'URL
   
   const CATEGORIES = useMemo(() => [
-    { key: "fiches",            label: "Fiches",               to: `/univers/${universId}/fiches` },
+    { key: "fiches",            label: "Fiches",               to: `/fiches/univers/${universId}` },
     { key: "encyclopedie",      label: "Encyclopédie",         to: `/univers/${universId}/encyclopedie` },
     { key: "etablissement",     label: "Établissement",        to: `/univers/${universId}/establishment` },
     { key: "ouverture",         label: "Ouverture / Inscription",to: `/univers/${universId}/opening` },
