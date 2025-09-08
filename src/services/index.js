@@ -1,4 +1,3 @@
-import PurifyHtml from './utils/purifyHtml';
 
 export { default as TaskApi } from './api/TaskApi';
 export { default as ApiService } from './api/ApiService';
@@ -24,4 +23,4 @@ export { default as useHorizontalScroll} from './hook/useHorizontalScroll'
 export { useAutoTextColor } from './hook/useAutoTextColor'
 
 export { default as useNavigatePage } from './utils/NavigatePage'
-export { default as PurifyHtml } from './utils/purifyHtml'
+export { default as PurifyHtml } from './utils/PurifyHtml'
