@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { BackLocation, SearchBar } from "@components";
-import { ApiUnivers, ApiService, DroitAccess  } from "@service";
+import { ApiUnivers, ApiService, DroitAccess, Capitalize  } from "@service";
 import { ffimg } from "@assets";
 import "./UniversCardMembres.css";
 import { FaCrown, FaFileAlt } from "react-icons/fa";
@@ -264,22 +264,26 @@ const UniversCardMembres = () => {
                 {/* Lien vers les fiches de l'utilisateur dans cet univers */}
                 <button
                   className="UniMe-chip"
-                  onClick={() => navigate(`/fiche/owner/${m.id}?idUnivers=${universId}`)}
+                  onClick={() => navigate(`/fiches/owner/${m.id}?idUnivers=${universId}`)}
                   title="Voir ses fiches"
                 >
-                  <FaFileAlt /> fiches
+                  <FaFileAlt /> Fiches
                 </button>
-                <div className="UniMe-roleSelect">
-                  <select
-                    value={Number(m.state ?? 0)}
-                    onChange={(e) => handleChangeRole(m.id, Number(e.target.value))}
-                    disabled={busyIds.has(m.id)}
-                  >
-                    {ROLE_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
+                {DroitAccess.isOwner(droit) ? (
+                  <div className="UniMe-roleSelect">
+                    <select
+                      value={Number(m.state ?? 0)}
+                      onChange={(e) => handleChangeRole(m.id, Number(e.target.value))}
+                      disabled={busyIds.has(m.id)}
+                    >
+                      {ROLE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <p className="UniMe-roleText">{Capitalize(ROLE_LABEL[Number(m.state ?? 0)] || "MEMBRE")}</p>
+                )}
                  {DroitAccess.isOwner(droit) && (
                 <button
                   className="UniMe-chip UniMe-danger"
