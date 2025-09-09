@@ -16,10 +16,8 @@ const Univers = () => {
     { key: "fiches",            label: "Fiches",               to: `/fiches/univers/${universId}` },
     { key: "encyclopedie",      label: "Encyclopédie",         to: `/univers/${universId}/encyclopedie` },
     { key: "etablissement",     label: "Établissement",        to: `/univers/${universId}/establishment` },
-    { key: "ouverture",         label: "Ouverture / Inscription",to: `/univers/${universId}/opening` },
     { key: "tableau-affichage", label: "Tableau d'affichage",  to: `/univers/${universId}/board` },
     { key: "Gallerie", label: "Gallerie",  to: `/univers/${universId}/gallerie` },
-    { key: "membres", label: "Membres",  to: `/univers/${universId}/membres` },
     { key: "administration", label: "Administration",  to: `/univers/${universId}/administration` }
   ], [universId]);
                   
@@ -44,11 +42,9 @@ const Univers = () => {
     fiches: "",
     encyclopedie: "",
     etablissement: "",
-    ouverture: "",
     tableau: "",
     gallerie: "",
-    administration: "",
-    membres: ""
+    administration: ""
   });
 
 
@@ -68,7 +64,7 @@ const Univers = () => {
 
 
   // Mapping des modules disponibles pour les univers
-  const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery", "membres", "administration"];
+  const availableModules = ["fiche", "encyclopedie", "etablissement", "questLog", "gallery", "administration"];
 
   // Fonction pour traiter les modules et extraire les images
   const processModules = useCallback((modules) => {
@@ -93,9 +89,7 @@ const Univers = () => {
         // Mapping des noms de modules vers les clés d'images
         const moduleKey = module.name === 'fiche' ? 'fiches' : 
                          module.name === 'gallery' ? 'gallerie' : 
-                         module.name === 'inscription' ? 'ouverture' : 
                          module.name === 'questLog' ? 'tableau' : 
-                         module.name === 'membres' ? 'membres' :
                          module.name === 'administration' ? 'administration' :
                          module.name;
         
@@ -298,10 +292,8 @@ const Univers = () => {
     fiches: { type: "inputUrl", label: "Fiches" },
     encyclopedie: { type: "inputUrl", label: "Encyclopédie" },
     etablissement: { type: "inputUrl", label: "Établissement" },
-    ouverture: { type: "inputUrl", label: " Ouverture / Inscription" },
     tableau: { type: "inputUrl", label: "Tableau d'affichage" },
     gallerie: { type: "inputUrl", label: "Gallerie" },
-    membres: { type: "inputUrl", label: "Membres" },
     administration: { type: "inputUrl", label: "Administration" },
   }), []);
 
@@ -337,10 +329,8 @@ const Univers = () => {
         fiches: 'fiche',
         encyclopedie: 'encyclopedie',
         etablissement: 'etablissement',
-        ouverture: 'inscription',
         tableau: 'questLog',
         gallerie: 'gallery',
-        membres: 'membres',
         administration: 'administration'
       };
 
@@ -482,9 +472,7 @@ const Univers = () => {
     const keyMapping = {
       "tableau-affichage": "questLog",
       "Gallerie": "gallery",
-      "ouverture": "inscription",
       "fiches": "fiche",
-      "membres": "membres",
       "administration": "administration"
     };
     
@@ -494,9 +482,7 @@ const Univers = () => {
     const imageKeyMapping = {
       "questLog": "tableau",
       "gallery": "gallerie",
-      "inscription": "ouverture",
       "fiche": "fiches",
-      "membres": "membres",
       "administration": "administration"
     };
     
