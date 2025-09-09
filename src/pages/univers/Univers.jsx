@@ -5,7 +5,7 @@ import { ffimg } from "@assets";
 import { ModalGeneric, BackLocation } from "@components";
 import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
-import { ApiUnivers, ApiService, useNavigatePage, PurifyHtml } from "@service";
+import { ApiUnivers, ApiService, useNavigatePage, PurifyHtml, DroitAccess } from "@service";
 
 
 const Univers = () => {
@@ -16,10 +16,8 @@ const Univers = () => {
     { key: "fiches",            label: "Fiches",               to: `/fiches/univers/${universId}` },
     { key: "encyclopedie",      label: "Encyclopédie",         to: `/univers/${universId}/encyclopedie` },
     { key: "etablissement",     label: "Établissement",        to: `/univers/${universId}/establishment` },
-    { key: "ouverture",         label: "Ouverture / Inscription",to: `/univers/${universId}/opening` },
     { key: "tableau-affichage", label: "Tableau d'affichage",  to: `/univers/${universId}/board` },
     { key: "Gallerie", label: "Gallerie",  to: `/univers/${universId}/gallerie` },
-    { key: "membres", label: "Membres",  to: `/univers/${universId}/membres` },
     { key: "administration", label: "Administration",  to: `/univers/${universId}/administration` }
   ], [universId]);
                   
@@ -33,8 +31,11 @@ const Univers = () => {
   const [isImagesLoading, setIsImagesLoading] = useState(false);
   const [isInfoLoading, setIsInfoLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isJoinLoading, setIsJoinLoading] = useState(false);
   const [visibleCategories, setVisibleCategories] = useState(() => CATEGORIES.map(c => c.label));
-  const [droits, setDroits] = useState("write");
+  const [droits, setDroits] = useState("read");
+  const [stateUser, setStateUser] = useState(null);
+  const [showJoinBanner, setShowJoinBanner] = useState(false);
   const [error, setError] = useState(null);
   const [universData, setUniversData] = useState({});
   const [listModule, setListModule] = useState([]);
@@ -44,11 +45,9 @@ const Univers = () => {
     fiches: "",
     encyclopedie: "",
     etablissement: "",
-    ouverture: "",
     tableau: "",
     gallerie: "",
-    administration: "",
-    membres: ""
+    administration: ""
   });
 
 
@@ -65,10 +64,11 @@ const Univers = () => {
 
   const [isLoading, setIsLoading] = useState(true);  // État de loading initial
   const [createUnivers, setCreateUnivers] = useState([]);
+  const [openRegistration, setOpenRegistration] = useState(null);
 
 
   // Mapping des modules disponibles pour les univers
-  const availableModules = ["fiche", "encyclopedie", "etablissement", "inscription", "questLog", "gallery", "membres", "administration"];
+  const availableModules = ["fiche", "encyclopedie", "etablissement", "questLog", "gallery", "administration"];
 
   // Fonction pour traiter les modules et extraire les images
   const processModules = useCallback((modules) => {
@@ -93,9 +93,7 @@ const Univers = () => {
         // Mapping des noms de modules vers les clés d'images
         const moduleKey = module.name === 'fiche' ? 'fiches' : 
                          module.name === 'gallery' ? 'gallerie' : 
-                         module.name === 'inscription' ? 'ouverture' : 
                          module.name === 'questLog' ? 'tableau' : 
-                         module.name === 'membres' ? 'membres' :
                          module.name === 'administration' ? 'administration' :
                          module.name;
         
@@ -259,6 +257,14 @@ const Univers = () => {
         
         // Mise à jour des droits
         setDroits(data.droit || "read");
+        setStateUser(data.stateUser ?? null);
+        setOpenRegistration(typeof data.openRegistration === 'number' ? data.openRegistration : null);
+        
+        console.log('Données reçues de l\'API:', {
+          stateUser: data.stateUser,
+          droit: data.droit,
+          openRegistration: data.openRegistration
+        });
         
         // Traitement des modules pour extraire les images
         if (parsedData.module && Array.isArray(parsedData.module)) {
@@ -293,15 +299,22 @@ const Univers = () => {
     fetchUniversData();
   }, [universId, processModules, updateVisibleCategories]);
 
+  // Effet pour gérer l'affichage du bandeau principal
+  useEffect(() => {
+    // Le bandeau principal s'affiche seulement si stateUser est null (non inscrit) et que l'inscription n'est pas refusée (2)
+    const shouldShowBanner = stateUser === null && openRegistration !== 2;
+    setShowJoinBanner(shouldShowBanner);
+    
+    console.log('stateUser:', stateUser, 'openRegistration:', openRegistration, 'shouldShowBanner:', shouldShowBanner);
+  }, [stateUser, openRegistration]);
+
   const fields = useMemo(() => ({
     bgImage: { type: "inputUrl", label: "Image d'arrière-plan" },
     fiches: { type: "inputUrl", label: "Fiches" },
     encyclopedie: { type: "inputUrl", label: "Encyclopédie" },
     etablissement: { type: "inputUrl", label: "Établissement" },
-    ouverture: { type: "inputUrl", label: " Ouverture / Inscription" },
     tableau: { type: "inputUrl", label: "Tableau d'affichage" },
     gallerie: { type: "inputUrl", label: "Gallerie" },
-    membres: { type: "inputUrl", label: "Membres" },
     administration: { type: "inputUrl", label: "Administration" },
   }), []);
 
@@ -337,10 +350,8 @@ const Univers = () => {
         fiches: 'fiche',
         encyclopedie: 'encyclopedie',
         etablissement: 'etablissement',
-        ouverture: 'inscription',
         tableau: 'questLog',
         gallerie: 'gallery',
-        membres: 'membres',
         administration: 'administration'
       };
 
@@ -433,6 +444,7 @@ const Univers = () => {
       
       // Mettre à jour l'état local
       setUniversInfo(prev => ({ ...prev, ...values }));
+      setOpenRegistration(payload.openRegistration);
       
       // Mettre à jour le titre de la page
       if (values.NomUnivers) {
@@ -477,14 +489,37 @@ const Univers = () => {
 
 
 
+  const handleJoinUniverse = async () => {
+    if (!universId) return;
+    try {
+      setIsJoinLoading(true);
+      
+      // Mettre à jour immédiatement l'état pour faire disparaître le bandeau
+      if (openRegistration === 0) {
+        setStateUser(0); // Accepté automatiquement
+      } else {
+        setStateUser(-1); // En attente de validation
+      }
+      
+      await ApiUnivers.postInscriptionUnivers(universId);
+      
+      // Ne pas recharger les données immédiatement pour éviter que le bandeau réapparaisse
+      // La synchronisation se fera au prochain chargement de page
+    } catch (e) {
+      console.error("Erreur lors de la demande d'inscription:", e);
+      // En cas d'erreur, remettre stateUser à null pour réafficher le bandeau
+      setStateUser(null);
+    } finally {
+      setIsJoinLoading(false);
+    }
+  };
+
   const resolveKey = useCallback((key) => {
     // Mapping des clés de catégories vers les noms de modules de l'API
     const keyMapping = {
       "tableau-affichage": "questLog",
       "Gallerie": "gallery",
-      "ouverture": "inscription",
       "fiches": "fiche",
-      "membres": "membres",
       "administration": "administration"
     };
     
@@ -494,9 +529,7 @@ const Univers = () => {
     const imageKeyMapping = {
       "questLog": "tableau",
       "gallery": "gallerie",
-      "inscription": "ouverture",
       "fiche": "fiches",
-      "membres": "membres",
       "administration": "administration"
     };
     
@@ -561,7 +594,7 @@ const Univers = () => {
       } : undefined}
     >
       <BackLocation fallbackPath="/univers" />
-      {droits !== "read" && (
+      {DroitAccess.hasWriteAccess(droits) && (
         <div className="UniId-left-dots">
          
           <button
@@ -627,6 +660,21 @@ const Univers = () => {
            );
          })}
        </div>
+      {showJoinBanner && (
+        <div className="UniId-joinBanner" role="region" aria-live="polite">
+          <div className="UniId-joinContent">
+            <span className="UniId-joinText">Vous êtes actuellement en vue spectateur.</span>
+            <button
+              type="button"
+              className="UniId-joinBtn"
+              onClick={handleJoinUniverse}
+              disabled={isJoinLoading}
+            >
+              {isJoinLoading ? "Envoi..." : "Rejoindre"}
+            </button>
+          </div>
+        </div>
+      )}
        <ModalGeneric
          noClose={true}
          onClose={handleCloseEditImages}

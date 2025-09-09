@@ -12,6 +12,8 @@ const realApi = {
   addStar: (universId) =>api.post(`/univers/${universId}/star`),
   removeStar: (universId) => api.delete(`/univers/${universId}/star`),
   getDetailUnivers: (universId) => api.get(`/univers/${universId}`),
+  getResumeUnivers: (universId) => api.get(`/univers/${universId}`, {params:{resume:1}}),
+
 
   getFolderGallerie:(universId) => api.get (`univers/${universId}/gallery`),
   getImageGallerieByFolder: (universId, folder) => api.get (`univers/${universId}/gallery/${folder}`),

@@ -1,0 +1,63 @@
+.UniAd-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* toute la hauteur de l'écran */
+}
+
+.UniAd-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+
+}
+
+.UniAd-h1 {
+    color: var(--color-text);
+    margin-top: 60px;
+    margin-bottom: 8px;
+    font-size: 2.5rem;
+}
+
+.UniAd-subtitle {
+    color: var(--color-text);
+    font-size: 1.2rem;
+    max-width: 600px;
+}
+
+/* Wrapper pour centrer verticalement les boutons restants */
+.UniAd-buttons-wrapper {
+    flex: 1; /* prend le reste de l'espace vertical */
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    align-items: center;     /* centre verticalement */
+}
+
+.UniAd-Boite-bouton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.UniAd-bouton {
+    border-radius: 50px;
+    border: 2px solid var(--jaune);
+    color: var(--color-text);
+    background-color: var(--color-input-bg);
+    padding: 20px;
+    font-size: 1.8rem;
+    width: 100%;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.UniAd-bouton:hover {
+    transform: translateY(-2px);
+    background-color: var(--jaune-light, #f7e35f);
+}
