@@ -527,6 +527,7 @@ const UniversCardGallerie = ({
             <button
               className="uni-btn-cancel"
               onClick={cancelDeleteMode}
+              type="button"
             >
               Annuler
             </button>
@@ -534,6 +535,7 @@ const UniversCardGallerie = ({
               className="uni-btn-delete"
               onClick={handleDeleteSelected}
               disabled={totalSelected === 0}
+              type="button"
             >
               Supprimer ({totalSelected})
             </button>

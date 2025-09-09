@@ -28,10 +28,13 @@ const FicheCardMenu = ({ onEdit, onDuplicate, onDelete }) => {
 
   return (
     <div className="card-menu-wrapper" ref={menuRef}>
-      <button className="card-menu-button" onClick={(e) => {
+      <button type="button" className="card-menu-button" onClick={(e) => {
         e.stopPropagation();
         setOpen(!open);
-      }}>
+      }}
+      aria-label="bouton menu fiche"
+      >
+      
         <FaEllipsisV />
       </button>
 
