@@ -4,7 +4,7 @@ import { BackLocation, SearchBar } from "@components";
 import { ApiUnivers, ApiService, DroitAccess, Capitalize  } from "@service";
 import { ffimg } from "@assets";
 import "./UniversCardMembres.css";
-import { FaCrown, FaFileAlt } from "react-icons/fa";
+import { FaCrown, FaFileAlt, FaEllipsisH } from "react-icons/fa";
 
 const ROLE_OPTIONS = [
   { value: -1, label: "En attente" },
@@ -36,6 +36,7 @@ const UniversCardMembres = () => {
   const [friendIds, setFriendIds] = useState(new Set());
   const [requestedIds, setRequestedIds] = useState(new Set());
     const [droit, setDroit] = useState(null);
+  const [mobileOpenId, setMobileOpenId] = useState(null);
 
   const loadMembers = useCallback(async () => {
     if (!universId) return;
@@ -192,6 +193,10 @@ const UniversCardMembres = () => {
     } catch (e) {}
   };
 
+  const toggleMobileMenu = (memberId) => {
+    setMobileOpenId((prev) => (prev === memberId ? null : memberId));
+  };
+
   return (
     <div className="UniMe-container">
       <BackLocation />
@@ -221,7 +226,7 @@ const UniversCardMembres = () => {
       ) : (
         <section className="UniMe-list" aria-label="Liste des membres">
           {sorted.map((m) => (
-            <article key={m.id} className="UniMe-item">
+            <article key={m.id} className={`UniMe-item ${mobileOpenId === m.id ? 'is-open' : ''}`}>
               <div className="UniMe-roleBg">{ROLE_LABEL[Number(m.state ?? 0)] || ""}</div>
               <div className="UniMe-avatarWrap">
                 <div
@@ -294,6 +299,79 @@ const UniversCardMembres = () => {
                   Exclure
                 </button>
                  )}
+              </div>
+
+              {/* Bouton ... pour mobile */}
+              <div className="UniMe-more">
+                <button
+                  className="UniMe-moreBtn"
+                  aria-haspopup="menu"
+                  aria-expanded={mobileOpenId === m.id}
+                  aria-label="Plus d'actions"
+                  onClick={() => toggleMobileMenu(m.id)}
+                >
+                  <FaEllipsisH />
+                </button>
+                {mobileOpenId === m.id && (
+                  <div className="UniMe-moreMenu" role="menu">
+                    {/* Demande d'ami / attente / rien si moi ou déjà ami */}
+                    {m.id === currentUserId ? null : friendIds.has(m.id) ? null : requestedIds.has(m.id) ? (
+                      <button className="UniMe-chip" disabled title="Demande en attente" role="menuitem">
+                        Demande en attente
+                      </button>
+                    ) : (
+                      <button
+                        className="UniMe-chip UniMe-friend"
+                        onClick={() => { handleAddFriend(m.id); setMobileOpenId(null); }}
+                        disabled={busyIds.has(m.id)}
+                        title="Ajouter en ami"
+                        role="menuitem"
+                      >
+                        Ajouter en ami
+                      </button>
+                    )}
+
+                    {/* Fiches */}
+                    <button
+                      className="UniMe-chip"
+                      onClick={() => { navigate(`/fiches/owner/${m.id}?idUnivers=${universId}`); setMobileOpenId(null); }}
+                      title="Voir ses fiches"
+                      role="menuitem"
+                    >
+                      <FaFileAlt /> Fiches
+                    </button>
+
+                    {/* Rôle (sélecteur si owner) ou texte sinon) */}
+                    {DroitAccess.isOwner(droit) ? (
+                      <div className="UniMe-roleSelect" role="menuitem">
+                        <select
+                          value={Number(m.state ?? 0)}
+                          onChange={(e) => { handleChangeRole(m.id, Number(e.target.value)); setMobileOpenId(null); }}
+                          disabled={busyIds.has(m.id)}
+                        >
+                          {ROLE_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ) : (
+                      <p className="UniMe-roleText" role="menuitem">{Capitalize(ROLE_LABEL[Number(m.state ?? 0)] || "MEMBRE")}</p>
+                    )}
+
+                    {/* Exclure (seulement owner) */}
+                    {DroitAccess.isOwner(droit) && (
+                      <button
+                        className="UniMe-chip UniMe-danger"
+                        onClick={() => { handleExclude(m.id); setMobileOpenId(null); }}
+                        disabled={busyIds.has(m.id)}
+                        title="Exclure du groupe"
+                        role="menuitem"
+                      >
+                        Exclure
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </article>
           ))}

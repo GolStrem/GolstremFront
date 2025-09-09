@@ -91,8 +91,10 @@
   border: 2px solid var(--jaune); /* rappel du jaune d’Univers */
   position: relative;
   transition: box-shadow 0.15s ease, transform 0.12s ease;
+  z-index: 2;
   
 }
+.UniMe-item.is-open { z-index: 10000; }
 .UniMe-roleText{
     border-radius: 999px;
     padding: 8px 12px;
@@ -153,6 +155,7 @@
 .UniMe-item:hover {
   transform: scale(1.01);
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  z-index: 2;
 }
 
 .UniMe-name {
@@ -165,6 +168,35 @@
   align-items: center;
   gap: 10px;
   margin-right: 20px;
+}
+
+/* Bouton ... et menu mobile */
+.UniMe-more {
+  display: none;
+  position: relative;
+}
+
+.UniMe-moreBtn {
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: none;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.UniMe-moreMenu {
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--color-background);
+  border: 2px solid var(--jaune);
+  border-radius: 12px;
+  padding: 10px;
+  z-index: 10001;
+  z-index: 9999;
 }
 
 .UniMe-roleSelect select {
@@ -208,5 +240,43 @@
   cursor: pointer;
 }
 
+
+/* Responsive: sur petits écrans, masquer actions inline et montrer ... */
+@media (max-width: 640px) {
+ .UniMe-title{
+  margin-top: 50px;
+ }
+  .UniMe-toolbar{
+    flex-direction: column;
+    align-items: center;
+  }
+  .UniMe-search{
+    min-width: 0 !important;
+    order: 1;
+  }
+  .UniMe-search input{
+    width: 200px !important;
+  }
+  .UniMe-sort{
+    order: 2;
+  }
+  .UniMe-item {
+    grid-template-columns: 60px 1fr auto;
+    z-index: 1;
+  }
+  .UniMe-avatar,
+  .UniMe-avatarWrap {
+    width: 60px;
+    height: 60px;
+  }
+  .UniMe-name { font-size: 18px; }
+
+  .UniMe-actionsRow { display: none; }
+  .UniMe-more { display: block; }
+
+  .UniMe-roleBg {
+    font-size: clamp(1.2rem, 12vw, 3rem);
+  }
+}
 
 
