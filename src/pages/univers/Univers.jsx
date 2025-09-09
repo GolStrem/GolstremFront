@@ -525,7 +525,7 @@ const Univers = () => {
       <div className="UniId-page">
         <div style={{ textAlign: 'center', padding: '50px' }}>
           <p style={{ color: 'red' }}>{error}</p>
-          <button onClick={() => window.location.reload()}>Réessayer</button>
+          <button onClick={() => window.location.reload()} type="button">Réessayer</button>
         </div>
       </div>
     );
