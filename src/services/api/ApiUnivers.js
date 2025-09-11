@@ -29,6 +29,25 @@ const realApi = {
   putInscriptionUnivers: (universId, userId, payload ) => api.put (`/univers/${universId}/user/${userId}`, payload),
   deleteInscriptionUnivers: (universId, userId) => api.delete (`/univers/${universId}/user/${userId}`),
   postInscriptionUnivers: (universId) => api.post (`/univers/${universId}/user`),
+
+  createModelFiche: (universId, payload) => api.post (`univers/${universId}/administration/modelFiche`, payload),
+  getListModelFiche: (universId ) => api.get (`univers/${universId}/administration/modelFiche`),
+  editModelFiche: (universId, idModel, payload ) => api.put (`/univers/${universId}/administration/modelFiche/${idModel}`, payload),
+  deleteModelFiche: (universId, idModel) => api.delete (`/univers/${universId}/administration/modelFiche/${idModel}`),
+
+  createRuleFiche: (universId, idModel, payload) => api.post (`univers/${universId}/administration/modelFiche/${idModel}/ruleFiche`, payload),
+  getListRuleFiche: (universId, idModel ) => api.get (`univers/${universId}/administration/modelFiche/${idModel}/ruleFiche`),
+  editRuleFiche: (universId, idModel, idRule, payload ) => api.put (`/univers/${universId}/administration/modelFiche/${idModel}/ruleFiche/${idRule}`, payload),
+  deleteRuleFiche: (universId, idModel, idRule ) => api.delete (`/univers/${universId}/administration/modelFiche/${idModel}/ruleFiche/${idRule}`),
+
+  subscribeFiche: (idFiche, payload) => api.post (`fiche/${idFiche}/univers`, payload),
+  getSubscribeFiche: (universId) => api.get (`univers/${universId}/subscribe`),
+  AcceptSubscribeFiche: (universId, subscribeId, payload) => api.put (`univers/${universId}/subscribe/${subscribeId}`, payload),
+  deleteSubscribeFiche: (universId, subscribeId) => api.delete (`univers/${universId}/subscribe/${subscribeId}`),
+
+  deleteFicheUnivers: (idFiche) => api.delete (`fiche/${idFiche}/univers`),
+
+
 };
 
 const ApiUnivers = realApi;
