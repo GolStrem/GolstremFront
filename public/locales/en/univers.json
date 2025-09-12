@@ -1,0 +1,87 @@
+{
+  "title": "Model: {{name}}",
+  "subtitle": "Create universe sheet model",
+  "createModel": "Create a model",
+  "createRule": "Create a rule",
+  "modelsList": "Models list: {{count}}",
+  "noModels": "No model yet.",
+  "noRules": "No rules yet.",
+  "rulesTitle": "Model rules",
+  "selectModelFirst": "Select a model first.",
+  "table": {
+    "target": "Field",
+    "type": "Type",
+    "condition": "Condition",
+    "actions": "Actions"
+  },
+  "tooltips": {
+    "editModel": "Edit model",
+    "deleteModel": "Delete model",
+    "editRule": "Edit rule",
+    "deleteRule": "Delete rule"
+  },
+  "model": {
+    "name": "Model name",
+    "description": "Description",
+    "image": "Image (URL)",
+    "save": "Save model",
+    "creating": "Creating..."
+  },
+  "titles": {
+    "createModel": "Create a model",
+    "editModel": "Edit model: {{name}}",
+    "deleteModel": "Delete model: {{name}}",
+    "createRule": "Create a rule",
+    "editRule": "Edit rule: {{type}}",
+    "deleteRule": "Delete rule: {{type}}"
+  },
+  "rule": {
+    "type": "Rule type",
+    "type_role": "Required role",
+    "type_moduleMandatory": "Required modules for role: {{model}}",
+    "type_size": "Size",
+    "role_label": "Allowed grade",
+    "role_0": "Member",
+    "role_1": "Roleplayer",
+    "role_2": "Game Master",
+    "role_3": "Admin",
+    "modules_label": "Choose required modules:",
+    "size_module": "Module",
+    "size_element": "Element (optional)",
+    "size_min": "min",
+    "size_max": "max",
+    "hint_elements": "Tip: some modules have elements (e.g. Character → fear).",
+    "save": "Save rule",
+    "edit_min_label": "Min (characters)",
+    "edit_max_label": "Max (characters)",
+    "edit_modules_label": "Modules (comma separated)",
+    "edit_role_label": "Required role",
+    "name": {
+      "modules": "Modules",
+      "role": "Role",
+      "size": "Size"
+    }
+  },
+  "phrases": {
+    "between": "between {{min}} and {{max}}",
+    "atLeast": "at least {{min}}",
+    "atMost": "at most {{max}}",
+    "select": "Select",
+    "noneWholeModule": "— None (whole module) —"
+  },
+  "feedback": {
+    "loadModelsError": "Failed to load models",
+    "loadRulesError": "Failed to load model rules",
+    "modelNameRequired": "Model name is required",
+    "createModelFailed": "Failed to create model",
+    "selectModelForRule": "Select a model before creating a rule.",
+    "selectAtLeastOneModule": "Select at least one required module.",
+    "sizeModuleRequired": "Select a module for the size rule.",
+    "sizeMinMaxRequired": "Provide a minimum and/or maximum length.",
+    "sizeMinNumber": "Minimum must be a number.",
+    "sizeMaxNumber": "Maximum must be a number.",
+    "createRuleFailed": "Failed to create rule. Check fields."
+  }
+}
+
+

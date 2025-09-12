@@ -1,0 +1,87 @@
+{
+  "title": "Modell: {{name}}",
+  "subtitle": "Erstellung eines Universum-Blattmodells",
+  "createModel": "Modell erstellen",
+  "createRule": "Regel erstellen",
+  "modelsList": "Modellliste: {{count}}",
+  "noModels": "Noch kein Modell.",
+  "noRules": "Noch keine Regeln.",
+  "rulesTitle": "Regeln des Modells",
+  "selectModelFirst": "Wählen Sie zuerst ein Modell aus.",
+  "table": {
+    "target": "Feld",
+    "type": "Typ",
+    "condition": "Bedingung",
+    "actions": "Aktionen"
+  },
+  "tooltips": {
+    "editModel": "Modell bearbeiten",
+    "deleteModel": "Modell löschen",
+    "editRule": "Regel bearbeiten",
+    "deleteRule": "Regel löschen"
+  },
+  "model": {
+    "name": "Modellname",
+    "description": "Beschreibung",
+    "image": "Bild (URL)",
+    "save": "Modell speichern",
+    "creating": "Erstellen..."
+  },
+  "titles": {
+    "createModel": "Modell erstellen",
+    "editModel": "Modell bearbeiten: {{name}}",
+    "deleteModel": "Modell löschen: {{name}}",
+    "createRule": "Regel erstellen",
+    "editRule": "Regel bearbeiten: {{type}}",
+    "deleteRule": "Regel löschen: {{type}}"
+  },
+  "rule": {
+    "type": "Regeltyp",
+    "type_role": "Erforderliche Rolle",
+    "type_moduleMandatory": "Pflichtmodule für Rolle: {{model}}",
+    "type_size": "Größe",
+    "role_label": "Zulässiger Rang",
+    "role_0": "Mitglied",
+    "role_1": "Rollenspieler",
+    "role_2": "Spielleiter",
+    "role_3": "Admin",
+    "modules_label": "Wählen Sie Pflichtmodule:",
+    "size_module": "Modul",
+    "size_element": "Element (optional)",
+    "size_min": "min",
+    "size_max": "max",
+    "hint_elements": "Tipp: Einige Module haben Elemente (z. B. Charakter → Angst).",
+    "save": "Regel speichern",
+    "edit_min_label": "Min (Zeichen)",
+    "edit_max_label": "Max (Zeichen)",
+    "edit_modules_label": "Module (durch Kommas getrennt)",
+    "edit_role_label": "Erforderliche Rolle",
+    "name": {
+      "modules": "Module",
+      "role": "Rolle",
+      "size": "Größe"
+    }
+  },
+  "phrases": {
+    "between": "zwischen {{min}} und {{max}}",
+    "atLeast": "mindestens {{min}}",
+    "atMost": "höchstens {{max}}",
+    "select": "Auswählen",
+    "noneWholeModule": "— Keines (gesamtes Modul) —"
+  },
+  "feedback": {
+    "loadModelsError": "Modelle konnten nicht geladen werden",
+    "loadRulesError": "Regeln des Modells konnten nicht geladen werden",
+    "modelNameRequired": "Modellname ist erforderlich",
+    "createModelFailed": "Modell konnte nicht erstellt werden",
+    "selectModelForRule": "Wählen Sie ein Modell, bevor Sie eine Regel erstellen.",
+    "selectAtLeastOneModule": "Wählen Sie mindestens ein Pflichtmodul.",
+    "sizeModuleRequired": "Wählen Sie ein Modul für die Größenregel.",
+    "sizeMinMaxRequired": "Geben Sie eine Mindest- und/oder Höchstlänge an.",
+    "sizeMinNumber": "Minimum muss eine Zahl sein.",
+    "sizeMaxNumber": "Maximum muss eine Zahl sein.",
+    "createRuleFailed": "Regel konnte nicht erstellt werden. Felder prüfen."
+  }
+}
+
+

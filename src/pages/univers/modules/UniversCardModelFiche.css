@@ -1,0 +1,223 @@
+.UniModel-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    color: var(--color-text, #f5f5f5);
+    background: var(--color-bg, #121212);
+    min-height: 100vh;
+  }
+  
+  /* Header */
+  .UniModel-header {
+    text-align: center;
+  }
+  .UniModel-h1 {
+    font-size: 2rem;
+    margin: 0;
+    font-weight: 700;
+  }
+  .UniModel-subtitle {
+    font-size: 1rem;
+    color: var(--color-sub, #aaa);
+    margin-top: 6px;
+  }
+  
+  /* Boutons */
+  .UniModel-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  .UniModel-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--jaune, #f7d038);
+    background: transparent;
+    color: var(--jaune, #f7d038);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .UniModel-btn:hover {
+    background: var(--jaune, #f7d038);
+    color: var(--noir, #111);
+  }
+  .UniModel-btn.primary {
+    background: var(--jaune, #f7d038);
+    color: var(--noir, #111);
+  }
+  .UniModel-btn.primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Formulaire */
+  .UniModel-form {
+    background: var(--color-card, #1e1e1e);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .UniModel-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .UniModel-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .UniModel-input,
+  .UniModel-textarea {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.15));
+    background: var(--color-input, #2a2a2a);
+    color: var(--color-text, #f5f5f5);
+  }
+  .UniModel-textarea {
+    resize: vertical;
+  }
+  .UniModel-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+  }
+  
+  /* Erreur */
+  .UniModel-error {
+    color: var(--UniIn-danger, #e74c3c);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  /* Liste des modèles */
+  .UniModel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .UniModel-listHeader {
+    border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    padding-bottom: 8px;
+  }
+  .UniModel-h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  /* Chips (sélecteurs) */
+  .UniModel-models {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .UniModel-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--jaune, #f7d038);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .UniModel-chip.active,
+  .UniModel-chip:hover {
+    background: var(--jaune, #f7d038);
+    color: var(--noir, #111);
+  }
+  
+  /* Cartes modèle */
+  .UniModel-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .UniModel-card {
+    background: var(--color-card, #1e1e1e);
+    border-radius: 12px;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+  }
+  .UniModel-card:hover {
+    transform: translateY(-4px);
+  }
+  .UniModel-card.active {
+    border-color: var(--jaune, #f7d038);
+  }
+  .UniModel-cardImg {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    object-position: top;
+  }
+  .UniModel-cardImg.placeholder {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .UniModel-cardBody {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .UniModel-cardTitle {
+    font-weight: 700;
+  }
+  .UniModel-cardDesc {
+    font-size: 0.9rem;
+    color: var(--color-sub, #bbb);
+  }
+  .UniModel-cardActions {
+    padding: 12px;
+    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    display: flex;
+    justify-content: flex-end;
+  }
+  .UniModel-iconBtn {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border, rgba(255,255,255,0.15));
+    background: transparent;
+    color: var(--color-text, #f5f5f5);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .UniModel-iconBtn:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  .UniModel-danger {
+    border-color: rgba(231,76,60,0.5);
+    color: #ff6b6b;
+  }
+  
+  /* Tableau des règles */
+  .UniModel-rules {
+    overflow-x: auto;
+  }
+  .UniModel-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .UniModel-table th,
+  .UniModel-table td {
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    padding: 8px 12px;
+    text-align: left;
+  }
+  .UniModel-table th {
+    background: var(--color-card, #1c1c1c);
+    font-weight: 600;
+  }
+  .UniModel-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+  }
+  
