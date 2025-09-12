@@ -142,40 +142,6 @@ const UniversCardModelFiche = () => {
 
   const selectedModelName = models.find((m) => m.id === selectedModelId)?.name || "";
 
-  const translateModuleKey = (key) => {
-    switch (key) {
-      case "general":
-        return tc("general");
-      case "character":
-        return tc("character");
-      case "story":
-        return tc("story");
-      case "power":
-        return tc("power");
-      case "gallery":
-        return tc("gallery");
-      default:
-        return key;
-    }
-  };
-
-  const translateElementKey = (key) => {
-    switch (key) {
-      case "peur":
-        return tc("fear");
-      case "personalité":
-        return tc("personality");
-      case "motivation":
-        return tc("motivation");
-      case "age":
-        return tc("age");
-      case "about":
-        return tc("about");
-      default:
-        return key;
-    }
-  };
-
   useEffect(() => {
     if (editRuleOpen && ruleEditing && ruleEditing.rule === "moduleMandatory") {
       try {
@@ -371,12 +337,12 @@ const UniversCardModelFiche = () => {
                             .split(",")
                             .map((s) => s.trim())
                             .filter(Boolean)
-                            .map((k) => translateModuleKey(k));
+                            .map((k) => tc(k));
                           prettyValue = mods.join(", ");
                         }
                         return (
                           <tr key={r.id}>
-                            <td>{r.target === 'default' ? '' : translateModuleKey(r.target.split('.')[0]) + (r.target.includes('.') ? '.' + r.target.split('.').slice(1).map(el => translateElementKey(el)).join('.') : '')}</td>
+                            <td>{r.target === 'default' ? '' : tc(r.target.split('.')[0]) + (r.target.includes('.') ? '.' + r.target.split('.').slice(1).map(el => tc(el)).join('.') : '')}</td>
                             <td>{r.rule === 'moduleMandatory' ? t('rule.name.modules') : r.rule === 'role' ? t('rule.name.role') : t('rule.name.size')}</td>
                             <td>{prettyValue}</td>
                             <td>
@@ -469,7 +435,7 @@ const UniversCardModelFiche = () => {
                         }}
                         style={{ display: "none" }}
                       />
-                      {translateModuleKey(m.key)}
+                      {tc(m.key)}
                     </label>
                   );
                 })}
@@ -485,7 +451,7 @@ const UniversCardModelFiche = () => {
                 <select className="UniModel-input" value={sizeModule} onChange={(e) => { setSizeModule(e.target.value); setSizeElement(""); }}>
                   <option value="">— Sélectionner —</option>
                   {MODULES.map((m) => (
-                    <option key={m.key} value={m.key}>{translateModuleKey(m.key)}</option>
+                    <option key={m.key} value={m.key}>{tc(m.key)}</option>
                   ))}
                 </select>
               </div>
@@ -494,7 +460,7 @@ const UniversCardModelFiche = () => {
                 <select className="UniModel-input" value={sizeElement} onChange={(e) => setSizeElement(e.target.value)} disabled={!sizeModule || (MODULES.find(x => x.key === sizeModule)?.elements?.length ?? 0) === 0}>
                   <option value="">{t("phrases.noneWholeModule")}</option>
                   {MODULES.find((m) => m.key === sizeModule)?.elements?.map((el) => (
-                    <option key={el} value={el}>{translateElementKey(el)}</option>
+                    <option key={el} value={el}>{tc(el)}</option>
                   ))}
                 </select>
               </div>
@@ -700,7 +666,7 @@ const UniversCardModelFiche = () => {
                         });
                       }}
                     >
-                      {translateModuleKey(m.key)}
+                      {tc(m.key)}
                     </button>
                   );
                 })}
