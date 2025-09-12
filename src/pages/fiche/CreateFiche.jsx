@@ -8,6 +8,7 @@ import {
   ModalGeneric,
   BackLocation
 } from "@components";
+import CustomModal from "@components/general/customModal";
 import "./CreateFiche.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { ApiFiche, ApiService } from "@service"
@@ -16,6 +17,7 @@ import { useTranslation } from "react-i18next";
 const CreateFiche = () => {
   const { id: ficheId } = useParams();
   const { t } = useTranslation("common");
+  const { t: tUnivers } = useTranslation("univers");
   const navigate = useNavigate();
   const [characterData, setCharacterData] = useState({});
   const [index, setIndex] = useState({});
@@ -29,8 +31,19 @@ const CreateFiche = () => {
   const [isModuleSelectorOpen, setModuleSelectorOpen] = useState(false);
   const [listModule, setListModule] = useState([])
 
+  // États pour la connexion univers
+  const [isUniversConnectionOpen, setUniversConnectionOpen] = useState(false);
+
   // callback pour ouvrir la modale dans l'angle droit
   const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
+  
+  // Callbacks pour la connexion univers
+  const handleOpenUniversConnection = () => setUniversConnectionOpen(true);
+  const handleCloseUniversConnection = () => setUniversConnectionOpen(false);
+  const handleUniversConnectionSuccess = () => {
+    // Callback appelé après succès de la connexion
+    console.log("Connexion univers réussie");
+  };
   const handleSaveModuleSelector = async (modules) => {
     let newModules = Array.isArray(modules?.selectedModules) ? [...modules.selectedModules] : [];
     const oldModules = Array.isArray(listModule) ? [...listModule] : [];
@@ -240,6 +253,7 @@ const CreateFiche = () => {
     setIndex(indexUse)
   }, [activeTab]);
 
+
   // Callback pour ouvrir la modale depuis le module
   const handleOpenModal = () => setIsModalOpen(true);
 
@@ -317,14 +331,23 @@ const CreateFiche = () => {
       </div>
 
 
-      {/* Bouton pour ouvrir la modale */}
+      {/* Boutons pour ouvrir les modales */}
       {characterData.droit === "write" && (
-        <button 
-          className="cf-module-selector-btn"
-          onClick={handleOpenModuleSelector}
-        >
-          {t("chooseModules")}
-        </button>
+        <>
+          <button 
+            className="cf-module-selector-btn cf-univers-connection-btn"
+            onClick={handleOpenUniversConnection}
+            style={{ marginBottom: "10px" }}
+          >
+            {tUnivers("connection.title")}
+          </button>
+          <button 
+            className="cf-module-selector-btn"
+            onClick={handleOpenModuleSelector}
+          >
+            {t("chooseModules")}
+          </button>
+        </>
       )}
 
              {isModuleSelectorOpen && (
@@ -336,6 +359,15 @@ const CreateFiche = () => {
            initialData={{ selectedModules: listModule }}
          />
        )}
+
+      {/* Modal de connexion univers */}
+      <CustomModal
+        isOpen={isUniversConnectionOpen}
+        onClose={handleCloseUniversConnection}
+        ficheId={ficheId}
+        listModule={listModule}
+        onSuccess={handleUniversConnectionSuccess}
+      />
 
        
       {/* Modal d'aperçu */}

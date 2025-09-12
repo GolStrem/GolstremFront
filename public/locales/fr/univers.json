@@ -81,6 +81,31 @@
     "sizeMinNumber": "Le minimum doit être un nombre.",
     "sizeMaxNumber": "Le maximum doit être un nombre.",
     "createRuleFailed": "Échec de création de la règle. Vérifiez les champs."
+  },
+  "connection": {
+    "title": "Connexion Univers",
+    "selectUnivers": "Sélectionner un univers",
+    "selectModel": "Sélectionner un modèle",
+    "yourRole": "Votre grade",
+    "modelsAvailable": "modèle disponible",
+    "modelsAvailablePlural": "modèles disponibles",
+    "noModelsForRole": "Aucun modèle disponible pour votre grade",
+    "selectUniversPlaceholder": "— Sélectionner un univers —",
+    "selectModelPlaceholder": "— Sélectionner un modèle —",
+    "validating": "Vérification en cours...",
+    "validationSuccess": "Validation réussie",
+    "validationFailed": "Validation échouée",
+    "validationSuccessMessage": "Votre fiche respecte tous les critères du modèle sélectionné.",
+    "validationFailedMessage": "Votre fiche ne respecte pas les critères du modèle sélectionné.",
+    "validationError": "Erreur lors de la validation des critères",
+    "sendRequest": "Envoyez la demande",
+    "sending": "Envoi...",
+    "cancel": "Annuler",
+    "role_0": "Membre",
+    "role_1": "Roleplayeur", 
+    "role_2": "Modérateur",
+    "role_3": "Administrateur",
+    "role_unknown": "Inconnu"
   }
 }
 

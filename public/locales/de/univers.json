@@ -81,6 +81,31 @@
     "sizeMinNumber": "Minimum muss eine Zahl sein.",
     "sizeMaxNumber": "Maximum muss eine Zahl sein.",
     "createRuleFailed": "Regel konnte nicht erstellt werden. Felder prüfen."
+  },
+  "connection": {
+    "title": "Universum-Verbindung",
+    "selectUnivers": "Universum auswählen",
+    "selectModel": "Modell auswählen",
+    "yourRole": "Ihre Rolle",
+    "modelsAvailable": "Modell verfügbar",
+    "modelsAvailablePlural": "Modelle verfügbar",
+    "noModelsForRole": "Keine Modelle für Ihre Rolle verfügbar",
+    "selectUniversPlaceholder": "— Universum auswählen —",
+    "selectModelPlaceholder": "— Modell auswählen —",
+    "validating": "Validierung läuft...",
+    "validationSuccess": "Validierung erfolgreich",
+    "validationFailed": "Validierung fehlgeschlagen",
+    "validationSuccessMessage": "Ihr Charakterbogen erfüllt alle Kriterien des ausgewählten Modells.",
+    "validationFailedMessage": "Ihr Charakterbogen erfüllt nicht die Kriterien des ausgewählten Modells.",
+    "validationError": "Fehler bei der Validierung",
+    "sendRequest": "Anfrage senden",
+    "sending": "Sende...",
+    "cancel": "Abbrechen",
+    "role_0": "Mitglied",
+    "role_1": "Rollenspieler", 
+    "role_2": "Moderator",
+    "role_3": "Administrator",
+    "role_unknown": "Unbekannt"
   }
 }
 

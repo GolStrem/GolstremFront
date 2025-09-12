@@ -31,7 +31,7 @@ const realApi = {
   postInscriptionUnivers: (universId) => api.post (`/univers/${universId}/user`),
 
   createModelFiche: (universId, payload) => api.post (`univers/${universId}/administration/modelFiche`, payload),
-  getListModelFiche: (universId ) => api.get (`univers/${universId}/administration/modelFiche`),
+  getListModelFiche: (universId, params ) => api.get (`univers/${universId}/administration/modelFiche`, { params }),
   editModelFiche: (universId, idModel, payload ) => api.put (`/univers/${universId}/administration/modelFiche/${idModel}`, payload),
   deleteModelFiche: (universId, idModel) => api.delete (`/univers/${universId}/administration/modelFiche/${idModel}`),
 
@@ -42,6 +42,8 @@ const realApi = {
 
   subscribeFiche: (idFiche, payload) => api.post (`fiche/${idFiche}/univers`, payload),
   getSubscribeFiche: (universId) => api.get (`univers/${universId}/subscribe`),
+  verifRuleFiche: (ficheId, params) => api.get (`fiche/${ficheId}/univers/`, { params }),
+
   AcceptSubscribeFiche: (universId, subscribeId, payload) => api.put (`univers/${universId}/subscribe/${subscribeId}`, payload),
   deleteSubscribeFiche: (universId, subscribeId) => api.delete (`univers/${universId}/subscribe/${subscribeId}`),
 

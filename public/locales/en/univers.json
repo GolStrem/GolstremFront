@@ -81,6 +81,31 @@
     "sizeMinNumber": "Minimum must be a number.",
     "sizeMaxNumber": "Maximum must be a number.",
     "createRuleFailed": "Failed to create rule. Check fields."
+  },
+  "connection": {
+    "title": "Universe Connection",
+    "selectUnivers": "Select a universe",
+    "selectModel": "Select a model",
+    "yourRole": "Your role",
+    "modelsAvailable": "model available",
+    "modelsAvailablePlural": "models available",
+    "noModelsForRole": "No models available for your role",
+    "selectUniversPlaceholder": "— Select a universe —",
+    "selectModelPlaceholder": "— Select a model —",
+    "validating": "Validating...",
+    "validationSuccess": "Validation successful",
+    "validationFailed": "Validation failed",
+    "validationSuccessMessage": "Your character sheet meets all the criteria of the selected model.",
+    "validationFailedMessage": "Your character sheet does not meet the criteria of the selected model.",
+    "validationError": "Error during validation",
+    "sendRequest": "Send request",
+    "sending": "Sending...",
+    "cancel": "Cancel",
+    "role_0": "Member",
+    "role_1": "Roleplayer", 
+    "role_2": "Moderator",
+    "role_3": "Administrator",
+    "role_unknown": "Unknown"
   }
 }
 

@@ -27,7 +27,12 @@
   object-fit: cover;
   object-position: center left;
 }
-
+.cf-univers-connection-btn{
+  margin-bottom: 40px !important;
+}
+.cf-univers-connection-modal{
+  min-height: 0 !important;
+}
 /* =============== Card =============== */
 .cf-card {
   position: absolute;
