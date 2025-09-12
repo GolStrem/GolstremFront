@@ -247,6 +247,12 @@
   min-height: 0 !important;
 }
 .UniIn-cardTitle strong { font-size: 1rem; }
+.UniIn-modeleName {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, #666);
+  font-weight: normal;
+  margin-left: 4px;
+}
 .UniIn-chip {
   font-size: 0.8rem;
   color: var(--UniIn-noir);

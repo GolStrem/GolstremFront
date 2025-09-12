@@ -105,7 +105,22 @@
     "role_1": "Rollenspieler", 
     "role_2": "Moderator",
     "role_3": "Administrator",
-    "role_unknown": "Unbekannt"
+    "role_unknown": "Unbekannt",
+    "error403": {
+      "title": "Fehlende Module oder Größenproblem",
+      "message": "Ihr Charakterbogen entspricht nicht den Modellkriterien:",
+      "missingModules": "Fehlende Pflichtmodule: {{modules}}",
+      "sizeIssue": "Größenproblem erkannt",
+      "emptyElements": "Leere Elemente erkannt:"
+    },
+    "error404": {
+      "title": "Charakterbogen bereits registriert",
+      "message": "Dieser Charakterbogen ist bereits in diesem Universum registriert."
+    },
+    "error409": {
+      "title": "Anfrage ausstehend",
+      "message": "Eine Mitgliedschaftsanfrage mit diesem Charakterbogen ist bereits in diesem Universum ausstehend."
+    }
   }
 }
 

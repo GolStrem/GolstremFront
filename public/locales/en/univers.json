@@ -105,7 +105,22 @@
     "role_1": "Roleplayer", 
     "role_2": "Moderator",
     "role_3": "Administrator",
-    "role_unknown": "Unknown"
+    "role_unknown": "Unknown",
+    "error403": {
+      "title": "Missing modules or size issue",
+      "message": "Your character sheet does not meet the model criteria:",
+      "missingModules": "Missing required modules: {{modules}}",
+      "sizeIssue": "Size issue detected",
+      "emptyElements": "Empty elements detected:"
+    },
+    "error404": {
+      "title": "Character sheet already registered",
+      "message": "This character sheet is already registered in this universe."
+    },
+    "error409": {
+      "title": "Request pending",
+      "message": "A membership request with this character sheet is already pending in this universe."
+    }
   }
 }
 

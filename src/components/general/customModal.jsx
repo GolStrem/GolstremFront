@@ -96,18 +96,109 @@ const CustomModal = ({
           message: t("connection.validationSuccessMessage")
         });
       } else {
-        setValidationResult({ 
-          success: false, 
-          message: response?.data?.message || t("connection.validationFailedMessage"),
-          errors: response?.data?.errors || []
-        });
+        // Gestion spécifique des erreurs selon le type
+        const errorData = response?.data?.error || {};
+        const errorStatus = response?.data?.status;
+        
+        // Détection des types d'erreur spécifiques
+        if (errorData.moduleMandatory || errorData.size) {
+          // Erreur 403: Modules manquants ou problème de taille
+          let errorMessage = t("connection.error403.message");
+          
+          if (errorData.moduleMandatory) {
+            errorMessage += ` ${t("connection.error403.missingModules", { modules: errorData.moduleMandatory })}`;
+          }
+          
+          if (errorData.size && errorData.size.length > 0) {
+            errorMessage += ` ${t("connection.error403.sizeIssue")}`;
+          }
+          
+          setValidationResult({ 
+            success: false, 
+            message: errorMessage,
+            errorType: "403",
+            errorDetails: errorData
+          });
+        } else if (response?.data?.message && (
+          response.data.message.includes("déjà enregistré") || 
+          response.data.message.includes("already registered") ||
+          response.data.message.includes("no fiche") ||
+          response.data.message.includes("Preview: no fiche")
+        )) {
+          // Erreur 404: Fiche déjà enregistrée
+          setValidationResult({ 
+            success: false, 
+            message: t("connection.error404.message"),
+            errorType: "404"
+          });
+        } else if (response?.data?.message && (
+          response.data.message.includes("en attente") || 
+          response.data.message.includes("pending") ||
+          response.data.message.includes("demande") ||
+          response.data.message.includes("already pending")
+        )) {
+          // Erreur 409: Demande d'adhésion en attente
+          setValidationResult({ 
+            success: false, 
+            message: t("connection.error409.message"),
+            errorType: "409"
+          });
+        } else {
+          // Erreur générique
+          setValidationResult({ 
+            success: false, 
+            message: response?.data?.message || t("connection.validationFailedMessage"),
+            errors: response?.data?.errors || []
+          });
+        }
       }
     } catch (error) {
       console.error("Erreur lors de la validation:", error);
-      setValidationResult({ 
-        success: false, 
-        message: t("connection.validationError")
-      });
+      
+      // Gestion spécifique des erreurs HTTP
+      const errorStatus = error?.response?.status;
+      const errorData = error?.response?.data;
+      
+      if (errorStatus === 403) {
+        // Erreur 403: Modules manquants ou problème de taille
+        const errorInfo = errorData?.error || {};
+        let errorMessage = t("connection.error403.message");
+        
+        if (errorInfo.moduleMandatory) {
+          errorMessage += ` ${t("connection.error403.missingModules", { modules: errorInfo.moduleMandatory })}`;
+        }
+        
+        if (errorInfo.size && errorInfo.size.length > 0) {
+          errorMessage += ` ${t("connection.error403.sizeIssue")}`;
+        }
+        
+        setValidationResult({ 
+          success: false, 
+          message: errorMessage,
+          errorType: "403",
+          errorDetails: errorInfo
+        });
+      } else if (errorStatus === 404) {
+        // Erreur 404: Fiche déjà enregistrée
+        setValidationResult({ 
+          success: false, 
+          message: t("connection.error404.message"),
+          errorType: "404"
+        });
+      } else if (errorStatus === 409) {
+        // Erreur 409: Demande d'adhésion en attente
+        setValidationResult({ 
+          success: false, 
+          message: t("connection.error409.message"),
+          errorType: "409"
+        });
+      } else {
+        // Autres erreurs
+        setValidationResult({ 
+          success: false, 
+          message: t("connection.validationError")
+        });
+      }
     } finally {
       setIsValidating(false);
     }
@@ -133,6 +224,48 @@ const CustomModal = ({
       handleClose();
     } catch (error) {
       console.error("Erreur lors de l'envoi de la demande:", error);
+      
+      // Gestion spécifique des erreurs HTTP lors de l'envoi
+      const errorStatus = error?.response?.status;
+      const errorData = error?.response?.data;
+      
+      if (errorStatus === 403) {
+        // Erreur 403: Modules manquants ou problème de taille
+        const errorInfo = errorData?.error || {};
+        let errorMessage = t("connection.error403.message");
+        
+        if (errorInfo.moduleMandatory) {
+          errorMessage += ` ${t("connection.error403.missingModules", { modules: errorInfo.moduleMandatory })}`;
+        }
+        
+        if (errorInfo.size && errorInfo.size.length > 0) {
+          errorMessage += ` ${t("connection.error403.sizeIssue")}`;
+        }
+        
+        setValidationResult({ 
+          success: false, 
+          message: errorMessage,
+          errorType: "403",
+          errorDetails: errorInfo
+        });
+      } else if (errorStatus === 404) {
+        // Erreur 404: Fiche déjà enregistrée
+        setValidationResult({ 
+          success: false, 
+          message: t("connection.error404.message"),
+          errorType: "404"
+        });
+      } else if (errorStatus === 409) {
+        // Erreur 409: Demande d'adhésion en attente
+        setValidationResult({ 
+          success: false, 
+          message: t("connection.error409.message"),
+          errorType: "409"
+        });
+      } else {
+        // Autres erreurs - garder le résultat de validation actuel
+        console.error("Erreur inattendue lors de l'envoi:", error);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -200,13 +333,7 @@ const CustomModal = ({
             <label className="tm-label label-fiche">
               {t("connection.selectModel")}
             </label>
-            {userRoleInUnivers !== null && (
-              <div style={{  marginBottom: "8px", padding: "4px 8px", backgroundColor: "#e3f2fd", borderRadius: "4px",  fontSize: "12px", color: "#1976d2" }}
-              >
-                {t("connection.yourRole")}: {t(`connection.role_${userRoleInUnivers}`)} 
-                ({universModels.length} {universModels.length > 1 ? t("connection.modelsAvailablePlural") : t("connection.modelsAvailable")})
-              </div>
-            )}
+
             <select 
               value={selectedModelId} 
               onChange={(e) => setSelectedModelId(e.target.value)}
@@ -262,11 +389,32 @@ const CustomModal = ({
                </div>
              ) : (
                <div>
-                 <strong>✗ {t("connection.validationFailed")}</strong>
+                 <strong>✗ {validationResult.errorType ? t(`connection.error${validationResult.errorType}.title`) : t("connection.validationFailed")}</strong>
                  <p>{validationResult.message}</p>
                  {validationResult.errors?.map((error, index) => (
                    <p key={index}>• {error}</p>
                  ))}
+                 {validationResult.errorType === "403" && (
+                   <div style={{ marginTop: "8px", padding: "8px", backgroundColor: "#fff3cd", borderRadius: "4px", fontSize: "12px" }}>
+                     {validationResult.errorDetails?.moduleMandatory && (
+                       <div style={{ marginBottom: "4px" }}>
+                         <strong>{t("connection.error403.missingModules", { modules: validationResult.errorDetails.moduleMandatory })}</strong>
+                       </div>
+                     )}
+                     {validationResult.errorDetails?.size && validationResult.errorDetails.size.length > 0 && (
+                       <div>
+                         <strong>{t("connection.error403.emptyElements")}</strong>
+                         <ul style={{ margin: "4px 0", paddingLeft: "16px" }}>
+                           {validationResult.errorDetails.size.map((item, index) => (
+                             <li key={index}>
+                               <strong>{item.target}</strong> : {item.value}
+                             </li>
+                           ))}
+                         </ul>
+                       </div>
+                     )}
+                   </div>
+                 )}
                </div>
              )}
            </div>

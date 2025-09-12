@@ -105,7 +105,22 @@
     "role_1": "Giocatore di ruolo", 
     "role_2": "Moderatore",
     "role_3": "Amministratore",
-    "role_unknown": "Sconosciuto"
+    "role_unknown": "Sconosciuto",
+    "error403": {
+      "title": "Moduli mancanti o problema di dimensione",
+      "message": "La tua scheda personaggio non rispetta i criteri del modello:",
+      "missingModules": "Moduli obbligatori mancanti: {{modules}}",
+      "sizeIssue": "Problema di dimensione rilevato",
+      "emptyElements": "Elementi vuoti rilevati:"
+    },
+    "error404": {
+      "title": "Scheda personaggio già registrata",
+      "message": "Questa scheda personaggio è già registrata in questo universo."
+    },
+    "error409": {
+      "title": "Richiesta in sospeso",
+      "message": "Una richiesta di adesione con questa scheda personaggio è già in sospeso in questo universo."
+    }
   }
 }
 

@@ -105,7 +105,22 @@
     "role_1": "Roleplayeur", 
     "role_2": "Modérateur",
     "role_3": "Administrateur",
-    "role_unknown": "Inconnu"
+    "role_unknown": "Inconnu",
+    "error403": {
+      "title": "Modules manquants ou problème de taille",
+      "message": "Votre fiche ne respecte pas les critères du modèle :",
+      "missingModules": "Modules obligatoires manquants : {{modules}}",
+      "sizeIssue": "Problème de taille détecté",
+      "emptyElements": "Éléments vides détectés :"
+    },
+    "error404": {
+      "title": "Fiche déjà enregistrée",
+      "message": "Cette fiche est déjà enregistrée dans cet univers."
+    },
+    "error409": {
+      "title": "Demande en attente",
+      "message": "Une demande d'adhésion avec cette fiche est déjà en attente dans cet univers."
+    }
   }
 }
 
