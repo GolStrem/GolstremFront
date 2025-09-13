@@ -228,7 +228,7 @@ const UniversCardModelFiche = () => {
             <div className="UniModel-cards">
               {/* Create model card (not counted) */}
               <div
-                className="UniModel-card"
+                className="UniModel-card uniCard-create"
                 role="button"
                 tabIndex={0}
                 onClick={() => setIsCreateModelOpen(true)}

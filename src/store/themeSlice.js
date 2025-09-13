@@ -53,6 +53,7 @@ function switchColor(theme) {
   document.documentElement.style.setProperty("--color-hover", theme === 'dark' ? '#575757' : '#e9ecef');
 
   document.documentElement.style.setProperty("--color-input-bg", theme === 'dark' ? '#2c2c2c' : '#f3f3f3');
+  document.documentElement.style.setProperty("--color-input-bgd", theme === 'dark' ? '#363636ff' : '#bbbbbbff');
   document.documentElement.style.setProperty("--color-tag-bg", theme === 'dark' ? '#2c2c2c' : '#888888ff');
   document.documentElement.style.setProperty("--color-tag-hov", theme === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0, 0, 0, 0.19)');
   document.documentElement.style.setProperty("--color-tag-act", theme === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0, 0, 0, 0.19)');

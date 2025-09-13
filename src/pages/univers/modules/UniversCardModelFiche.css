@@ -3,8 +3,7 @@
     flex-direction: column;
     gap: 24px;
     padding: 24px;
-    color: var(--color-text, #f5f5f5);
-    background: var(--color-bg, #121212);
+    color: var(--color-text);
     min-height: 100vh;
   }
   
@@ -19,7 +18,6 @@
   }
   .UniModel-subtitle {
     font-size: 1rem;
-    color: var(--color-sub, #aaa);
     margin-top: 6px;
   }
   
@@ -32,19 +30,19 @@
   .UniModel-btn {
     padding: 10px 18px;
     border-radius: 8px;
-    border: 1px solid var(--jaune, #f7d038);
+    border: 3px solid var(--jaune);
     background: transparent;
-    color: var(--jaune, #f7d038);
+    color: var(--jaune);
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s ease;
   }
   .UniModel-btn:hover {
-    background: var(--jaune, #f7d038);
+    background: var(--jaune);
     color: var(--noir, #111);
   }
   .UniModel-btn.primary {
-    background: var(--jaune, #f7d038);
+    background: var(--jaune);
     color: var(--noir, #111);
   }
   .UniModel-btn.primary:disabled {
@@ -103,7 +101,7 @@
     gap: 16px;
   }
   .UniModel-listHeader {
-    border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--color-input-bgd);
     padding-bottom: 8px;
   }
   .UniModel-h2 {
@@ -120,14 +118,14 @@
   .UniModel-chip {
     padding: 6px 14px;
     border-radius: 20px;
-    border: 1px solid var(--jaune, #f7d038);
+    border: 3px solid var(--jaune);
     background: transparent;
     cursor: pointer;
     transition: all 0.2s ease;
   }
   .UniModel-chip.active,
   .UniModel-chip:hover {
-    background: var(--jaune, #f7d038);
+    background: var(--jaune);
     color: var(--noir, #111);
   }
   
@@ -138,41 +136,52 @@
     gap: 16px;
   }
   .UniModel-card {
-    background: var(--color-card, #1e1e1e);
+    background: var(--color-input-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: transform 0.2s ease;
+    max-height: 280px;
   }
   .UniModel-card:hover {
     transform: translateY(-4px);
   }
   .UniModel-card.active {
-    border-color: var(--jaune, #f7d038);
+    
+    border: 3px solid var(--jaune);
   }
   .UniModel-cardImg {
     width: 100%;
     height: 150px;
+    color: var(--jaune);
     object-fit: cover;
     object-position: top;
   }
   .UniModel-cardImg.placeholder {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-input-bgd);
   }
   .UniModel-cardBody {
     padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    max-height: 50px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.4) transparent;
+    
+  }
+  .uniCard-create .UniModel-cardBody{
+    max-height: none;
   }
   .UniModel-cardTitle {
     font-weight: 700;
   }
   .UniModel-cardDesc {
     font-size: 0.9rem;
-    color: var(--color-sub, #bbb);
+    color: var(--color-text);
   }
   .UniModel-cardActions {
     padding: 12px;
