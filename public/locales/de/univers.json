@@ -38,7 +38,7 @@
   "rule": {
     "type": "Regeltyp",
     "type_role": "Erforderliche Rolle",
-    "type_moduleMandatory": "Pflichtmodule für Rolle: {{model}}",
+    "type_moduleMandatory": "Pflichtmodule",
     "type_size": "Größe",
     "role_label": "Zulässiger Rang",
     "role_0": "Mitglied",
@@ -59,6 +59,7 @@
     "name": {
       "modules": "Module",
       "role": "Rolle",
+      "moduleMandatory": "Pflichtmodule",
       "size": "Größe"
     }
   },

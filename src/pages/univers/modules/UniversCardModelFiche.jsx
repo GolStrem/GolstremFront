@@ -297,7 +297,7 @@ const UniversCardModelFiche = () => {
           handleSubmit={handleDeleteRule}
           initialData={{}}
           fields={{}}
-          title={t("titles.deleteRule", { type: ruleToDelete.rule })}
+          title={t("titles.deleteRule", { type: t(`rule.name.${ruleToDelete.rule}`) })}
         />
       )}
     </div>

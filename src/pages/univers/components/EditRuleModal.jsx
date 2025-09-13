@@ -93,7 +93,7 @@ const EditRuleModal = ({
 
   return (
     <BaseModal onClose={onClose} className="tmedit cf-modal-large master-edit-rule">
-      <h2>{t("titles.editRule", { type: ruleEditing.rule })}</h2>
+      <h2>{t("titles.editRule", { type: t(`rule.name.${ruleEditing.rule}`) })}</h2>
       <div className="UniModel-form">
         {ruleEditing.rule === "moduleMandatory" && (
           <>

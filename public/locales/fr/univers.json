@@ -38,7 +38,7 @@
   "rule": {
     "type": "Type de règle",
     "type_role": "Rôle requis",
-    "type_moduleMandatory": "Choix des modules obligatoires pour le rôle: {{model}}",
+    "type_moduleMandatory": "Choix des modules obligatoires",
     "type_size": "Taille",
     "role_label": "Grade autorisé",
     "role_0": "Membre",
@@ -59,7 +59,8 @@
     "name": {
       "modules": "Modules",
       "role": "Rôle",
-      "size": "Taille"
+      "size": "Taille",
+      "moduleMandatory": "Modules obligatoires"
     }
   },
   "phrases": {

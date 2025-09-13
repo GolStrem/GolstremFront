@@ -92,8 +92,8 @@ const RuleForm = ({
   return (
     <div className="UniModel-form">
       <div className="UniModel-field">
-        <label className="UniModel-label">{t("rule.type")}</label>
-        <select className="UniModel-input" value={rule} onChange={(e) => setRule(e.target.value)}>
+        <label className="UniModel-label  tm-label label-fiche">{t("rule.type")}</label>
+        <select className="UniModel-inputbase" value={rule} onChange={(e) => setRule(e.target.value)}>
           <option value="role">{t("rule.type_role")}</option>
           <option value="moduleMandatory">{t("rule.type_moduleMandatory", { model: selectedModelName })}</option>
           <option value="size">{t("rule.type_size")}</option>
@@ -102,8 +102,8 @@ const RuleForm = ({
 
       {rule === "role" && (
         <div className="UniModel-field">
-          <label className="UniModel-label">{t("rule.role_label")}</label>
-          <select className="UniModel-input" value={roleValue} onChange={(e) => setRoleValue(Number(e.target.value))}>
+          <label className="UniModel-label tm-label label-fiche" >{t("rule.role_label")}</label>
+          <select className="UniModel-inputbase" value={roleValue} onChange={(e) => setRoleValue(Number(e.target.value))}>
             <option value={0}>{t("rule.role_0")}</option>
             <option value={1}>{t("rule.role_1")}</option>
             <option value={2}>{t("rule.role_2")}</option>
@@ -114,7 +114,7 @@ const RuleForm = ({
 
       {rule === "moduleMandatory" && (
         <div className="UniModel-field">
-          <label className="UniModel-label">{t("rule.modules_label")}</label>
+          <label className="UniModel-label tm-label label-fiche">{t("rule.modules_label")}</label>
           <div className="UniModel-models">
             {MODULES.map((m) => {
               const checked = selectedModules.has(m.key);
@@ -144,8 +144,8 @@ const RuleForm = ({
       {rule === "size" && (
         <>
           <div className="UniModel-field">
-            <label className="UniModel-label">{t("rule.size_module")}</label>
-            <select className="UniModel-input" value={sizeModule} onChange={(e) => { setSizeModule(e.target.value); setSizeElement(""); }}>
+            <label className="UniModel-label tm-label label-fiche">{t("rule.size_module")}</label>
+            <select className="UniModel-inputbase" value={sizeModule} onChange={(e) => { setSizeModule(e.target.value); setSizeElement(""); }}>
               <option value="">— Sélectionner —</option>
               {MODULES.map((m) => (
                 <option key={m.key} value={m.key}>{t(m.key)}</option>
@@ -153,8 +153,8 @@ const RuleForm = ({
             </select>
           </div>
           <div className="UniModel-field">
-            <label className="UniModel-label">{t("rule.size_element")}</label>
-            <select className="UniModel-input" value={sizeElement} onChange={(e) => setSizeElement(e.target.value)} disabled={!sizeModule || (MODULES.find(x => x.key === sizeModule)?.elements?.length ?? 0) === 0}>
+            <label className="UniModel-label tm-label label-fiche">{t("rule.size_element")}</label>
+            <select className="UniModel-inputbase" value={sizeElement} onChange={(e) => setSizeElement(e.target.value)} disabled={!sizeModule || (MODULES.find(x => x.key === sizeModule)?.elements?.length ?? 0) === 0}>
               <option value="">{t("phrases.noneWholeModule")}</option>
               {MODULES.find((m) => m.key === sizeModule)?.elements?.map((el) => (
                 <option key={el} value={el}>{t(el)}</option>
@@ -162,7 +162,7 @@ const RuleForm = ({
             </select>
           </div>
           <div className="UniModel-field">
-            <label className="UniModel-label">{t("rule.type_size")}</label>
+            <label className="UniModel-label tm-label label-fiche">{t("rule.type_size")}</label>
             <div style={{ display: "flex", gap: 8 }}>
               <input className="UniModel-input" type="number" min={0} placeholder={t("rule.size_min")} value={sizeMin} onChange={(e) => setSizeMin(e.target.value)} />
               <input className="UniModel-input" type="number" min={0} placeholder={t("rule.size_max")} value={sizeMax} onChange={(e) => setSizeMax(e.target.value)} />

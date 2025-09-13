@@ -38,7 +38,7 @@
   "rule": {
     "type": "Tipo di regola",
     "type_role": "Ruolo richiesto",
-    "type_moduleMandatory": "Moduli obbligatori per il ruolo: {{model}}",
+    "type_moduleMandatory": "Moduli obbligatori",
     "type_size": "Dimensione",
     "role_label": "Grado consentito",
     "role_0": "Membro",
@@ -58,6 +58,7 @@
     "edit_role_label": "Ruolo richiesto",
     "name": {
       "modules": "Moduli",
+      "moduleMandatory": "Moduli obbligatori",
       "role": "Ruolo",
       "size": "Dimensione"
     }
