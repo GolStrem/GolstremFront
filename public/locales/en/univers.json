@@ -38,7 +38,7 @@
   "rule": {
     "type": "Rule type",
     "type_role": "Required role",
-    "type_moduleMandatory": "Required modules for role: {{model}}",
+    "type_moduleMandatory": "Required modules",
     "type_size": "Size",
     "role_label": "Allowed grade",
     "role_0": "Member",
@@ -59,6 +59,7 @@
     "name": {
       "modules": "Modules",
       "role": "Role",
+      "moduleMandatory": "Required modules",
       "size": "Size"
     }
   },
