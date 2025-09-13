@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
  * - onClose: () => void
  * - onDelete: (deletedId) => void // parent appliquera handleDeleteFiche(prev, deletedId)
  */
-const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
+const FicheDeleteCharacterModal = ({ ficheId, ficheUnivers, onClose, onDelete }) => {
   const { t } = useTranslation("modal");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -25,8 +25,7 @@ const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
 
     try {
       // Vérifier si la fiche est connectée à un univers
-      const ficheDetail = await ApiFiche.getFicheDetail(ficheId);
-      if (ficheDetail.data && ficheDetail.data.idUnivers !== null) {
+      if (ficheUnivers !== null) {
         setError(t("modal.cannotDeleteFicheConnectedToUnivers"));
         setLoading(false);
         return;

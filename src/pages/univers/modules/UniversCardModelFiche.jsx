@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 
 const UniversCardModelFiche = () => {
   const { t } = useTranslation("univers");
-  const { t: tc } = useTranslation("common");
   const { id: universId } = useParams();
   const [universName, setUniversName] = useState("Univers");
   const [isLoading, setIsLoading] = useState(false);
@@ -221,7 +220,7 @@ const UniversCardModelFiche = () => {
         <div className="UniModel-listHeader">
           <h2 className="UniModel-h2">{t("modelsList", { count: models?.length || 0 })}</h2>
         </div>
-        {isLoading && <div>{tc("loading")}</div>}
+        {isLoading && <div>{t("loading")}</div>}
         {modelsError && <div className="UniModel-error">{t(modelsError, modelsError)}</div>}
         {!isLoading && !modelsError && (
           <>
@@ -296,7 +295,7 @@ const UniversCardModelFiche = () => {
         {selectedModelId === null && <div>{t("selectModelFirst")}</div>}
         {selectedModelId !== null && (
           <>
-            {rulesLoading && <div>{tc("loading")}</div>}
+            {rulesLoading && <div>{t("loading")}</div>}
             {rulesError && <div className="UniModel-error">{t(rulesError, rulesError)}</div>}
             {!rulesLoading && !rulesError && (
               <div className="UniModel-rules">
@@ -337,12 +336,12 @@ const UniversCardModelFiche = () => {
                             .split(",")
                             .map((s) => s.trim())
                             .filter(Boolean)
-                            .map((k) => tc(k));
+                            .map((k) => t(k));
                           prettyValue = mods.join(", ");
                         }
                         return (
                           <tr key={r.id}>
-                            <td>{r.target === 'default' ? '' : tc(r.target.split('.')[0]) + (r.target.includes('.') ? '.' + r.target.split('.').slice(1).map(el => tc(el)).join('.') : '')}</td>
+                            <td>{r.target === 'default' ? '' : t(r.target.split('.')[0]) + (r.target.includes('.') ? '.' + r.target.split('.').slice(1).map(el => t(el)).join('.') : '')}</td>
                             <td>{r.rule === 'moduleMandatory' ? t('rule.name.modules') : r.rule === 'role' ? t('rule.name.role') : t('rule.name.size')}</td>
                             <td>{prettyValue}</td>
                             <td>
@@ -435,7 +434,7 @@ const UniversCardModelFiche = () => {
                         }}
                         style={{ display: "none" }}
                       />
-                      {tc(m.key)}
+                      {t(m.key)}
                     </label>
                   );
                 })}
@@ -451,7 +450,7 @@ const UniversCardModelFiche = () => {
                 <select className="UniModel-input" value={sizeModule} onChange={(e) => { setSizeModule(e.target.value); setSizeElement(""); }}>
                   <option value="">— Sélectionner —</option>
                   {MODULES.map((m) => (
-                    <option key={m.key} value={m.key}>{tc(m.key)}</option>
+                    <option key={m.key} value={m.key}>{t(m.key)}</option>
                   ))}
                 </select>
               </div>
@@ -460,7 +459,7 @@ const UniversCardModelFiche = () => {
                 <select className="UniModel-input" value={sizeElement} onChange={(e) => setSizeElement(e.target.value)} disabled={!sizeModule || (MODULES.find(x => x.key === sizeModule)?.elements?.length ?? 0) === 0}>
                   <option value="">{t("phrases.noneWholeModule")}</option>
                   {MODULES.find((m) => m.key === sizeModule)?.elements?.map((el) => (
-                    <option key={el} value={el}>{tc(el)}</option>
+                    <option key={el} value={el}>{t(el)}</option>
                   ))}
                 </select>
               </div>
@@ -666,7 +665,7 @@ const UniversCardModelFiche = () => {
                         });
                       }}
                     >
-                      {tc(m.key)}
+                      {t(m.key)}
                     </button>
                   );
                 })}
