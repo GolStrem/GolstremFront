@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MenuFiche.css";
-import { useHorizontalScroll, useGhostDragAndDrop, ApiFiche } from "@service";
+import { useHorizontalScroll, useGhostDragAndDrop, ApiFiche, useNavigatePage as useNavigate } from "@service";
 import {
   SearchBar,
   FicheCardMenu,
@@ -10,7 +10,7 @@ import {
 } from "@components";
 import { FaFilter } from "react-icons/fa";
 
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 import useFicheHandlers from "@service/handler/useFicheHandler";
 

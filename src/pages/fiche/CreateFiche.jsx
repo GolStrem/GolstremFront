@@ -11,7 +11,7 @@ import {
 import CustomModal from "@components/general/customModal";
 import "./CreateFiche.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { ApiFiche, ApiService, ApiUnivers } from "@service"
+import { ApiFiche, ApiService, ApiUnivers, useNavigatePage } from "@service"
 import { useTranslation } from "react-i18next";
 
 const CreateFiche = () => {
@@ -19,6 +19,7 @@ const CreateFiche = () => {
   const { t } = useTranslation("common");
   const { t: tUnivers } = useTranslation("univers");
   const navigate = useNavigate();
+  const navigateToPage = useNavigatePage();
   const [characterData, setCharacterData] = useState({});
   const [index, setIndex] = useState({});
   const [img, setImg] = useState({});
@@ -35,6 +36,7 @@ const CreateFiche = () => {
   const [isUniversConnectionOpen, setUniversConnectionOpen] = useState(false);
   const [isConnectedToUnivers, setIsConnectedToUnivers] = useState(false);
   const [connectedUniversId, setConnectedUniversId] = useState(null);
+  const [connectedUniversInfo, setConnectedUniversInfo] = useState(null);
   const [isLeaveUniversModalOpen, setIsLeaveUniversModalOpen] = useState(false);
 
   // callback pour ouvrir la modale dans l'angle droit
@@ -51,34 +53,33 @@ const CreateFiche = () => {
   };
 
   // Fonction pour vérifier si la fiche est connectée à un univers
-  const checkUniversConnection = async () => {
+  const checkUniversConnection = async (data=undefined) => {
     try {
-      // Appeler l'API verifRuleFiche sans paramètres pour voir l'état de connexion
-      const response = await ApiUnivers.verifRuleFiche(ficheId, {});
-      
-      
+      if (data === undefined) {
+        data = characterData;
+      }
+
       // Analyser la réponse pour déterminer l'état de connexion
-      if (response?.data?.status === "success") {
+      
+      if (data.idUnivers === null) {
         // Si succès, la fiche n'est pas connectée à un univers spécifique
         setIsConnectedToUnivers(false);
         setConnectedUniversId(null);
+        setConnectedUniversInfo(null);
       } else {
-        // Toute autre réponse (erreur 404, etc.) indique une connexion existante
-        const message = response?.data?.message || '';
-        
-        const isAlreadyConnected = message.includes("déjà enregistré") || 
-                                  message.includes("already registered") ||
-                                  message.includes("no fiche") ||
-                                  message.includes("Preview: no fiche");
-        
-        
-        if (isAlreadyConnected) {
-          setIsConnectedToUnivers(true);
-          setConnectedUniversId(response?.data?.universId || null);
-        } else {
-          setIsConnectedToUnivers(false);
-          setConnectedUniversId(null);
-        }
+          try {
+            const universResponse = await ApiUnivers.getDetailUnivers(data.idUnivers);
+            setConnectedUniversInfo({
+              id: data.idUnivers,
+              name: universResponse.data.name,
+              image: universResponse.data.image
+            });
+            setIsConnectedToUnivers(true);
+            setConnectedUniversId(data.idUnivers);
+          } catch (universError) {
+            console.error("Erreur lors de la récupération des infos de l'univers:", universError);
+          }
+
       }
     } catch (error) {
       
@@ -86,9 +87,11 @@ const CreateFiche = () => {
       if (error?.response?.status === 404) {
         setIsConnectedToUnivers(true);
         setConnectedUniversId(null); // On n'a pas l'ID de l'univers dans l'erreur
+        setConnectedUniversInfo(null);
       } else {
         setIsConnectedToUnivers(false);
         setConnectedUniversId(null);
+        setConnectedUniversInfo(null);
       }
     }
   };
@@ -96,6 +99,13 @@ const CreateFiche = () => {
   // Fonction pour ouvrir la modal de confirmation de déconnexion
   const handleOpenLeaveUniversModal = () => {
     setIsLeaveUniversModalOpen(true);
+  };
+
+  // Fonction pour naviguer vers l'univers connecté
+  const handleGoToUnivers = () => {
+    if (connectedUniversInfo?.id) {
+      navigateToPage(`/univers/${connectedUniversInfo.id}`);
+    }
   };
 
   // Fonction pour quitter l'univers (appelée depuis la modal)
@@ -110,6 +120,7 @@ const CreateFiche = () => {
       await ApiUnivers.deleteFicheUnivers(ficheId);
       setIsConnectedToUnivers(false);
       setConnectedUniversId(null);
+      setConnectedUniversInfo(null);
       setIsLeaveUniversModalOpen(false);
       console.log("Déconnexion de l'univers réussie");
     } catch (error) {
@@ -303,11 +314,12 @@ const CreateFiche = () => {
 
         setImg(parsedData.image)
         setCharacterData(parsedData);
+
         setIsLoading(false);
         // Ouvrir la sélection des modules lors de la toute première visite (si droit = write)
         openModuleSelectorIfFirstVisit(data.droit);
         // Vérifier la connexion univers
-        checkUniversConnection();
+        checkUniversConnection(parsedData);
       } catch (error) {
         console.error("erreur", error);
         setIsLoading(false);
@@ -401,8 +413,31 @@ const CreateFiche = () => {
       )}
 
       <div className="cf-global-badges">
-        <span className="cf-badge">{t("discord")}</span>
-        <span className="cf-badge">{t("serverZheneos")}</span>
+        {isConnectedToUnivers && connectedUniversInfo ? (
+          <span 
+            className="cf-badge cf-univers-badge"
+            onClick={handleGoToUnivers}
+            style={{
+              backgroundImage: connectedUniversInfo.image ? `url(${connectedUniversInfo.image})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              cursor: 'pointer',
+              position: 'relative',
+              color: 'white',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+              fontWeight: 'bold'
+            }}
+            title={`Aller à l'univers ${connectedUniversInfo.name}`}
+          >
+            {connectedUniversInfo.name}
+          </span>
+        ) : (
+          <>
+            <span className="cf-badge">{t("discord")}</span>
+            <span className="cf-badge">{t("serverZheneos")}</span>
+          </>
+        )}
       </div>
 
 

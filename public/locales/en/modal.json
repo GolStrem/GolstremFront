@@ -16,6 +16,7 @@
         "creationFailed": "Creation failed. Please try again later.",
         "creating": "Creating...",
         "error": "The modification failed. Check the fields and try again.",
-        "modifyFiche": "Modify the sheet"
+        "modifyFiche": "Modify the sheet",
+        "cannotDeleteFicheConnectedToUnivers": "Cannot delete the fiche because it is connected to a Universe. Disconnect the universe before deletion."
     }
 }

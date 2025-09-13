@@ -24,6 +24,14 @@ const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
     setError("");
 
     try {
+      // Vérifier si la fiche est connectée à un univers
+      const ficheDetail = await ApiFiche.getFicheDetail(ficheId);
+      if (ficheDetail.data && ficheDetail.data.idUnivers !== null) {
+        setError(t("modal.cannotDeleteFicheConnectedToUnivers"));
+        setLoading(false);
+        return;
+      }
+
       await ApiFiche.deleteFiche(ficheId);
       onDelete?.(ficheId); // Le parent fera handleDeleteFiche(prev, ficheId)
       onClose?.();
@@ -40,7 +48,7 @@ const FicheDeleteCharacterModal = ({ ficheId, onClose, onDelete }) => {
       <h2>{t("modal.deleteFiche")}</h2>
       <p>{t("modal.confirmDeleteFiche")}</p>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red", margin: "0", marginTop: "-10px" }}>{error}</p>}
 
       <div className="tm-modal-buttons">
         <button
