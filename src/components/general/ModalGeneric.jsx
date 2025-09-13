@@ -140,6 +140,9 @@ const ModalGeneric = ({
 				// Gérer les checkboxes - s'assurer qu'on a un tableau
 				const configKey = fields[key]?.key || 'selectedItems';
 				output[configKey] = initialData[configKey] || [];
+			} else if (type === "confirmation") {
+				// Gérer les confirmations - valeur booléenne
+				output[key] = initialData[key] ?? false;
 			} else {
 				output[key] = initialData[key] ?? "";
 			}
@@ -250,6 +253,28 @@ const ModalGeneric = ({
 				const configKey = config?.key || 'selectedItems';
 				if (values[configKey] === undefined) {
 					updates[configKey] = [];
+					hasUpdates = true;
+				}
+			});
+
+			if (hasUpdates) {
+				setValues((prev) => ({
+					...prev,
+					...updates
+				}));
+			}
+		}
+
+		// S'assure que les confirmations sont initialisées
+		const hasConfirmation = Object.values(fields).some((c) => c?.type === "confirmation");
+		if (hasConfirmation) {
+			const confirmationFields = Object.entries(fields).filter(([key, config]) => config?.type === "confirmation");
+			const updates = {};
+			let hasUpdates = false;
+
+			confirmationFields.forEach(([key, config]) => {
+				if (values[key] === undefined) {
+					updates[key] = false;
 					hasUpdates = true;
 				}
 			});
@@ -470,6 +495,27 @@ const ModalGeneric = ({
 							setValues={setValues}
 							className={key}
 						/>
+					</div>
+				);
+			case "confirmation":
+				return (
+					<div key={key} className="cf-field">
+						{config.message && (
+							<div style={{ marginBottom: "20px", fontSize: "16px", lineHeight: "1.5", color: "var(--color-text)" }}>
+								{config.message}
+							</div>
+						)}
+						<label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+							<input
+								type="checkbox"
+								checked={values[key] || false}
+								onChange={(e) => setValues(prev => ({ ...prev, [key]: e.target.checked }))}
+								style={{ transform: "scale(1.2)" }}
+							/>
+							<span style={{ fontSize: "14px", color: "var(--color-text)" }}>
+								{config.label || t("confirmAction")}
+							</span>
+						</label>
 					</div>
 				);
 			case "image":

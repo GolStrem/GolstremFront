@@ -433,7 +433,6 @@ const CustomModal = ({
             className="cf-btn-success"
             onClick={submitUniversConnection}
             disabled={!validationResult?.success || isSubmitting || isValidating}
-         
           >
             {isSubmitting ? t("connection.sending") : t("connection.sendRequest")}
           </button>

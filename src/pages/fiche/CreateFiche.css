@@ -269,7 +269,9 @@
   transform: translateY(0);
 }
 
-
+.master-{
+  min-height: 0 !important;
+}
 /* Bouton flottant en haut à droite */
 .cf-module-selector-btn {
   position: fixed;

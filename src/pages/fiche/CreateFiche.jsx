@@ -11,7 +11,7 @@ import {
 import CustomModal from "@components/general/customModal";
 import "./CreateFiche.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { ApiFiche, ApiService } from "@service"
+import { ApiFiche, ApiService, ApiUnivers } from "@service"
 import { useTranslation } from "react-i18next";
 
 const CreateFiche = () => {
@@ -33,6 +33,9 @@ const CreateFiche = () => {
 
   // États pour la connexion univers
   const [isUniversConnectionOpen, setUniversConnectionOpen] = useState(false);
+  const [isConnectedToUnivers, setIsConnectedToUnivers] = useState(false);
+  const [connectedUniversId, setConnectedUniversId] = useState(null);
+  const [isLeaveUniversModalOpen, setIsLeaveUniversModalOpen] = useState(false);
 
   // callback pour ouvrir la modale dans l'angle droit
   const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
@@ -43,7 +46,77 @@ const CreateFiche = () => {
   const handleUniversConnectionSuccess = () => {
     // Callback appelé après succès de la connexion
     console.log("Connexion univers réussie");
+    // Recharger les données de la fiche pour mettre à jour l'état de connexion
+    checkUniversConnection();
   };
+
+  // Fonction pour vérifier si la fiche est connectée à un univers
+  const checkUniversConnection = async () => {
+    try {
+      // Appeler l'API verifRuleFiche sans paramètres pour voir l'état de connexion
+      const response = await ApiUnivers.verifRuleFiche(ficheId, {});
+      
+      
+      // Analyser la réponse pour déterminer l'état de connexion
+      if (response?.data?.status === "success") {
+        // Si succès, la fiche n'est pas connectée à un univers spécifique
+        setIsConnectedToUnivers(false);
+        setConnectedUniversId(null);
+      } else {
+        // Toute autre réponse (erreur 404, etc.) indique une connexion existante
+        const message = response?.data?.message || '';
+        
+        const isAlreadyConnected = message.includes("déjà enregistré") || 
+                                  message.includes("already registered") ||
+                                  message.includes("no fiche") ||
+                                  message.includes("Preview: no fiche");
+        
+        
+        if (isAlreadyConnected) {
+          setIsConnectedToUnivers(true);
+          setConnectedUniversId(response?.data?.universId || null);
+        } else {
+          setIsConnectedToUnivers(false);
+          setConnectedUniversId(null);
+        }
+      }
+    } catch (error) {
+      
+      // Si c'est une erreur 404, cela signifie que la fiche est connectée à un univers
+      if (error?.response?.status === 404) {
+        setIsConnectedToUnivers(true);
+        setConnectedUniversId(null); // On n'a pas l'ID de l'univers dans l'erreur
+      } else {
+        setIsConnectedToUnivers(false);
+        setConnectedUniversId(null);
+      }
+    }
+  };
+
+  // Fonction pour ouvrir la modal de confirmation de déconnexion
+  const handleOpenLeaveUniversModal = () => {
+    setIsLeaveUniversModalOpen(true);
+  };
+
+  // Fonction pour quitter l'univers (appelée depuis la modal)
+  const handleLeaveUnivers = async (data) => {
+    // Vérifier que la confirmation est cochée
+    if (!data.confirmLeave) {
+      console.error("Confirmation requise pour quitter l'univers");
+      return;
+    }
+
+    try {
+      await ApiUnivers.deleteFicheUnivers(ficheId);
+      setIsConnectedToUnivers(false);
+      setConnectedUniversId(null);
+      setIsLeaveUniversModalOpen(false);
+      console.log("Déconnexion de l'univers réussie");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion de l'univers:", error);
+    }
+  };
+
   const handleSaveModuleSelector = async (modules) => {
     let newModules = Array.isArray(modules?.selectedModules) ? [...modules.selectedModules] : [];
     const oldModules = Array.isArray(listModule) ? [...listModule] : [];
@@ -233,6 +306,8 @@ const CreateFiche = () => {
         setIsLoading(false);
         // Ouvrir la sélection des modules lors de la toute première visite (si droit = write)
         openModuleSelectorIfFirstVisit(data.droit);
+        // Vérifier la connexion univers
+        checkUniversConnection();
       } catch (error) {
         console.error("erreur", error);
         setIsLoading(false);
@@ -336,10 +411,10 @@ const CreateFiche = () => {
         <>
           <button 
             className="cf-module-selector-btn cf-univers-connection-btn"
-            onClick={handleOpenUniversConnection}
+            onClick={isConnectedToUnivers ? handleOpenLeaveUniversModal : handleOpenUniversConnection}
             style={{ marginBottom: "10px" }}
           >
-            {tUnivers("connection.title")}
+            {isConnectedToUnivers ? tUnivers("connection.leaveTitle") : tUnivers("connection.title")}
           </button>
           <button 
             className="cf-module-selector-btn"
@@ -368,6 +443,24 @@ const CreateFiche = () => {
         listModule={listModule}
         onSuccess={handleUniversConnectionSuccess}
       />
+
+      {/* Modal de confirmation pour quitter l'univers */}
+      {isLeaveUniversModalOpen && (
+        <ModalGeneric
+          onClose={() => setIsLeaveUniversModalOpen(false)}
+          handleSubmit={handleLeaveUnivers}
+          fields={{
+            confirmLeave: {
+              type: "confirmation",
+              label: tUnivers("connection.confirmLeave"),
+              message: tUnivers("connection.leaveConfirmationMessage")
+            }
+          }}
+          title={tUnivers("connection.leaveTitle")}
+          initialData={{ confirmLeave: false }}
+          textButtonValidate={tUnivers("connection.leaveTitle")}
+        />
+      )}
 
        
       {/* Modal d'aperçu */}

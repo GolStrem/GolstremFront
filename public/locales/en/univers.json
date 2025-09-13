@@ -84,6 +84,11 @@
   },
   "connection": {
     "title": "Universe Connection",
+    "leaveTitle": "Leave Universe",
+    "confirmLeave": "I confirm I want to leave this universe",
+    "mustConfirmLeave": "You must confirm to leave the universe",
+    "leaveConfirmationMessage": "Are you sure you want to leave this universe? This action is irreversible.",
+    "leaving": "Leaving...",
     "selectUnivers": "Select a universe",
     "selectModel": "Select a model",
     "yourRole": "Your role",

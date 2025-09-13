@@ -84,6 +84,11 @@
   },
   "connection": {
     "title": "Universum-Verbindung",
+    "leaveTitle": "Universum verlassen",
+    "confirmLeave": "Ich bestätige, dass ich dieses Universum verlassen möchte",
+    "mustConfirmLeave": "Sie müssen bestätigen, um das Universum zu verlassen",
+    "leaveConfirmationMessage": "Sind Sie sicher, dass Sie dieses Universum verlassen möchten? Diese Aktion ist unumkehrbar.",
+    "leaving": "Verlassen...",
     "selectUnivers": "Universum auswählen",
     "selectModel": "Modell auswählen",
     "yourRole": "Ihre Rolle",
