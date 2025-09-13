@@ -121,7 +121,7 @@ const UniversCardModelFiche = () => {
 
   useEffect(() => {
     const fetchRules = async () => {
-      if (!universId || selectedModelId == null) {
+      if (!universId || selectedModelId === null) {
         setRules([]);
         return;
       }
@@ -293,8 +293,8 @@ const UniversCardModelFiche = () => {
         <div className="UniModel-listHeader">
           <h2 className="UniModel-h2">{t("rulesTitle")}</h2>
         </div>
-        {selectedModelId == null && <div>{t("selectModelFirst")}</div>}
-        {selectedModelId && (
+        {selectedModelId === null && <div>{t("selectModelFirst")}</div>}
+        {selectedModelId !== null && (
           <>
             {rulesLoading && <div>{tc("loading")}</div>}
             {rulesError && <div className="UniModel-error">{t(rulesError, rulesError)}</div>}
@@ -384,7 +384,7 @@ const UniversCardModelFiche = () => {
           type="button"
           className="UniModel-btn"
           onClick={() => setIsFormOpen(true)}
-          disabled={selectedModelId == null}
+          disabled={selectedModelId === null}
         >
           {t("createRule")}
         </button>
@@ -485,7 +485,7 @@ const UniversCardModelFiche = () => {
               onClick={async () => {
                 setError("");
                 try {
-                  if (selectedModelId == null) {
+                  if (selectedModelId === null) {
                     setError("feedback.selectModelForRule");
                     return;
                   }
