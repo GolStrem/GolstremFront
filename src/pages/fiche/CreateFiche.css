@@ -27,7 +27,12 @@
   object-fit: cover;
   object-position: center left;
 }
-
+.cf-univers-connection-btn{
+  margin-bottom: 40px !important;
+}
+.cf-univers-connection-modal{
+  min-height: 0 !important;
+}
 /* =============== Card =============== */
 .cf-card {
   position: absolute;
@@ -221,12 +226,24 @@
 .cf-badge {
   background: var(--color-background);
   color: var(--color-text);
-  padding: 6px 10px;
+  padding: 10px 15px;
   border-radius: 999px;
-  font-size: .85rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: .02em;
   box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+.cf-univers-badge {
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(2px);
+}
+
+.cf-univers-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  border-color: rgba(255,255,255,0.6);
 }
 
 
@@ -264,7 +281,9 @@
   transform: translateY(0);
 }
 
-
+.master-{
+  min-height: 0 !important;
+}
 /* Bouton flottant en haut à droite */
 .cf-module-selector-btn {
   position: fixed;

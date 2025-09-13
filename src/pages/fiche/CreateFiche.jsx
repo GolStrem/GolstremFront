@@ -8,15 +8,18 @@ import {
   ModalGeneric,
   BackLocation
 } from "@components";
+import CustomModal from "@components/general/customModal";
 import "./CreateFiche.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { ApiFiche, ApiService } from "@service"
+import { ApiFiche, ApiService, ApiUnivers, useNavigatePage } from "@service"
 import { useTranslation } from "react-i18next";
 
 const CreateFiche = () => {
   const { id: ficheId } = useParams();
   const { t } = useTranslation("common");
+  const { t: tUnivers } = useTranslation("univers");
   const navigate = useNavigate();
+  const navigateToPage = useNavigatePage();
   const [characterData, setCharacterData] = useState({});
   const [index, setIndex] = useState({});
   const [img, setImg] = useState({});
@@ -29,8 +32,102 @@ const CreateFiche = () => {
   const [isModuleSelectorOpen, setModuleSelectorOpen] = useState(false);
   const [listModule, setListModule] = useState([])
 
+  // États pour la connexion univers
+  const [isUniversConnectionOpen, setUniversConnectionOpen] = useState(false);
+  const [isConnectedToUnivers, setIsConnectedToUnivers] = useState(false);
+  const [connectedUniversId, setConnectedUniversId] = useState(null);
+  const [connectedUniversInfo, setConnectedUniversInfo] = useState(null);
+  const [isLeaveUniversModalOpen, setIsLeaveUniversModalOpen] = useState(false);
+
   // callback pour ouvrir la modale dans l'angle droit
   const handleOpenModuleSelector = () => setModuleSelectorOpen(true);
+  
+  // Callbacks pour la connexion univers
+  const handleOpenUniversConnection = () => setUniversConnectionOpen(true);
+  const handleCloseUniversConnection = () => setUniversConnectionOpen(false);
+  const handleUniversConnectionSuccess = () => {
+    // Callback appelé après succès de la connexion
+    console.log("Connexion univers réussie");
+    // Recharger les données de la fiche pour mettre à jour l'état de connexion
+    checkUniversConnection();
+  };
+
+  // Fonction pour vérifier si la fiche est connectée à un univers
+  const checkUniversConnection = async (data=undefined) => {
+    try {
+      if (data === undefined) {
+        data = characterData;
+      }
+
+      // Analyser la réponse pour déterminer l'état de connexion
+      
+      if (data.idUnivers === null) {
+        // Si succès, la fiche n'est pas connectée à un univers spécifique
+        setIsConnectedToUnivers(false);
+        setConnectedUniversId(null);
+        setConnectedUniversInfo(null);
+      } else {
+          try {
+            const universResponse = await ApiUnivers.getDetailUnivers(data.idUnivers);
+            setConnectedUniversInfo({
+              id: data.idUnivers,
+              name: universResponse.data.name,
+              image: universResponse.data.image
+            });
+            setIsConnectedToUnivers(true);
+            setConnectedUniversId(data.idUnivers);
+          } catch (universError) {
+            console.error("Erreur lors de la récupération des infos de l'univers:", universError);
+          }
+
+      }
+    } catch (error) {
+      
+      // Si c'est une erreur 404, cela signifie que la fiche est connectée à un univers
+      if (error?.response?.status === 404) {
+        setIsConnectedToUnivers(true);
+        setConnectedUniversId(null); // On n'a pas l'ID de l'univers dans l'erreur
+        setConnectedUniversInfo(null);
+      } else {
+        setIsConnectedToUnivers(false);
+        setConnectedUniversId(null);
+        setConnectedUniversInfo(null);
+      }
+    }
+  };
+
+  // Fonction pour ouvrir la modal de confirmation de déconnexion
+  const handleOpenLeaveUniversModal = () => {
+    setIsLeaveUniversModalOpen(true);
+  };
+
+  // Fonction pour naviguer vers l'univers connecté
+  const handleGoToUnivers = () => {
+    if (connectedUniversInfo?.id) {
+      navigateToPage(`/univers/${connectedUniversInfo.id}`);
+    }
+  };
+
+  // Fonction pour quitter l'univers (appelée depuis la modal)
+  const handleLeaveUnivers = async (data) => {
+    // Vérifier que la confirmation est cochée
+    if (!data.confirmLeave) {
+      console.error("Confirmation requise pour quitter l'univers");
+      return;
+    }
+
+    try {
+      await ApiUnivers.deleteFicheUnivers(ficheId);
+      setIsConnectedToUnivers(false);
+      setConnectedUniversId(null);
+      setConnectedUniversInfo(null);
+      setIsLeaveUniversModalOpen(false);
+      console.log("Déconnexion de l'univers réussie");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion de l'univers:", error);
+    }
+  };
+
   const handleSaveModuleSelector = async (modules) => {
     let newModules = Array.isArray(modules?.selectedModules) ? [...modules.selectedModules] : [];
     const oldModules = Array.isArray(listModule) ? [...listModule] : [];
@@ -217,9 +314,12 @@ const CreateFiche = () => {
 
         setImg(parsedData.image)
         setCharacterData(parsedData);
+
         setIsLoading(false);
         // Ouvrir la sélection des modules lors de la toute première visite (si droit = write)
         openModuleSelectorIfFirstVisit(data.droit);
+        // Vérifier la connexion univers
+        checkUniversConnection(parsedData);
       } catch (error) {
         console.error("erreur", error);
         setIsLoading(false);
@@ -239,6 +339,7 @@ const CreateFiche = () => {
     setImg(characterData.module[indexUse].extra.image || characterData.image)
     setIndex(indexUse)
   }, [activeTab]);
+
 
   // Callback pour ouvrir la modale depuis le module
   const handleOpenModal = () => setIsModalOpen(true);
@@ -312,19 +413,51 @@ const CreateFiche = () => {
       )}
 
       <div className="cf-global-badges">
-        <span className="cf-badge">{t("discord")}</span>
-        <span className="cf-badge">{t("serverZheneos")}</span>
+        {isConnectedToUnivers && connectedUniversInfo ? (
+          <span 
+            className="cf-badge cf-univers-badge"
+            onClick={handleGoToUnivers}
+            style={{
+              backgroundImage: connectedUniversInfo.image ? `url(${connectedUniversInfo.image})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              cursor: 'pointer',
+              position: 'relative',
+              color: 'white',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+              fontWeight: 'bold'
+            }}
+            title={`Aller à l'univers ${connectedUniversInfo.name}`}
+          >
+            {connectedUniversInfo.name}
+          </span>
+        ) : (
+          <>
+            <span className="cf-badge">{t("discord")}</span>
+            <span className="cf-badge">{t("serverZheneos")}</span>
+          </>
+        )}
       </div>
 
 
-      {/* Bouton pour ouvrir la modale */}
+      {/* Boutons pour ouvrir les modales */}
       {characterData.droit === "write" && (
-        <button 
-          className="cf-module-selector-btn"
-          onClick={handleOpenModuleSelector}
-        >
-          {t("chooseModules")}
-        </button>
+        <>
+          <button 
+            className="cf-module-selector-btn cf-univers-connection-btn"
+            onClick={isConnectedToUnivers ? handleOpenLeaveUniversModal : handleOpenUniversConnection}
+            style={{ marginBottom: "10px" }}
+          >
+            {isConnectedToUnivers ? tUnivers("connection.leaveTitle") : tUnivers("connection.title")}
+          </button>
+          <button 
+            className="cf-module-selector-btn"
+            onClick={handleOpenModuleSelector}
+          >
+            {t("chooseModules")}
+          </button>
+        </>
       )}
 
              {isModuleSelectorOpen && (
@@ -336,6 +469,33 @@ const CreateFiche = () => {
            initialData={{ selectedModules: listModule }}
          />
        )}
+
+      {/* Modal de connexion univers */}
+      <CustomModal
+        isOpen={isUniversConnectionOpen}
+        onClose={handleCloseUniversConnection}
+        ficheId={ficheId}
+        listModule={listModule}
+        onSuccess={handleUniversConnectionSuccess}
+      />
+
+      {/* Modal de confirmation pour quitter l'univers */}
+      {isLeaveUniversModalOpen && (
+        <ModalGeneric
+          onClose={() => setIsLeaveUniversModalOpen(false)}
+          handleSubmit={handleLeaveUnivers}
+          fields={{
+            confirmLeave: {
+              type: "confirmation",
+              label: tUnivers("connection.confirmLeave"),
+              message: tUnivers("connection.leaveConfirmationMessage")
+            }
+          }}
+          title={tUnivers("connection.leaveTitle")}
+          initialData={{ confirmLeave: false }}
+          textButtonValidate={tUnivers("connection.leaveTitle")}
+        />
+      )}
 
        
       {/* Modal d'aperçu */}

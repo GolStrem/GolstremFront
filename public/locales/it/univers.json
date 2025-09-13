@@ -1,0 +1,132 @@
+{
+  "title": "Modello: {{name}}",
+  "subtitle": "Creazione del modello scheda per l’universo",
+  "createModel": "Crea un modello",
+  "createRule": "Crea una regola",
+  "modelsList": "Elenco modelli: {{count}}",
+  "noModels": "Nessun modello al momento.",
+  "noRules": "Nessuna regola al momento.",
+  "rulesTitle": "Regole del modello",
+  "selectModelFirst": "Seleziona prima un modello.",
+  "table": {
+    "target": "Campo",
+    "type": "Tipo",
+    "condition": "Condizione",
+    "actions": "Azioni"
+  },
+  "tooltips": {
+    "editModel": "Modifica modello",
+    "deleteModel": "Elimina modello",
+    "editRule": "Modifica regola",
+    "deleteRule": "Elimina regola"
+  },
+  "model": {
+    "name": "Nome del modello",
+    "description": "Descrizione",
+    "image": "Immagine (URL)",
+    "save": "Salva modello",
+    "creating": "Creazione..."
+  },
+  "titles": {
+    "createModel": "Crea un modello",
+    "editModel": "Modifica modello: {{name}}",
+    "deleteModel": "Elimina modello: {{name}}",
+    "createRule": "Crea una regola",
+    "editRule": "Modifica regola: {{type}}",
+    "deleteRule": "Elimina regola: {{type}}"
+  },
+  "rule": {
+    "type": "Tipo di regola",
+    "type_role": "Ruolo richiesto",
+    "type_moduleMandatory": "Moduli obbligatori per il ruolo: {{model}}",
+    "type_size": "Dimensione",
+    "role_label": "Grado consentito",
+    "role_0": "Membro",
+    "role_1": "Roleplayer",
+    "role_2": "Master",
+    "role_3": "Admin",
+    "modules_label": "Scegli i moduli obbligatori:",
+    "size_module": "Modulo",
+    "size_element": "Elemento (opzionale)",
+    "size_min": "min",
+    "size_max": "max",
+    "hint_elements": "Suggerimento: alcuni moduli hanno elementi (es. Carattere → paura).",
+    "save": "Salva regola",
+    "edit_min_label": "Min (caratteri)",
+    "edit_max_label": "Max (caratteri)",
+    "edit_modules_label": "Moduli (separati da virgole)",
+    "edit_role_label": "Ruolo richiesto",
+    "name": {
+      "modules": "Moduli",
+      "role": "Ruolo",
+      "size": "Dimensione"
+    }
+  },
+  "phrases": {
+    "between": "tra {{min}} e {{max}}",
+    "atLeast": "almeno {{min}}",
+    "atMost": "al massimo {{max}}",
+    "select": "Seleziona",
+    "noneWholeModule": "— Nessuno (tutto il modulo) —"
+  },
+  "feedback": {
+    "loadModelsError": "Impossibile caricare i modelli",
+    "loadRulesError": "Impossibile caricare le regole del modello",
+    "modelNameRequired": "Il nome del modello è obbligatorio",
+    "createModelFailed": "Creazione del modello non riuscita",
+    "selectModelForRule": "Seleziona un modello prima di creare una regola.",
+    "selectAtLeastOneModule": "Seleziona almeno un modulo obbligatorio.",
+    "sizeModuleRequired": "Seleziona un modulo per la regola di dimensione.",
+    "sizeMinMaxRequired": "Inserisci una lunghezza minima e/o massima.",
+    "sizeMinNumber": "Il minimo deve essere un numero.",
+    "sizeMaxNumber": "Il massimo deve essere un numero.",
+    "createRuleFailed": "Creazione della regola non riuscita. Controlla i campi."
+  },
+  "connection": {
+    "title": "Connessione Universo",
+    "leaveTitle": "Lascia Universo",
+    "confirmLeave": "Confermo di voler lasciare questo universo",
+    "mustConfirmLeave": "Devi confermare per lasciare l'universo",
+    "leaveConfirmationMessage": "Sei sicuro di voler lasciare questo universo? Questa azione è irreversibile.",
+    "leaving": "Uscita...",
+    "selectUnivers": "Seleziona un universo",
+    "selectModel": "Seleziona un modello",
+    "yourRole": "Il tuo ruolo",
+    "modelsAvailable": "modello disponibile",
+    "modelsAvailablePlural": "modelli disponibili",
+    "noModelsForRole": "Nessun modello disponibile per il tuo ruolo",
+    "selectUniversPlaceholder": "— Seleziona un universo —",
+    "selectModelPlaceholder": "— Seleziona un modello —",
+    "validating": "Validazione in corso...",
+    "validationSuccess": "Validazione riuscita",
+    "validationFailed": "Validazione fallita",
+    "validationSuccessMessage": "La tua scheda personaggio rispetta tutti i criteri del modello selezionato.",
+    "validationFailedMessage": "La tua scheda personaggio non rispetta i criteri del modello selezionato.",
+    "validationError": "Errore durante la validazione",
+    "sendRequest": "Invia richiesta",
+    "sending": "Invio...",
+    "cancel": "Annulla",
+    "role_0": "Membro",
+    "role_1": "Giocatore di ruolo", 
+    "role_2": "Moderatore",
+    "role_3": "Amministratore",
+    "role_unknown": "Sconosciuto",
+    "error403": {
+      "title": "Moduli mancanti o problema di dimensione",
+      "message": "La tua scheda personaggio non rispetta i criteri del modello:",
+      "missingModules": "Moduli obbligatori mancanti: {{modules}}",
+      "sizeIssue": "Problema di dimensione rilevato",
+      "emptyElements": "Elementi vuoti rilevati:"
+    },
+    "error404": {
+      "title": "Scheda personaggio già registrata",
+      "message": "Questa scheda personaggio è già registrata in questo universo."
+    },
+    "error409": {
+      "title": "Richiesta in sospeso",
+      "message": "Una richiesta di adesione con questa scheda personaggio è già in sospeso in questo universo."
+    }
+  }
+}
+
+

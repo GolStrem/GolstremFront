@@ -16,6 +16,7 @@
         "creationFailed": "Creazione fallita. Riprova più tardi.",
         "creating": "Creazione...",
         "error": "La modifica è fallita. Controlla i campi e riprova.",
-        "modifyFiche": "Modifica la scheda"
+        "modifyFiche": "Modifica la scheda",
+        "cannotDeleteFicheConnectedToUnivers": "Impossibile eliminare la fiche perché è connessa a un Universo. Disconnetti l'universo prima dell'eliminazione."
     }
 }

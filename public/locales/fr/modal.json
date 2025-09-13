@@ -16,6 +16,7 @@
         "creationFailed": "Création impossible. Réessaie plus tard.",
         "creating": "Création...",
         "error": "La modification a échoué. Vérifie les champs et réessaie.",
-        "modifyFiche": "Modifier la fiche"
+        "modifyFiche": "Modifier la fiche",
+        "cannotDeleteFicheConnectedToUnivers": "Suppression de la fiche impossible car celle-ci est connectée à un Univers. Déconnectez l'univers avant suppression."
     }
 }

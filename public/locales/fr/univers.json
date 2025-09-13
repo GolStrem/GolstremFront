@@ -1,0 +1,132 @@
+{
+  "title": "Modèle : {{name}}",
+  "subtitle": "Création de modèle de fiche pour l’univers",
+  "createModel": "Créer un modèle",
+  "createRule": "Créer une règle",
+  "modelsList": "Liste des modèles : {{count}}",
+  "noModels": "Aucun modèle pour l’instant.",
+  "noRules": "Aucune règle pour l’instant.",
+  "rulesTitle": "Règles du modèle",
+  "selectModelFirst": "Sélectionnez d'abord un modèle.",
+  "table": {
+    "target": "Champ concerné",
+    "type": "Type",
+    "condition": "Condition",
+    "actions": "Actions"
+  },
+  "tooltips": {
+    "editModel": "Éditer le modèle",
+    "deleteModel": "Supprimer le modèle",
+    "editRule": "Éditer la règle",
+    "deleteRule": "Supprimer la règle"
+  },
+  "model": {
+    "name": "Nom du modèle",
+    "description": "Description",
+    "image": "Image (URL)",
+    "save": "Enregistrer le modèle",
+    "creating": "Création..."
+  },
+  "titles": {
+    "createModel": "Créer un modèle",
+    "editModel": "Éditer le modèle: {{name}}",
+    "deleteModel": "Supprimer le modèle: {{name}}",
+    "createRule": "Créer une règle",
+    "editRule": "Éditer la règle: {{type}}",
+    "deleteRule": "Supprimer la règle: {{type}}"
+  },
+  "rule": {
+    "type": "Type de règle",
+    "type_role": "Rôle requis",
+    "type_moduleMandatory": "Choix des modules obligatoires pour le rôle: {{model}}",
+    "type_size": "Taille",
+    "role_label": "Grade autorisé",
+    "role_0": "Membre",
+    "role_1": "Roleplayer",
+    "role_2": "Maître du jeu",
+    "role_3": "Admin",
+    "modules_label": "Choisissez les modules obligatoires :",
+    "size_module": "Module concerné",
+    "size_element": "Élément (optionnel)",
+    "size_min": "min",
+    "size_max": "max",
+    "hint_elements": "Astuce: certains modules contiennent des éléments (ex: Caractère → peur).",
+    "save": "Enregistrer la règle",
+    "edit_min_label": "Min (caractères)",
+    "edit_max_label": "Max (caractères)",
+    "edit_modules_label": "Modules (séparés par des virgules)",
+    "edit_role_label": "Rôle requis",
+    "name": {
+      "modules": "Modules",
+      "role": "Rôle",
+      "size": "Taille"
+    }
+  },
+  "phrases": {
+    "between": "entre {{min}} et {{max}}",
+    "atLeast": "au moins {{min}}",
+    "atMost": "au plus {{max}}",
+    "select": "Sélectionner",
+    "noneWholeModule": "— Aucun (tout le module) —"
+  },
+  "feedback": {
+    "loadModelsError": "Impossible de charger les modèles",
+    "loadRulesError": "Impossible de charger les règles du modèle",
+    "modelNameRequired": "Le nom du modèle est requis",
+    "createModelFailed": "Échec de la création du modèle",
+    "selectModelForRule": "Sélectionnez un modèle avant de créer une règle.",
+    "selectAtLeastOneModule": "Sélectionnez au moins un module obligatoire.",
+    "sizeModuleRequired": "Sélectionnez un module pour la règle de taille.",
+    "sizeMinMaxRequired": "Renseignez un minimum et/ou un maximum de caractères.",
+    "sizeMinNumber": "Le minimum doit être un nombre.",
+    "sizeMaxNumber": "Le maximum doit être un nombre.",
+    "createRuleFailed": "Échec de création de la règle. Vérifiez les champs."
+  },
+  "connection": {
+    "title": "Connexion Univers",
+    "leaveTitle": "Quitter l'univers",
+    "confirmLeave": "Je confirme vouloir quitter cet univers",
+    "mustConfirmLeave": "Vous devez confirmer pour quitter l'univers",
+    "leaveConfirmationMessage": "Êtes-vous sûr de vouloir quitter cet univers ? Cette action est irréversible.",
+    "leaving": "Déconnexion...",
+    "selectUnivers": "Sélectionner un univers",
+    "selectModel": "Sélectionner un modèle",
+    "yourRole": "Votre grade",
+    "modelsAvailable": "modèle disponible",
+    "modelsAvailablePlural": "modèles disponibles",
+    "noModelsForRole": "Aucun modèle disponible pour votre grade",
+    "selectUniversPlaceholder": "— Sélectionner un univers —",
+    "selectModelPlaceholder": "— Sélectionner un modèle —",
+    "validating": "Vérification en cours...",
+    "validationSuccess": "Validation réussie",
+    "validationFailed": "Validation échouée",
+    "validationSuccessMessage": "Votre fiche respecte tous les critères du modèle sélectionné.",
+    "validationFailedMessage": "Votre fiche ne respecte pas les critères du modèle sélectionné.",
+    "validationError": "Erreur lors de la validation des critères",
+    "sendRequest": "Envoyez la demande",
+    "sending": "Envoi...",
+    "cancel": "Annuler",
+    "role_0": "Membre",
+    "role_1": "Roleplayeur", 
+    "role_2": "Modérateur",
+    "role_3": "Administrateur",
+    "role_unknown": "Inconnu",
+    "error403": {
+      "title": "Modules manquants ou problème de taille",
+      "message": "Votre fiche ne respecte pas les critères du modèle :",
+      "missingModules": "Modules obligatoires manquants : {{modules}}",
+      "sizeIssue": "Problème de taille détecté",
+      "emptyElements": "Éléments vides détectés :"
+    },
+    "error404": {
+      "title": "Fiche déjà enregistrée",
+      "message": "Cette fiche est déjà enregistrée dans cet univers."
+    },
+    "error409": {
+      "title": "Demande en attente",
+      "message": "Une demande d'adhésion avec cette fiche est déjà en attente dans cet univers."
+    }
+  }
+}
+
+

@@ -34,7 +34,7 @@ const mockData = {
 };
 
 // Normalise les données de l'API vers le format interne de la vue
-const normalizeApiData = (data) => {
+const normalizeApiData = (data, ficheData = []) => {
   // Nouveau format: tableau d'utilisateurs en attente
   if (Array.isArray(data)) {
     const pending = data.filter((u) => u?.state === -1);
@@ -48,7 +48,19 @@ const normalizeApiData = (data) => {
         createdAt: u.createdAt ?? null,
         message: u.message ?? null,
       })),
-      fiche: [],
+      fiche: Array.isArray(ficheData) ? ficheData.map((f) => ({
+        id: f.id,
+        title: f.characterName ?? `Personnage ${f.id}`,
+        requester: f.playerName ?? "",
+        avatar: f.characterImage ?? f.playerImage ?? null,
+        status: f.idModerator ? "approved" : "pending",
+        createdAt: f.createdAt ?? null,
+        message: f.modeleDescription ?? null,
+        idFiche: f.idFiche,
+        idModele: f.idModele,
+        modeleName: f.modeleName,
+        idOwner: f.idOwner,
+      })) : [],
       lieux: [],
       quete: [],
     };
@@ -108,9 +120,15 @@ const UniversCardInscription = ({
     const run = async () => {
       try {
         setLoading(true);
-        const { data } = await ApiUnivers.getInscriptionUnivers(currentUniverseId, { search });
+        // Charger les données d'inscription et les fiches en parallèle
+        const [inscriptionResponse, ficheResponse] = await Promise.all([
+          ApiUnivers.getInscriptionUnivers(currentUniverseId, { search }),
+          ApiUnivers.getSubscribeFiche(currentUniverseId)
+        ]);
+        
         if (cancelled) return;
-        const next = normalizeApiData(data);
+        
+        const next = normalizeApiData(inscriptionResponse.data, ficheResponse.data);
         setLists(next);
       } catch (e) {
         // Fallback silencieux sur mock en cas d'erreur
@@ -180,8 +198,11 @@ const UniversCardInscription = ({
 
   const refresh = async () => {
     try {
-      const { data } = await ApiUnivers.getInscriptionUnivers(currentUniverseId, { search });
-      const next = normalizeApiData(data);
+      const [inscriptionResponse, ficheResponse] = await Promise.all([
+        ApiUnivers.getInscriptionUnivers(currentUniverseId, { search }),
+        ApiUnivers.getSubscribeFiche(currentUniverseId)
+      ]);
+      const next = normalizeApiData(inscriptionResponse.data, ficheResponse.data);
       setLists(next);
     } catch {}
   };
@@ -189,7 +210,13 @@ const UniversCardInscription = ({
   const approveOne = async (tabKey, id) => {
     try {
       setLoading(true);
-      await ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 });
+      if (tabKey === "fiche") {
+        // Pour les fiches, utiliser l'endpoint spécifique avec state: 2
+        await ApiUnivers.AcceptSubscribeFiche(currentUniverseId, id, { state: 2 });
+      } else {
+        // Pour les autres types (join), utiliser l'endpoint d'inscription
+        await ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 });
+      }
       await refresh();
       onApprove?.(tabKey, id);
     } catch {} finally { setLoading(false); }
@@ -198,7 +225,13 @@ const UniversCardInscription = ({
   const rejectOne = async (tabKey, id) => {
     try {
       setLoading(true);
-      await ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id);
+      if (tabKey === "fiche") {
+        // Pour les fiches, utiliser l'endpoint spécifique de suppression
+        await ApiUnivers.deleteSubscribeFiche(currentUniverseId, id);
+      } else {
+        // Pour les autres types (join), utiliser l'endpoint d'inscription
+        await ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id);
+      }
       await refresh();
       onReject?.(tabKey, id);
     } catch {} finally { setLoading(false); }
@@ -209,7 +242,13 @@ const UniversCardInscription = ({
     if (ids.length === 0) return;
     try {
       setLoading(true);
-      await Promise.all(ids.map((id) => ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 })));
+      if (tabKey === "fiche") {
+        // Pour les fiches, utiliser l'endpoint spécifique avec state: 2
+        await Promise.all(ids.map((id) => ApiUnivers.AcceptSubscribeFiche(currentUniverseId, id, { state: 2 })));
+      } else {
+        // Pour les autres types (join), utiliser l'endpoint d'inscription
+        await Promise.all(ids.map((id) => ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 })));
+      }
       await refresh();
       onApproveMany?.(tabKey, ids);
     } catch {} finally {
@@ -223,7 +262,13 @@ const UniversCardInscription = ({
     if (ids.length === 0) return;
     try {
       setLoading(true);
-      await Promise.all(ids.map((id) => ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id)));
+      if (tabKey === "fiche") {
+        // Pour les fiches, utiliser l'endpoint spécifique de suppression
+        await Promise.all(ids.map((id) => ApiUnivers.deleteSubscribeFiche(currentUniverseId, id)));
+      } else {
+        // Pour les autres types (join), utiliser l'endpoint d'inscription
+        await Promise.all(ids.map((id) => ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id)));
+      }
       await refresh();
       onRejectMany?.(tabKey, ids);
     } catch {} finally {
@@ -281,7 +326,7 @@ const UniversCardInscription = ({
           
           <span>Tout sélectionner</span>
         </label>
-        {DroitAccess.hasWriteAccess(droit) && (
+        {(DroitAccess.hasWriteAccess(droit) || droit === null) && (
         <div className="UniIn-bulkActions">
           <button
             className="UniIn-btn UniIn-approve"
@@ -343,6 +388,9 @@ const UniversCardInscription = ({
 
                     <div className="UniIn-cardTitle">
                       <strong>{it.title}</strong>
+                      {active === "fiche" && it.modeleName && (
+                        <span className="UniIn-modeleName">({it.modeleName})</span>
+                      )}
                     </div>
                     <div className="UniIn-meta">
                       <span className={`UniIn-status UniIn-${it.status || "pending"}`}>
@@ -372,7 +420,7 @@ const UniversCardInscription = ({
                       <FaEye />
                     </button>
                   )}
-                  {DroitAccess.hasWriteAccess(droit) && (
+                  {(DroitAccess.hasWriteAccess(droit) || droit === null) && (
                   <button
                     className="UniIn-iconBtn UniIn-approve"
                     title="Accepter"
@@ -381,7 +429,7 @@ const UniversCardInscription = ({
                     <FaCheck />
                   </button>
                   )}
-                  {DroitAccess.hasWriteAccess(droit) && (
+                  {(DroitAccess.hasWriteAccess(droit) || droit === null) && (
                   <button
                     className="UniIn-iconBtn UniIn-reject"
                     title="Refuser"

@@ -34,6 +34,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) clearToken();
+    
+    // Rejeter les erreurs 403, 404, 409 pour qu'elles soient gérées dans le catch
+    if ([403, 404, 409].includes(error.response?.status)) {
+      return Promise.reject(error);
+    }
+    
     return error;
   }
 );

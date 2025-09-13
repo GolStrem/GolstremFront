@@ -52,7 +52,7 @@ const UniversCardAdministration = () => {
           <button
             type="button"
             className="UniAd-bouton"
-            onClick={() => navigate(`/fiches/univers/${universId}`)}
+            onClick={() => navigate(`/fiches/univers/${universId}/modelFiche`)}
           >
             Modèle Fiche
           </button>

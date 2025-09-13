@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MenuFiche.css";
-import { useHorizontalScroll, useGhostDragAndDrop, ApiFiche } from "@service";
+import { useHorizontalScroll, useGhostDragAndDrop, ApiFiche, useNavigatePage as useNavigate } from "@service";
 import {
   SearchBar,
   FicheCardMenu,
@@ -10,7 +10,7 @@ import {
 } from "@components";
 import { FaFilter } from "react-icons/fa";
 
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 import useFicheHandlers from "@service/handler/useFicheHandler";
 
@@ -60,6 +60,7 @@ const MenuFiche = () => {
   // Suppression
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFicheId, setSelectedFicheId] = useState(null);
+  const [selectedFicheUnivers, setSelectedFicheUnivers] = useState(null);
 
   // Modification
   const [editing, setEditing] = useState(null);
@@ -133,7 +134,10 @@ const MenuFiche = () => {
   // Ouverture suppression - désactivée en mode lecture seule
   const askDelete = (ficheId) => {
     if (isReadOnly) return;
+    const idUnivers = characterList.filter(fiche => fiche.id === ficheId)[0].idUnivers
+
     setSelectedFicheId(ficheId);
+    setSelectedFicheUnivers(idUnivers);
     setShowDeleteModal(true);
   };
 
@@ -235,6 +239,7 @@ const MenuFiche = () => {
       {showDeleteModal && selectedFicheId != null && !isReadOnly && (
         <FicheDeleteCharacterModal
           ficheId={selectedFicheId}
+          ficheUnivers={selectedFicheUnivers}
           onClose={() => {
             setShowDeleteModal(false);
             setSelectedFicheId(null);

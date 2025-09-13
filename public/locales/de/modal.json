@@ -16,6 +16,7 @@
         "creationFailed": "Erstellung fehlgeschlagen. Bitte versuchen Sie es später erneut.",
         "creating": "Erstellen...",
         "error": "Die Änderung ist fehlgeschlagen. Überprüfen Sie die Felder und versuchen Sie es erneut.",
-        "modifyFiche": "Blatt bearbeiten"
+        "modifyFiche": "Blatt bearbeiten",
+        "cannotDeleteFicheConnectedToUnivers": "Löschen der Fiche nicht möglich, da sie mit einem Universum verbunden ist. Trennen Sie das Universum vor dem Löschen."
     }
 }
