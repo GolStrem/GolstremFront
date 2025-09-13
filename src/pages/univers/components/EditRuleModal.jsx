@@ -33,12 +33,20 @@ const EditRuleModal = ({
   onSubmit 
 }) => {
   const { t } = useTranslation("univers");
+  const [editRoleValue, setEditRoleValue] = useState(0);
   const [editSelectedModules, setEditSelectedModules] = useState(new Set());
   const [editSizeMin, setEditSizeMin] = useState("");
   const [editSizeMax, setEditSizeMax] = useState("");
   const [editSizeError, setEditSizeError] = useState("");
 
   useEffect(() => {
+    if (ruleEditing && ruleEditing.rule === "role") {
+      try {
+        setEditRoleValue(Number(ruleEditing.value) || 0);
+      } catch {
+        setEditRoleValue(0);
+      }
+    }
     if (ruleEditing && ruleEditing.rule === "moduleMandatory") {
       try {
         const raw = String(ruleEditing.value || "");
@@ -63,7 +71,9 @@ const EditRuleModal = ({
   }, [ruleEditing]);
 
   const handleSubmit = async () => {
-    if (ruleEditing.rule === "moduleMandatory") {
+    if (ruleEditing.rule === "role") {
+      await onSubmit({ target: "default", rule: ruleEditing.rule, value: String(editRoleValue) });
+    } else if (ruleEditing.rule === "moduleMandatory") {
       const filtered = MODULES.map((m) => m.key).filter((k) => editSelectedModules.has(k));
       const next = filtered.join(", ");
       await onSubmit({ target: "default", rule: ruleEditing.rule, value: next });
@@ -95,6 +105,20 @@ const EditRuleModal = ({
     <BaseModal onClose={onClose} className="tmedit cf-modal-large master-edit-rule">
       <h2>{t("titles.editRule", { type: t(`rule.name.${ruleEditing.rule}`) })}</h2>
       <div className="UniModel-form">
+        {ruleEditing.rule === "role" && (
+          <>
+            <div className="UniModel-field">
+              <label className="UniModel-label tm-label label-fiche">{t("rule.role_label")}</label>
+              <select className="UniModel-inputbase" value={editRoleValue} onChange={(e) => setEditRoleValue(Number(e.target.value))}>
+                <option value={0}>{t("rule.role_0")}</option>
+                <option value={1}>{t("rule.role_1")}</option>
+                <option value={2}>{t("rule.role_2")}</option>
+                <option value={3}>{t("rule.role_3")}</option>
+              </select>
+            </div>
+          </>
+        )}
+
         {ruleEditing.rule === "moduleMandatory" && (
           <>
             <div className="UniModel-field">
