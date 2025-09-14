@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { PurifyHtml } from "@service";
 
 const ModelCard = ({ 
   model, 
@@ -32,7 +33,10 @@ const ModelCard = ({
       <div className="UniModel-cardBody">
         <div className="UniModel-cardTitle">{model.name}</div>
         {model.description ? (
-          <div className="UniModel-cardDesc">{model.description}</div>
+          <div 
+            className="UniModel-cardDesc" 
+            dangerouslySetInnerHTML={{ __html: PurifyHtml(model.description) }} 
+          />
         ) : null}
       </div>
       <div className="UniModel-cardActions">
