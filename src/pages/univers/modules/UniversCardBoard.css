@@ -1,0 +1,136 @@
+.UniBo-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.UniBo-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  margin-top: 50px;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.UniBo-filters {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.spanC {
+  color: var(--color-text);
+  font-weight: 600;
+  margin-right: 8px;
+}
+.UniBo-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.UniBo-filter-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #555;
+  color: #fff;
+  font-size: 0.85rem;
+  transition: 0.2s;
+}
+
+.UniBo-filter-btn.active, .UniBo-filter-btn:hover {
+  background-color: var(--jaune);
+}
+
+.UniBo-masonry-grid {
+  display: flex;
+  margin-left: -15px; /* gap */
+  width: auto;
+}
+
+.UniBo-masonry-grid_column {
+  padding-left: 15px; /* gap */
+  background-clip: padding-box;
+}
+
+.UniBo-card {
+  background-color: var(--color-input-bg);
+  border-radius: 10px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.UniBo-card:hover {
+  transform: scale(1.02);
+}
+
+.UniBo-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.UniBo-card-image {
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid #333;
+}
+
+.UniBo-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.UniBo-card-image-wrapper:hover .UniBo-card-overlay {
+  opacity: 1;
+}
+
+.UniBo-card-content {
+  padding: 10px;
+}
+
+.UniBo-card-title {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+  color: var(--color-text)
+}
+
+.UniBo-card-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.UniBo-card-type {
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.UniBo-card-status {
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.UniBo-card-date {
+  font-size: 0.7rem;
+  color: var(--color-text);
+  margin-left: auto;
+}

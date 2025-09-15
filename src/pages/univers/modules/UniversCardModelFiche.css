@@ -52,7 +52,6 @@
   
   /* Formulaire */
   .UniModel-form {
-    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -87,7 +86,7 @@
     padding: 10px;
     border-radius: 6px;
     border: 1px solid var(--color-border, rgba(255, 255, 255, 0.15));
-    background: var(--color-input, #2a2a2a);
+    background: var(--color-input-bg);
     color: var(--color-text, #f5f5f5);
   }
   .UniModel-textarea {
@@ -135,6 +134,7 @@
     background: transparent;
     cursor: pointer;
     transition: all 0.2s ease;
+    color: var(--color-text);
   }
   .UniModel-chip.active {
     background: var(--jaune);
@@ -230,12 +230,12 @@
   }
   .UniModel-table th,
   .UniModel-table td {
-    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--color-input-bg);
     padding: 8px 12px;
     text-align: left;
   }
   .UniModel-table th {
-    background: var(--color-card, #1c1c1c);
+    background: var(--color-input-bg);
     font-weight: 600;
   }
   .UniModel-table tr:nth-child(even) {
