@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import "./Univers.css";
-import { ffimg } from "@assets";
+import { ff } from "@assets";
 import { ModalGeneric, BackLocation } from "@components";
 import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
@@ -645,7 +645,7 @@ const Univers = () => {
              <div className="UniId-grid">
          {CATEGORIES.filter((item) => visibleCategories.includes(item.label)).map((item) => {
            const imageKey = resolveKey(item.key);
-           const imageUrl = images[imageKey] || ffimg;
+           const imageUrl = images[imageKey] || ff;
            
            return (
              <button

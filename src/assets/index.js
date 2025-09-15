@@ -24,6 +24,7 @@ import GoldenLogo from './svg/GoldenLogo';
 
 import discordimg from "./img-univers/discordimg.png"
 import ffimg from "./img-univers/ffimg.png"
+import ff from "./img-univers/ff.png"
 import forum from "./img-univers/forum.png"
 import jeux from "./img-univers/jeux.png"
 import plateau from "./img-univers/plateau.png"
@@ -32,6 +33,7 @@ import dossier from "./dossier.svg"
 export {
   discordimg,
   ffimg,
+  ff,
   forum,
   jeux,
   plateau,

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { BackLocation, SearchBar } from "@components";
 import { ApiUnivers, ApiService, DroitAccess, Capitalize  } from "@service";
-import { ffimg } from "@assets";
+import { ff } from "@assets";
 import "./UniversCardMembres.css";
 import { FaCrown, FaFileAlt, FaEllipsisH } from "react-icons/fa";
 
@@ -231,7 +231,7 @@ const UniversCardMembres = () => {
               <div className="UniMe-avatarWrap">
                 <div
                   className="UniMe-avatar"
-                  style={{ backgroundImage: `url(${m.image || ffimg})` }}
+                  style={{ backgroundImage: `url(${m.image || ff})` }}
                   role="img"
                   aria-label={m.pseudo}
                 />

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardBoard.css";
-import { BackLocation } from "@components";
+import { BackLocation, BaseModal, ModalGeneric } from "@components";
 
 const ITEMS = [
   { id: 1, type: "Quête", title: "Quête magique", description: "Résoudre l’énigme du vieux mage.", status: "En attente de joueur", date: null, image: "https://i.pinimg.com/736x/50/43/61/504361f450ac78d5cfcb3ce09a365d22.jpg" },
@@ -40,6 +40,53 @@ const UniversCardBoard = () => {
   const [filterType, setFilterType] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterDate, setFilterDate] = useState("Tous");
+
+  // Aperçu et création
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Configuration des champs pour la création d'événement/quête/ouverture
+  const createEventFields = {
+    type: {
+      type: "select",
+      value: ["Quête", "Événement", "Ouverture"],
+      label: "Type ",
+      key: "unibo-type",
+    },
+    title: {
+      type: "inputText",
+      label: "Titre ",
+      key: "unibo-title",
+    },
+    description: {
+      type: "textarea",
+      label: "Description",
+      key: "unibo-description",
+    },
+    status: {
+      type: "select",
+      value: ["En attente de joueur", "En cours", "Terminé", "En attente", "Bientôt"],
+      label: "Statut :",
+      key: "unibo-status",
+    },
+    date: {
+      type: "inputText",
+      label: "Date (optionnel)",
+      key: "unibo-date",
+      placeholder: "YYYY-MM-DD HH:MM"
+    },
+    image: {
+      type: "inputUrl",
+      label: "URL de l'image",
+      key: "unibo-image",
+    },
+  };
+
+  const handleCreateEvent = (values) => {
+    console.log("Nouvel événement créé:", values);
+    // Ici tu peux ajouter la logique pour sauvegarder l'événement
+    setShowCreateModal(false);
+  };
 
   const now = new Date();
 
@@ -101,7 +148,7 @@ const UniversCardBoard = () => {
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="UniBo-card">
+            <div className="UniBo-card" onClick={() => setSelectedItem(item)} style={{cursor:'pointer'}}>
               <div className="UniBo-card-image-wrapper">
                 <img src={item.image} alt={item.title} className="UniBo-card-image"/>
                 <div className="UniBo-card-overlay">
@@ -142,6 +189,51 @@ const UniversCardBoard = () => {
           </motion.div>
         ))}
       </Masonry>
+
+      {/* Bouton flottant + */}
+      <button
+        className="UniBo-fab"
+        aria-label="Créer"
+        title="Créer"
+        onClick={() => setShowCreateModal(true)}
+      >
+        +
+      </button>
+
+      {/* Modal d'aperçu */}
+      {selectedItem && (
+        <BaseModal onClose={() => setSelectedItem(null)} className="uni-preview-modal">
+          <div className="uni-preview-content">
+            <img src={selectedItem.image} alt={selectedItem.title} className="uni-preview-image" />
+            <div className="uni-preview-body">
+              <h3 className="uni-preview-title">{selectedItem.title}</h3>
+              <div className="uni-preview-badges">
+                <span className="uni-preview-type" style={{backgroundColor: TYPE_COLORS[selectedItem.type]}}>{selectedItem.type}</span>
+                {selectedItem.status && (
+                  <span className="uni-preview-status" style={{backgroundColor: STATUS_COLORS[selectedItem.status]}}>{selectedItem.status}</span>
+                )}
+                {selectedItem.date && (
+                  <span className="uni-preview-date">{new Date(selectedItem.date).toLocaleString()}</span>
+                )}
+              </div>
+              <p className="uni-preview-description">{selectedItem.description}</p>
+            </div>
+          </div>
+        </BaseModal>
+      )}
+
+      {/* Modal de création */}
+      {showCreateModal && (
+        <ModalGeneric
+          onClose={() => setShowCreateModal(false)}
+          name="eventCreate"
+          title="Créer un événement"
+          fields={createEventFields}
+          textButtonValidate="Créer"
+          handleSubmit={handleCreateEvent}
+          isOpen
+        />
+      )}
     </div>
   );
 };
