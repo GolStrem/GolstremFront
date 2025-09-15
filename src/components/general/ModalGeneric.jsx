@@ -367,8 +367,8 @@ const ModalGeneric = ({
 		switch (config?.type) {
 			case "inputText":
 				return (
-					<div key={key} className="cf-field short">
-						<label className="tm-label label-fiche" htmlFor={id}>
+					<div key={key} className={`cf-field short ${key}`}>
+						<label className={`tm-label label-fiche label-${key}`} htmlFor={id}>
 							{t(label)} :
 						</label>
 						<input id={id} type="text" value={values[key]} onChange={handleChange(key)} />
@@ -377,8 +377,8 @@ const ModalGeneric = ({
 			case "inputUrl":
 				const isUrlValid = !values[key] || isValidImageUrl(values[key]);
 				return (
-					<div key={key} className="cf-field short">
-						<label className="tm-label label-fiche  " htmlFor={id}>
+					<div key={key} className={`cf-field short ${key}`}>
+						<label className={`tm-label label-fiche  label-${key}`} htmlFor={id}>
 						{t(label)} :
 						{values[key] && isValidImageUrl(values[key]) && (
 						<div style={{ marginLeft: 6, marginBottom:-6 }}>
@@ -429,8 +429,8 @@ const ModalGeneric = ({
 				}, [values[key], editor, forceUpdateRef.current]);
 
 				return (
-					<div key={key} className="cf-generic">
-						<label className="tm-label label-about" htmlFor={id}>
+					<div key={key} className={`cf-generic ${key}`}>
+						<label className={`tm-label label-about label-${key}`} htmlFor={id}>
 							{t(label)} :
 						</label>
 						 <ToolbarTipTap editor={editor} />
