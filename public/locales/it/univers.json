@@ -154,6 +154,50 @@
       "rejected": "Rifiutata",
       "pending": "In attesa"
     }
+  },
+  "members": {
+    "title": "Membri",
+    "subtitle": "Elenco dei membri dell'universo",
+    "sortBy": "Ordina per",
+    "sort_default": "Predefinito",
+    "sort_name": "Nome",
+    "sort_role": "Ruolo",
+    "loading": "Caricamento membri…",
+    "empty": "Nessun membro da visualizzare.",
+    "owner": "Owner",
+    "viewSheets": "Vedi schede",
+    "sheets": "Schede",
+    "addFriend": "Aggiungi amico",
+    "pendingRequest": "Richiesta in sospeso",
+    "exclude": "Escludi",
+    "excludeConfirm": "Escludere questo utente dall'universo?",
+    "excludeTitle": "Escludi dal gruppo",
+    "moreActions": "Altre azioni",
+    "join": "Unisciti all'universo",
+    "leave": "Lascia l'universo",
+    "roles": {
+      "-1": "In attesa",
+      "0": "Membro",
+      "1": "Roleplayer",
+      "2": "Master",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "IN ATTESA",
+      "0": "MEMBRO",
+      "1": "ROLEPLAYER",
+      "2": "MASTER",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Amministrazione {{name}}",
+    "subtitle": "Qui puoi gestire tutte le impostazioni relative a questo universo: membri, apertura e modelli di scheda.",
+    "buttons": {
+      "members": "Membri",
+      "opening": "Apertura / Iscrizione",
+      "models": "Modello Scheda"
+    }
   }
 }
 

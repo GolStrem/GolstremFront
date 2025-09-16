@@ -5,6 +5,7 @@ import { ApiUnivers, ApiService, DroitAccess, Capitalize  } from "@service";
 import { ff } from "@assets";
 import "./UniversCardMembres.css";
 import { FaCrown, FaFileAlt, FaEllipsisH } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const ROLE_OPTIONS = [
   { value: -1, label: "En attente" },
@@ -23,6 +24,7 @@ const ROLE_LABEL = {
 };
 
 const UniversCardMembres = () => {
+  const { t } = useTranslation('univers');
   const { id: universId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -154,7 +156,7 @@ const UniversCardMembres = () => {
   };
 
   const handleExclude = async (memberId) => {
-    if (!window.confirm("Exclure cet utilisateur de l'univers ?")) return;
+    if (!window.confirm(t('members.excludeConfirm'))) return;
     try {
       setBusy(memberId, true);
       await ApiUnivers.deleteInscriptionUnivers(universId, memberId);
@@ -202,15 +204,15 @@ const UniversCardMembres = () => {
       <BackLocation />
 
       <div className="UniMe-header">
-        <h1 className="UniMe-title">Membres</h1>
-        <p className="UniMe-subtitle">Liste des membres de l'univers</p>
+        <h1 className="UniMe-title">{t('members.title')}</h1>
+        <p className="UniMe-subtitle">{t('members.subtitle')}</p>
         <div className="UniMe-toolbar">
           <div className="UniMe-sort">
-            <label htmlFor="unime-sort-select">Trier par</label>
+            <label htmlFor="unime-sort-select">{t('members.sortBy')}</label>
             <select id="unime-sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              <option value="default">Défaut</option>
-              <option value="name">Nom</option>
-              <option value="role">Rôle</option>
+              <option value="default">{t('members.sort_default')}</option>
+              <option value="name">{t('members.sort_name')}</option>
+              <option value="role">{t('members.sort_role')}</option>
             </select>
           </div>
           <div className="UniMe-search">
@@ -220,14 +222,14 @@ const UniversCardMembres = () => {
       </div>
 
       {loading ? (
-        <div className="UniMe-loading">Chargement des membres…</div>
+        <div className="UniMe-loading">{t('members.loading')}</div>
       ) : filtered.length === 0 ? (
-        <div className="UniMe-empty">Aucun membre à afficher.</div>
+        <div className="UniMe-empty">{t('members.empty')}</div>
       ) : (
-        <section className="UniMe-list" aria-label="Liste des membres">
+        <section className="UniMe-list" aria-label={t('members.title')}>
           {sorted.map((m) => (
             <article key={m.id} className={`UniMe-item ${mobileOpenId === m.id ? 'is-open' : ''}`}>
-              <div className="UniMe-roleBg">{ROLE_LABEL[Number(m.state ?? 0)] || ""}</div>
+              <div className="UniMe-roleBg">{t(`members.rolesUpper.${Number(m.state ?? 0)}`) || ""}</div>
               <div className="UniMe-avatarWrap">
                 <div
                   className="UniMe-avatar"
@@ -236,7 +238,7 @@ const UniversCardMembres = () => {
                   aria-label={m.pseudo}
                 />
                 {ownerId != null && m.id === ownerId && (
-                  <div className="UniMe-crown" title="Owner">
+                  <div className="UniMe-crown" title={t('members.owner')}>
                     <FaCrown />
                   </div>
                 )}
@@ -251,18 +253,18 @@ const UniversCardMembres = () => {
                   <button
                     className="UniMe-chip"
                     disabled
-                    title="Demande en attente"
+                    title={t('members.pendingRequest')}
                   >
-                    Demande en attente
+                    {t('members.pendingRequest')}
                   </button>
                 ) : (
                   <button
                     className="UniMe-chip UniMe-friend"
                     onClick={() => handleAddFriend(m.id)}
                     disabled={busyIds.has(m.id)}
-                    title="Ajouter en ami"
+                    title={t('members.addFriend')}
                   >
-                    Ajouter en ami
+                    {t('members.addFriend')}
                   </button>
                 )}
 
@@ -270,9 +272,9 @@ const UniversCardMembres = () => {
                 <button
                   className="UniMe-chip"
                   onClick={() => navigate(`/fiches/owner/${m.id}?idUnivers=${universId}`)}
-                  title="Voir ses fiches"
+                  title={t('members.viewSheets')}
                 >
-                  <FaFileAlt /> Fiches
+                  <FaFileAlt /> {t('members.sheets')}
                 </button>
                 {DroitAccess.isOwner(droit) ? (
                   <div className="UniMe-roleSelect">
@@ -281,22 +283,22 @@ const UniversCardMembres = () => {
                       onChange={(e) => handleChangeRole(m.id, Number(e.target.value))}
                       disabled={busyIds.has(m.id)}
                     >
-                      {ROLE_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      {[-1,0,1,2,3].map((val) => (
+                        <option key={val} value={val}>{t(`members.roles.${val}`)}</option>
                       ))}
                     </select>
                   </div>
                 ) : (
-                  <p className="UniMe-roleText">{Capitalize(ROLE_LABEL[Number(m.state ?? 0)] || "MEMBRE")}</p>
+                  <p className="UniMe-roleText">{Capitalize(t(`members.rolesUpper.${Number(m.state ?? 0)}`) || t('members.rolesUpper.0'))}</p>
                 )}
                  {DroitAccess.isOwner(droit) && (
                 <button
                   className="UniMe-chip UniMe-danger"
                   onClick={() => handleExclude(m.id)}
                   disabled={busyIds.has(m.id)}
-                  title="Exclure du groupe"
+                  title={t('members.excludeTitle')}
                 >
-                  Exclure
+                  {t('members.exclude')}
                 </button>
                  )}
               </div>
@@ -307,7 +309,7 @@ const UniversCardMembres = () => {
                   className="UniMe-moreBtn"
                   aria-haspopup="menu"
                   aria-expanded={mobileOpenId === m.id}
-                  aria-label="Plus d'actions"
+                  aria-label={t('members.moreActions')}
                   onClick={() => toggleMobileMenu(m.id)}
                 >
                   <FaEllipsisH />
@@ -316,18 +318,18 @@ const UniversCardMembres = () => {
                   <div className="UniMe-moreMenu" role="menu">
                     {/* Demande d'ami / attente / rien si moi ou déjà ami */}
                     {m.id === currentUserId ? null : friendIds.has(m.id) ? null : requestedIds.has(m.id) ? (
-                      <button className="UniMe-chip" disabled title="Demande en attente" role="menuitem">
-                        Demande en attente
+                      <button className="UniMe-chip" disabled title={t('members.pendingRequest')} role="menuitem">
+                        {t('members.pendingRequest')}
                       </button>
                     ) : (
                       <button
                         className="UniMe-chip UniMe-friend"
                         onClick={() => { handleAddFriend(m.id); setMobileOpenId(null); }}
                         disabled={busyIds.has(m.id)}
-                        title="Ajouter en ami"
+                        title={t('members.addFriend')}
                         role="menuitem"
                       >
-                        Ajouter en ami
+                        {t('members.addFriend')}
                       </button>
                     )}
 
@@ -335,10 +337,10 @@ const UniversCardMembres = () => {
                     <button
                       className="UniMe-chip"
                       onClick={() => { navigate(`/fiches/owner/${m.id}?idUnivers=${universId}`); setMobileOpenId(null); }}
-                      title="Voir ses fiches"
+                      title={t('members.viewSheets')}
                       role="menuitem"
                     >
-                      <FaFileAlt /> Fiches
+                      <FaFileAlt /> {t('members.sheets')}
                     </button>
 
                     {/* Rôle (sélecteur si owner) ou texte sinon) */}
@@ -349,13 +351,13 @@ const UniversCardMembres = () => {
                           onChange={(e) => { handleChangeRole(m.id, Number(e.target.value)); setMobileOpenId(null); }}
                           disabled={busyIds.has(m.id)}
                         >
-                          {ROLE_OPTIONS.map((opt) => (
-                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          {[-1,0,1,2,3].map((val) => (
+                            <option key={val} value={val}>{t(`members.roles.${val}`)}</option>
                           ))}
                         </select>
                       </div>
                     ) : (
-                      <p className="UniMe-roleText" role="menuitem">{Capitalize(ROLE_LABEL[Number(m.state ?? 0)] || "MEMBRE")}</p>
+                      <p className="UniMe-roleText" role="menuitem">{Capitalize(t(`members.rolesUpper.${Number(m.state ?? 0)}`) || t('members.rolesUpper.0'))}</p>
                     )}
 
                     {/* Exclure (seulement owner) */}
@@ -364,10 +366,10 @@ const UniversCardMembres = () => {
                         className="UniMe-chip UniMe-danger"
                         onClick={() => { handleExclude(m.id); setMobileOpenId(null); }}
                         disabled={busyIds.has(m.id)}
-                        title="Exclure du groupe"
+                        title={t('members.excludeTitle')}
                         role="menuitem"
                       >
-                        Exclure
+                        {t('members.exclude')}
                       </button>
                     )}
                   </div>
@@ -381,9 +383,9 @@ const UniversCardMembres = () => {
         className={`UniMe-joinBtnDock ${isMember ? "leave" : "join"}`}
         onClick={handleToggleJoin}
         disabled={!universId}
-        title={isMember ? "Quitter l'univers" : "Rejoindre l'univers"}
+        title={isMember ? t('members.leave') : t('members.join')}
       >
-        {isMember ? "Quitter l'univers" : "Rejoindre l'univers"}
+        {isMember ? t('members.leave') : t('members.join')}
       </button>
     </div>
   );

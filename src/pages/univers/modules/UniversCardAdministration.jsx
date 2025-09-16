@@ -3,8 +3,10 @@ import { BackLocation } from "@components";
 import { useParams } from "react-router-dom";
 import { ApiUnivers, useNavigatePage } from "@service";
 import "./UniversCardAdministration.css";
+import { useTranslation } from "react-i18next";
 
 const UniversCardAdministration = () => {
+  const { t } = useTranslation('univers');
   const { id: universId } = useParams();
   const navigate = useNavigatePage();
   const [universName, setUniversName] = useState("");
@@ -27,9 +29,9 @@ const UniversCardAdministration = () => {
       <BackLocation />
       
       <div className="UniAd-header">
-        <h1 className="UniAd-h1">Administration {universName}</h1>
+        <h1 className="UniAd-h1">{t('admin.title', { name: universName })}</h1>
         <p className="UniAd-subtitle">
-          Ici, vous pouvez gérer tous les réglages liés à cet univers : membres, ouverture et modèles de fiches.
+          {t('admin.subtitle')}
         </p>
       </div>
 
@@ -40,21 +42,21 @@ const UniversCardAdministration = () => {
             className="UniAd-bouton"
             onClick={() => navigate(`/univers/${universId}/membres`)}
           >
-            Membres
+            {t('admin.buttons.members')}
           </button>
           <button
             type="button"
             className="UniAd-bouton"
             onClick={() => navigate(`/univers/${universId}/opening`)}
           >
-            Ouverture / Inscription
+            {t('admin.buttons.opening')}
           </button>
           <button
             type="button"
             className="UniAd-bouton"
             onClick={() => navigate(`/fiches/univers/${universId}/modelFiche`)}
           >
-            Modèle Fiche
+            {t('admin.buttons.models')}
           </button>
         </div>
       </div>

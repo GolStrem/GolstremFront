@@ -154,6 +154,50 @@
       "rejected": "Abgelehnt",
       "pending": "Ausstehend"
     }
+  },
+  "members": {
+    "title": "Mitglieder",
+    "subtitle": "Liste der Universumsmitglieder",
+    "sortBy": "Sortieren nach",
+    "sort_default": "Standard",
+    "sort_name": "Name",
+    "sort_role": "Rolle",
+    "loading": "Mitglieder werden geladen…",
+    "empty": "Keine Mitglieder anzuzeigen.",
+    "owner": "Owner",
+    "viewSheets": "Karten ansehen",
+    "sheets": "Karten",
+    "addFriend": "Als Freund hinzufügen",
+    "pendingRequest": "Ausstehende Anfrage",
+    "exclude": "Ausschließen",
+    "excludeConfirm": "Diesen Benutzer aus dem Universum ausschließen?",
+    "excludeTitle": "Aus Gruppe ausschließen",
+    "moreActions": "Weitere Aktionen",
+    "join": "Universum beitreten",
+    "leave": "Universum verlassen",
+    "roles": {
+      "-1": "Ausstehend",
+      "0": "Mitglied",
+      "1": "Rollenspieler",
+      "2": "Spielleiter",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "AUSSTEHEND",
+      "0": "MITGLIED",
+      "1": "ROLLENSPIELER",
+      "2": "SPIELLEITER",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Administration {{name}}",
+    "subtitle": "Hier können Sie alle Einstellungen zu diesem Universum verwalten: Mitglieder, Öffnung und Kartenmodelle.",
+    "buttons": {
+      "members": "Mitglieder",
+      "opening": "Öffnung / Anmeldung",
+      "models": "Kartenmodell"
+    }
   }
 }
 

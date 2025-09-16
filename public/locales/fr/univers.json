@@ -154,6 +154,50 @@
       "rejected": "Refusée",
       "pending": "En attente"
     }
+  },
+  "members": {
+    "title": "Membres",
+    "subtitle": "Liste des membres de l'univers",
+    "sortBy": "Trier par",
+    "sort_default": "Défaut",
+    "sort_name": "Nom",
+    "sort_role": "Rôle",
+    "loading": "Chargement des membres…",
+    "empty": "Aucun membre à afficher.",
+    "owner": "Owner",
+    "viewSheets": "Voir ses fiches",
+    "sheets": "Fiches",
+    "addFriend": "Ajouter en ami",
+    "pendingRequest": "Demande en attente",
+    "exclude": "Exclure",
+    "excludeConfirm": "Exclure cet utilisateur de l'univers ?",
+    "excludeTitle": "Exclure du groupe",
+    "moreActions": "Plus d'actions",
+    "join": "Rejoindre l'univers",
+    "leave": "Quitter l'univers",
+    "roles": {
+      "-1": "En attente",
+      "0": "Membre",
+      "1": "Roleplayer",
+      "2": "Maître du jeu",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "EN ATTENTE",
+      "0": "MEMBRE",
+      "1": "ROLEPLAYER",
+      "2": "MAITRE DU JEU",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Administration {{name}}",
+    "subtitle": "Ici, vous pouvez gérer tous les réglages liés à cet univers : membres, ouverture et modèles de fiches.",
+    "buttons": {
+      "members": "Membres",
+      "opening": "Ouverture / Inscription",
+      "models": "Modèle Fiche"
+    }
   }
 }
 

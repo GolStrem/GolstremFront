@@ -154,6 +154,50 @@
       "rejected": "Rejected",
       "pending": "Pending"
     }
+  },
+  "members": {
+    "title": "Members",
+    "subtitle": "List of universe members",
+    "sortBy": "Sort by",
+    "sort_default": "Default",
+    "sort_name": "Name",
+    "sort_role": "Role",
+    "loading": "Loading members…",
+    "empty": "No members to display.",
+    "owner": "Owner",
+    "viewSheets": "View sheets",
+    "sheets": "Sheets",
+    "addFriend": "Add friend",
+    "pendingRequest": "Pending request",
+    "exclude": "Exclude",
+    "excludeConfirm": "Exclude this user from the universe?",
+    "excludeTitle": "Exclude from group",
+    "moreActions": "More actions",
+    "join": "Join universe",
+    "leave": "Leave universe",
+    "roles": {
+      "-1": "Pending",
+      "0": "Member",
+      "1": "Roleplayer",
+      "2": "Game Master",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "PENDING",
+      "0": "MEMBER",
+      "1": "ROLEPLAYER",
+      "2": "GAME MASTER",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Administration {{name}}",
+    "subtitle": "Here you can manage all settings related to this universe: members, opening and sheet models.",
+    "buttons": {
+      "members": "Members",
+      "opening": "Opening / Registration",
+      "models": "Sheet Model"
+    }
   }
 }
 
