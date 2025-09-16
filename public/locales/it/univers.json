@@ -127,6 +127,33 @@
       "title": "Richiesta in sospeso",
       "message": "Una richiesta di adesione con questa scheda personaggio è già in sospeso in questo universo."
     }
+  },
+  "requests": {
+    "title": "Iscrizioni e Richieste",
+    "subtitle": "Gestisci le validazioni del tuo universo",
+    "selectAll": "Seleziona tutto",
+    "loading": "Caricamento richieste…",
+    "emptyFor": "Nessuna richiesta da mostrare per “{{label}}”.",
+    "viewRequest": "Vedi richiesta",
+    "tabs": {
+      "all": "Tutto",
+      "join": "Adesioni",
+      "fiche": "Schede",
+      "lieux": "Luoghi",
+      "quete": "Missioni"
+    },
+    "hints": {
+      "all": "Tutti i tipi di richieste",
+      "join": "Richieste di adesione all'universo",
+      "fiche": "Pre-validazione delle schede",
+      "lieux": "Creazione di luoghi/strutture",
+      "quete": "Idee di missioni da convalidare"
+    },
+    "status": {
+      "approved": "Approvata",
+      "rejected": "Rifiutata",
+      "pending": "In attesa"
+    }
   }
 }
 

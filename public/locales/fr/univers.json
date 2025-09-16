@@ -127,6 +127,33 @@
       "title": "Demande en attente",
       "message": "Une demande d'adhésion avec cette fiche est déjà en attente dans cet univers."
     }
+  },
+  "requests": {
+    "title": "Inscriptions & Demandes",
+    "subtitle": "Gérez les validations de votre univers",
+    "selectAll": "Tout sélectionner",
+    "loading": "Chargement des demandes…",
+    "emptyFor": "Aucune demande à afficher pour « {{label}} ».",
+    "viewRequest": "Voir la demande",
+    "tabs": {
+      "all": "Tout",
+      "join": "Adhésions",
+      "fiche": "Fiches",
+      "lieux": "Lieux",
+      "quete": "Quêtes"
+    },
+    "hints": {
+      "all": "Tous les types de demandes",
+      "join": "Demandes pour rejoindre l’univers",
+      "fiche": "Validation préalable des fiches",
+      "lieux": "Créations de lieux/établissements",
+      "quete": "Idées de quêtes à valider"
+    },
+    "status": {
+      "approved": "Approuvée",
+      "rejected": "Refusée",
+      "pending": "En attente"
+    }
   }
 }
 
