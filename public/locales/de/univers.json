@@ -127,6 +127,33 @@
       "title": "Anfrage ausstehend",
       "message": "Eine Mitgliedschaftsanfrage mit diesem Charakterbogen ist bereits in diesem Universum ausstehend."
     }
+  },
+  "requests": {
+    "title": "Anmeldungen & Anfragen",
+    "subtitle": "Verwalten Sie die Validierungen Ihres Universums",
+    "selectAll": "Alle auswählen",
+    "loading": "Anfragen werden geladen…",
+    "emptyFor": "Keine Anfragen zur Anzeige für „{{label}}“.",
+    "viewRequest": "Anfrage ansehen",
+    "tabs": {
+      "all": "Alle",
+      "join": "Beitritte",
+      "fiche": "Blätter",
+      "lieux": "Orte",
+      "quete": "Quests"
+    },
+    "hints": {
+      "all": "Alle Anfragearten",
+      "join": "Anfragen zum Beitritt ins Universum",
+      "fiche": "Vorvalidierung der Blätter",
+      "lieux": "Erstellung von Orten/Einrichtungen",
+      "quete": "Zu validierende Quest-Ideen"
+    },
+    "status": {
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt",
+      "pending": "Ausstehend"
+    }
   }
 }
 

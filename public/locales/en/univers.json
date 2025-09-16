@@ -127,6 +127,33 @@
       "title": "Request pending",
       "message": "A membership request with this character sheet is already pending in this universe."
     }
+  },
+  "requests": {
+    "title": "Registrations & Requests",
+    "subtitle": "Manage your universe validations",
+    "selectAll": "Select all",
+    "loading": "Loading requests…",
+    "emptyFor": "No requests to display for “{{label}}”.",
+    "viewRequest": "View request",
+    "tabs": {
+      "all": "All",
+      "join": "Memberships",
+      "fiche": "Sheets",
+      "lieux": "Places",
+      "quete": "Quests"
+    },
+    "hints": {
+      "all": "All request types",
+      "join": "Requests to join the universe",
+      "fiche": "Pre-validation of sheets",
+      "lieux": "Creation of places/establishments",
+      "quete": "Quest ideas to validate"
+    },
+    "status": {
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "pending": "Pending"
+    }
   }
 }
 

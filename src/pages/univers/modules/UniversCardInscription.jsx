@@ -15,23 +15,11 @@ import "./UniversCardInscription.css";
 import { BackLocation, SearchBar } from "@components/index";
 import { ApiUnivers, DroitAccess } from "@service";
 import Masonry from "react-masonry-css";
+import { useTranslation } from "react-i18next";
 
 
 
 
-const TABS = [
-  { key: "join",  label: "Adhésions", icon: <FaUsers /> , hint: "Demandes pour rejoindre l’univers" },
-  { key: "fiche", label: "Fiches",    icon: <FaFileAlt />, hint: "Validation préalable des fiches" },
-  { key: "lieux", label: "Lieux",     icon: <FaMapMarkerAlt />, hint: "Créations de lieux/établissements" },
-  { key: "quete", label: "Quêtes",    icon: <FaScroll />, hint: "Idées de quêtes à valider" },
-];
-
-const mockData = {
-  join: [],
-  fiche: [],
-  lieux: [],
-  quete: [],
-};
 
 // Normalise les données de l'API vers le format interne de la vue
 const normalizeApiData = (data, ficheData = []) => {
@@ -41,6 +29,7 @@ const normalizeApiData = (data, ficheData = []) => {
     return {
       join: pending.map((u) => ({
         id: u.id,
+        __type: 'join',
         title: u.pseudo ?? `Utilisateur ${u.id}`,
         requester: u.pseudo ?? "",
         avatar: u.image ?? null,
@@ -50,6 +39,7 @@ const normalizeApiData = (data, ficheData = []) => {
       })),
       fiche: Array.isArray(ficheData) ? ficheData.map((f) => ({
         id: f.id,
+        __type: 'fiche',
         title: f.characterName ?? `Personnage ${f.id}`,
         requester: f.playerName ?? "",
         avatar: f.characterImage ?? f.playerImage ?? null,
@@ -68,14 +58,14 @@ const normalizeApiData = (data, ficheData = []) => {
 
   // Anciens formats pris en charge
   return {
-    join:  data?.join  ?? data?.adhesions ?? data?.joinRequests ?? mockData.join,
-    fiche: data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? mockData.fiche,
-    lieux: data?.lieux ?? data?.places    ?? data?.placeRequests ?? mockData.lieux,
-    quete: data?.quete ?? data?.quests    ?? data?.questRequests ?? mockData.quete,
+    join:  (data?.join  ?? data?.adhesions ?? data?.joinRequests ?? []).map((u)=>({ ...u, __type: 'join' })),
+    fiche: (data?.fiche ?? data?.fiches    ?? data?.ficheRequests ?? []).map((f)=>({ ...f, __type: 'fiche' })),
+    lieux: (data?.lieux ?? data?.places    ?? data?.placeRequests ?? []).map((l)=>({ ...l, __type: 'lieux' })),
+    quete: (data?.quete ?? data?.quests    ?? data?.questRequests ?? []).map((q)=>({ ...q, __type: 'quete' })),
   };
 };
 
-const TabButton = ({ tab, isActive, onClick, count }) => {
+const TabButton = ({ tab, isActive, onClick, count, label, hint }) => {
   // Recalcule si l’onglet actif change ou si le count change
   const { ref, color } = useAutoTextColor([isActive, count]);
 
@@ -85,10 +75,10 @@ const TabButton = ({ tab, isActive, onClick, count }) => {
       aria-selected={isActive}
       className={`UniIn-tab ${isActive ? "active" : ""}`}
       onClick={onClick}
-      title={tab.hint}
+      title={hint}
     >
       <span className="UniIn-tabIcon">{tab.icon}</span>
-      <span className="UniIn-tabLabel">{tab.label}</span>
+      <span className="UniIn-tabLabel">{label}</span>
       <span ref={ref} className="UniIn-tabCount" style={{ color }}>
         {count}
       </span>
@@ -104,15 +94,23 @@ const UniversCardInscription = ({
   onApproveMany,
   onRejectMany,
 }) => {
+  const { t } = useTranslation('univers');
   const params = useParams();
   const currentUniverseId = universeId ?? params?.id;
-  const [active, setActive] = useState("join");
+  const [active, setActive] = useState("all");
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState({ join: new Set(), fiche: new Set(), lieux: new Set(), quete: new Set() });
+  const [selected, setSelected] = useState({ all: new Set(), join: new Set(), fiche: new Set(), lieux: new Set(), quete: new Set() });
   const [lists, setLists] = useState({ join: [], fiche: [], lieux: [], quete: [] });
   const [loading, setLoading] = useState(true);
   const [droit, setDroit] = useState(null);
 
+  const TABS = [
+    { key: "all",   label: t('requests.tabs.all'),   icon: <FaSearch />,      hint: t('requests.hints.all') },
+    { key: "join",  label: t('requests.tabs.join'),  icon: <FaUsers /> ,      hint: t('requests.hints.join') },
+    { key: "fiche", label: t('requests.tabs.fiche'), icon: <FaFileAlt />,     hint: t('requests.hints.fiche') },
+    { key: "lieux", label: t('requests.tabs.lieux'), icon: <FaMapMarkerAlt />,hint: t('requests.hints.lieux') },
+    { key: "quete", label: t('requests.tabs.quete'), icon: <FaScroll />,      hint: t('requests.hints.quete') },
+  ];
 
   // Charger depuis l'API
   useEffect(() => {
@@ -132,7 +130,7 @@ const UniversCardInscription = ({
         setLists(next);
       } catch (e) {
         // Fallback silencieux sur mock en cas d'erreur
-        if (!cancelled) setLists(mockData);
+        if (!cancelled) setLists({ join: [], fiche: [], lieux: [], quete: [] });
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -156,6 +154,7 @@ const UniversCardInscription = ({
   }, [currentUniverseId]);
 
   const counts = {
+    all:   lists.join.length + lists.fiche.length + lists.lieux.length + lists.quete.length,
     join:  lists.join.length,
     fiche: lists.fiche.length,
     lieux: lists.lieux.length,
@@ -166,17 +165,27 @@ const UniversCardInscription = ({
     setSearch(value);
   };
 
+  const aggregatedAll = useMemo(() => {
+    // On concatène en ajoutant un id composé pour éviter collisions lors de la sélection
+    const withCompound = (arr) => arr.map(it => ({ ...it, __compoundId: `${it.__type || 'unknown'}:${it.id}` }));
+    return [
+      ...withCompound(lists.join),
+      ...withCompound(lists.fiche),
+      ...withCompound(lists.lieux),
+      ...withCompound(lists.quete),
+    ];
+  }, [lists]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const list = lists[active] || [];
+    const list = active === 'all' ? aggregatedAll : (lists[active] || []);
     if (!q) return list;
     return list.filter((it) =>
       [it.title, it.requester, it.message]
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(q))
     );
-  }, [search, lists, active]);
+  }, [search, lists, active, aggregatedAll]);
 
   const toggleOne = (tabKey, id) => {
     setSelected((prev) => {
@@ -213,7 +222,7 @@ const UniversCardInscription = ({
       if (tabKey === "fiche") {
         // Pour les fiches, utiliser l'endpoint spécifique avec state: 2
         await ApiUnivers.AcceptSubscribeFiche(currentUniverseId, id, { state: 2 });
-      } else {
+      } else if (tabKey === "join") {
         // Pour les autres types (join), utiliser l'endpoint d'inscription
         await ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 });
       }
@@ -228,7 +237,7 @@ const UniversCardInscription = ({
       if (tabKey === "fiche") {
         // Pour les fiches, utiliser l'endpoint spécifique de suppression
         await ApiUnivers.deleteSubscribeFiche(currentUniverseId, id);
-      } else {
+      } else if (tabKey === "join") {
         // Pour les autres types (join), utiliser l'endpoint d'inscription
         await ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id);
       }
@@ -245,9 +254,17 @@ const UniversCardInscription = ({
       if (tabKey === "fiche") {
         // Pour les fiches, utiliser l'endpoint spécifique avec state: 2
         await Promise.all(ids.map((id) => ApiUnivers.AcceptSubscribeFiche(currentUniverseId, id, { state: 2 })));
-      } else {
+      } else if (tabKey === "join") {
         // Pour les autres types (join), utiliser l'endpoint d'inscription
         await Promise.all(ids.map((id) => ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 })));
+      } else if (tabKey === "all") {
+        // Séparer par type via l'id composé
+        const joinIds = ids.filter((cid) => String(cid).startsWith('join:')).map((cid) => String(cid).split(':').slice(1).join(':'));
+        const ficheIds = ids.filter((cid) => String(cid).startsWith('fiche:')).map((cid) => String(cid).split(':').slice(1).join(':'));
+        await Promise.all([
+          ...joinIds.map((id) => ApiUnivers.putInscriptionUnivers(currentUniverseId, id, { state: 0 })),
+          ...ficheIds.map((id) => ApiUnivers.AcceptSubscribeFiche(currentUniverseId, id, { state: 2 })),
+        ]);
       }
       await refresh();
       onApproveMany?.(tabKey, ids);
@@ -265,9 +282,16 @@ const UniversCardInscription = ({
       if (tabKey === "fiche") {
         // Pour les fiches, utiliser l'endpoint spécifique de suppression
         await Promise.all(ids.map((id) => ApiUnivers.deleteSubscribeFiche(currentUniverseId, id)));
-      } else {
+      } else if (tabKey === "join") {
         // Pour les autres types (join), utiliser l'endpoint d'inscription
         await Promise.all(ids.map((id) => ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id)));
+      } else if (tabKey === "all") {
+        const joinIds = ids.filter((cid) => String(cid).startsWith('join:')).map((cid) => String(cid).split(':').slice(1).join(':'));
+        const ficheIds = ids.filter((cid) => String(cid).startsWith('fiche:')).map((cid) => String(cid).split(':').slice(1).join(':'));
+        await Promise.all([
+          ...joinIds.map((id) => ApiUnivers.deleteInscriptionUnivers(currentUniverseId, id)),
+          ...ficheIds.map((id) => ApiUnivers.deleteSubscribeFiche(currentUniverseId, id)),
+        ]);
       }
       await refresh();
       onRejectMany?.(tabKey, ids);
@@ -277,7 +301,7 @@ const UniversCardInscription = ({
     }
   };
 
-  const currentIds = filtered.map((x) => x.id);
+  const currentIds = (active === 'all' ? filtered.map((x) => x.__compoundId) : filtered.map((x) => x.id));
   const allChecked = currentIds.length > 0 && currentIds.every((id) => selected[active].has(id));
 
 
@@ -291,8 +315,8 @@ const UniversCardInscription = ({
       <BackLocation/>
       <header className="UniIn-header">
         <div className="UniIn-title">
-          <h1>Inscriptions & Demandes</h1>
-          <span className="UniIn-subtitle">Gérez les validations de votre univers</span>
+          <h1>{t('requests.title')}</h1>
+          <span className="UniIn-subtitle">{t('requests.subtitle')}</span>
         </div>
 
         <div className="">
@@ -302,13 +326,15 @@ const UniversCardInscription = ({
 
       {/* Tabs */}
      <nav className="UniIn-tabs" role="tablist" aria-label="Catégories de demandes">
-      {TABS.map((t) => (
+      {TABS.map((tItem) => (
         <TabButton
-          key={t.key}
-          tab={t}
-          isActive={active === t.key}
-          onClick={() => setActive(t.key)}
-          count={counts[t.key]}
+          key={tItem.key}
+          tab={tItem}
+          isActive={active === tItem.key}
+          onClick={() => setActive(tItem.key)}
+          count={counts[tItem.key]}
+          label={tItem.label}
+          hint={tItem.hint}
         />
       ))}
     </nav>
@@ -324,7 +350,7 @@ const UniversCardInscription = ({
             onChange={() => toggleAll(active, currentIds)}
           />
           
-          <span>Tout sélectionner</span>
+          <span>{t('requests.selectAll')}</span>
         </label>
         {(DroitAccess.hasWriteAccess(droit) || droit === null) && (
         <div className="UniIn-bulkActions">
@@ -334,7 +360,7 @@ const UniversCardInscription = ({
             disabled={selected[active].size === 0}
           >
             <FaCheck />
-            Accepter
+            {t('accept')}
           </button>
           <button
             className="UniIn-btn UniIn-reject"
@@ -342,7 +368,7 @@ const UniversCardInscription = ({
             disabled={selected[active].size === 0}
           >
             <FaTimes />
-            Refuser
+            {t('refuse')}
           </button>
         </div>
         )}
@@ -351,10 +377,10 @@ const UniversCardInscription = ({
       {/* List */}
       <section className="UniIn-list" role="region" aria-live="polite">
         {loading ? (
-          <div className="UniIn-empty">Chargement des demandes…</div>
+          <div className="UniIn-empty">{t('requests.loading')}</div>
         ) : filtered.length === 0 ? (
           <div className="UniIn-empty">
-            Aucune demande à afficher pour « {TABS.find(t => t.key === active)?.label} ».
+            {t('requests.emptyFor', { label: TABS.find(ti => ti.key === active)?.label })}
           </div>
         ) : (
           <Masonry
@@ -362,14 +388,18 @@ const UniversCardInscription = ({
             className="UniIn-masonry"
             columnClassName="UniIn-masonry-column"
           >
-            {filtered.map((it) => (
-              <article key={it.id} className="UniIn-card">
+            {filtered.map((it) => {
+              const isAll = active === 'all';
+              const compoundId = isAll ? it.__compoundId : it.id;
+              const typeForAction = isAll ? (it.__type || 'unknown') : active;
+              return (
+              <article key={compoundId} className="UniIn-card">
                 <div className="UniIn-cardLeft">
                   
                   <input
                     type="checkbox"
-                    checked={selected[active].has(it.id)}
-                    onChange={() => toggleOne(active, it.id)}
+                    checked={selected[active].has(compoundId)}
+                    onChange={() => toggleOne(active, compoundId)}
                   />
                   
                   <div className="UniIn-avatar">
@@ -388,13 +418,13 @@ const UniversCardInscription = ({
 
                     <div className="UniIn-cardTitle">
                       <strong>{it.title}</strong>
-                      {active === "fiche" && it.modeleName && (
+                      {((active === "fiche" || (active === 'all' && it.__type === 'fiche')) && it.modeleName) && (
                         <span className="UniIn-modeleName">({it.modeleName})</span>
                       )}
                     </div>
                     <div className="UniIn-meta">
                       <span className={`UniIn-status UniIn-${it.status || "pending"}`}>
-                        {it.status === "approved" ? "Approuvée" : it.status === "rejected" ? "Refusée" : "En attente"}
+                        {t(`requests.status.${it.status || 'pending'}`)}
                       </span>
                       {it.createdAt && (
                         <time dateTime={it.createdAt}>
@@ -414,7 +444,7 @@ const UniversCardInscription = ({
                   {active !== "join" && (
                     <button
                       className="UniIn-iconBtn UniIn-iconEye1"
-                      title="Voir la demande"
+                      title={t('requests.viewRequest')}
                       onClick={() => window?.open?.("#", "_blank")}
                     >
                       <FaEye />
@@ -423,8 +453,8 @@ const UniversCardInscription = ({
                   {(DroitAccess.hasWriteAccess(droit) || droit === null) && (
                   <button
                     className="UniIn-iconBtn UniIn-approve"
-                    title="Accepter"
-                    onClick={() => approveOne(active, it.id)}
+                    title={t('accept')}
+                    onClick={() => approveOne(typeForAction, it.id)}
                   >
                     <FaCheck />
                   </button>
@@ -432,8 +462,8 @@ const UniversCardInscription = ({
                   {(DroitAccess.hasWriteAccess(droit) || droit === null) && (
                   <button
                     className="UniIn-iconBtn UniIn-reject"
-                    title="Refuser"
-                    onClick={() => rejectOne(active, it.id)}
+                    title={t('refuse')}
+                    onClick={() => rejectOne(typeForAction, it.id)}
                   >
                     <FaTimes />
                   </button>
@@ -441,7 +471,7 @@ const UniversCardInscription = ({
                 </div>
 
               </article>
-            ))}
+            )})}
           </Masonry>
         )}
       </section>
