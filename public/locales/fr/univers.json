@@ -198,6 +198,52 @@
       "opening": "Ouverture / Inscription",
       "models": "Modèle Fiche"
     }
+  },
+  "board": {
+    "title": "Tableau d'affichage",
+    "filters": {
+      "type": "Type:",
+      "status": "Statut:",
+      "date": "Date:",
+      "typeOptions": {
+        "all": "Tous",
+        "quest": "Quête",
+        "event": "Événement",
+        "opening": "Ouverture"
+      },
+      "statusOptions": {
+        "all": "Tous",
+        "waitingPlayer": "En attente de joueur",
+        "inProgress": "En cours",
+        "done": "Terminé",
+        "waiting": "En attente",
+        "soon": "Bientôt"
+      },
+      "dateOptions": {
+        "all": "Tous",
+        "new": "Nouveaux",
+        "soon": "Bientôt"
+      }
+    },
+    "fab": {
+      "aria": "Créer",
+      "title": "Créer"
+    },
+    "modal": {
+      "createTitle": "Créer un événement",
+      "submit": "Créer",
+      "fields": {
+        "type": "Type",
+        "title": "Titre",
+        "description": "Description",
+        "status": "Statut :",
+        "date": "Date (optionnel)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "URL de l'image"
+      },
+      "typeOptions": ["Quête", "Événement", "Ouverture"],
+      "statusOptions": ["En attente de joueur", "En cours", "Terminé", "En attente", "Bientôt"]
+    }
   }
 }
 

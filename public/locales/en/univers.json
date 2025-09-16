@@ -198,6 +198,52 @@
       "opening": "Opening / Registration",
       "models": "Sheet Model"
     }
+  },
+  "board": {
+    "title": "Notice Board",
+    "filters": {
+      "type": "Type:",
+      "status": "Status:",
+      "date": "Date:",
+      "typeOptions": {
+        "all": "All",
+        "quest": "Quest",
+        "event": "Event",
+        "opening": "Opening"
+      },
+      "statusOptions": {
+        "all": "All",
+        "waitingPlayer": "Waiting for player",
+        "inProgress": "In progress",
+        "done": "Done",
+        "waiting": "Waiting",
+        "soon": "Soon"
+      },
+      "dateOptions": {
+        "all": "All",
+        "new": "New",
+        "soon": "Soon"
+      }
+    },
+    "fab": {
+      "aria": "Create",
+      "title": "Create"
+    },
+    "modal": {
+      "createTitle": "Create an event",
+      "submit": "Create",
+      "fields": {
+        "type": "Type",
+        "title": "Title",
+        "description": "Description",
+        "status": "Status:",
+        "date": "Date (optional)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "Image URL"
+      },
+      "typeOptions": ["Quest", "Event", "Opening"],
+      "statusOptions": ["Waiting for player", "In progress", "Done", "Waiting", "Soon"]
+    }
   }
 }
 

@@ -198,6 +198,52 @@
       "opening": "Öffnung / Anmeldung",
       "models": "Kartenmodell"
     }
+  },
+  "board": {
+    "title": "Anschlagtafel",
+    "filters": {
+      "type": "Typ:",
+      "status": "Status:",
+      "date": "Datum:",
+      "typeOptions": {
+        "all": "Alle",
+        "quest": "Quest",
+        "event": "Ereignis",
+        "opening": "Eröffnung"
+      },
+      "statusOptions": {
+        "all": "Alle",
+        "waitingPlayer": "Wartet auf Spieler",
+        "inProgress": "Läuft",
+        "done": "Erledigt",
+        "waiting": "Ausstehend",
+        "soon": "Bald"
+      },
+      "dateOptions": {
+        "all": "Alle",
+        "new": "Neu",
+        "soon": "Bald"
+      }
+    },
+    "fab": {
+      "aria": "Erstellen",
+      "title": "Erstellen"
+    },
+    "modal": {
+      "createTitle": "Ereignis erstellen",
+      "submit": "Erstellen",
+      "fields": {
+        "type": "Typ",
+        "title": "Titel",
+        "description": "Beschreibung",
+        "status": "Status:",
+        "date": "Datum (optional)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "Bild-URL"
+      },
+      "typeOptions": ["Quest", "Ereignis", "Eröffnung"],
+      "statusOptions": ["Wartet auf Spieler", "Läuft", "Erledigt", "Ausstehend", "Bald"]
+    }
   }
 }
 

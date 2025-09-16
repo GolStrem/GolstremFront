@@ -198,6 +198,52 @@
       "opening": "Apertura / Iscrizione",
       "models": "Modello Scheda"
     }
+  },
+  "board": {
+    "title": "Bacheca",
+    "filters": {
+      "type": "Tipo:",
+      "status": "Stato:",
+      "date": "Data:",
+      "typeOptions": {
+        "all": "Tutti",
+        "quest": "Missione",
+        "event": "Evento",
+        "opening": "Apertura"
+      },
+      "statusOptions": {
+        "all": "Tutti",
+        "waitingPlayer": "In attesa di giocatore",
+        "inProgress": "In corso",
+        "done": "Completato",
+        "waiting": "In attesa",
+        "soon": "Presto"
+      },
+      "dateOptions": {
+        "all": "Tutti",
+        "new": "Nuovi",
+        "soon": "Presto"
+      }
+    },
+    "fab": {
+      "aria": "Crea",
+      "title": "Crea"
+    },
+    "modal": {
+      "createTitle": "Crea un evento",
+      "submit": "Crea",
+      "fields": {
+        "type": "Tipo",
+        "title": "Titolo",
+        "description": "Descrizione",
+        "status": "Stato:",
+        "date": "Data (opzionale)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "URL immagine"
+      },
+      "typeOptions": ["Missione", "Evento", "Apertura"],
+      "statusOptions": ["In attesa di giocatore", "In corso", "Completato", "In attesa", "Presto"]
+    }
   }
 }
 
