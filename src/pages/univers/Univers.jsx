@@ -6,20 +6,22 @@ import { ModalGeneric, BackLocation } from "@components";
 import { FaPaintBrush, FaTrash, FaEyeSlash, FaEdit, FaListUl } from "react-icons/fa";
 import { createUniversDeleteFields, createUniversCreateFields } from "@components/general/fieldModal/universFields";
 import { ApiUnivers, ApiService, useNavigatePage, PurifyHtml, DroitAccess } from "@service";
+import { useTranslation } from "react-i18next";
 
 
 const Univers = () => {
+  const { t } = useTranslation('univers');
   const navigate = useNavigatePage();
   const { id: universId } = useParams(); // Récupérer l'ID de l'univers depuis l'URL
   
   const CATEGORIES = useMemo(() => [
-    { key: "fiches",            label: "Fiches",               to: `/fiches/univers/${universId}` },
-    { key: "encyclopedie",      label: "Encyclopédie",         to: `/univers/${universId}/encyclopedie` },
-    { key: "etablissement",     label: "Établissement",        to: `/univers/${universId}/establishment` },
-    { key: "tableau-affichage", label: "Tableau d'affichage",  to: `/univers/${universId}/board` },
-    { key: "Gallerie", label: "Gallerie",  to: `/univers/${universId}/gallerie` },
-    { key: "administration", label: "Administration",  to: `/univers/${universId}/administration` }
-  ], [universId]);
+    { key: "fiches",            label: t('universPage.categories.fiches'),              to: `/fiches/univers/${universId}` },
+    { key: "encyclopedie",      label: t('universPage.categories.encyclopedie'),        to: `/univers/${universId}/encyclopedie` },
+    { key: "etablissement",     label: t('universPage.categories.etablissement'),       to: `/univers/${universId}/establishment` },
+    { key: "tableau-affichage", label: t('universPage.categories.board'),               to: `/univers/${universId}/board` },
+    { key: "Gallerie",          label: t('universPage.categories.gallery'),             to: `/univers/${universId}/gallerie` },
+    { key: "administration",    label: t('universPage.categories.administration'),      to: `/univers/${universId}/administration` }
+  ], [universId, t]);
                   
 
 
@@ -28,7 +30,7 @@ const Univers = () => {
   const [isEditInfoOpen, setIsEditInfoOpen] = useState(false);
   const [isBackgroundDisabled, setIsBackgroundDisabled] = useState(false);
   const [isSelectCategoriesOpen, setIsSelectCategoriesOpen] = useState(false);
-  const [isImagesLoading, setIsImagesLoading] = useState(false);
+  const [isImagesLoading, setIsImagesLoading] = useState(false);  // État de loading initial
   const [isInfoLoading, setIsInfoLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isJoinLoading, setIsJoinLoading] = useState(false);
@@ -69,6 +71,20 @@ const Univers = () => {
 
   // Mapping des modules disponibles pour les univers
   const availableModules = ["fiche", "encyclopedie", "etablissement", "questLog", "gallery", "administration"];
+
+  // Libellés traduits pour les modules et table de conversion inverse
+  const MODULE_LABELS = useMemo(() => ({
+    fiche: t('universPage.categories.fiches'),
+    encyclopedie: t('universPage.categories.encyclopedie'),
+    etablissement: t('universPage.categories.etablissement'),
+    questLog: t('universPage.categories.board'),
+    gallery: t('universPage.categories.gallery'),
+    administration: t('universPage.categories.administration'),
+  }), [t]);
+  const LABEL_TO_MODULE = useMemo(() => {
+    const entries = Object.entries(MODULE_LABELS).map(([key, label]) => [label, key]);
+    return Object.fromEntries(entries);
+  }, [MODULE_LABELS]);
 
   // Fonction pour traiter les modules et extraire les images
   const processModules = useCallback((modules) => {
@@ -123,11 +139,13 @@ const Univers = () => {
     }).map(cat => cat.label);
     
     setVisibleCategories(availableCategories);
-  }, []);
+  }, [CATEGORIES]);
 
   // Fonction pour gérer la sélection des modules
   const handleSaveModuleSelector = useCallback(async (modules) => {
     let newModules = Array.isArray(modules?.selectedModules) ? [...modules.selectedModules] : [];
+    // Convertir d'éventuels libellés traduits en clés internes
+    newModules = newModules.map((m) => LABEL_TO_MODULE[m] || m);
     const oldModules = Array.isArray(listModule) ? [...listModule] : [];
 
     // Ne garder que les modules supportés et dédoublonner
@@ -197,7 +215,7 @@ const Univers = () => {
           });
           
           setTagsMapping(tagsMap);
-          setCreateUnivers(createUniversCreateFields(listTag));
+          setCreateUnivers(createUniversCreateFields(listTag, t));
           
         } catch (error) {
           console.error("Erreur lors du chargement initial:", error);
@@ -309,26 +327,26 @@ const Univers = () => {
   }, [stateUser, openRegistration]);
 
   const fields = useMemo(() => ({
-    bgImage: { type: "inputUrl", label: "Image d'arrière-plan" },
-    fiches: { type: "inputUrl", label: "Fiches" },
-    encyclopedie: { type: "inputUrl", label: "Encyclopédie" },
-    etablissement: { type: "inputUrl", label: "Établissement" },
-    tableau: { type: "inputUrl", label: "Tableau d'affichage" },
-    gallerie: { type: "inputUrl", label: "Gallerie" },
-    administration: { type: "inputUrl", label: "Administration" },
-  }), []);
+    bgImage: { type: "inputUrl", label: t('universPage.imagesModal.fields.bgImage') },
+    fiches: { type: "inputUrl", label: t('universPage.imagesModal.fields.fiches') },
+    encyclopedie: { type: "inputUrl", label: t('universPage.imagesModal.fields.encyclopedie') },
+    etablissement: { type: "inputUrl", label: t('universPage.imagesModal.fields.etablissement') },
+    tableau: { type: "inputUrl", label: t('universPage.imagesModal.fields.tableau') },
+    gallerie: { type: "inputUrl", label: t('universPage.imagesModal.fields.gallerie') },
+    administration: { type: "inputUrl", label: t('universPage.imagesModal.fields.administration') },
+  }), [t]);
 
-  const deleteFields = useMemo(() => createUniversDeleteFields(), []);
-  const infoFields = useMemo(() => createUniversCreateFields([]), []);
+  const deleteFields = useMemo(() => createUniversDeleteFields(t), [t]);
+  const infoFields = useMemo(() => createUniversCreateFields([], t), [t]);
 
   const categoriesFields = useMemo(() => ({
     selectedModules: {
       type: "checkBox",
-      list: availableModules,
-      label: "Modules à afficher :",
+      list: availableModules.map((m) => MODULE_LABELS[m] || m),
+      label: t('universPage.leftDots.selectCategories'),
       key: "selectedModules",
     }
-  }), []);
+  }), [t, MODULE_LABELS, availableModules]);
 
   // Fonctions de soumission des modales
   const handleSubmitImages = async (values) => {
@@ -361,7 +379,6 @@ const Univers = () => {
         const moduleName = imageToModuleMapping[imageKey];
         if (moduleName && imageUrl !== images[imageKey]) {
 
-          
           const moduleToUpdate = universData.module?.find(m => m.name === moduleName);
           if (moduleToUpdate) {
             const currentExtra = moduleToUpdate.extra || {};
@@ -600,9 +617,9 @@ const Univers = () => {
           <button
             type="button"
             className="UniId-dot"
-            title="Sélectionner les catégories affichées"
+            title={t('universPage.leftDots.selectCategories')}
             onClick={handleSelectCategories}
-            aria-label="Sélectionner les catégories affichées"
+            aria-label={t('universPage.leftDots.selectCategories')}
           >
             <FaPaintBrush size={12} />
           </button>
@@ -611,9 +628,9 @@ const Univers = () => {
           <button
             type="button"
             className="UniId-dot"
-            title="Désactiver/Réactiver l'image d'arrière-plan"
+            title={t('universPage.leftDots.toggleBackground')}
             onClick={handleToggleBackground}
-            aria-label="Basculer l'image d'arrière-plan"
+            aria-label={t('universPage.leftDots.toggleBackground')}
           >
             <FaEyeSlash size={12} />
           </button>
@@ -622,9 +639,9 @@ const Univers = () => {
           <button
             type="button"
             className="UniId-dot UniId-dot-danger"
-            title="Supprimer l'univers"
+            title={t('universPage.leftDots.deleteUnivers')}
             onClick={handleOpenDeleteModal}
-            aria-label="Supprimer l'univers"
+            aria-label={t('universPage.leftDots.deleteUnivers')}
           >
             <FaTrash size={12} />
           </button>
@@ -663,14 +680,14 @@ const Univers = () => {
       {showJoinBanner && (
         <div className="UniId-joinBanner" role="region" aria-live="polite">
           <div className="UniId-joinContent">
-            <span className="UniId-joinText">Vous êtes actuellement en vue spectateur.</span>
+            <span className="UniId-joinText">{t('universPage.joinBanner.text')}</span>
             <button
               type="button"
               className="UniId-joinBtn"
               onClick={handleJoinUniverse}
               disabled={isJoinLoading}
             >
-              {isJoinLoading ? "Envoi..." : "Rejoindre"}
+              {isJoinLoading ? t('universPage.joinBanner.sending') : t('universPage.joinBanner.join')}
             </button>
           </div>
         </div>
@@ -683,8 +700,8 @@ const Univers = () => {
          fields={fields}
          name={`univers-images-modal-${universId}`}
          isOpen={isEditImagesOpen}
-         title="Images"
-         textButtonValidate={isImagesLoading ? "Sauvegarde..." : "Sauvegarder"}
+         title={t('universPage.imagesModal.title')}
+         textButtonValidate={isImagesLoading ? t('universPage.imagesModal.saving') : t('universPage.imagesModal.save')}
          nav={nav}
        />
 
@@ -696,8 +713,8 @@ const Univers = () => {
          fields={deleteFields}
          name="univers-delete-modal"
          isOpen={isDeleteModalOpen}
-         title=""
-         textButtonValidate={isDeleteLoading ? "Suppression..." : "Supprimer"}
+         title={t('universPage.deleteModal.title')}
+         textButtonValidate={isDeleteLoading ? t('universPage.deleteModal.deleting') : t('universPage.deleteModal.delete')}
          noButtonCancel={false}
        />
 
@@ -710,8 +727,8 @@ const Univers = () => {
          fields={createUnivers}
          name={`univers-info-modal-${universId}-edit`}
          isOpen={isEditInfoOpen}
-         title="Modifier l'univers"
-         textButtonValidate={isInfoLoading ? "Sauvegarde..." : "Sauvegarder"}
+         title={t('universPage.editInfoModal.title')}
+         textButtonValidate={isInfoLoading ? t('universPage.editInfoModal.saving') : t('universPage.editInfoModal.save')}
          noButtonCancel={false}
          nav={nav}
        />

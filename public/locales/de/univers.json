@@ -244,6 +244,136 @@
       "typeOptions": ["Quest", "Ereignis", "Eröffnung"],
       "statusOptions": ["Wartet auf Spieler", "Läuft", "Erledigt", "Ausstehend", "Bald"]
     }
+  },
+  "universPage": {
+    "categories": {
+      "fiches": "Karten",
+      "encyclopedie": "Enzyklopädie",
+      "etablissement": "Einrichtung",
+      "board": "Anschlagtafel",
+      "gallery": "Galerie",
+      "administration": "Administration"
+    },
+    "joinBanner": {
+      "text": "Sie sind derzeit im Zuschauermodus.",
+      "join": "Beitreten",
+      "sending": "Senden..."
+    },
+    "imagesModal": {
+      "title": "Bilder",
+      "save": "Speichern",
+      "saving": "Speichern...",
+      "fields": {
+        "bgImage": "Hintergrundbild",
+        "fiches": "Karten",
+        "encyclopedie": "Enzyklopädie",
+        "etablissement": "Einrichtung",
+        "tableau": "Anschlagtafel",
+        "gallerie": "Galerie",
+        "administration": "Administration"
+      }
+    },
+    "deleteModal": {
+      "title": "",
+      "delete": "Löschen",
+      "deleting": "Löschen..."
+    },
+    "editInfoModal": {
+      "title": "Universum bearbeiten",
+      "save": "Speichern",
+      "saving": "Speichern..."
+    },
+    "leftDots": {
+      "selectCategories": "Angezeigte Kategorien auswählen",
+      "toggleBackground": "Hintergrundbild umschalten",
+      "deleteUnivers": "Universum löschen"
+    }
+  },
+  "menu": {
+    "title": "UNIVERSEN",
+    "myUniverses": "Meine Universen",
+    "loading": "Universen werden geladen...",
+    "filter": "Filtern",
+    "requestSent": {
+      "title": "Anfrage gesendet",
+      "ok": "OK",
+      "message": "<div style=\"padding:8px 0\">Anfrage gesendet. Sie können eintreten, sobald der Owner akzeptiert.</div>"
+    },
+    "view": {
+      "visit": "Besuchen",
+      "requestAccess": "Zugang anfragen"
+    },
+    "filterModal": {
+      "title": "Filter",
+      "search": "Suchen"
+    },
+    "createModal": {
+      "title": "Universum erstellen",
+      "create": "Erstellen"
+    }
+  },
+  "gallery": {
+    "addImages": {
+      "title": "Bilder hinzufügen",
+      "validate": "Hinzufügen",
+      "selectFolder": "Galerieordner"
+    },
+    "delete": {
+      "toggle": "Elemente löschen",
+      "aria": "Löschen",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen ({count})",
+      "selectionCount": "{count} Element(e) ausgewählt",
+      "imagesCount": "{count} Bild(er)",
+      "foldersCount": "{count} Ordner"
+    }
+  },
+  "fields": {
+    "filter": {
+      "flags": {
+        "friends": "Freunde",
+        "favorites": "Favoriten",
+        "nsfw": "NSFW"
+      },
+      "tags": "Nach Tag filtern:",
+      "friends": "Nach Freund filtern:",
+      "sortBy": "Sortieren nach:",
+      "sortOptions": {
+        "new": "Neu",
+        "popularity": "Beliebtheit",
+        "members": "Mitglieder"
+      },
+      "orderDir": {
+        "desc": "Absteigend",
+        "asc": "Aufsteigend"
+      }
+    },
+    "create": {
+      "name": "Universum-Name",
+      "description": "Universum-Beschreibung:",
+      "image": "imgUrl",
+      "tags": "Tags (10max):",
+      "visibility": "Sichtbarkeit:",
+      "visibilityOptions": {
+        "public": "Öffentlich",
+        "invitation": "Auf Einladung",
+        "private": "Privat"
+      },
+      "registration": "Neuer Spieler:",
+      "registrationOptions": {
+        "auto": "Automatisch akzeptiert",
+        "validation": "Unter Validierung",
+        "refuse": "Alles ablehnen"
+      },
+      "flags": {
+        "nsfw": "NSFW"
+      }
+    },
+    "delete": {
+      "title": "Löschung bestätigen",
+      "message": "Sind Sie sicher, dass Sie dieses Universum löschen möchten?",
+      "warning": "⚠️ Diese Aktion ist unumkehrbar."
+    }
   }
 }
 
