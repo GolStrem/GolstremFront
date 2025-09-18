@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardBoard.css";
@@ -31,7 +31,7 @@ const UniversCardBoard = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Données exemple enrichies avec des clés internes
-  const ITEMS = [
+  const ITEMS_DATA = [
     { id: 1, typeKey: 'quest',   title: "Quête magique", description: "Résoudre l’énigme du vieux mage.", statusKey: 'waitingPlayer', date: null, image: "https://i.pinimg.com/736x/50/43/61/504361f450ac78d5cfcb3ce09a365d22.jpg" },
     { id: 2, typeKey: 'event',   title: "Festival annuel", description: "Célébration dans le village central.", statusKey: 'soon', date: "2025-10-05 18:00", image: "https://i.pinimg.com/736x/6f/5b/ad/6f5bad23afe5a1b66e838bcc4bf35925.jpg" },
     { id: 3, typeKey: 'opening', title: "Nouveau café", description: "Ouverture d’un café artisanal.", statusKey: 'soon', date: "2025-09-20 10:00", image: "https://i.pinimg.com/736x/53/83/d4/5383d4dd98bd9439d458969b81af0a6e.jpg" },
@@ -44,9 +44,28 @@ const UniversCardBoard = () => {
     { id: 10, typeKey: 'event',  title: "Festival annuel", description: "Célébration dans le village central.", statusKey: 'soon', date: "2025-10-05 18:00", image: "https://i.pinimg.com/736x/6f/5b/ad/6f5bad23afe5a1b66e838bcc4bf35925.jpg" },
   ];
 
+  // État simulant la réponse API
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simule une requête API pour précharger les données
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      if (!controller.signal.aborted) {
+        setItems(ITEMS_DATA);
+        setIsLoading(false);
+      }
+    }, 600);
+    return () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   const now = new Date();
 
-  const filteredItems = ITEMS.filter(item => {
+  const filteredItems = items.filter(item => {
     const matchType = filterType === "all" || item.typeKey === filterType;
     const matchStatus = filterStatus === "all" || item.statusKey === filterStatus;
 
@@ -108,6 +127,9 @@ const UniversCardBoard = () => {
         </div>
       </div>
 
+      {isLoading ? (
+        <div className="UniBo-loading">{t('common:loading') || 'Chargement...'}</div>
+      ) : (
       <Masonry
         breakpointCols={breakpointColumnsObj}
         className="UniBo-masonry-grid"
@@ -166,6 +188,7 @@ const UniversCardBoard = () => {
           </motion.div>
         )})}
       </Masonry>
+      )}
 
       {/* Bouton flottant + */}
       <button
