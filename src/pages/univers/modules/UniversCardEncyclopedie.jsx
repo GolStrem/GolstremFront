@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardEncyclopedie.css";
@@ -13,8 +13,8 @@ const mockArticles = [
     id: 0,
     name: "Encyclopédie",
     type: "Catégorie",
-    texte: "Toutes les encyclopédié",
-    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    texte: "Toutes les encyclopédies",
+    image: null,
     createdAt: "2025-09-18T02:09:35.000Z",
     link: [
       {
@@ -242,6 +242,8 @@ const UniversCardEncyclopedie = () => {
   const [viewMode, setViewMode] = useState("category"); // default category
   const [currentArticleLinks, setCurrentArticleLinks] = useState([]);
   const [BaseEncyId, setBaseEncyId] = useState(0);
+  const [articleHtmlHeight, setArticleHtmlHeight] = useState(400);
+  const imageRef = useRef(null);
 
   // Ensure we have an encyclopedie id in URL; default to page article id=0
 
@@ -337,38 +339,32 @@ const UniversCardEncyclopedie = () => {
   // Obtenir l'article actuel basé sur l'URL
   const currentArticle = mockArticles.find(article => String(article.id) === String(encyId));
 
+  // Fonction pour calculer la hauteur de l'image et ajuster la hauteur du texte
+  useEffect(() => {
+    const updateArticleHtmlHeight = () => {
+      if (imageRef.current) {
+        const imageHeight = imageRef.current.offsetHeight;
+        setArticleHtmlHeight(imageHeight);
+      }
+    };
+
+    // Observer pour détecter les changements de taille de l'image
+    const resizeObserver = new ResizeObserver(updateArticleHtmlHeight);
+    
+    if (imageRef.current) {
+      resizeObserver.observe(imageRef.current);
+      updateArticleHtmlHeight(); // Calcul initial
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [currentArticle]);
+
   return (
     <div className="UniEncy-container">
+      <div className="UniEncy-header">
       <BackLocation />
-      <h2 className="UniEncy-title">{currentArticle?.name || mainArticle?.name || "Encyclopédie"}</h2>
-      
-      {/* Afficher le texte selon le type d'article */}
-      {currentArticle?.type === "Catégorie" ? (
-        // Pour les catégories, afficher le texte dans la section HTML
-        currentArticle?.texte && (
-          <div
-            className="UniEncy-article-html"
-            style={{ maxWidth: 1000, margin: "0 auto 12px" }}
-            dangerouslySetInnerHTML={{ __html: `<p>${currentArticle.texte}</p>` }}
-          />
-        )
-      ) : (
-        // Pour les articles individuels, afficher le texte dans l'introduction
-        <p className="UniEncy-intro">
-          {currentArticle?.texte || currentArticle?.description || "Aucune description disponible."}
-        </p>
-      )}
-      
-      {/* Fallback pour l'article principal */}
-      {!currentArticle && mainArticle?.texte && (
-        <div
-          className="UniEncy-article-html"
-          style={{ maxWidth: 1000, margin: "0 auto 12px" }}
-          dangerouslySetInnerHTML={{ __html: `<p>${mainArticle.texte}</p>` }}
-        />
-      )}
-
-      <div className="UniEncy-controls">
         <div className="UniEncy-mode">
           <button
             type="button"
@@ -391,27 +387,82 @@ const UniversCardEncyclopedie = () => {
             Par catégorie
           </button>
         </div>
+      </div>
+      
+
+
+      
+      <h2 className="UniEncy-title">{currentArticle?.name || mainArticle?.name || "Encyclopédie"}</h2>
+      
+      {/* Layout image à gauche, texte à droite */}
+      {currentArticle && (
+        <div className="UniEncy-article-layout">
+          {currentArticle.image && <div className="UniEncy-decoration-top-left"></div>}
+          {currentArticle.image && (
+            <div className="UniEncy-article-image-container" ref={imageRef}>
+              <img 
+                src={currentArticle.image} 
+                alt={currentArticle.name}
+                className="UniEncy-article-image"
+              />
+            </div>
+          )}
+          <div className={`UniEncy-article-html ${!currentArticle.image ? 'no-image' : ''}`}>
+            {/* Afficher le texte selon le type d'article */}
+            {currentArticle?.type === "Catégorie" ? (
+              // Pour les catégories, afficher le texte dans la section HTML
+              currentArticle?.texte && (
+                <div
+                  className="UniEncy-article-html-content"
+                  style={currentArticle.image ? { height: `${articleHtmlHeight}px` } : {}}
+                  dangerouslySetInnerHTML={{ __html: `<div class="UniEncy-article-html-content">${currentArticle.texte}</div>` }}
+                />
+              )
+            ) : (
+              // Pour les articles individuels, afficher le texte dans l'introduction
+              <div className="UniEncy-article-html-content ">
+                {currentArticle?.texte || currentArticle?.description || "Aucune description disponible."}
+              </div>
+            )}
+          </div>
+          {currentArticle.image && <div className="UniEncy-decoration-bottom-right"></div>}
+        </div>
+        
+      )}
+      
+      {/* Fallback pour l'article principal */}
+      {!currentArticle && mainArticle?.texte && (
+        <div
+          className="UniEncy-article-html"
+          style={{ maxWidth: 1000, margin: "0 auto 12px" }}
+          dangerouslySetInnerHTML={{ __html: `<div class="UniEncy-article-html-content">${mainArticle.texte}</div>` }}
+        />
+      )}
+
+      {currentArticle?.image && <div className="UniEncy-content-separator"></div>}
+
+      <div className="UniEncy-controls">
         {viewMode === "all" && (
-          <input
-            type="text"
-            placeholder="Rechercher..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="UniEncy-search"
-          />
+        <input
+          type="text"
+          placeholder="Rechercher..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="UniEncy-search"
+        />
         )}
         {viewMode === "all" ? (
-          <div className="UniEncy-filters">
-            {TYPES.map((type) => (
-              <button
-                key={type}
-                className={`UniEncy-filter-btn ${filter === type ? "active" : ""}`}
-                onClick={() => setFilter(type)}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
+        <div className="UniEncy-filters">
+          {TYPES.map((type) => (
+            <button
+              key={type}
+              className={`UniEncy-filter-btn ${filter === type ? "active" : ""}`}
+              onClick={() => setFilter(type)}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
         ) : null}
       </div>
 
