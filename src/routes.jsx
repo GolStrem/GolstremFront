@@ -203,6 +203,16 @@ const routes = [
     ),
   },
   {
+    path: '/univers/:id/encyclopedie/:encyId',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <UniversCardEncyclopedie/>
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: '/univers/:id/board',
     element: (
       <ProtectedRoute>
