@@ -434,8 +434,7 @@ const CreateFiche = () => {
           </span>
         ) : (
           <>
-            <span className="cf-badge">{t("discord")}</span>
-            <span className="cf-badge">{t("serverZheneos")}</span>
+          
           </>
         )}
       </div>
