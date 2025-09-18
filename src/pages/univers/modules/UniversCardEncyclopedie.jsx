@@ -3,217 +3,223 @@ import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardEncyclopedie.css";
 import { BackLocation } from "@components";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigatePage } from "@service";
+import { useParams } from "react-router-dom";
 
-// Page-level article representing the Encyclopédie itself
-const encyclopediaArticle = {
-  id: 0,
-  name: "Encyclopédie",
-  description:
-    "Explorez les créatures, objets, artefacts, lieux, magies et peuples de l'univers Golstrem.",
-  text:
-    "<p>Bienvenue dans l'Encyclopédie de Golstrem. Retrouvez ci-dessous les articles principaux et parcourez les catégories pour explorer le savoir de cet univers.</p>",
-  image: null,
-  links: {},
-};
-
-// Extra links for the encyclopedie module (example of provided extra)
-const moduleExtra = {
-  link: {
-    Kobolt: "encyclopedie/10",
-    Dragon: "encyclopedie/11",
-    Squelette: "https://fr.wikipedia.org/wiki/Squelette",
-  },
-};
-
-// Rich mock articles with full fields
+// Données mockées adaptées à la logique de l'API
 const mockArticles = [
+  // Article principal Encyclopédie (id: 0)
   {
-    id: 1,
-    name: "Créature Henel",
-    type: "Créature",
-    image:
-      "https://i.pinimg.com/1200x/e7/26/6a/e7266a28eaccf3d24ace89b5094f18e3.jpg",
-    description: "Les créatures qui font plouf",
-    text:
-      "<p>Les créatures aquatiques peuplent mers et lacs. Elles sont souvent dotées d'<strong>adaptations</strong> étonnantes.</p><ul><li>Nageoires développées</li><li>Peau écailleuse</li><li>Respiration aquatique</li></ul>",
-    links: { ...moduleExtra.link },
-  },
-  {
-    id: 2,
-    name: "Créature Zheneos",
-    type: "Créature",
-    image:
-      "https://i.pinimg.com/736x/a0/d7/5e/a0d75e3d2996d50512120a96abfab703.jpg",
-    description: "Les créatures qui font PFFFU",
-    text:
-      "<p>Imprévisibles et dangereuses, les créatures ardentes maîtrisent le feu. Approchez avec prudence.</p>",
-    links: { Dragon: "encyclopedie/11" },
-  },
-  {
-    id: 3,
-    name: "Créature Bite",
-    type: "Créature",
-    image:
-      "https://i.pinimg.com/736x/db/24/d2/db24d2ad5a35495908885db0bd638703.jpg",
-    description: "Les créatures qui font Bzzzzz",
-    text: "",
-    links: { Squelette: "https://fr.wikipedia.org/wiki/Squelette" },
-  },
-  {
-    id: 5,
-    name: "Objet beshrel",
-    type: "Objet",
-    image:
-      "https://i.pinimg.com/736x/09/91/e1/0991e1cb418d4f841ae6339aee793526.jpg",
-    description: "Objets magiques rares et anciens",
-    text:
-      "<p>Forgés par des mages oubliés, ces objets confèrent des <em>pouvoirs uniques</em>.</p>",
-    links: { Kobolt: "encyclopedie/10" },
-  },
-  {
-    id: 6,
-    name: "Arme du cul",
-    type: "Objet",
-    image:
-      "https://i.pinimg.com/736x/59/e4/1f/59e41f37ec6b7764658345f791801dc3.jpg",
-    description: "Armes puissantes des anciens héros",
-    text: "",
-    links: { Dragon: "encyclopedie/11" },
-  },
-  {
-    id: 7,
-    name: "Artefact Drazael",
-    type: "Artefact",
-    image:
-      "https://i.pinimg.com/736x/bc/c7/f4/bcc7f4ceb293732d70383f31afb7eb0f.jpg",
-    description: "Objets mystiques mystérieux",
-    text:
-      "<p>On raconte que certains artefacts renferment des <strong>esprits</strong> millénaires.</p>",
-    links: { Squelette: "https://fr.wikipedia.org/wiki/Squelette" },
+    id: 0,
+    name: "Encyclopédie",
+    type: "Catégorie",
+    texte: "Toutes les encyclopédié",
+    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    createdAt: "2025-09-18T02:09:35.000Z",
+    link: [
+      {
+        id: 8,
+        name: "Bestiaire",
+        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+        description: "Liste les créatures",
+        type: "Catégorie",
+        location: "/encyclopedie/8"
+      },
+      {
+        id: 18,
+        name: "Relique",
+        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+        description: "Liste les Relique",
+        type: "Catégorie",
+        location: "/encyclopedie/18"
+      },
+      {
+        id: 28,
+        name: "Objet",
+        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+        description: "Liste les Objet",
+        type: "Catégorie",
+        location: "/encyclopedie/28"
+      },
+      {
+        id: 38,
+        name: "Lieux",
+        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+        description: "Liste les Lieux",
+        type: "Catégorie",
+        location: "/encyclopedie/38"
+      },
+      {
+        id: 48,
+        name: "Magies",
+        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+        description: "Liste les Magies",
+        type: "Catégorie",
+        location: "/encyclopedie/48"
+      },
+      {
+        id: 58,
+        name: "Peuple",
+        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+        description: "Liste les Peuple",
+        type: "Catégorie",
+        location: "/encyclopedie/58"
+      }
+    ]
   },
   {
     id: 8,
-    name: "Potion magique résurection",
-    type: "Objet",
-    image:
-      "https://i.pinimg.com/1200x/e7/26/6a/e7266a28eaccf3d24ace89b5094f18e3.jpg",
-    description: "Potions aux pouvoirs variés",
-    text:
-      "<p>Des mixtures alchimiques aux effets parfois <em>imprévisibles</em>.</p>",
-    links: {},
+    name: "Bestiaire",
+    type: "Catégorie",
+    texte: "Liste les créatures dans toutes leur complexité",
+    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    createdAt: "2025-09-18T02:09:35.000Z",
+    link: [
+      {
+        id: 7,
+        name: "Gobelin",
+        image: "https://i.pinimg.com/736x/1a/91/8a/1a918a21161ae97490128a749cfcec39.jpg",
+        description: "Truc vert",
+        type: "Créature",
+        location: "/encyclopedie/7"
+      },
+      {
+        id: 9,
+        name: "Slime",
+        image: "https://i.pinimg.com/1200x/d6/7f/f3/d67ff3058db565b279e5a3c2cee52a77.jpg",
+        description: "Dragon quest",
+        type: "Créature",
+        location: "https://dragon-quest.org/wiki/Slime"
+      }
+    ]
   },
   {
-    id: 12,
-    name: "Dragon Hez",
+    id: 18,
+    name: "Relique",
+    type: "Catégorie",
+    texte: "Artefacts anciens et objets sacrés, porteurs d'histoires et de pouvoirs",
+    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    createdAt: "2025-09-18T02:09:35.000Z",
+    link: [
+      {
+        id: 15,
+        name: "Bouclier ancien",
+        image: "https://i.pinimg.com/736x/bc/c7/f4/bcc7f4ceb293732d70383f31afb7eb0f.jpg",
+        description: "Protection légendaire",
+        type: "Artefact",
+        location: "/encyclopedie/15"
+      }
+    ]
+  },
+  {
+    id: 28,
+    name: "Objet",
+    type: "Catégorie",
+    texte: "Objets remarquables : équipements, outils et trésors du quotidien",
+    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    createdAt: "2025-09-18T02:09:35.000Z",
+    link: [
+      {
+        id: 14,
+        name: "Épée sacrée",
+        image: "https://i.pinimg.com/736x/59/e4/1f/59e41f37ec6b7764658345f791801dc3.jpg",
+        description: "Arme des héros oubliés",
+        type: "Objet",
+        location: "/encyclopedie/14"
+      },
+      {
+        id: 8,
+        name: "Potion magique résurection",
+        image: "https://i.pinimg.com/1200x/e7/26/6a/e7266a28eaccf3d24ace89b5094f18e3.jpg",
+        description: "Potions aux pouvoirs variés",
+        type: "Objet",
+        location: "/encyclopedie/8"
+      }
+    ]
+  },
+  // Catégorie Lieux (id: 38)
+  {
+    id: 38,
+    name: "Lieux",
+    type: "Catégorie",
+    texte: "Régions, cités et sanctuaires marquants de l'univers",
+    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    createdAt: "2025-09-18T02:09:35.000Z",
+    link: []
+  },
+  // Catégorie Magies (id: 48)
+  {
+    id: 48,
+    name: "Magies",
+    type: "Catégorie",
+    texte: "Écoles, rituels et phénomènes arcaniques façonnant Golstrem",
+    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    createdAt: "2025-09-18T02:09:35.000Z",
+    link: []
+  },
+  // Catégorie Peuple (id: 58)
+  {
+    id: 58,
+    name: "Peuple",
+    type: "Catégorie",
+    texte: "Civilisations, clans et cultures qui peuplent l'univers",
+    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    createdAt: "2025-09-18T02:09:35.000Z",
+    link: []
+  },
+  // Articles individuels
+  {
+    id: 7,
+    idUnivers: 62,
+    name: "Gobelin",
+    description: "Truc vert",
     type: "Créature",
-    image:
-      "https://i.pinimg.com/1200x/0c/73/49/0c7349fbb721936ea8d6ac3c5f037d4a.jpg",
-    description: "Créature légendaire volante",
-    text:
-      "<p>Les dragons célestes dominent les cieux et veillent sur des trésors immenses.</p>",
-    links: { Kobolt: "encyclopedie/10" },
+    idLink: 7,
+    externalLink: null,
+    image: "https://i.pinimg.com/736x/1a/91/8a/1a918a21161ae97490128a749cfcec39.jpg",
+    createdAt: "2025-09-18T02:11:56.000Z",
+    public: 0,
+    texte: "Les gobelins sont de petites créatures vertes, souvent malicieuses et agressives. Ils vivent en tribus dans les forêts sombres et les cavernes."
+  },
+  {
+    id: 9,
+    idUnivers: 62,
+    name: "Slime",
+    description: "Dragon quest",
+    type: "Créature",
+    idLink: 9,
+    externalLink: "https://dragon-quest.org/wiki/Slime",
+    image: "https://i.pinimg.com/1200x/d6/7f/f3/d67ff3058db565b279e5a3c2cee52a77.jpg",
+    createdAt: "2025-09-18T02:11:56.000Z",
+    public: 0,
+    texte: "Les slimes sont des créatures gélatineuses de couleur bleue, souvent considérées comme les ennemis les plus faibles mais aussi les plus emblématiques de l'univers Dragon Quest."
   },
   {
     id: 14,
-    name: "Épée sacrée dieu zhen",
-    type: "Objet",
-    image:
-      "https://i.pinimg.com/736x/59/e4/1f/59e41f37ec6b7764658345f791801dc3.jpg",
+    idUnivers: 62,
+    name: "Épée sacrée",
     description: "Arme des héros oubliés",
-    text:
-      "<p>Transmise de génération en génération, elle ne révèle sa puissance qu'aux dignes.</p>",
-    links: {},
+    type: "Objet",
+    idLink: 14,
+    externalLink: null,
+    image: "https://i.pinimg.com/736x/59/e4/1f/59e41f37ec6b7764658345f791801dc3.jpg",
+    createdAt: "2025-09-18T02:11:56.000Z",
+    public: 0,
+    texte: "Cette épée légendaire a été forgée par les anciens maîtres forgerons. Elle ne révèle sa véritable puissance qu'aux héros dignes de la porter."
   },
   {
     id: 15,
-    name: "Bouclier ancien anti zhen",
-    type: "Artefact",
-    image:
-      "https://i.pinimg.com/736x/bc/c7/f4/bcc7f4ceb293732d70383f31afb7eb0f.jpg",
+    idUnivers: 62,
+    name: "Bouclier ancien",
     description: "Protection légendaire",
-    text: "",
-    links: { Dragon: "encyclopedie/11" },
-  },
-];
-
-// Category-level articles (containers for other articles)
-const mockCategoryArticles = [
-  {
-    id: 100,
-    name: "Bestiaire",
-    type: "Catégorie",
-    image:
-      "https://i.pinimg.com/736x/8d/6e/7e/8d6e7ec2b6a7a6a2cf2199d9213d3a67.jpg",
-    description: "Collection des créatures : bêtes sauvages, esprits et dragons.",
-    text: "",
-    links: {
-      "Dragon céleste": { href: "encyclopedie/12", description: "Seigneur des cieux, figure majeure du bestiaire." },
-      "Créature Henel": { href: "encyclopedie/1", description: "Créature emblématique d'Henel, aquatique et adaptative." },
-    },
-    groupTypes: ["Créature"],
-  },
-  {
-    id: 101,
-    name: "Relique",
-    type: "Catégorie",
-    image:
-      "https://i.pinimg.com/736x/bc/c7/f4/bcc7f4ceb293732d70383f31afb7eb0f.jpg",
-    description: "Artefacts anciens et objets sacrés, porteurs d'histoires et de pouvoirs.",
-    text: "",
-    links: {
-      "Bouclier ancien": { href: "encyclopedie/15", description: "Une protection légendaire, forgée par d'anciens maîtres." },
-      "Artefact Drazael": { href: "encyclopedie/7", description: "Artefact mystique lié à la lignée de Drazael." },
-    },
-    groupTypes: ["Artefact"],
-  },
-  {
-    id: 102,
-    name: "Objet",
-    type: "Catégorie",
-    image:
-      "https://i.pinimg.com/736x/59/e4/1f/59e41f37ec6b7764658345f791801dc3.jpg",
-    description: "Objets remarquables : équipements, outils et trésors du quotidien.",
-    text: "",
-    links: {
-      "Épée sacrée": { href: "encyclopedie/14", description: "Lame consacrée, héritage des héros de jadis." },
-      "Potion magique résurection": { href: "encyclopedie/8", description: "Élixir rare aux propriétés de renaissance." },
-    },
-    groupTypes: ["Objet"],
-  },
-  {
-    id: 103,
-    name: "Lieux",
-    type: "Catégorie",
-    image:
-      "https://i.pinimg.com/736x/09/91/e1/0991e1cb418d4f841ae6339aee793526.jpg",
-    description: "Régions, cités et sanctuaires marquants de l'univers.",
-    text: "",
-    links: { "Dragon Hez": { href: "encyclopedie/12", description: "Lieu associé aux vols des Dragons Hez." } },
-    groupTypes: ["Lieu"],
-  },
-  {
-    id: 104,
-    name: "Magie",
-    type: "Catégorie",
-    image:
-      "https://i.pinimg.com/736x/a0/d7/5e/a0d75e3d2996d50512120a96abfab703.jpg",
-    description: "Écoles, rituels et phénomènes arcaniques façonnant Golstrem.",
-    text: "",
-    links: { "Potion magique": { href: "encyclopedie/8", description: "Mixtures et arcanes alchimiques." } },
-    groupTypes: ["Magie"],
-  },
-  {
-    id: 105,
-    name: "Peuples",
-    type: "Catégorie",
-    image:
-      "https://i.pinimg.com/736x/db/24/d2/db24d2ad5a35495908885db0bd638703.jpg",
-    description: "Civilisations, clans et cultures qui peuplent l'univers.",
-    text: "",
-    links: { "Créature Henel": { href: "encyclopedie/1", description: "Êtres liés aux traditions d'Henel." } },
-    groupTypes: ["Peuple"],
-  },
+    type: "Artefact",
+    idLink: 15,
+    externalLink: null,
+    image: "https://i.pinimg.com/736x/bc/c7/f4/bcc7f4ceb293732d70383f31afb7eb0f.jpg",
+    createdAt: "2025-09-18T02:11:56.000Z",
+    public: 0,
+    texte: "Ce bouclier millénaire a protégé de nombreux héros au cours des siècles. Il est imprégné de magie ancienne et peut repousser les attaques les plus puissantes."
+  }
 ];
 
 const breakpointColumnsObj = {
@@ -225,100 +231,141 @@ const breakpointColumnsObj = {
   500: 1,
 };
 
-const TYPES = ["Tous", "Créature", "Objet", "Artefact", "Lieu"];
-
-// Category groups map to underlying article types
-const CATEGORY_GROUPS = [
-  { label: "Bestiaire", types: ["Créature"] },
-  { label: "Relique", types: ["Artefact"] },
-  { label: "Objet", types: ["Objet"] },
-  { label: "Lieux", types: ["Lieu"] },
-];
+const TYPES = ["Tous", "Créature", "Objet", "Artefact", "Lieu", "Magie", "Peuple"];
 
 const UniversCardEncyclopedie = () => {
   const { id: universId, encyId } = useParams();
-  const navigate = useNavigate();
+  const navigate = useNavigatePage();
   const [filter, setFilter] = useState("Tous");
   const [search, setSearch] = useState("");
   const [openArticle, setOpenArticle] = useState(null);
   const [viewMode, setViewMode] = useState("category"); // default category
-  const [selectedCategory, setSelectedCategory] = useState(null); // one of CATEGORY_GROUPS labels
+  const [currentArticleLinks, setCurrentArticleLinks] = useState([]);
+  const [BaseEncyId, setBaseEncyId] = useState(0);
 
   // Ensure we have an encyclopedie id in URL; default to page article id=0
+
+  // Récupérer à partir du module encyclopedie
+  useEffect(() => {
+    setBaseEncyId(0);
+  }, []);
+
   useEffect(() => {
     if (universId && encyId === undefined) {
-      navigate(`/univers/${universId}/encyclopedie/0`, { replace: true });
+      navigate(`/univers/${universId}/encyclopedie/${BaseEncyId}`, { replace: true });
     }
   }, [universId, encyId, navigate]);
 
-  const filteredItems = useMemo(
-    () =>
-      mockArticles.filter((item) => {
-        const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
-        if (!matchesSearch) return false;
-        if (viewMode === "all") {
-          // Always show all (respecting type filter), even if URL has a category encyId
-          return filter === "Tous" || item.type === filter;
-        }
-        if (viewMode === "category") {
-          if (!selectedCategory) return true;
-          const group = CATEGORY_GROUPS.find((g) => g.label === selectedCategory);
-          if (!group) return true;
-          return group.types.includes(item.type);
-        }
-        return true;
-      }),
-    [filter, search, viewMode, selectedCategory]
-  );
+  function getAllArticles() {
+    const links = mockArticles.map(article => {
+      return {
+        id: article.id,
+        name: article.name,
+        image: article.image,
+        description: article.description,
+        type: article.type,
+        location: `/encyclopedie/${article.id}`
+      };
+    });
+    return {
+      id: undefined,
+      name: "Tous les articles",
+      image: null,
+      description: null,
+      type: "Catégorie",
+      location: null,
+      link: links
+    };
+  }
+  function getArticlesById(id) {
+    return mockArticles.find(article => String(article.id) === String(id));
+  }
 
-  const categoryContentItems = useMemo(() => {
-    const category = mockCategoryArticles.find((c) => String(c.id) === String(encyId));
-    if (!category) return [];
-    const linkEntries = Object.entries(category.links || {});
-    const parsed = linkEntries
-      .map(([label, val]) => {
-        const href = typeof val === "string" ? val : val?.href;
-        const description = typeof val === "object" && val ? val.description : undefined;
-        if (!href) return null;
-        const idStr = String(href).replace(/^\/?encyclopedie\//, "");
-        const idNum = Number(idStr);
-        if (Number.isNaN(idNum)) return null;
-        return { id: idNum, description };
-      })
-      .filter(Boolean);
-    const byId = new Map(mockArticles.map((a) => [a.id, a]));
-    const items = parsed
-      .map((p) => ({ item: byId.get(p.id), linkDesc: p.description }))
-      .filter((p) => Boolean(p.item));
-    const q = search.toLowerCase();
-    return items.filter((p) => p.item.name.toLowerCase().includes(q));
-  }, [encyId, search]);
+  // Récupérer l'article correspondant à l'encyId et construire les liens
+  useEffect(() => {
+    if (encyId !== undefined) {
+
+      const article = encyId === "all" ? getAllArticles() : getArticlesById(encyId);
+      console.log(article);
+      if (article && article.link) {
+        const links = article.link.map(link => {
+          // Si c'est un lien externe
+          if (link.location && link.location.startsWith('http')) {
+            return {
+              item: {
+                id: link.id,
+                name: link.name,
+                description: link.description,
+                type: link.type,
+                image: link.image,
+                externalLink: link.location
+              },
+              linkDesc: link.description
+            };
+          }
+          
+          // Sinon, chercher l'article correspondant
+          const linkedArticle = mockArticles.find(a => a.id === link.id);
+          if (linkedArticle) {
+            return {
+              item: linkedArticle,
+              linkDesc: link.description
+            };
+          }
+          return null;
+        }).filter(Boolean);
+        
+        setCurrentArticleLinks(links);
+      } else {
+        setCurrentArticleLinks([]);
+      }
+    } else {
+      setCurrentArticleLinks([]);
+    }
+  }, [encyId]);
+
+  // Fonction pour obtenir l'article principal (Encyclopédie)
+  const getMainArticle = () => {
+    return mockArticles.find(article => article.id === BaseEncyId);
+  };
+
+
+
+
+  const mainArticle = getMainArticle();
+  
+  // Obtenir l'article actuel basé sur l'URL
+  const currentArticle = mockArticles.find(article => String(article.id) === String(encyId));
 
   return (
     <div className="UniEncy-container">
       <BackLocation />
-      <h2 className="UniEncy-title">{encyclopediaArticle.name}</h2>
-      <p className="UniEncy-intro">{encyclopediaArticle.description}</p>
-      {encyclopediaArticle.text && (
+      <h2 className="UniEncy-title">{currentArticle?.name || mainArticle?.name || "Encyclopédie"}</h2>
+      
+      {/* Afficher le texte selon le type d'article */}
+      {currentArticle?.type === "Catégorie" ? (
+        // Pour les catégories, afficher le texte dans la section HTML
+        currentArticle?.texte && (
+          <div
+            className="UniEncy-article-html"
+            style={{ maxWidth: 1000, margin: "0 auto 12px" }}
+            dangerouslySetInnerHTML={{ __html: `<p>${currentArticle.texte}</p>` }}
+          />
+        )
+      ) : (
+        // Pour les articles individuels, afficher le texte dans l'introduction
+        <p className="UniEncy-intro">
+          {currentArticle?.texte || currentArticle?.description || "Aucune description disponible."}
+        </p>
+      )}
+      
+      {/* Fallback pour l'article principal */}
+      {!currentArticle && mainArticle?.texte && (
         <div
           className="UniEncy-article-html"
           style={{ maxWidth: 1000, margin: "0 auto 12px" }}
-          dangerouslySetInnerHTML={{ __html: encyclopediaArticle.text }}
+          dangerouslySetInnerHTML={{ __html: `<p>${mainArticle.texte}</p>` }}
         />
-      )}
-      {encyId && Number(encyId) > 0 && Number(encyId) < 100 && (
-        <div className="UniEncy-back">
-          <button
-            type="button"
-            className="UniEncy-back-btn"
-            onClick={() => {
-              setViewMode("all");
-              navigate(`/univers/${universId}/encyclopedie/0`);
-            }}
-          >
-            Voir tous les articles
-          </button>
-        </div>
       )}
 
       <div className="UniEncy-controls">
@@ -326,7 +373,7 @@ const UniversCardEncyclopedie = () => {
           <button
             type="button"
             className={`UniEncy-mode-btn ${viewMode === "all" ? "active" : ""}`}
-            onClick={() => { setViewMode("all"); setSelectedCategory(null); }}
+            onClick={() => { setViewMode("all"); navigate(`/univers/${universId}/encyclopedie/all`) }}
           >
             Voir tout
           </button>
@@ -336,9 +383,8 @@ const UniversCardEncyclopedie = () => {
             onClick={() => {
               setViewMode("category");
               setFilter("Tous");
-              setSelectedCategory(null);
               if (universId) {
-                navigate(`/univers/${universId}/encyclopedie/0`);
+                navigate(`/univers/${universId}/encyclopedie/${BaseEncyId}`);
               }
             }}
           >
@@ -374,30 +420,40 @@ const UniversCardEncyclopedie = () => {
         className="UniEncy-masonry"
         columnClassName="UniEncy-column"
       >
-        {(viewMode === "category"
-          ? (encyId && Number(encyId) >= 100 ? categoryContentItems : mockCategoryArticles)
-          : filteredItems).map((data, idx) => {
-            const isCategoryList = viewMode === "category" && (!encyId || Number(encyId) < 100);
-            const isInsideCategory = viewMode === "category" && encyId && Number(encyId) >= 100;
-            const item = isInsideCategory ? data.item : data;
-            const linkDesc = isInsideCategory ? data.linkDesc : undefined;
+        {(() => {
+          // Logique d'affichage basée sur l'URL
+          if (encyId !== undefined) {
+            // Si on a un encyId, afficher les liens de cet article
+            return currentArticleLinks;
+          } else {
+            // Sur la page principale : afficher seulement les catégories
+            return mockArticles.filter(article => article.type === "Catégorie");
+          }
+        })().map((data, idx) => {
+            // Déterminer le type d'affichage basé sur l'URL
+            const isOnMainPage = !encyId;
+            const isOnArticlePage = encyId !== undefined;
+            const item = isOnArticlePage ? data.item : data;
+            const linkDesc = isOnArticlePage ? data.linkDesc : undefined;
             return (
           <motion.a
             key={item.id}
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              if (viewMode === "category") {
-                if (isInsideCategory) {
-                  // Inside a category: open preview modal on article click
-                  setOpenArticle(item);
-                } else if (isCategoryList) {
-                  // From category list: navigate into that category id
-                  navigate(`/univers/${universId}/encyclopedie/${item.id}`);
-                  setSelectedCategory(null);
-                }
-              } else {
+              
+              if (isOnArticlePage) {
+                // Sur une page d'article : toujours ouvrir la modal
                 setOpenArticle(item);
+              } else {
+                // Sur la page principale : 
+                // - Si c'est une catégorie (type "Catégorie"), naviguer vers elle
+                // - Sinon, ouvrir la modal
+                if (item.type === "Catégorie") {
+                  navigate(`/univers/${universId}/encyclopedie/${item.id}`);
+                } else {
+                  setOpenArticle(item);
+                }
               }
             }}
             className="UniEncy-card"
@@ -435,10 +491,12 @@ const UniversCardEncyclopedie = () => {
             </div>
 
             <div className="UniEncy-modal-body">
-              {openArticle.text ? (
+              {(openArticle.texte || openArticle.text) ? (
                 <div
                   className="UniEncy-article-html"
-                  dangerouslySetInnerHTML={{ __html: openArticle.text }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: `<p>${openArticle.texte || openArticle.text || ''}</p>` 
+                  }}
                 />
               ) : (
                 <div className="UniEncy-article-empty">
@@ -447,12 +505,25 @@ const UniversCardEncyclopedie = () => {
               )}
 
               <div className="UniEncy-modal-actions">
-                <a
-                  className="UniEncy-go-btn"
-                  href={`/univers/${universId}/encyclopedie/${openArticle.id}`}
-                >
+                {openArticle.externalLink ? (
+                  <a
+                    className="UniEncy-go-btn"
+                    href={openArticle.externalLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Voir le lien externe
+                  </a>
+                ) : (
+
+                  <button
+                    type="button"
+                    className="UniEncy-go-btn"
+                    onClick={() => { navigate(`/univers/${universId}/encyclopedie/${openArticle.id}`);setOpenArticle(null) }}
+                  >
                   Allez sur la page
-                </a>
+                  </button>
+                )}
               </div>
             </div>
           </div>
