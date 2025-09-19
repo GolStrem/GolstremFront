@@ -52,7 +52,7 @@ const mockArticles = [
       {
         id: 48,
         name: "Magies",
-        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+        image: "https://i.pinimg.com/736x/34/ad/e0/34ade04416f9cc4ad6042d0f9e2c3bfe.jpg",
         description: "Liste les Magies",
         type: "Catégorie",
         location: "/encyclopedie/48"
@@ -72,7 +72,7 @@ const mockArticles = [
     name: "Bestiaire",
     type: "Catégorie",
     texte: "Liste les créatures dans toutes leur complexité",
-    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    image: "https://i.pinimg.com/736x/13/34/f3/1334f352734985342458fdb67b5ce68e.jpg",
     createdAt: "2025-09-18T02:09:35.000Z",
     link: [
       {
@@ -98,7 +98,7 @@ const mockArticles = [
     name: "Relique",
     type: "Catégorie",
     texte: "Artefacts anciens et objets sacrés, porteurs d'histoires et de pouvoirs",
-    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    image: "https://i.pinimg.com/736x/53/c3/03/53c3039a98c899e6230ea02a3ec99d95.jpg",
     createdAt: "2025-09-18T02:09:35.000Z",
     link: [
       {
@@ -116,7 +116,7 @@ const mockArticles = [
     name: "Objet",
     type: "Catégorie",
     texte: "Objets remarquables : équipements, outils et trésors du quotidien",
-    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    image: "https://www.image-heberg.fr/files/1757962021407056180.png",
     createdAt: "2025-09-18T02:09:35.000Z",
     link: [
       {
@@ -143,7 +143,7 @@ const mockArticles = [
     name: "Lieux",
     type: "Catégorie",
     texte: "Régions, cités et sanctuaires marquants de l'univers",
-    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    image: "https://i.pinimg.com/736x/25/38/d9/2538d9ec1635170c314c9c3dd8411f2e.jpg",
     createdAt: "2025-09-18T02:09:35.000Z",
     link: []
   },
@@ -153,7 +153,7 @@ const mockArticles = [
     name: "Magies",
     type: "Catégorie",
     texte: "Écoles, rituels et phénomènes arcaniques façonnant Golstrem",
-    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    image: "https://i.pinimg.com/736x/34/ad/e0/34ade04416f9cc4ad6042d0f9e2c3bfe.jpg",
     createdAt: "2025-09-18T02:09:35.000Z",
     link: []
   },
@@ -163,7 +163,7 @@ const mockArticles = [
     name: "Peuple",
     type: "Catégorie",
     texte: "Civilisations, clans et cultures qui peuplent l'univers",
-    image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
+    image: "https://i.pinimg.com/736x/73/be/de/73bede39829a568819ff3cddcd12b355.jpg",
     createdAt: "2025-09-18T02:09:35.000Z",
     link: []
   },
@@ -403,12 +403,12 @@ const UniversCardEncyclopedie = () => {
               />
             </div>
           )}
-          <div className={`UniEncy-article-html ${!currentArticle.image ? 'no-image' : ''}`}>
+          
                 <div
-                  className="UniEncy-article-html-content"
+                  className={`UniEncy-article-html ${!currentArticle.image ? 'no-image' : ''}`}
                   dangerouslySetInnerHTML={{ __html:   `<div class=\"UniEncy-article-html-content\"> ${PurifyHtml(currentArticle.texte)}</div>` }}
                 />
-          </div>
+          
           {currentArticle.image && <div className="UniEncy-decoration-bottom-right"></div>}
         </div>
         
@@ -423,30 +423,28 @@ const UniversCardEncyclopedie = () => {
 
       {currentArticle?.image && <div className="UniEncy-content-separator"></div>}
 
-      <div className="UniEncy-controls">
-        {viewMode === "all" && (
-        <input
-          type="text"
-          placeholder="Rechercher..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="UniEncy-search"
-        />
-        )}
-        {viewMode === "all" ? (
-        <div className="UniEncy-filters">
-          {TYPES.map((type) => (
-            <button
-              key={type}
-              className={`UniEncy-filter-btn ${filter === type ? "active" : ""}`}
-              onClick={() => setFilter(type)}
-            >
-              {type}
-            </button>
-          ))}
+      {encyId === "all" && !openArticle && (
+        <div className="UniEncy-controls">
+          <input
+            type="text"
+            placeholder="Rechercher..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="UniEncy-search"
+          />
+          <div className="UniEncy-filters">
+            {TYPES.map((type) => (
+              <button
+                key={type}
+                className={`UniEncy-filter-btn ${filter === type ? "active" : ""}`}
+                onClick={() => setFilter(type)}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
         </div>
-        ) : null}
-      </div>
+      )}
 
       <Masonry
         breakpointCols={breakpointColumnsObj}
