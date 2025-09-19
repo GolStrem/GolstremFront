@@ -9,7 +9,7 @@
 
 .UniEncy-title {
   text-align: center;
-  font-size: 2.3rem;
+  font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.4rem);
   margin-bottom: 8px;
   color: var(--jaune);
   margin-top: 50px;
@@ -34,13 +34,17 @@
 
 /* Article layout - image à gauche, texte à droite */
 .UniEncy-article-layout {
-  display: flex;
-  gap: 24px;
+  display: block;
   margin: 20px 0;
-  align-items: flex-start;
   position: relative;
   max-width: 1500px;
   width: 100%;
+}
+/* Clearfix for floated image */
+.UniEncy-article-layout::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 .UniEncy-decoration-top-left {
@@ -68,9 +72,10 @@
 }
 
 .UniEncy-article-image-container {
-  flex: 0 0 500px;
+  float: left;
+  width: 500px;
   max-width: 500px;
-  
+  margin: 0 13px 0px 0;
 }
 
 .UniEncy-article-image {
@@ -81,10 +86,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.UniEncy-article-content {
-  flex: 1;
-  min-width: 0;
-}
+.UniEncy-article-content { display: block; }
 
 .UniEncy-article-content.no-image {
   display: flex;
@@ -105,16 +107,79 @@
 }
 
 /* Responsive */
+@media (max-width: 1600px) {
+  .UniEncy-article-layout { max-width: 1200px; }
+  .UniEncy-article-image-container { width: 440px; max-width: 44vw; }
+}
+/* Responsive */
+@media (max-width: 1400px) {
+  .UniEncy-article-layout { max-width: 1200px; }
+  .UniEncy-article-image-container { width: 440px; max-width: 44vw; }
+}
+
+@media (max-width: 1200px) {
+  .UniEncy-article-layout { max-width: 1100px; }
+  .UniEncy-article-image-container { width: 400px; max-width: 46vw; }
+}
+
+@media (max-width: 992px) {
+  .UniEncy-article-image-container { width: 360px; max-width: 48vw; }
+  .UniEncy-decoration-top-left,
+  .UniEncy-decoration-bottom-right { width: 44px; height: 44px; margin: -30px; }
+}
+
 @media (max-width: 768px) {
-  .UniEncy-article-layout {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
+  .UniEncy-article-layout { display: flex; padding: 0 12px; }
   .UniEncy-article-image-container {
-    flex: none;
-    max-width: 100%;
+    float: none;
+    width: 100%;
+    max-width: 400px;
+    max-height: 400px;
+    object-fit: cover;
+    object-position: center;
+    overflow: hidden;
+    
+    margin: 0 0 12px 0;
   }
+}
+
+/* Tablet/desktop fine tuning for decoration margins */
+@media (max-width: 1600px) {
+  .UniEncy-decoration-top-left,
+  .UniEncy-decoration-bottom-right { margin: -44px; }
+}
+
+@media (max-width: 1400px) {
+  .UniEncy-decoration-top-left,
+  .UniEncy-decoration-bottom-right { margin: -20px; }
+}
+
+@media (max-width: 1200px) {
+  .UniEncy-decoration-top-left,
+  .UniEncy-decoration-bottom-right { margin: 0px; }
+}
+
+@media (max-width: 1100px) {
+  .UniEncy-decoration-top-left,
+  .UniEncy-decoration-bottom-right { display: none; }
+}
+
+
+
+@media (max-width: 576px) {
+  .UniEncy-content-separator { width: 94%; height: 8px; margin: 24px auto; }
+  .UniEncy-mode { padding: 4px; }
+  .UniEncy-mode-btn { padding: 10px 16px; font-size: 13px; }
+  .UniEncy-article-layout { display: flex; flex-direction: column; align-items: center; }
+  .UniEncy-card { flex-direction: row !important; }
+  .UniEncy-card-image {
+    width: 33.333% !important;
+    aspect-ratio: 1 / 1;
+    padding-top: 0 !important;
+    object-fit: cover;
+    background-position: center;
+  }
+  .UniEncy-card-content { width: 66.667%; }
 }
 
 /* Header avec BackLocation et mode toggle */
@@ -340,39 +405,22 @@
 }
 
 .UniEncy-article-html {
-  height: 100%;
-  overflow-y: auto;
   color: var(--color-text);
   border-radius: 8px;
   text-align: justify;
 }
 
 /* Style de scroll personnalisé */
-.UniEncy-article-html::-webkit-scrollbar {
-  width: 8px;
-}
-
-.UniEncy-article-html::-webkit-scrollbar-track {
-  background: var(--color-input-bg);
-  border-radius: 4px;
-}
-
-.UniEncy-article-html::-webkit-scrollbar-thumb {
-  background: var(--jaune);
-  border-radius: 4px;
-}
-
-.UniEncy-article-html::-webkit-scrollbar-thumb:hover {
-  background: #d4cc2a;
-}
+/* Remove custom scrollbars because content flows naturally */
 
 /* Firefox */
-.UniEncy-article-html {
-  scrollbar-width: thin;
-  scrollbar-color: var(--jaune) var(--color-input-bg);
-}
+/* No special firefox scrollbar styling needed */
 
-.UniEncy-article-html-content { margin: 10px; }
+.UniEncy-article-html-content {  margin: 10px; line-height: 1.5; }
+.UniEncy-article-html-content img { max-width: 100%; height: auto; display: block; }
+.UniEncy-article-html-content table { width: 100%; overflow-x: auto; display: block; }
+.UniEncy-article-html-content pre,
+.UniEncy-article-html-content code { white-space: pre-wrap; word-break: break-word; }
 .UniEncy-article-html ul { margin: 0 0 10px 18px; }
 .UniEncy-article-html li { margin-bottom: 6px; }
 

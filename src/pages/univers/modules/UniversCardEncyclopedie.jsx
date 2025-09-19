@@ -404,11 +404,9 @@ const UniversCardEncyclopedie = () => {
             </div>
           )}
           <div className={`UniEncy-article-html ${!currentArticle.image ? 'no-image' : ''}`}>
-            {/* Afficher le texte selon le type d'article */}
                 <div
                   className="UniEncy-article-html-content"
-                  style={currentArticle.image ? { height: `${articleHtmlHeight}px` } : {}}
-                  dangerouslySetInnerHTML={{ __html:   `<div class="UniEncy-article-html-content"> ${PurifyHtml(currentArticle.texte)}</div>` }}
+                  dangerouslySetInnerHTML={{ __html:   `<div class=\"UniEncy-article-html-content\"> ${PurifyHtml(currentArticle.texte)}</div>` }}
                 />
           </div>
           {currentArticle.image && <div className="UniEncy-decoration-bottom-right"></div>}
