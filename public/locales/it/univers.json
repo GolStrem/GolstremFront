@@ -154,6 +154,226 @@
       "rejected": "Rifiutata",
       "pending": "In attesa"
     }
+  },
+  "members": {
+    "title": "Membri",
+    "subtitle": "Elenco dei membri dell'universo",
+    "sortBy": "Ordina per",
+    "sort_default": "Predefinito",
+    "sort_name": "Nome",
+    "sort_role": "Ruolo",
+    "loading": "Caricamento membri…",
+    "empty": "Nessun membro da visualizzare.",
+    "owner": "Owner",
+    "viewSheets": "Vedi schede",
+    "sheets": "Schede",
+    "addFriend": "Aggiungi amico",
+    "pendingRequest": "Richiesta in sospeso",
+    "exclude": "Escludi",
+    "excludeConfirm": "Escludere questo utente dall'universo?",
+    "excludeTitle": "Escludi dal gruppo",
+    "moreActions": "Altre azioni",
+    "join": "Unisciti all'universo",
+    "leave": "Lascia l'universo",
+    "roles": {
+      "-1": "In attesa",
+      "0": "Membro",
+      "1": "Roleplayer",
+      "2": "Master",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "IN ATTESA",
+      "0": "MEMBRO",
+      "1": "ROLEPLAYER",
+      "2": "MASTER",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Amministrazione {{name}}",
+    "subtitle": "Qui puoi gestire tutte le impostazioni relative a questo universo: membri, apertura e modelli di scheda.",
+    "buttons": {
+      "members": "Membri",
+      "opening": "Apertura / Iscrizione",
+      "models": "Modello Scheda"
+    }
+  },
+  "board": {
+    "title": "Bacheca",
+    "filters": {
+      "type": "Tipo:",
+      "status": "Stato:",
+      "date": "Data:",
+      "typeOptions": {
+        "all": "Tutti",
+        "quest": "Missione",
+        "event": "Evento",
+        "opening": "Apertura"
+      },
+      "statusOptions": {
+        "all": "Tutti",
+        "waitingPlayer": "In attesa di giocatore",
+        "inProgress": "In corso",
+        "done": "Completato",
+        "waiting": "In attesa",
+        "soon": "Presto"
+      },
+      "dateOptions": {
+        "all": "Tutti",
+        "new": "Nuovi",
+        "soon": "Presto"
+      }
+    },
+    "fab": {
+      "aria": "Crea",
+      "title": "Crea"
+    },
+    "modal": {
+      "createTitle": "Crea un evento",
+      "submit": "Crea",
+      "fields": {
+        "type": "Tipo",
+        "title": "Titolo",
+        "description": "Descrizione",
+        "status": "Stato:",
+        "date": "Data (opzionale)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "URL immagine"
+      },
+      "typeOptions": ["Missione", "Evento", "Apertura"],
+      "statusOptions": ["In attesa di giocatore", "In corso", "Completato", "In attesa", "Presto"]
+    }
+  },
+  "universPage": {
+    "categories": {
+      "fiches": "Schede",
+      "encyclopedie": "Enciclopedia",
+      "etablissement": "Struttura",
+      "board": "Bacheca",
+      "gallery": "Galleria",
+      "administration": "Amministrazione"
+    },
+    "joinBanner": {
+      "text": "Sei attualmente in modalità spettatore.",
+      "join": "Unisciti",
+      "sending": "Invio..."
+    },
+    "imagesModal": {
+      "title": "Immagini",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "fields": {
+        "bgImage": "Immagine di sfondo",
+        "fiches": "Schede",
+        "encyclopedie": "Enciclopedia",
+        "etablissement": "Struttura",
+        "tableau": "Bacheca",
+        "gallerie": "Galleria",
+        "administration": "Amministrazione"
+      }
+    },
+    "deleteModal": {
+      "title": "",
+      "delete": "Elimina",
+      "deleting": "Eliminazione..."
+    },
+    "editInfoModal": {
+      "title": "Modifica universo",
+      "save": "Salva",
+      "saving": "Salvataggio..."
+    },
+    "leftDots": {
+      "selectCategories": "Seleziona le categorie visualizzate",
+      "toggleBackground": "Attiva/disattiva immagine di sfondo",
+      "deleteUnivers": "Elimina universo"
+    }
+  },
+  "menu": {
+    "title": "UNIVERSI",
+    "myUniverses": "I miei universi",
+    "loading": "Caricamento universi...",
+    "filter": "Filtra",
+    "requestSent": {
+      "title": "Richiesta inviata",
+      "ok": "OK",
+      "message": "<div style=\"padding:8px 0\">Richiesta inviata. Potrai entrare quando l'owner avrà accettato.</div>"
+    },
+    "view": {
+      "visit": "Visita",
+      "requestAccess": "Richiedi accesso"
+    },
+    "filterModal": {
+      "title": "Filtro",
+      "search": "Cerca"
+    },
+    "createModal": {
+      "title": "Creazione universo",
+      "create": "Crea"
+    }
+  },
+  "gallery": {
+    "addImages": {
+      "title": "Aggiungi immagini",
+      "validate": "Aggiungi",
+      "selectFolder": "Cartella galleria"
+    },
+    "delete": {
+      "toggle": "Elimina elementi",
+      "aria": "Elimina",
+      "cancel": "Annulla",
+      "confirm": "Elimina ({count})",
+      "selectionCount": "{count} elemento/i selezionato/i",
+      "imagesCount": "{count} immagine/i",
+      "foldersCount": "{count} cartella/e"
+    }
+  },
+  "fields": {
+    "filter": {
+      "flags": {
+        "friends": "Amici",
+        "favorites": "Preferiti",
+        "nsfw": "NSFW"
+      },
+      "tags": "Filtra per tag:",
+      "friends": "Filtra per amico:",
+      "sortBy": "Ordina per:",
+      "sortOptions": {
+        "new": "Nuovo",
+        "popularity": "Popolarità",
+        "members": "Membri"
+      },
+      "orderDir": {
+        "desc": "Decrescente",
+        "asc": "Crescente"
+      }
+    },
+    "create": {
+      "name": "Nome dell'Universo",
+      "description": "Descrizione dell'Universo:",
+      "image": "imgUrl",
+      "tags": "Tag (10max):",
+      "visibility": "Visibilità:",
+      "visibilityOptions": {
+        "public": "Pubblico",
+        "invitation": "Su invito",
+        "private": "Privato"
+      },
+      "registration": "Nuovo Giocatore:",
+      "registrationOptions": {
+        "auto": "Accettato automaticamente",
+        "validation": "Sotto validazione",
+        "refuse": "Rifiuta tutto"
+      },
+      "flags": {
+        "nsfw": "NSFW"
+      }
+    },
+    "delete": {
+      "title": "Conferma eliminazione",
+      "message": "Sei sicuro di voler eliminare questo universo?",
+      "warning": "⚠️ Questa azione è irreversibile."
+    }
   }
 }
 

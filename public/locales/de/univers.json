@@ -154,6 +154,226 @@
       "rejected": "Abgelehnt",
       "pending": "Ausstehend"
     }
+  },
+  "members": {
+    "title": "Mitglieder",
+    "subtitle": "Liste der Universumsmitglieder",
+    "sortBy": "Sortieren nach",
+    "sort_default": "Standard",
+    "sort_name": "Name",
+    "sort_role": "Rolle",
+    "loading": "Mitglieder werden geladen…",
+    "empty": "Keine Mitglieder anzuzeigen.",
+    "owner": "Owner",
+    "viewSheets": "Karten ansehen",
+    "sheets": "Karten",
+    "addFriend": "Als Freund hinzufügen",
+    "pendingRequest": "Ausstehende Anfrage",
+    "exclude": "Ausschließen",
+    "excludeConfirm": "Diesen Benutzer aus dem Universum ausschließen?",
+    "excludeTitle": "Aus Gruppe ausschließen",
+    "moreActions": "Weitere Aktionen",
+    "join": "Universum beitreten",
+    "leave": "Universum verlassen",
+    "roles": {
+      "-1": "Ausstehend",
+      "0": "Mitglied",
+      "1": "Rollenspieler",
+      "2": "Spielleiter",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "AUSSTEHEND",
+      "0": "MITGLIED",
+      "1": "ROLLENSPIELER",
+      "2": "SPIELLEITER",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Administration {{name}}",
+    "subtitle": "Hier können Sie alle Einstellungen zu diesem Universum verwalten: Mitglieder, Öffnung und Kartenmodelle.",
+    "buttons": {
+      "members": "Mitglieder",
+      "opening": "Öffnung / Anmeldung",
+      "models": "Kartenmodell"
+    }
+  },
+  "board": {
+    "title": "Anschlagtafel",
+    "filters": {
+      "type": "Typ:",
+      "status": "Status:",
+      "date": "Datum:",
+      "typeOptions": {
+        "all": "Alle",
+        "quest": "Quest",
+        "event": "Ereignis",
+        "opening": "Eröffnung"
+      },
+      "statusOptions": {
+        "all": "Alle",
+        "waitingPlayer": "Wartet auf Spieler",
+        "inProgress": "Läuft",
+        "done": "Erledigt",
+        "waiting": "Ausstehend",
+        "soon": "Bald"
+      },
+      "dateOptions": {
+        "all": "Alle",
+        "new": "Neu",
+        "soon": "Bald"
+      }
+    },
+    "fab": {
+      "aria": "Erstellen",
+      "title": "Erstellen"
+    },
+    "modal": {
+      "createTitle": "Ereignis erstellen",
+      "submit": "Erstellen",
+      "fields": {
+        "type": "Typ",
+        "title": "Titel",
+        "description": "Beschreibung",
+        "status": "Status:",
+        "date": "Datum (optional)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "Bild-URL"
+      },
+      "typeOptions": ["Quest", "Ereignis", "Eröffnung"],
+      "statusOptions": ["Wartet auf Spieler", "Läuft", "Erledigt", "Ausstehend", "Bald"]
+    }
+  },
+  "universPage": {
+    "categories": {
+      "fiches": "Karten",
+      "encyclopedie": "Enzyklopädie",
+      "etablissement": "Einrichtung",
+      "board": "Anschlagtafel",
+      "gallery": "Galerie",
+      "administration": "Administration"
+    },
+    "joinBanner": {
+      "text": "Sie sind derzeit im Zuschauermodus.",
+      "join": "Beitreten",
+      "sending": "Senden..."
+    },
+    "imagesModal": {
+      "title": "Bilder",
+      "save": "Speichern",
+      "saving": "Speichern...",
+      "fields": {
+        "bgImage": "Hintergrundbild",
+        "fiches": "Karten",
+        "encyclopedie": "Enzyklopädie",
+        "etablissement": "Einrichtung",
+        "tableau": "Anschlagtafel",
+        "gallerie": "Galerie",
+        "administration": "Administration"
+      }
+    },
+    "deleteModal": {
+      "title": "",
+      "delete": "Löschen",
+      "deleting": "Löschen..."
+    },
+    "editInfoModal": {
+      "title": "Universum bearbeiten",
+      "save": "Speichern",
+      "saving": "Speichern..."
+    },
+    "leftDots": {
+      "selectCategories": "Angezeigte Kategorien auswählen",
+      "toggleBackground": "Hintergrundbild umschalten",
+      "deleteUnivers": "Universum löschen"
+    }
+  },
+  "menu": {
+    "title": "UNIVERSEN",
+    "myUniverses": "Meine Universen",
+    "loading": "Universen werden geladen...",
+    "filter": "Filtern",
+    "requestSent": {
+      "title": "Anfrage gesendet",
+      "ok": "OK",
+      "message": "<div style=\"padding:8px 0\">Anfrage gesendet. Sie können eintreten, sobald der Owner akzeptiert.</div>"
+    },
+    "view": {
+      "visit": "Besuchen",
+      "requestAccess": "Zugang anfragen"
+    },
+    "filterModal": {
+      "title": "Filter",
+      "search": "Suchen"
+    },
+    "createModal": {
+      "title": "Universum erstellen",
+      "create": "Erstellen"
+    }
+  },
+  "gallery": {
+    "addImages": {
+      "title": "Bilder hinzufügen",
+      "validate": "Hinzufügen",
+      "selectFolder": "Galerieordner"
+    },
+    "delete": {
+      "toggle": "Elemente löschen",
+      "aria": "Löschen",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen ({count})",
+      "selectionCount": "{count} Element(e) ausgewählt",
+      "imagesCount": "{count} Bild(er)",
+      "foldersCount": "{count} Ordner"
+    }
+  },
+  "fields": {
+    "filter": {
+      "flags": {
+        "friends": "Freunde",
+        "favorites": "Favoriten",
+        "nsfw": "NSFW"
+      },
+      "tags": "Nach Tag filtern:",
+      "friends": "Nach Freund filtern:",
+      "sortBy": "Sortieren nach:",
+      "sortOptions": {
+        "new": "Neu",
+        "popularity": "Beliebtheit",
+        "members": "Mitglieder"
+      },
+      "orderDir": {
+        "desc": "Absteigend",
+        "asc": "Aufsteigend"
+      }
+    },
+    "create": {
+      "name": "Universum-Name",
+      "description": "Universum-Beschreibung:",
+      "image": "imgUrl",
+      "tags": "Tags (10max):",
+      "visibility": "Sichtbarkeit:",
+      "visibilityOptions": {
+        "public": "Öffentlich",
+        "invitation": "Auf Einladung",
+        "private": "Privat"
+      },
+      "registration": "Neuer Spieler:",
+      "registrationOptions": {
+        "auto": "Automatisch akzeptiert",
+        "validation": "Unter Validierung",
+        "refuse": "Alles ablehnen"
+      },
+      "flags": {
+        "nsfw": "NSFW"
+      }
+    },
+    "delete": {
+      "title": "Löschung bestätigen",
+      "message": "Sind Sie sicher, dass Sie dieses Universum löschen möchten?",
+      "warning": "⚠️ Diese Aktion ist unumkehrbar."
+    }
   }
 }
 

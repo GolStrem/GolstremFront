@@ -5,6 +5,7 @@ import "./UniversCardGallerie.css";
 import { BackLocation, ModalGeneric } from "@components/index";
 import { ApiUnivers, DroitAccess } from "@service";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const breakpoints = {
   default: 5,
@@ -25,6 +26,7 @@ const UniversCardGallerie = ({
   onDeleteFolders, // nouvelle prop pour gérer la suppression des dossiers
   universId, // id de l'univers pour alimenter la liste des dossiers via API
 }) => {
+  const { t } = useTranslation('univers');
   const navigate = useNavigate();
   const { id: routeUniversId, folder: routeFolder } = useParams() || {};
   const effectiveUniversId = useMemo(() => universId || routeUniversId, [universId, routeUniversId]);
@@ -38,6 +40,7 @@ const UniversCardGallerie = ({
   const [apiFolders, setApiFolders] = useState([]);
   const [currentFolder, setCurrentFolder] = useState(null);
   const [apiImages, setApiImages] = useState([]);
+  const displayedImages = useMemo(() => Array.isArray(apiImages) ? apiImages : [], [apiImages]);
 
   // Titre dynamique selon l'état
   const [universName, setUniversName] = useState("");
@@ -53,7 +56,7 @@ const UniversCardGallerie = ({
   const addImagesFields = useMemo(() => ({
     selectFolder: {
       type: "select",
-      label: "Dossier de gallerie",
+      label: t('gallery.addImages.selectFolder'),
       value: apiFolders.map(f => f.label || f.value).filter(Boolean),
       currentFolder: currentFolder,
       another: true
@@ -62,7 +65,7 @@ const UniversCardGallerie = ({
       type: "img+",
       label: " ",
     }
-  }), [apiFolders, currentFolder]);
+  }), [apiFolders, currentFolder, t]);
   // Charger la liste des dossiers depuis l'API
   useEffect(() => {
     const loadFolders = async () => {
@@ -145,7 +148,6 @@ const UniversCardGallerie = ({
       }
     }
   }, [routeFolder, apiFolders]);
-  const displayedImages = Array.isArray(apiImages) ? apiImages : [];
 
   // Si on est sur /gallerie (pas de dossier), pas d'images et au moins un dossier, rediriger vers le premier dossier
   useEffect(() => {
@@ -494,9 +496,9 @@ const UniversCardGallerie = ({
           <button
           className="uni-fab uni-fab-delete"
           type="button"
-          title="Supprimer des éléments"
+          title={t('gallery.delete.toggle')}
           onClick={toggleDeleteMode}
-          aria-label="Supprimer"
+          aria-label={t('gallery.delete.aria')}
         >
           🗑️
         </button>
@@ -505,9 +507,9 @@ const UniversCardGallerie = ({
           <button
           className="uni-fab"
           type="button"
-          title="Ajouter des images"
+          title={t('gallery.addImages.title')}
           onClick={handleAddImagesClick}
-          aria-label="Ajouter"
+          aria-label={t('gallery.addImages.title')}
         >
           +
         </button>
@@ -518,10 +520,7 @@ const UniversCardGallerie = ({
       {deleteMode && (
         <div className="uni-delete-actions">
           <span className="uni-selection-count">
-            {totalSelected} élément(s) sélectionné(s)
-            {selectedForDeletion.size > 0 && ` (${selectedForDeletion.size} image${selectedForDeletion.size > 1 ? 's' : ''}`}
-            {selectedFoldersForDeletion.size > 0 && `, ${selectedFoldersForDeletion.size} dossier${selectedFoldersForDeletion.size > 1 ? 's' : ''}`}
-            {selectedForDeletion.size > 0 && selectedFoldersForDeletion.size > 0 && ')'}
+            {t('gallery.delete.selectionCount', { count: totalSelected })}
           </span>
           <div className="uni-delete-buttons">
             <button
@@ -529,7 +528,7 @@ const UniversCardGallerie = ({
               onClick={cancelDeleteMode}
               type="button"
             >
-              Annuler
+              {t('gallery.delete.cancel')}
             </button>
             <button
               className="uni-btn-delete"
@@ -537,7 +536,7 @@ const UniversCardGallerie = ({
               disabled={totalSelected === 0}
               type="button"
             >
-              Supprimer ({totalSelected})
+              {t('gallery.delete.confirm', { count: totalSelected })}
             </button>
           </div>
         </div>
@@ -607,9 +606,9 @@ const UniversCardGallerie = ({
           handleSubmit={handleAddImagesSubmit}
           initialData={{ selectFolder: currentFolder }}
           fields={addImagesFields}
-          title="Ajouter des images"
+          title={t('gallery.addImages.title')}
           noButtonCancel={false}
-          textButtonValidate="Ajouter"
+          textButtonValidate={t('gallery.addImages.validate')}
           name="addImages"
           noMemory={true}
         />

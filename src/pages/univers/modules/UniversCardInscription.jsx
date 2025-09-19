@@ -16,6 +16,7 @@ import { BackLocation, SearchBar } from "@components/index";
 import { ApiUnivers, DroitAccess } from "@service";
 import Masonry from "react-masonry-css";
 import { useTranslation } from "react-i18next";
+import PurifyHtml from "@service/utils/PurifyHtml";
 
 
 
@@ -435,17 +436,27 @@ const UniversCardInscription = ({
 
                   </div>
                   
-                  {it.message && <p className="UniIn-cardMsg">{it.message}</p>}
+                  {it.message && <div className="UniIn-cardMsg" dangerouslySetInnerHTML={{ __html: PurifyHtml(it.message) }}></div>}
                   
                 </div>
 
                 <div className="UniIn-cardActions">
                   
-                  {active !== "join" && (
+                  {((active === "fiche" || active === "lieux" || active === "quete") || 
+                    (active === "all" && (it.__type === "fiche" || it.__type === "lieux" || it.__type === "quete"))) && (
                     <button
                       className="UniIn-iconBtn UniIn-iconEye1"
                       title={t('requests.viewRequest')}
-                      onClick={() => window?.open?.("#", "_blank")}
+                      onClick={() => {
+                        if (it.__type === "fiche" || (active === "fiche" && it.idFiche)) {
+                          // Redirection vers la fiche spécifique
+                          const ficheId = it.idFiche || it.id;
+                          window?.open?.(`/ficheDetail/${ficheId}`, "_blank");
+                        } else {
+                          // Pour les autres types (lieux, quêtes), redirection générique
+                          window?.open?.("#", "_blank");
+                        }
+                      }}
                     >
                       <FaEye />
                     </button>

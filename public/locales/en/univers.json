@@ -154,6 +154,226 @@
       "rejected": "Rejected",
       "pending": "Pending"
     }
+  },
+  "members": {
+    "title": "Members",
+    "subtitle": "List of universe members",
+    "sortBy": "Sort by",
+    "sort_default": "Default",
+    "sort_name": "Name",
+    "sort_role": "Role",
+    "loading": "Loading members…",
+    "empty": "No members to display.",
+    "owner": "Owner",
+    "viewSheets": "View sheets",
+    "sheets": "Sheets",
+    "addFriend": "Add friend",
+    "pendingRequest": "Pending request",
+    "exclude": "Exclude",
+    "excludeConfirm": "Exclude this user from the universe?",
+    "excludeTitle": "Exclude from group",
+    "moreActions": "More actions",
+    "join": "Join universe",
+    "leave": "Leave universe",
+    "roles": {
+      "-1": "Pending",
+      "0": "Member",
+      "1": "Roleplayer",
+      "2": "Game Master",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "PENDING",
+      "0": "MEMBER",
+      "1": "ROLEPLAYER",
+      "2": "GAME MASTER",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Administration {{name}}",
+    "subtitle": "Here you can manage all settings related to this universe: members, opening and sheet models.",
+    "buttons": {
+      "members": "Members",
+      "opening": "Opening / Registration",
+      "models": "Sheet Model"
+    }
+  },
+  "board": {
+    "title": "Notice Board",
+    "filters": {
+      "type": "Type:",
+      "status": "Status:",
+      "date": "Date:",
+      "typeOptions": {
+        "all": "All",
+        "quest": "Quest",
+        "event": "Event",
+        "opening": "Opening"
+      },
+      "statusOptions": {
+        "all": "All",
+        "waitingPlayer": "Waiting for player",
+        "inProgress": "In progress",
+        "done": "Done",
+        "waiting": "Waiting",
+        "soon": "Soon"
+      },
+      "dateOptions": {
+        "all": "All",
+        "new": "New",
+        "soon": "Soon"
+      }
+    },
+    "fab": {
+      "aria": "Create",
+      "title": "Create"
+    },
+    "modal": {
+      "createTitle": "Create an event",
+      "submit": "Create",
+      "fields": {
+        "type": "Type",
+        "title": "Title",
+        "description": "Description",
+        "status": "Status:",
+        "date": "Date (optional)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "Image URL"
+      },
+      "typeOptions": ["Quest", "Event", "Opening"],
+      "statusOptions": ["Waiting for player", "In progress", "Done", "Waiting", "Soon"]
+    }
+  },
+  "universPage": {
+    "categories": {
+      "fiches": "Sheets",
+      "encyclopedie": "Encyclopedia",
+      "etablissement": "Establishment",
+      "board": "Notice Board",
+      "gallery": "Gallery",
+      "administration": "Administration"
+    },
+    "joinBanner": {
+      "text": "You are currently in viewer mode.",
+      "join": "Join",
+      "sending": "Sending..."
+    },
+    "imagesModal": {
+      "title": "Images",
+      "save": "Save",
+      "saving": "Saving...",
+      "fields": {
+        "bgImage": "Background image",
+        "fiches": "Sheets",
+        "encyclopedie": "Encyclopedia",
+        "etablissement": "Establishment",
+        "tableau": "Notice board",
+        "gallerie": "Gallery",
+        "administration": "Administration"
+      }
+    },
+    "deleteModal": {
+      "title": "",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "editInfoModal": {
+      "title": "Edit universe",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "leftDots": {
+      "selectCategories": "Select displayed categories",
+      "toggleBackground": "Toggle background image",
+      "deleteUnivers": "Delete universe"
+    }
+  },
+  "menu": {
+    "title": "UNIVERSES",
+    "myUniverses": "My universes",
+    "loading": "Loading universes...",
+    "filter": "Filter",
+    "requestSent": {
+      "title": "Request sent",
+      "ok": "OK",
+      "message": "<div style=\"padding:8px 0\">Request sent. You can enter once the owner accepts.</div>"
+    },
+    "view": {
+      "visit": "Visit",
+      "requestAccess": "Request access"
+    },
+    "filterModal": {
+      "title": "Filter",
+      "search": "Search"
+    },
+    "createModal": {
+      "title": "Create universe",
+      "create": "Create"
+    }
+  },
+  "gallery": {
+    "addImages": {
+      "title": "Add images",
+      "validate": "Add",
+      "selectFolder": "Gallery folder"
+    },
+    "delete": {
+      "toggle": "Delete items",
+      "aria": "Delete",
+      "cancel": "Cancel",
+      "confirm": "Delete ({count})",
+      "selectionCount": "{count} item(s) selected",
+      "imagesCount": "{count} image(s)",
+      "foldersCount": "{count} folder(s)"
+    }
+  },
+  "fields": {
+    "filter": {
+      "flags": {
+        "friends": "Friends",
+        "favorites": "Favorites",
+        "nsfw": "NSFW"
+      },
+      "tags": "Filter by tag:",
+      "friends": "Filter by friend:",
+      "sortBy": "Sort by:",
+      "sortOptions": {
+        "new": "New",
+        "popularity": "Popularity",
+        "members": "Members"
+      },
+      "orderDir": {
+        "desc": "Descending",
+        "asc": "Ascending"
+      }
+    },
+    "create": {
+      "name": "Universe Name",
+      "description": "Universe description:",
+      "image": "imgUrl",
+      "tags": "Tags (10max):",
+      "visibility": "Visibility:",
+      "visibilityOptions": {
+        "public": "Public",
+        "invitation": "By invitation",
+        "private": "Private"
+      },
+      "registration": "New Player:",
+      "registrationOptions": {
+        "auto": "Automatically accepted",
+        "validation": "Under validation",
+        "refuse": "Refuse all"
+      },
+      "flags": {
+        "nsfw": "NSFW"
+      }
+    },
+    "delete": {
+      "title": "Confirm deletion",
+      "message": "Are you sure you want to delete this universe?",
+      "warning": "⚠️ This action is irreversible."
+    }
   }
 }
 

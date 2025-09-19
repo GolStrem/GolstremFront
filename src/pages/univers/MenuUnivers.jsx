@@ -6,11 +6,13 @@ import "./MenuUnivers.css";
 import { ApiUnivers, ApiService, useNavigatePage } from "@service"
 import { createUniversFilterFields, createUniversCreateFields } from "@components";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 const listTag = ["Francais", "Fantastique", "Discord", "Anglais", "Jeu de table", "Word of Warcraft", "Final Fantasy XIV"];
 
 const MenuUnivers = () => {
+  const { t } = useTranslation('univers');
   
   // Récupération des paramètres imbriqués de l'URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -281,8 +283,8 @@ const MenuUnivers = () => {
         
         setTagsMapping(tagsMap);
         setFriendsMapping(friendsMap);
-        setFieldsFilter(createUniversFilterFields(listTag, listFriend));
-        setCreateUnivers(createUniversCreateFields(listTag));
+        setFieldsFilter(createUniversFilterFields(listTag, listFriend, t));
+        setCreateUnivers(createUniversCreateFields(listTag, t));
         
         // Mise à jour de activeFilter pour les paramètres nécessitant les mappings
         if (params.param && params.param.filter) {
@@ -461,7 +463,7 @@ const favCooldownRef = React.useRef(new Set());
       {isLoading && (
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Chargement des univers...</p>
+          <p>{t('menu.loading')}</p>
         </div>
       )}
 
@@ -472,13 +474,12 @@ const favCooldownRef = React.useRef(new Set());
           fields={{
             info: {
               type: "html",
-              value:
-                "<div style=\"padding:8px 0\">Demande envoyée. Vous pourrez entrer quand l'owner aura accepté.</div>",
+              value: t('menu.requestSent.message'),
             },
           }}
-          title={"Demande envoyée"}
+          title={t('menu.requestSent.title')}
           noButtonCancel={true}
-          textButtonValidate="OK"
+          textButtonValidate={t('menu.requestSent.ok')}
           name="requestSent"
         />
       )}
@@ -486,7 +487,7 @@ const favCooldownRef = React.useRef(new Set());
       {/* ===== Headers ===== */}
       <div className="menu-header">
         <div className="menu-header-content">
-          <button className="filter-button" onClick={handleModalViewFilter} title="Filtrer">
+          <button className="filter-button" onClick={handleModalViewFilter} title={t('menu.filter')}>
             <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={handleSearch} onClear={() => handleSearch("")} />
@@ -495,7 +496,7 @@ const favCooldownRef = React.useRef(new Set());
 
       <div className="menu-header-mobil">
         <div className="menu-header-content">
-          <button className="filter-button" onClick={handleModalViewFilter} title="Filtrer">
+          <button className="filter-button" onClick={handleModalViewFilter} title={t('menu.filter')}>
             <FaFilter size={16} />
           </button>
           <SearchBar value={search} onChange={handleSearch} onClear={() => handleSearch("")} />
@@ -503,7 +504,7 @@ const favCooldownRef = React.useRef(new Set());
       </div>
 
       {/* ===== Titre centré ===== */}
-      <h1 className="univers-title">UNIVERS</h1>
+      <h1 className="univers-title">{t('menu.title')}</h1>
 
       {/* ===== Tags ===== */}
       <div className="univers-tags" role="toolbar" aria-label="Filtres par tags">
@@ -521,8 +522,8 @@ const favCooldownRef = React.useRef(new Set());
       {/* ===== Mes univers ===== */}
       {myCards.length > 0 && (
         <>
-          <h2 className="univers-subtitle">Mes univers</h2>
-          <section className="univers-grid myuni" aria-label="Mes univers">
+          <h2 className="univers-subtitle">{t('menu.myUniverses')}</h2>
+          <section className="univers-grid myuni" aria-label={t('menu.myUniverses')}>
             {myCards.map((card) => (
               <article
                 key={`my-${card.id}`} 
@@ -607,9 +608,9 @@ const favCooldownRef = React.useRef(new Set());
           hidePrimary={openRegistration === 2 && universVisibility === 1}
           textButtonValidate={
             openRegistration === 0 || universVisibility === 0
-              ? "Visiter"
+              ? t('menu.view.visit')
               : openRegistration === 1
-                ? "Demander l'accès"
+                ? t('menu.view.requestAccess')
                 : ""
           }
           name="previewUnivers"
@@ -622,9 +623,9 @@ const favCooldownRef = React.useRef(new Set());
           initialData={initialFilterValues}
           handleSubmit={handleSubmitFilter}
           fields={fieldsFilter}
-          title={"Filtre"}
+          title={t('menu.filterModal.title')}
           noButtonCancel={true}
-          textButtonValidate="Rechercher"
+          textButtonValidate={t('menu.filterModal.search')}
           name="previewFilter"
         />
       )}
@@ -634,9 +635,9 @@ const favCooldownRef = React.useRef(new Set());
           onClose={() => setModalCreateUnivOpen(false)}
           handleSubmit={handleSubmitCreateUnivers}
           fields={createUnivers}
-          title={"Création d'univers"}
+          title={t('menu.createModal.title')}
           noButtonCancel={false}
-          textButtonValidate="Créer"
+          textButtonValidate={t('menu.createModal.create')}
           name="CreateUnivers"
         />
         )}

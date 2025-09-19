@@ -154,6 +154,226 @@
       "rejected": "Refusée",
       "pending": "En attente"
     }
+  },
+  "members": {
+    "title": "Membres",
+    "subtitle": "Liste des membres de l'univers",
+    "sortBy": "Trier par",
+    "sort_default": "Défaut",
+    "sort_name": "Nom",
+    "sort_role": "Rôle",
+    "loading": "Chargement des membres…",
+    "empty": "Aucun membre à afficher.",
+    "owner": "Owner",
+    "viewSheets": "Voir ses fiches",
+    "sheets": "Fiches",
+    "addFriend": "Ajouter en ami",
+    "pendingRequest": "Demande en attente",
+    "exclude": "Exclure",
+    "excludeConfirm": "Exclure cet utilisateur de l'univers ?",
+    "excludeTitle": "Exclure du groupe",
+    "moreActions": "Plus d'actions",
+    "join": "Rejoindre l'univers",
+    "leave": "Quitter l'univers",
+    "roles": {
+      "-1": "En attente",
+      "0": "Membre",
+      "1": "Roleplayer",
+      "2": "Maître du jeu",
+      "3": "Admin"
+    },
+    "rolesUpper": {
+      "-1": "EN ATTENTE",
+      "0": "MEMBRE",
+      "1": "ROLEPLAYER",
+      "2": "MAITRE DU JEU",
+      "3": "ADMIN"
+    }
+  },
+  "admin": {
+    "title": "Administration {{name}}",
+    "subtitle": "Ici, vous pouvez gérer tous les réglages liés à cet univers : membres, ouverture et modèles de fiches.",
+    "buttons": {
+      "members": "Membres",
+      "opening": "Ouverture / Inscription",
+      "models": "Modèle Fiche"
+    }
+  },
+  "board": {
+    "title": "Tableau d'affichage",
+    "filters": {
+      "type": "Type:",
+      "status": "Statut:",
+      "date": "Date:",
+      "typeOptions": {
+        "all": "Tous",
+        "quest": "Quête",
+        "event": "Événement",
+        "opening": "Ouverture"
+      },
+      "statusOptions": {
+        "all": "Tous",
+        "waitingPlayer": "En attente de joueur",
+        "inProgress": "En cours",
+        "done": "Terminé",
+        "waiting": "En attente",
+        "soon": "Bientôt"
+      },
+      "dateOptions": {
+        "all": "Tous",
+        "new": "Nouveaux",
+        "soon": "Bientôt"
+      }
+    },
+    "fab": {
+      "aria": "Créer",
+      "title": "Créer"
+    },
+    "modal": {
+      "createTitle": "Créer un événement",
+      "submit": "Créer",
+      "fields": {
+        "type": "Type",
+        "title": "Titre",
+        "description": "Description",
+        "status": "Statut :",
+        "date": "Date (optionnel)",
+        "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "image": "URL de l'image"
+      },
+      "typeOptions": ["Quête", "Événement", "Ouverture"],
+      "statusOptions": ["En attente de joueur", "En cours", "Terminé", "En attente", "Bientôt"]
+    }
+  },
+  "universPage": {
+    "categories": {
+      "fiches": "Fiches",
+      "encyclopedie": "Encyclopédie",
+      "etablissement": "Établissement",
+      "board": "Tableau d'affichage",
+      "gallery": "Gallerie",
+      "administration": "Administration"
+    },
+    "joinBanner": {
+      "text": "Vous êtes actuellement en vue spectateur.",
+      "join": "Rejoindre",
+      "sending": "Envoi..."
+    },
+    "imagesModal": {
+      "title": "Images",
+      "save": "Sauvegarder",
+      "saving": "Sauvegarde...",
+      "fields": {
+        "bgImage": "Image d'arrière-plan",
+        "fiches": "Fiches",
+        "encyclopedie": "Encyclopédie",
+        "etablissement": "Établissement",
+        "tableau": "Tableau d'affichage",
+        "gallerie": "Gallerie",
+        "administration": "Administration"
+      }
+    },
+    "deleteModal": {
+      "title": "",
+      "delete": "Supprimer",
+      "deleting": "Suppression..."
+    },
+    "editInfoModal": {
+      "title": "Modifier l'univers",
+      "save": "Sauvegarder",
+      "saving": "Sauvegarde..."
+    },
+    "leftDots": {
+      "selectCategories": "Sélectionner les catégories affichées",
+      "toggleBackground": "Basculer l'image d'arrière-plan",
+      "deleteUnivers": "Supprimer l'univers"
+    }
+  },
+  "menu": {
+    "title": "UNIVERS",
+    "myUniverses": "Mes univers",
+    "loading": "Chargement des univers...",
+    "filter": "Filtrer",
+    "requestSent": {
+      "title": "Demande envoyée",
+      "ok": "OK",
+      "message": "<div style=\"padding:8px 0\">Demande envoyée. Vous pourrez entrer quand l'owner aura accepté.</div>"
+    },
+    "view": {
+      "visit": "Visiter",
+      "requestAccess": "Demander l'accès"
+    },
+    "filterModal": {
+      "title": "Filtre",
+      "search": "Rechercher"
+    },
+    "createModal": {
+      "title": "Création d'univers",
+      "create": "Créer"
+    }
+  },
+  "gallery": {
+    "addImages": {
+      "title": "Ajouter des images",
+      "validate": "Ajouter",
+      "selectFolder": "Dossier de gallerie"
+    },
+    "delete": {
+      "toggle": "Supprimer des éléments",
+      "aria": "Supprimer",
+      "cancel": "Annuler",
+      "confirm": "Supprimer ({count})",
+      "selectionCount": "{count} élément(s) sélectionné(s)",
+      "imagesCount": "{count} image(s)",
+      "foldersCount": "{count} dossier(s)"
+    }
+  },
+  "fields": {
+    "filter": {
+      "flags": {
+        "friends": "Ami(e)s",
+        "favorites": "Favoris",
+        "nsfw": "NSFW"
+      },
+      "tags": "Filtrer par tag :",
+      "friends": "Filtrer par ami(e) :",
+      "sortBy": "Trier par :",
+      "sortOptions": {
+        "new": "Nouveau",
+        "popularity": "Popularité",
+        "members": "Membres"
+      },
+      "orderDir": {
+        "desc": "Descendant",
+        "asc": "Ascendant"
+      }
+    },
+    "create": {
+      "name": "Nom de l'Univers",
+      "description": "Description de l'Univers:",
+      "image": "imgUrl",
+      "tags": "Tags (10max) :",
+      "visibility": "Visibilité :",
+      "visibilityOptions": {
+        "public": "Public",
+        "invitation": "Sur invitation",
+        "private": "Privé"
+      },
+      "registration": "Nouveau Joueur:",
+      "registrationOptions": {
+        "auto": "Accepté automatiquement",
+        "validation": "Sous validation",
+        "refuse": "Refuser tout"
+      },
+      "flags": {
+        "nsfw": "NSFW"
+      }
+    },
+    "delete": {
+      "title": "Confirmer la suppression",
+      "message": "Êtes-vous sûr de vouloir supprimer cet univers ?",
+      "warning": "⚠️ Cette action est irréversible."
+    }
   }
 }
 
