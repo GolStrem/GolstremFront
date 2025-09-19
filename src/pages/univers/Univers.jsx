@@ -115,8 +115,15 @@ const Univers = () => {
         
         if (extra.image) {
           processedImages[moduleKey] = extra.image;
-
-        } 
+        }
+        
+        if (module.name === 'encyclopedie') {
+          CATEGORIES.map(c => {
+            if (c.key === 'encyclopedie' && c.to.split('/').length === 4) {
+              c.to = `${c.to}/${extra.encyclopedie ?? 0}`;
+            }
+          });
+        }
       } catch (e) {
         console.error(`Erreur lors du parsing du module ${module.name}:`, e);
         console.error(`Valeur extra:`, module.extra);
