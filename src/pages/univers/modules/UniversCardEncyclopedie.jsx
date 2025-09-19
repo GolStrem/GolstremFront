@@ -247,14 +247,11 @@ const UniversCardEncyclopedie = () => {
 
   // Ensure we have an encyclopedie id in URL; default to page article id=0
 
-  // Récupérer à partir du module encyclopedie
+  // Récupérer à partir du module encyclopedie et gérer la navigation
   useEffect(() => {
     setBaseEncyId(0);
-  }, []);
-
-  useEffect(() => {
     if (universId && encyId === undefined) {
-      navigate(`/univers/${universId}/encyclopedie/${BaseEncyId}`, { replace: true });
+      navigate(`/univers/${universId}/encyclopedie/0`, { replace: true });
     }
   }, [universId, encyId, navigate]);
 
@@ -288,7 +285,6 @@ const UniversCardEncyclopedie = () => {
     if (encyId !== undefined) {
 
       const article = encyId === "all" ? getAllArticles() : getArticlesById(encyId);
-      console.log(article);
       if (article && article.link) {
         const links = article.link.map(link => {
           // Si c'est un lien externe
@@ -343,7 +339,7 @@ const UniversCardEncyclopedie = () => {
   useEffect(() => {
     const updateArticleHtmlHeight = () => {
       if (imageRef.current) {
-        const imageHeight = imageRef.current.offsetHeight;
+        const imageHeight = imageRef.current.offsetHeight-20;
         setArticleHtmlHeight(imageHeight);
       }
     };
@@ -409,21 +405,11 @@ const UniversCardEncyclopedie = () => {
           )}
           <div className={`UniEncy-article-html ${!currentArticle.image ? 'no-image' : ''}`}>
             {/* Afficher le texte selon le type d'article */}
-            {currentArticle?.type === "Catégorie" ? (
-              // Pour les catégories, afficher le texte dans la section HTML
-              currentArticle?.texte && (
                 <div
                   className="UniEncy-article-html-content"
                   style={currentArticle.image ? { height: `${articleHtmlHeight}px` } : {}}
                   dangerouslySetInnerHTML={{ __html: `<div class="UniEncy-article-html-content">${currentArticle.texte}</div>` }}
                 />
-              )
-            ) : (
-              // Pour les articles individuels, afficher le texte dans l'introduction
-              <div className="UniEncy-article-html-content ">
-                {currentArticle?.texte || currentArticle?.description || "Aucune description disponible."}
-              </div>
-            )}
           </div>
           {currentArticle.image && <div className="UniEncy-decoration-bottom-right"></div>}
         </div>
@@ -471,18 +457,8 @@ const UniversCardEncyclopedie = () => {
         className="UniEncy-masonry"
         columnClassName="UniEncy-column"
       >
-        {(() => {
-          // Logique d'affichage basée sur l'URL
-          if (encyId !== undefined) {
-            // Si on a un encyId, afficher les liens de cet article
-            return currentArticleLinks;
-          } else {
-            // Sur la page principale : afficher seulement les catégories
-            return mockArticles.filter(article => article.type === "Catégorie");
-          }
-        })().map((data, idx) => {
+        {currentArticleLinks.map((data, idx) => {
             // Déterminer le type d'affichage basé sur l'URL
-            const isOnMainPage = !encyId;
             const isOnArticlePage = encyId !== undefined;
             const item = isOnArticlePage ? data.item : data;
             const linkDesc = isOnArticlePage ? data.linkDesc : undefined;
@@ -493,19 +469,7 @@ const UniversCardEncyclopedie = () => {
             onClick={(e) => {
               e.preventDefault();
               
-              if (isOnArticlePage) {
-                // Sur une page d'article : toujours ouvrir la modal
-                setOpenArticle(item);
-              } else {
-                // Sur la page principale : 
-                // - Si c'est une catégorie (type "Catégorie"), naviguer vers elle
-                // - Sinon, ouvrir la modal
-                if (item.type === "Catégorie") {
-                  navigate(`/univers/${universId}/encyclopedie/${item.id}`);
-                } else {
-                  setOpenArticle(item);
-                }
-              }
+              setOpenArticle(item);
             }}
             className="UniEncy-card"
             initial={{ opacity: 0, y: 20 }}
@@ -556,25 +520,20 @@ const UniversCardEncyclopedie = () => {
               )}
 
               <div className="UniEncy-modal-actions">
-                {openArticle.externalLink ? (
-                  <a
-                    className="UniEncy-go-btn"
-                    href={openArticle.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Voir le lien externe
-                  </a>
-                ) : (
-
-                  <button
-                    type="button"
-                    className="UniEncy-go-btn"
-                    onClick={() => { navigate(`/univers/${universId}/encyclopedie/${openArticle.id}`);setOpenArticle(null) }}
-                  >
-                  Allez sur la page
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className="UniEncy-go-btn"
+                  onClick={() => {
+                    if (openArticle.externalLink) {
+                      window.open(openArticle.externalLink, '_blank', 'noopener,noreferrer');
+                    } else {
+                      navigate(`/univers/${universId}/encyclopedie/${openArticle.id}`);
+                    }
+                    setOpenArticle(null);
+                  }}
+                >
+                  {openArticle.externalLink ? 'Voir le lien externe' : 'Allez sur la page'}
+                </button>
               </div>
             </div>
           </div>
