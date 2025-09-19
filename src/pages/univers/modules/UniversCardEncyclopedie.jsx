@@ -3,7 +3,7 @@ import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardEncyclopedie.css";
 import { BackLocation } from "@components";
-import { useNavigatePage } from "@service";
+import { useNavigatePage, PurifyHtml } from "@service";
 import { useParams } from "react-router-dom";
 
 // Données mockées adaptées à la logique de l'API
@@ -408,7 +408,7 @@ const UniversCardEncyclopedie = () => {
                 <div
                   className="UniEncy-article-html-content"
                   style={currentArticle.image ? { height: `${articleHtmlHeight}px` } : {}}
-                  dangerouslySetInnerHTML={{ __html: `<div class="UniEncy-article-html-content">${currentArticle.texte}</div>` }}
+                  dangerouslySetInnerHTML={{ __html:   `<div class="UniEncy-article-html-content"> ${PurifyHtml(currentArticle.texte)}</div>` }}
                 />
           </div>
           {currentArticle.image && <div className="UniEncy-decoration-bottom-right"></div>}
@@ -418,11 +418,9 @@ const UniversCardEncyclopedie = () => {
       
       {/* Fallback pour l'article principal */}
       {!currentArticle && mainArticle?.texte && (
-        <div
-          className="UniEncy-article-html"
-          style={{ maxWidth: 1000, margin: "0 auto 12px" }}
-          dangerouslySetInnerHTML={{ __html: `<div class="UniEncy-article-html-content">${mainArticle.texte}</div>` }}
-        />
+        <div className="UniEncy-article-html" style={{ maxWidth: 1000, margin: "0 auto 12px" }}>
+          <div class="UniEncy-article-html-content" dangerouslySetInnerHTML={{ __html: PurifyHtml(mainArticle.texte) }}/> 
+        </div>
       )}
 
       {currentArticle?.image && <div className="UniEncy-content-separator"></div>}
@@ -510,7 +508,7 @@ const UniversCardEncyclopedie = () => {
                 <div
                   className="UniEncy-article-html"
                   dangerouslySetInnerHTML={{ 
-                    __html: `<p>${openArticle.texte || openArticle.text || ''}</p>` 
+                    __html: `<p> ${PurifyHtml(openArticle.texte || openArticle.text || '')}</p>` 
                   }}
                 />
               ) : (
