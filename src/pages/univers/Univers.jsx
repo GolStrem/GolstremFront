@@ -119,7 +119,7 @@ const Univers = () => {
         
         if (module.name === 'encyclopedie') {
           CATEGORIES.map(c => {
-            if (c.key === 'encyclopedie' && c.to.split('/').length === 4) {
+            if (c.key === 'encyclopedie' && c.to.split('/').at(-1) === 'encyclopedie') {
               c.to = `${c.to}/${extra.encyclopedie ?? 0}`;
             }
           });
@@ -284,12 +284,7 @@ const Univers = () => {
         setDroits(data.droit || "read");
         setStateUser(data.stateUser ?? null);
         setOpenRegistration(typeof data.openRegistration === 'number' ? data.openRegistration : null);
-        
-        console.log('Données reçues de l\'API:', {
-          stateUser: data.stateUser,
-          droit: data.droit,
-          openRegistration: data.openRegistration
-        });
+      
         
         // Traitement des modules pour extraire les images
         if (parsedData.module && Array.isArray(parsedData.module)) {
@@ -330,7 +325,6 @@ const Univers = () => {
     const shouldShowBanner = stateUser === null && openRegistration !== 2;
     setShowJoinBanner(shouldShowBanner);
     
-    console.log('stateUser:', stateUser, 'openRegistration:', openRegistration, 'shouldShowBanner:', shouldShowBanner);
   }, [stateUser, openRegistration]);
 
   const fields = useMemo(() => ({
