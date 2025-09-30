@@ -65,38 +65,22 @@ const UniversCardEncyclopedie = () => {
           // Clear any residual children from previous detail view
           setCurrentBook(null);
           setCurrentArticleLinks([]);
-          const { data } = await ApiUnivers.getBooks(universId, {
-            nameBook: search || undefined,
-          });
-          let items = (Array.isArray(data) ? data : []).map(b => ({
-            id: b.id,
-            name: b.name,
-            description: b.description,
-            type: b.type,
-            image: b.image,
-            externalLink: b.externalLink || null,
-          }));
-
+          let items = [];
           if (viewMode === 'category') {
-            // La liste n'inclut pas toujours le type → charger les détails pour filtrer correctement
-            const detailed = await Promise.all(
-              items.map(async (it) => {
-                try {
-                  const { data: d } = await ApiUnivers.getBookDetail(universId, it.id);
-                  return {
-                    ...it,
-                    type: d?.type ?? it.type,
-                  };
-                } catch (_) {
-                  return it;
-                }
-              })
-            );
-            items = detailed.filter((it) => {
-              const t = String(it.type || '').toLowerCase();
-              return t === 'catégorie' || t === 'categorie' || t === 'category';
+            items = (await ApiUnivers.getBooks(universId, {type: 'Categorie'})).data;
+          }else{
+            const { data } = await ApiUnivers.getBooks(universId, {
+              nameBook: search || undefined,
             });
-          }
+            items = (Array.isArray(data) ? data : []).map(b => ({
+              id: b.id,
+              name: b.name,
+              description: b.description,
+              type: b.type,
+              image: b.image,
+              externalLink: b.externalLink || null,
+            }));
+        }
 
           setCurrentArticleLinks(items);
           setCurrentBook(null);
@@ -115,34 +99,6 @@ const UniversCardEncyclopedie = () => {
               _linkDesc: link.description,
             };
           });
-
-          // Fallback: if API does not include children in `link`, attempt to infer via idLink
-          if ((!items || items.length === 0) && data?.id) {
-            try {
-              const { data: list } = await ApiUnivers.getBooks(universId, {});
-              const listArr = Array.isArray(list) ? list : [];
-              const detailed = await Promise.all(
-                listArr.map(async (b) => {
-                  try {
-                    const { data: bd } = await ApiUnivers.getBookDetail(universId, b.id);
-                    return bd;
-                  } catch {
-                    return null;
-                  }
-                })
-              );
-              const children = detailed.filter(Boolean).filter((bd) => String(bd.idLink) === String(data.id));
-              items = children.map((bd) => ({
-                id: bd.id,
-                name: bd.name,
-                description: bd.description,
-                type: bd.type,
-                image: bd.image,
-              }));
-            } catch (_) {
-              // ignore
-            }
-          }
 
           setCurrentArticleLinks(items);
         }
@@ -407,9 +363,9 @@ const UniversCardEncyclopedie = () => {
               texte: values.texte || "",
               type: values.type || "encyclopédie",
               image: values.image || "",
-              public: values.public === 'oui' ? 0 : 1,
+              public: values.public === 'oui' ? 1 : 0,
               // If user is currently on a book detail, link new book to it
-              idLink: currentBook?.id ?? null,
+              idLink: null,
               link: [],
               connectArticle: currentBook?.id ?? null,
               externalLink: null,
@@ -454,7 +410,7 @@ const UniversCardEncyclopedie = () => {
             texte: { type: "textarea", label: "texte" },
             image: { type: "inputUrl", label: "image" },
             type: { type: "select", label: "type", value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
-            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["oui", "non"] },
+            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["non", "oui"] },
           }}
           textButtonValidate="save"
         />
@@ -472,7 +428,7 @@ const UniversCardEncyclopedie = () => {
             texte: currentBook.texte,
             image: currentBook.image,
             type: toTitleCase(currentBook.type || ''),
-            public: Number(currentBook.public) === 0 ? 'oui' : 'non',
+            public: Number(currentBook.public) === 1 ? 'oui' : 'non',
             idLink: currentBook.idLink ?? '',
           }}
           handleSubmit={async (values) => {
@@ -482,7 +438,7 @@ const UniversCardEncyclopedie = () => {
               texte: values.texte,
               type: values.type,
               image: values.image,
-              public: values.public === 'oui' ? 0 : 1,
+              public: values.public === 'oui' ? 1 : 0,
             };
             await ApiUnivers.updateBook(universId, currentBook.id, payload);
             setOpenEdit(false);
@@ -495,7 +451,7 @@ const UniversCardEncyclopedie = () => {
             texte: { type: "textarea", label: "texte" },
             image: { type: "inputUrl", label: "image" },
             type: { type: "select", label: "type", value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
-            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["oui", "non"] },
+            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["non", "oui"] },
             idLink: { type: "inputText", label: "idLink" },
             // idLink intentionally omitted in create modal; it is auto-derived if on a book detail
           }}
