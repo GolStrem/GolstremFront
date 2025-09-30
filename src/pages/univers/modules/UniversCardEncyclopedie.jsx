@@ -2,225 +2,11 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardEncyclopedie.css";
-import { BackLocation } from "@components";
-import { useNavigatePage, PurifyHtml } from "@service";
+import { BackLocation, ModalGeneric } from "@components";
+import { useNavigatePage, PurifyHtml, ApiUnivers } from "@service";
 import { useParams } from "react-router-dom";
 
-// Données mockées adaptées à la logique de l'API
-const mockArticles = [
-  // Article principal Encyclopédie (id: 0)
-  {
-    id: 0,
-    name: "Encyclopédie",
-    type: "Catégorie",
-    texte: "Toutes les encyclopédies",
-    image: null,
-    createdAt: "2025-09-18T02:09:35.000Z",
-    link: [
-      {
-        id: 8,
-        name: "Bestiaire",
-        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
-        description: "Liste les créatures",
-        type: "Catégorie",
-        location: "/encyclopedie/8"
-      },
-      {
-        id: 18,
-        name: "Relique",
-        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
-        description: "Liste les Relique",
-        type: "Catégorie",
-        location: "/encyclopedie/18"
-      },
-      {
-        id: 28,
-        name: "Objet",
-        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
-        description: "Liste les Objet",
-        type: "Catégorie",
-        location: "/encyclopedie/28"
-      },
-      {
-        id: 38,
-        name: "Lieux",
-        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
-        description: "Liste les Lieux",
-        type: "Catégorie",
-        location: "/encyclopedie/38"
-      },
-      {
-        id: 48,
-        name: "Magies",
-        image: "https://i.pinimg.com/736x/34/ad/e0/34ade04416f9cc4ad6042d0f9e2c3bfe.jpg",
-        description: "Liste les Magies",
-        type: "Catégorie",
-        location: "/encyclopedie/48"
-      },
-      {
-        id: 58,
-        name: "Peuple",
-        image: "https://i.pinimg.com/1200x/c3/99/fa/c399fa394d75c19001a2474332d71f1c.jpg",
-        description: "Liste les Peuple",
-        type: "Catégorie",
-        location: "/encyclopedie/58"
-      }
-    ]
-  },
-  {
-    id: 8,
-    name: "Bestiaire",
-    type: "Catégorie",
-    texte: "Liste les créatures dans toutes leur complexité",
-    image: "https://i.pinimg.com/736x/13/34/f3/1334f352734985342458fdb67b5ce68e.jpg",
-    createdAt: "2025-09-18T02:09:35.000Z",
-    link: [
-      {
-        id: 7,
-        name: "Gobelin",
-        image: "https://i.pinimg.com/736x/1a/91/8a/1a918a21161ae97490128a749cfcec39.jpg",
-        description: "Truc vert",
-        type: "Créature",
-        location: "/encyclopedie/7"
-      },
-      {
-        id: 9,
-        name: "Slime",
-        image: "https://i.pinimg.com/1200x/d6/7f/f3/d67ff3058db565b279e5a3c2cee52a77.jpg",
-        description: "Dragon quest",
-        type: "Créature",
-        location: "https://dragon-quest.org/wiki/Slime"
-      }
-    ]
-  },
-  {
-    id: 18,
-    name: "Relique",
-    type: "Catégorie",
-    texte: "Artefacts anciens et objets sacrés, porteurs d'histoires et de pouvoirs",
-    image: "https://i.pinimg.com/736x/53/c3/03/53c3039a98c899e6230ea02a3ec99d95.jpg",
-    createdAt: "2025-09-18T02:09:35.000Z",
-    link: [
-      {
-        id: 15,
-        name: "Bouclier ancien",
-        image: "https://i.pinimg.com/736x/bc/c7/f4/bcc7f4ceb293732d70383f31afb7eb0f.jpg",
-        description: "Protection légendaire",
-        type: "Artefact",
-        location: "/encyclopedie/15"
-      }
-    ]
-  },
-  {
-    id: 28,
-    name: "Objet",
-    type: "Catégorie",
-    texte: "Objets remarquables : équipements, outils et trésors du quotidien",
-    image: "https://www.image-heberg.fr/files/1757962021407056180.png",
-    createdAt: "2025-09-18T02:09:35.000Z",
-    link: [
-      {
-        id: 14,
-        name: "Épée sacrée",
-        image: "https://i.pinimg.com/736x/59/e4/1f/59e41f37ec6b7764658345f791801dc3.jpg",
-        description: "Arme des héros oubliés",
-        type: "Objet",
-        location: "/encyclopedie/14"
-      },
-      {
-        id: 8,
-        name: "Potion magique résurection",
-        image: "https://i.pinimg.com/1200x/e7/26/6a/e7266a28eaccf3d24ace89b5094f18e3.jpg",
-        description: "Potions aux pouvoirs variés",
-        type: "Objet",
-        location: "/encyclopedie/8"
-      }
-    ]
-  },
-  // Catégorie Lieux (id: 38)
-  {
-    id: 38,
-    name: "Lieux",
-    type: "Catégorie",
-    texte: "Régions, cités et sanctuaires marquants de l'univers",
-    image: "https://i.pinimg.com/736x/25/38/d9/2538d9ec1635170c314c9c3dd8411f2e.jpg",
-    createdAt: "2025-09-18T02:09:35.000Z",
-    link: []
-  },
-  // Catégorie Magies (id: 48)
-  {
-    id: 48,
-    name: "Magies",
-    type: "Catégorie",
-    texte: "Écoles, rituels et phénomènes arcaniques façonnant Golstrem",
-    image: "https://i.pinimg.com/736x/34/ad/e0/34ade04416f9cc4ad6042d0f9e2c3bfe.jpg",
-    createdAt: "2025-09-18T02:09:35.000Z",
-    link: []
-  },
-  // Catégorie Peuple (id: 58)
-  {
-    id: 58,
-    name: "Peuple",
-    type: "Catégorie",
-    texte: "Civilisations, clans et cultures qui peuplent l'univers",
-    image: "https://i.pinimg.com/736x/73/be/de/73bede39829a568819ff3cddcd12b355.jpg",
-    createdAt: "2025-09-18T02:09:35.000Z",
-    link: []
-  },
-  // Articles individuels
-  {
-    id: 7,
-    idUnivers: 62,
-    name: "Gobelin",
-    description: "Truc vert",
-    type: "Créature",
-    idLink: 7,
-    externalLink: null,
-    image: "https://i.pinimg.com/736x/1a/91/8a/1a918a21161ae97490128a749cfcec39.jpg",
-    createdAt: "2025-09-18T02:11:56.000Z",
-    public: 0,
-    texte: "Les gobelins sont de petites créatures vertes, souvent malicieuses et agressives. Ils vivent en tribus dans les forêts sombres et les cavernes."
-  },
-  {
-    id: 9,
-    idUnivers: 62,
-    name: "Slime",
-    description: "Dragon quest",
-    type: "Créature",
-    idLink: 9,
-    externalLink: "https://dragon-quest.org/wiki/Slime",
-    image: "https://i.pinimg.com/1200x/d6/7f/f3/d67ff3058db565b279e5a3c2cee52a77.jpg",
-    createdAt: "2025-09-18T02:11:56.000Z",
-    public: 0,
-    texte: "Les slimes sont des créatures gélatineuses de couleur bleue, souvent considérées comme les ennemis les plus faibles mais aussi les plus emblématiques de l'univers Dragon Quest."
-  },
-  {
-    id: 14,
-    idUnivers: 62,
-    name: "Épée sacrée",
-    description: "Arme des héros oubliés",
-    type: "Objet",
-    idLink: 14,
-    externalLink: null,
-    image: "https://i.pinimg.com/736x/59/e4/1f/59e41f37ec6b7764658345f791801dc3.jpg",
-    createdAt: "2025-09-18T02:11:56.000Z",
-    public: 0,
-    texte: "Cette épée légendaire a été forgée par les anciens maîtres forgerons. Elle ne révèle sa véritable puissance qu'aux héros dignes de la porter."
-  },
-  {
-    id: 15,
-    idUnivers: 62,
-    name: "Bouclier ancien",
-    description: "Protection légendaire",
-    type: "Artefact",
-    idLink: 15,
-    externalLink: null,
-    image: "https://i.pinimg.com/736x/bc/c7/f4/bcc7f4ceb293732d70383f31afb7eb0f.jpg",
-    createdAt: "2025-09-18T02:11:56.000Z",
-    public: 0,
-    texte: "Ce bouclier millénaire a protégé de nombreux héros au cours des siècles. Il est imprégné de magie ancienne et peut repousser les attaques les plus puissantes."
-  }
-];
+// Data now loaded from API
 
 const breakpointColumnsObj = {
   default: 5, // 5 colonnes max
@@ -239,101 +25,140 @@ const UniversCardEncyclopedie = () => {
   const [filter, setFilter] = useState("Tous");
   const [search, setSearch] = useState("");
   const [openArticle, setOpenArticle] = useState(null);
-  const [viewMode, setViewMode] = useState("category"); // default category
+  const [viewMode, setViewMode] = useState("all");
   const [currentArticleLinks, setCurrentArticleLinks] = useState([]);
-  const [BaseEncyId, setBaseEncyId] = useState(0);
+  const [currentBook, setCurrentBook] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [articleHtmlHeight, setArticleHtmlHeight] = useState(400);
   const imageRef = useRef(null);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+
+  const toTitleCase = (str) => {
+    if (!str || typeof str !== 'string') return '';
+    return str
+      .toLowerCase()
+      .split(/\s+/)
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  };
 
   // Ensure we have an encyclopedie id in URL; default to page article id=0
 
   // Récupérer à partir du module encyclopedie et gérer la navigation
   useEffect(() => {
-    setBaseEncyId(0);
     if (universId && encyId === undefined) {
-      navigate(`/univers/${universId}/encyclopedie/0`, { replace: true });
+      navigate(`/univers/${universId}/encyclopedie/all`, { replace: true });
     }
   }, [universId, encyId, navigate]);
 
-  function getAllArticles() {
-    const links = mockArticles.map(article => {
-      return {
-        id: article.id,
-        name: article.name,
-        image: article.image,
-        description: article.description,
-        type: article.type,
-        location: `/encyclopedie/${article.id}`
-      };
-    });
-    return {
-      id: undefined,
-      name: "Tous les articles",
-      image: null,
-      description: null,
-      type: "Catégorie",
-      location: null,
-      link: links
-    };
-  }
-  function getArticlesById(id) {
-    return mockArticles.find(article => String(article.id) === String(id));
-  }
-
   // Récupérer l'article correspondant à l'encyId et construire les liens
   useEffect(() => {
-    if (encyId !== undefined) {
+    const controller = new AbortController();
+    async function load() {
+      if (!universId || encyId === undefined) return;
+      setLoading(true);
+      setError(null);
+      try {
+        if (encyId === "all") {
+          // Clear any residual children from previous detail view
+          setCurrentBook(null);
+          setCurrentArticleLinks([]);
+          const { data } = await ApiUnivers.getBooks(universId, {
+            nameBook: search || undefined,
+          });
+          let items = (Array.isArray(data) ? data : []).map(b => ({
+            id: b.id,
+            name: b.name,
+            description: b.description,
+            type: b.type,
+            image: b.image,
+            externalLink: b.externalLink || null,
+          }));
 
-      const article = encyId === "all" ? getAllArticles() : getArticlesById(encyId);
-      if (article && article.link) {
-        const links = article.link.map(link => {
-          // Si c'est un lien externe
-          if (link.location && link.location.startsWith('http')) {
-            return {
-              item: {
-                id: link.id,
-                name: link.name,
-                description: link.description,
-                type: link.type,
-                image: link.image,
-                externalLink: link.location
-              },
-              linkDesc: link.description
-            };
+          if (viewMode === 'category') {
+            // La liste n'inclut pas toujours le type → charger les détails pour filtrer correctement
+            const detailed = await Promise.all(
+              items.map(async (it) => {
+                try {
+                  const { data: d } = await ApiUnivers.getBookDetail(universId, it.id);
+                  return {
+                    ...it,
+                    type: d?.type ?? it.type,
+                  };
+                } catch (_) {
+                  return it;
+                }
+              })
+            );
+            items = detailed.filter((it) => {
+              const t = String(it.type || '').toLowerCase();
+              return t === 'catégorie' || t === 'categorie' || t === 'category';
+            });
           }
-          
-          // Sinon, chercher l'article correspondant
-          const linkedArticle = mockArticles.find(a => a.id === link.id);
-          if (linkedArticle) {
+
+          setCurrentArticleLinks(items);
+          setCurrentBook(null);
+        } else {
+          const { data } = await ApiUnivers.getBookDetail(universId, encyId);
+          setCurrentBook(data || null);
+          let items = (data?.link || []).map(link => {
+            const isExternal = typeof link.location === 'string' && link.location.startsWith('http');
             return {
-              item: linkedArticle,
-              linkDesc: link.description
+              id: link.id,
+              name: link.name,
+              description: link.description,
+              type: link.type,
+              image: link.image,
+              externalLink: isExternal ? link.location : null,
+              _linkDesc: link.description,
             };
+          });
+
+          // Fallback: if API does not include children in `link`, attempt to infer via idLink
+          if ((!items || items.length === 0) && data?.id) {
+            try {
+              const { data: list } = await ApiUnivers.getBooks(universId, {});
+              const listArr = Array.isArray(list) ? list : [];
+              const detailed = await Promise.all(
+                listArr.map(async (b) => {
+                  try {
+                    const { data: bd } = await ApiUnivers.getBookDetail(universId, b.id);
+                    return bd;
+                  } catch {
+                    return null;
+                  }
+                })
+              );
+              const children = detailed.filter(Boolean).filter((bd) => String(bd.idLink) === String(data.id));
+              items = children.map((bd) => ({
+                id: bd.id,
+                name: bd.name,
+                description: bd.description,
+                type: bd.type,
+                image: bd.image,
+              }));
+            } catch (_) {
+              // ignore
+            }
           }
-          return null;
-        }).filter(Boolean);
-        
-        setCurrentArticleLinks(links);
-      } else {
+
+          setCurrentArticleLinks(items);
+        }
+      } catch (e) {
+        setError('Erreur lors du chargement de l\'encyclopédie');
         setCurrentArticleLinks([]);
+        setCurrentBook(null);
+      } finally {
+        setLoading(false);
       }
-    } else {
-      setCurrentArticleLinks([]);
     }
-  }, [encyId]);
+    load();
+    return () => controller.abort();
+  }, [universId, encyId, search, viewMode]);
 
-  // Fonction pour obtenir l'article principal (Encyclopédie)
-  const getMainArticle = () => {
-    return mockArticles.find(article => article.id === BaseEncyId);
-  };
-
-
-
-
-  const mainArticle = getMainArticle();
-  
-  // Obtenir l'article actuel basé sur l'URL
-  const currentArticle = mockArticles.find(article => String(article.id) === String(encyId));
+  const currentArticle = currentBook || null;
 
   // Fonction pour calculer la hauteur de l'image et ajuster la hauteur du texte
   useEffect(() => {
@@ -364,31 +189,70 @@ const UniversCardEncyclopedie = () => {
         <div className="UniEncy-mode">
           <button
             type="button"
-            className={`UniEncy-mode-btn ${viewMode === "all" ? "active" : ""}`}
-            onClick={() => { setViewMode("all"); navigate(`/univers/${universId}/encyclopedie/all`) }}
+            className={`UniEncy-mode-btn ${encyId === 'all' && viewMode === "all" ? "active" : ""}`}
+            onClick={() => {
+              setViewMode("all");
+              setFilter("Tous");
+              setSearch("");
+              navigate(`/univers/${universId}/encyclopedie/all`)
+            }}
           >
             Voir tout
           </button>
           <button
             type="button"
-            className={`UniEncy-mode-btn ${viewMode === "category" ? "active" : ""}`}
+            className={`UniEncy-mode-btn ${encyId === 'all' && viewMode === "category" ? "active" : ""}`}
             onClick={() => {
               setViewMode("category");
               setFilter("Tous");
               if (universId) {
-                navigate(`/univers/${universId}/encyclopedie/${BaseEncyId}`);
+                navigate(`/univers/${universId}/encyclopedie/all`);
               }
             }}
           >
             Par catégorie
           </button>
+          <button
+            type="button"
+            className="UniEncy-mode-btn"
+            onClick={() => setOpenCreate(true)}
+          >
+            Créer
+          </button>
+          {currentBook && (
+            <>
+              <button
+                type="button"
+                className="UniEncy-mode-btn"
+                onClick={() => setOpenEdit(true)}
+              >
+                Éditer
+              </button>
+              <button
+                type="button"
+                className="UniEncy-mode-btn"
+                onClick={async () => {
+                  if (!universId || !currentBook?.id) return;
+                  if (!window.confirm("Supprimer ce livre ?")) return;
+                  try {
+                    await ApiUnivers.deleteBook(universId, currentBook.id);
+                    navigate(`/univers/${universId}/encyclopedie/all`);
+                  } catch(e) {
+                    alert("Suppression impossible");
+                  }
+                }}
+              >
+                Supprimer
+              </button>
+            </>
+          )}
         </div>
       </div>
       
 
 
       
-      <h2 className="UniEncy-title">{currentArticle?.name || mainArticle?.name || "Encyclopédie"}</h2>
+      <h2 className="UniEncy-title">{currentArticle?.name || "Encyclopédie"}</h2>
       
       {/* Layout image à gauche, texte à droite */}
       {currentArticle && (
@@ -414,10 +278,9 @@ const UniversCardEncyclopedie = () => {
         
       )}
       
-      {/* Fallback pour l'article principal */}
-      {!currentArticle && mainArticle?.texte && (
-        <div className="UniEncy-article-html" style={{ maxWidth: 1000, margin: "0 auto 12px" }}>
-          <div class="UniEncy-article-html-content" dangerouslySetInnerHTML={{ __html: PurifyHtml(mainArticle.texte) }}/> 
+      {error && (
+        <div className="UniEncy-article-empty" style={{ maxWidth: 1000, margin: "0 auto 12px" }}>
+          <p>{error}</p>
         </div>
       )}
 
@@ -432,17 +295,7 @@ const UniversCardEncyclopedie = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="UniEncy-search"
           />
-          <div className="UniEncy-filters">
-            {TYPES.map((type) => (
-              <button
-                key={type}
-                className={`UniEncy-filter-btn ${filter === type ? "active" : ""}`}
-                onClick={() => setFilter(type)}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
+          {/* Types non gérés côté API pour le moment */}
         </div>
       )}
 
@@ -451,11 +304,8 @@ const UniversCardEncyclopedie = () => {
         className="UniEncy-masonry"
         columnClassName="UniEncy-column"
       >
-        {currentArticleLinks.map((data, idx) => {
-            // Déterminer le type d'affichage basé sur l'URL
-            const isOnArticlePage = encyId !== undefined;
-            const item = isOnArticlePage ? data.item : data;
-            const linkDesc = isOnArticlePage ? data.linkDesc : undefined;
+        {currentArticleLinks.map((item, idx) => {
+            const linkDesc = item._linkDesc;
             return (
           <motion.a
             key={item.id}
@@ -477,7 +327,10 @@ const UniversCardEncyclopedie = () => {
             />
             <div className="UniEncy-card-content">
               <h3>{item.name}</h3>
-              <p>{linkDesc || item.description}</p>
+              <div
+                className="UniEncy-card-desc"
+                dangerouslySetInnerHTML={{ __html: PurifyHtml(linkDesc || item.description || "") }}
+              />
               <span className="UniEncy-card-type">{item.type}</span>
             </div>
           </motion.a>
@@ -493,7 +346,10 @@ const UniversCardEncyclopedie = () => {
                 <img className="UniEncy-modal-thumb" src={openArticle.image} alt={openArticle.name} />
                 <div>
                   <h3>{openArticle.name}</h3>
-                  <p className="UniEncy-modal-desc">{openArticle.description}</p>
+                  <div
+                    className="UniEncy-modal-desc"
+                    dangerouslySetInnerHTML={{ __html: PurifyHtml(openArticle.description || "") }}
+                  />
                 </div>
               </div>
               <button className="UniEncy-modal-close" onClick={() => setOpenArticle(null)} aria-label="Fermer">×</button>
@@ -532,6 +388,119 @@ const UniversCardEncyclopedie = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {openCreate && (
+        <ModalGeneric
+          name="ency-create"
+          title="Créer un livre"
+          isOpen
+          onClose={() => setOpenCreate(false)}
+          initialData={{
+            // Préselectionne le type selon le contexte
+            type: currentBook?.name ? toTitleCase(currentBook.name) : (viewMode === 'category' ? 'Catégorie' : ''),
+          }}
+          handleSubmit={async (values) => {
+            const payload = {
+              name: values.name || "",
+              description: values.description || "",
+              texte: values.texte || "",
+              type: values.type || "encyclopédie",
+              image: values.image || "",
+              public: values.public === 'oui' ? 0 : 1,
+              // If user is currently on a book detail, link new book to it
+              idLink: currentBook?.id ?? null,
+              link: [],
+              connectArticle: currentBook?.id ?? null,
+              externalLink: null,
+            };
+            const { data: created } = await ApiUnivers.createBook(universId, payload);
+            setOpenCreate(false);
+            if (encyId === "all") {
+              // Refresh list view
+              const { data } = await ApiUnivers.getBooks(universId, { nameBook: search || undefined });
+              const items = (Array.isArray(data) ? data : []).map(b => ({
+                id: b.id,
+                name: b.name,
+                description: b.description,
+                type: b.type,
+                image: b.image,
+                externalLink: b.externalLink || null,
+              }));
+              setCurrentArticleLinks(items);
+            } else if (currentBook?.id) {
+              // Stay on current book detail and refresh its children links
+              const { data } = await ApiUnivers.getBookDetail(universId, currentBook.id);
+              setCurrentBook(data || null);
+              const items = (data?.link || []).map(link => {
+                const isExternal = typeof link.location === 'string' && link.location.startsWith('http');
+                return {
+                  id: link.id,
+                  name: link.name,
+                  description: link.description,
+                  type: link.type,
+                  image: link.image,
+                  externalLink: isExternal ? link.location : null,
+                  _linkDesc: link.description,
+                };
+              });
+              setCurrentArticleLinks(items);
+            }
+          }}
+          fields={{
+            articleActuel: { type: "html", label: "", value: `Article actuel: <strong>${currentBook?.name || (viewMode === 'category' ? 'Catégorie' : 'Voir tout')}</strong>` },
+            name: { type: "inputText", label: "name" },
+            description: { type: "textarea", label: "description" },
+            texte: { type: "textarea", label: "texte" },
+            image: { type: "inputUrl", label: "image" },
+            type: { type: "select", label: "type", value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
+            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["oui", "non"] },
+          }}
+          textButtonValidate="save"
+        />
+      )}
+
+      {openEdit && currentBook && (
+        <ModalGeneric
+          name="ency-edit"
+          title="Éditer le livre"
+          isOpen
+          onClose={() => setOpenEdit(false)}
+          initialData={{
+            name: currentBook.name,
+            description: currentBook.description,
+            texte: currentBook.texte,
+            image: currentBook.image,
+            type: toTitleCase(currentBook.type || ''),
+            public: Number(currentBook.public) === 0 ? 'oui' : 'non',
+            idLink: currentBook.idLink ?? '',
+          }}
+          handleSubmit={async (values) => {
+            const payload = {
+              name: values.name,
+              description: values.description,
+              texte: values.texte,
+              type: values.type,
+              image: values.image,
+              public: values.public === 'oui' ? 0 : 1,
+            };
+            await ApiUnivers.updateBook(universId, currentBook.id, payload);
+            setOpenEdit(false);
+            const { data } = await ApiUnivers.getBookDetail(universId, currentBook.id);
+            setCurrentBook(data || null);
+          }}
+          fields={{
+            name: { type: "inputText", label: "name" },
+            description: { type: "textarea", label: "description" },
+            texte: { type: "textarea", label: "texte" },
+            image: { type: "inputUrl", label: "image" },
+            type: { type: "select", label: "type", value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
+            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["oui", "non"] },
+            idLink: { type: "inputText", label: "idLink" },
+            // idLink intentionally omitted in create modal; it is auto-derived if on a book detail
+          }}
+          textButtonValidate="save"
+        />
       )}
     </div>
   );

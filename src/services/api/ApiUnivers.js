@@ -49,6 +49,24 @@ const realApi = {
 
   deleteFicheUnivers: (idFiche) => api.delete (`fiche/${idFiche}/univers`),
 
+  // ========== BOOK (Encyclopédie) ==========
+  // GET univers/${idUnivers}/book
+  getBooks: (universId, params = {}) => api.get(`/univers/${universId}/book`, { params }),
+  // GET univers/${idUnivers}/book/listUnivers
+  getUniversWithPublicBooks: (universId, params = {}) => api.get(`/univers/${universId}/book/listUnivers`, { params }),
+  // GET univers/${idUnivers}/book/${idBook}
+  getBookDetail: (universId, bookId) => api.get(`/univers/${universId}/book/${bookId}`),
+  // POST univers/${idUnivers}/book
+  createBook: (universId, payload) => api.post(`/univers/${universId}/book`, payload),
+  // PUT univers/${idUnivers}/book/${idBook}
+  updateBook: (universId, bookId, payload) => api.put(`/univers/${universId}/book/${bookId}`, payload),
+  // DELETE univers/${idUnivers}/book/${idBook}
+  deleteBook: (universId, bookId) => api.delete(`/univers/${universId}/book/${bookId}`),
+  // POST univers/${idUnivers}/book/link/${idLink}
+  addBookLink: (universId, idLink, payload) => api.post(`/univers/${universId}/book/link/${idLink}`, payload),
+  // DELETE univers/${idUnivers}/book/link/${idLink}
+  removeBookLink: (universId, idLink, payload) => api.delete(`/univers/${universId}/book/link/${idLink}`, { data: payload }),
+
 
 };
 

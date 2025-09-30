@@ -398,6 +398,41 @@
 }
 .UniEncy-modal-close:hover { color: var(--jaune); }
 
+/* Scoped overrides for ModalGeneric select+other input in Encyclopedie modals */
+.master-ency-create .selectGeneric.type,
+.master-ency-edit .selectGeneric.type {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  position: static !important;
+}
+
+.master-ency-create .selectGeneric.type .label-type,
+.master-ency-edit .selectGeneric.type .label-type {
+  margin-bottom: 0;
+}
+
+.master-ency-create .selectGeneric.type select,
+.master-ency-edit .selectGeneric.type select {
+  margin: 0;
+  width: 100%;
+}
+
+.master-ency-create .selectGeneric.type input[type="text"],
+.master-ency-edit .selectGeneric.type input[type="text"] {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 30% !important;
+  padding: 8px 10px !important;
+  border-radius: 4px !important;
+  margin-left: 0 !important;
+  margin-top: -20px;
+  z-index: auto !important;
+}
+
 .UniEncy-modal-body {
   padding: 16px 18px 22px;
   display: flex;
