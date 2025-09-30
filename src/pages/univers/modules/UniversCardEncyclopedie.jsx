@@ -35,6 +35,36 @@ const UniversCardEncyclopedie = () => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const loadSequenceRef = useRef(0);
+  // Création avancée: action et listes
+  const [createAction, setCreateAction] = useState('create');
+  const [universList, setUniversList] = useState([]);
+  const [universListLoading, setUniversListLoading] = useState(false);
+  const [selectedUniversSearchId, setSelectedUniversSearchId] = useState("");
+  const [publicBooks, setPublicBooks] = useState([]);
+  const [publicBooksLoading, setPublicBooksLoading] = useState(false);
+  const [selectedPublicBookId, setSelectedPublicBookId] = useState("");
+  const [extName, setExtName] = useState("");
+  const [extImage, setExtImage] = useState("");
+  const [extLink, setExtLink] = useState("");
+  const [linkBusy, setLinkBusy] = useState(false);
+  // États pour les listes dynamiques dans la modale
+  const [modalUniversList, setModalUniversList] = useState([]);
+  const [modalPublicBooks, setModalPublicBooks] = useState([]);
+  const [modalUniversLoading, setModalUniversLoading] = useState(false);
+  const [modalBooksLoading, setModalBooksLoading] = useState(false);
+  const [modalSelectedUniversName, setModalSelectedUniversName] = useState("");
+  // Champs pour création interne
+  const [createName, setCreateName] = useState("");
+  const [createDescription, setCreateDescription] = useState("");
+  const [createTexte, setCreateTexte] = useState("");
+  const [createImage, setCreateImage] = useState("");
+  const [createType, setCreateType] = useState("encyclopédie");
+  const [createPublic, setCreatePublic] = useState("non");
+  // Modal de suppression de bookLink
+  const [openDeleteLink, setOpenDeleteLink] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState(null);
+  // Modal de suppression de book
+  const [openDeleteBook, setOpenDeleteBook] = useState(false);
 
   const toTitleCase = (str) => {
     if (!str || typeof str !== 'string') return '';
@@ -98,6 +128,8 @@ const UniversCardEncyclopedie = () => {
               type: b.type,
               image: b.image,
               externalLink: b.externalLink || null,
+              _isLink: !!b.idLink, // Marquer si c'est un bookLink (a un idLink)
+              _idLink: b.idLink, // Garder l'idLink pour la suppression
             }));
         }
 
@@ -120,6 +152,7 @@ const UniversCardEncyclopedie = () => {
               image: link.image,
               externalLink: isExternal ? link.location : null,
               _linkDesc: link.description,
+              _isLink: true,
             };
           });
 
@@ -186,6 +219,84 @@ const UniversCardEncyclopedie = () => {
     return () => controller.abort();
   }, [openArticle, universId]);
 
+  // Charger les univers pour la modale
+  useEffect(() => {
+    let mounted = true;
+    async function loadUniversForModal() {
+      if (!openCreate) return;
+      try {
+        setModalUniversLoading(true);
+        // Utiliser la route qui retourne directement les univers avec leurs books publics
+        const { data } = await ApiUnivers.getUniversWithPublicBooks(universId, {});
+        if (!mounted) return;
+        console.log('Univers avec books publics data:', data); // Debug
+        const universItems = Array.isArray(data) ? data : [];
+        console.log('Univers items:', universItems); // Debug
+        
+        // Filtrer les univers qui ont au moins un book public
+        const withPublic = universItems.map(u => ({ id: u.idUnivers, name: u.name }));
+        
+        console.log('Univers avec books publics:', withPublic); // Debug
+        setModalUniversList(withPublic);
+      } finally {
+        setModalUniversLoading(false);
+      }
+    }
+    loadUniversForModal();
+    return () => { mounted = false; };
+  }, [openCreate, universId]);
+
+  // Initialiser le formulaire de création quand on ouvre ou bascule sur "create"
+  useEffect(() => {
+    if (!openCreate) return;
+    if (createAction !== 'create') return;
+    setCreateName("");
+    setCreateDescription("");
+    setCreateTexte("");
+    setCreateImage("");
+    setCreateType(currentBook?.name ? toTitleCase(currentBook.name) : (viewMode === 'category' ? 'Catégorie' : 'encyclopédie'));
+    setCreatePublic("non");
+  }, [openCreate, createAction, currentBook, viewMode]);
+
+  // Charger les univers utilisateur quand createAction = 'search'
+  useEffect(() => {
+    let mounted = true;
+    async function loadUnivers() {
+      if (createAction !== 'search') return;
+      try {
+        setUniversListLoading(true);
+        const { data } = await ApiUnivers.getUnivers({});
+        if (!mounted) return;
+        const items = Array.isArray(data) ? data : [];
+        setUniversList(items.map(u => ({ id: u.id, name: u.name })));
+      } finally {
+        setUniversListLoading(false);
+      }
+    }
+    loadUnivers();
+    return () => { mounted = false; };
+  }, [createAction]);
+
+  // Charger livres publics quand univers sélectionné
+  useEffect(() => {
+    let mounted = true;
+    async function loadPublicBooks() {
+      if (createAction !== 'search') return;
+      if (!selectedUniversSearchId) { setPublicBooks([]); return; }
+      try {
+        setPublicBooksLoading(true);
+        const { data } = await ApiUnivers.getUniversWithPublicBooks(selectedUniversSearchId, {});
+        if (!mounted) return;
+        const items = Array.isArray(data) ? data : (Array.isArray(data?.books) ? data.books : []);
+        setPublicBooks(items.map(b => ({ id: b.id, name: b.name })));
+      } finally {
+        setPublicBooksLoading(false);
+      }
+    }
+    loadPublicBooks();
+    return () => { mounted = false; };
+  }, [createAction, selectedUniversSearchId]);
+
   return (
     <div className="UniEncy-container">
       {noTextHasImage && (
@@ -232,16 +343,23 @@ const UniversCardEncyclopedie = () => {
               <button
                 type="button"
                 className="UniEncy-mode-btn"
-                onClick={() => setOpenCreate(true)}
+              onClick={() => setOpenCreate(true)}
               >
                 Créer
               </button>
-              {currentBook && (
+              {currentBook && String(currentBook.id) === encyId && (
                 <>
                   <button
                     type="button"
                     className="UniEncy-mode-btn"
-                    onClick={() => setOpenEdit(true)}
+                    onClick={async () => {
+                      // S'assurer que les données du book sont à jour
+                      if (currentBook.id !== encyId) {
+                        const { data } = await ApiUnivers.getBookDetail(universId, encyId);
+                        setCurrentBook(data || null);
+                      }
+                      setOpenEdit(true);
+                    }}
                   >
                     Éditer
                   </button>
@@ -249,14 +367,12 @@ const UniversCardEncyclopedie = () => {
                     type="button"
                     className="UniEncy-mode-btn"
                     onClick={async () => {
-                      if (!universId || !currentBook?.id) return;
-                      if (!window.confirm("Supprimer ce livre ?")) return;
-                      try {
-                        await ApiUnivers.deleteBook(universId, currentBook.id);
-                        navigate(`/univers/${universId}/encyclopedie/all`);
-                      } catch(e) {
-                        alert("Suppression impossible");
+                      // S'assurer que les données du book sont à jour
+                      if (currentBook.id !== encyId) {
+                        const { data } = await ApiUnivers.getBookDetail(universId, encyId);
+                        setCurrentBook(data || null);
                       }
+                      setOpenDeleteBook(true);
                     }}
                   >
                     Supprimer
@@ -313,7 +429,7 @@ const UniversCardEncyclopedie = () => {
         <div className="UniEncy-content-separator"></div>
       )}
 
-      {encyId === "all" && !openArticle && (
+      {encyId === "all" && (
         <div className="UniEncy-controls">
           <input
             type="text"
@@ -334,14 +450,8 @@ const UniversCardEncyclopedie = () => {
         {currentArticleLinks.map((item, idx) => {
             const linkDesc = item._linkDesc;
             return (
-          <motion.a
+          <motion.div
             key={item.id}
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              
-              setOpenArticle(item);
-            }}
             className="UniEncy-card"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -360,7 +470,29 @@ const UniversCardEncyclopedie = () => {
               />
               <span className="UniEncy-card-type">{item.type}</span>
             </div>
-          </motion.a>
+            {/* Bouton de suppression pour les bookLinks */}
+            {item._isLink && (
+              <button
+                className="UniEncy-card-delete"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setBookToDelete(item);
+                  setOpenDeleteLink(true);
+                }}
+                title="Supprimer ce lien"
+              >
+                ×
+              </button>
+            )}
+            <div
+              className="UniEncy-card-clickable"
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenArticle(item);
+              }}
+            />
+          </motion.div>
         );
           })}
       </Masonry>
@@ -420,74 +552,179 @@ const UniversCardEncyclopedie = () => {
       {openCreate && (
         <ModalGeneric
           name="ency-create"
-          title="Créer un livre"
+          title="Créer / Chercher / Externe"
           isOpen
           onClose={() => setOpenCreate(false)}
           initialData={{
-            // Préselectionne le type selon le contexte
+            action: 'Créer un article',
             type: currentBook?.name ? toTitleCase(currentBook.name) : (viewMode === 'category' ? 'Catégorie' : ''),
+            selectedUniversSearchId: '',
+            selectedPublicBookId: '',
+          }}
+          onValuesChange={(vals) => {
+            // Mémoriser le nom de l'univers sélectionné
+            if (vals.action === 'Chercher un article existant') {
+              const selectedName = vals.selectedUniversSearchId || "";
+              setModalSelectedUniversName(selectedName);
+            } else {
+              setModalSelectedUniversName("");
+            }
+            // Charger les livres publics quand un univers est sélectionné
+            if (vals.action === 'Chercher un article existant' && vals.selectedUniversSearchId) {
+              const uni = modalUniversList.find(u => u.name === vals.selectedUniversSearchId);
+              if (!uni) { 
+                setModalPublicBooks([]); 
+                return; 
+              }
+              // Recharger les books pour cet univers spécifique
+              let mounted = true;
+              (async () => {
+                try {
+                  setModalBooksLoading(true);
+                  // Si c'est notre univers actuel, afficher tous les articles (publics et privés)
+                  if (String(uni.id) === String(universId)) {
+                    const { data } = await ApiUnivers.getBooks(universId, {});
+                    if (!mounted) return;
+                    console.log('Tous les books de notre univers actuel:', data); // Debug
+                    const items = Array.isArray(data) ? data : [];
+                    setModalPublicBooks(items.map(b => ({ id: b.id, name: b.name })));
+                  } else {
+                    // Pour les autres univers, utiliser searchInUnivers pour les publics
+                    const { data } = await ApiUnivers.getBooks(universId, {searchInUnivers: uni.id});
+                    if (!mounted) return;
+                    console.log('Books publics pour univers', uni.name, ':', data); // Debug
+                    const items = Array.isArray(data) ? data : [];
+                    setModalPublicBooks(items.map(b => ({ id: b.id, name: b.name })));
+                  }
+                } catch (err) {
+                  console.log('Erreur lors du chargement des books:', err); // Debug
+                  setModalPublicBooks([]);
+                } finally {
+                  setModalBooksLoading(false);
+                }
+              })();
+              return () => { mounted = false; };
+            } else if (vals.action !== 'Chercher un article existant') {
+              setModalPublicBooks([]);
+            }
           }}
           handleSubmit={async (values) => {
-            const payload = {
-              name: values.name || "",
-              description: values.description || "",
-              texte: values.texte || "",
-              type: values.type || "encyclopédie",
-              image: values.image || "",
-              public: values.public === 'oui' ? 1 : 0,
-              // If user is currently on a book detail, link new book to it
-              idLink: null,
-              link: [],
-              connectArticle: currentBook?.id ?? null,
-              externalLink: null,
-            };
-            const { data: created } = await ApiUnivers.createBook(universId, payload);
-            setOpenCreate(false);
-            if (encyId === "all") {
-              // Refresh list view
-              const { data } = await ApiUnivers.getBooks(universId, { nameBook: search || undefined });
-              const items = (Array.isArray(data) ? data : []).map(b => ({
-                id: b.id,
-                name: b.name,
-                description: b.description,
-                type: b.type,
-                image: b.image,
-                externalLink: b.externalLink || null,
-              }));
-              setCurrentArticleLinks(items);
-            } else if (currentBook?.id) {
-              // Stay on current book detail and refresh its children links
-              const { data } = await ApiUnivers.getBookDetail(universId, currentBook.id);
-              setCurrentBook(data || null);
-              const items = (data?.link || []).map(link => {
-                const isExternal = typeof link.location === 'string' && link.location.startsWith('http');
-                return {
-                  id: link.id,
-                  name: link.name,
-                  description: link.description,
-                  type: link.type,
-                  image: link.image,
-                  externalLink: isExternal ? link.location : null,
-                  _linkDesc: link.description,
-                };
-              });
-              setCurrentArticleLinks(items);
+            if (values.action === 'Créer un article') {
+              const payload = {
+                name: values.name || "",
+                description: values.description || "",
+                texte: values.texte || "",
+                type: values.type || "encyclopédie",
+                image: values.image || "",
+                public: values.public === 'oui' ? 1 : 0,
+                idLink: null,
+                link: [],
+                connectArticle: currentBook?.id ?? null,
+                externalLink: null,
+              };
+              await ApiUnivers.createBook(universId, payload);
+              setOpenCreate(false);
+              if (encyId === 'all') {
+                const { data } = await ApiUnivers.getBooks(universId, { nameBook: search || undefined });
+                const items = (Array.isArray(data) ? data : []).map(b => ({ id: b.id, name: b.name, description: b.description, type: b.type, image: b.image, externalLink: b.externalLink || null }));
+                setCurrentArticleLinks(items);
+              } else if (currentBook?.id) {
+                const { data } = await ApiUnivers.getBookDetail(universId, currentBook.id);
+                setCurrentBook(data || null);
+                const items = (data?.link || []).map(link => {
+                  const isExternal = typeof link.location === 'string' && link.location.startsWith('http');
+                  return { id: link.id, name: link.name, description: link.description, type: link.type, image: link.image, externalLink: isExternal ? link.location : null, _linkDesc: link.description, _isLink: true };
+                });
+                setCurrentArticleLinks(items);
+              }
+            } else if (values.action === 'Chercher un article existant') {
+              console.log('Action: Chercher un article existant', values); // Debug
+              if (values.selectedPublicBookId) {
+                console.log('selectedPublicBookId:', values.selectedPublicBookId); // Debug
+                console.log('modalPublicBooks:', modalPublicBooks); // Debug
+                // Trouver l'ID du livre sélectionné (par nom)
+                const selectedBook = modalPublicBooks.find(b => b.name === values.selectedPublicBookId);
+                console.log('selectedBook trouvé:', selectedBook); // Debug
+                if (selectedBook) {
+                  console.log('Tentative d\'ajout du lien avec:', { universId, bookId: selectedBook.id, payload: { idBook: selectedBook.id } }); // Debug
+                  // Ajouter le book comme lien dans l'univers actuel
+                  try {
+                    const result = await ApiUnivers.addBookLink(universId, currentBook.id, { idBook: selectedBook.id });
+                    console.log('Résultat de l\'ajout:', result); // Debug
+                    setOpenCreate(false);
+                    // Rafraîchir la liste des articles
+                    if (encyId === 'all') {
+                      const { data } = await ApiUnivers.getBooks(universId, { nameBook: search || undefined });
+                      const items = (Array.isArray(data) ? data : []).map(b => ({ id: b.id, name: b.name, description: b.description, type: b.type, image: b.image, externalLink: b.externalLink || null }));
+                      setCurrentArticleLinks(items);
+                    } else if (currentBook?.id) {
+                      const { data } = await ApiUnivers.getBookDetail(universId, currentBook.id);
+                      setCurrentBook(data || null);
+                      const items = (data?.link || []).map(link => {
+                        const isExternal = typeof link.location === 'string' && link.location.startsWith('http');
+                        return { id: link.id, name: link.name, description: link.description, type: link.type, image: link.image, externalLink: isExternal ? link.location : null, _linkDesc: link.description, _isLink: true };
+                      });
+                      setCurrentArticleLinks(items);
+                    }
+                  } catch (error) {
+                    console.error('Erreur lors de l\'ajout du lien:', error);
+                  }
+                } else {
+                  console.log('Aucun book trouvé avec le nom:', values.selectedPublicBookId); // Debug
+                }
+              } else {
+                console.log('Aucun selectedPublicBookId'); // Debug
+              }
+            } else if (values.action === 'Rajouter un article externe du site') {
+              if (values.name && values.link) {
+                setOpenCreate(false);
+                setOpenArticle({ id: `ext-${Date.now()}`, name: values.name, image: values.image || '', description: values.description || '', type: 'Externe', externalLink: values.link });
+              }
             }
           }}
           fields={{
             articleActuel: { type: "html", label: "", value: `Article actuel: <strong>${currentBook?.name || (viewMode === 'category' ? 'Catégorie' : 'Voir tout')}</strong>` },
-            name: { type: "inputText", label: "name" },
-            description: { type: "textarea", label: "description" },
-            texte: { type: "textarea", label: "texte" },
-            image: { type: "inputUrl", label: "image" },
-            type: { type: "select", label: "type", value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
-            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["non", "oui"] },
+            action: {
+              type: 'selectSwitch',
+              label: 'Action',
+              value: ['Créer un article', 'Chercher un article existant', 'Rajouter un article externe du site'],
+              default: 'Créer un article',
+              cases: {
+                'Créer un article': {
+                  name: { type: "inputText", label: "name" },
+                  description: { type: "textarea", label: "description" },
+                  texte: { type: "textarea", label: "texte" },
+                  image: { type: "inputUrl", label: "image" },
+                  type: { type: "select", label: "type", value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
+                  public: { type: "select", label: "recuperable pour les autres univers ?", value: ["non", "oui"] },
+                },
+                'Chercher un article existant': {
+                  selectedUniversSearchId: { 
+                    type: 'select', 
+                    label: 'Univers', 
+                    value: modalUniversList.map(u => u.name)
+                  },
+                  selectedPublicBookId: { 
+                    type: 'select', 
+                    label: 'Article public', 
+                    value: (modalPublicBooks.length > 0 ? modalPublicBooks.map(b => b.name) : ['pas d\'article disponible pour cet univers'])
+                  }
+                },
+                'Rajouter un article externe du site': {
+                  name: { type: 'inputText', label: 'Nom' },
+                  description: { type: "textarea", label: "description" },
+                  image: { type: 'inputUrl', label: 'Image URL' },
+                  link: { type: 'inputText', label: 'Lien externe (https://...)' },
+                },
+              }
+            },
           }}
           textButtonValidate="save"
+          noClose={true}
         />
       )}
 
-      {openEdit && currentBook && (
+      {openEdit && currentBook && String(currentBook.id) === encyId && (
         <ModalGeneric
           name="ency-edit"
           title="Éditer le livre"
@@ -527,6 +764,90 @@ const UniversCardEncyclopedie = () => {
             // idLink intentionally omitted in create modal; it is auto-derived if on a book detail
           }}
           textButtonValidate="save"
+          noMemory={true}
+          noClose={true}
+        />
+      )}
+
+      {/* Modal de suppression de bookLink */}
+      {openDeleteLink && bookToDelete && (
+        <ModalGeneric
+          name="delete-link"
+          title="Supprimer le lien"
+          isOpen
+          onClose={() => {
+            setOpenDeleteLink(false);
+            setBookToDelete(null);
+          }}
+          handleSubmit={async () => {
+            try {
+              await ApiUnivers.removeBookLink(universId, currentBook.id, { idBook: bookToDelete.id });
+              setOpenDeleteLink(false);
+              setBookToDelete(null);
+              // Rafraîchir la liste des articles
+              if (encyId === 'all') {
+                const { data } = await ApiUnivers.getBooks(universId, { nameBook: search || undefined });
+                const items = (Array.isArray(data) ? data : []).map(b => ({ 
+                  id: b.id, 
+                  name: b.name, 
+                  description: b.description, 
+                  type: b.type, 
+                  image: b.image, 
+                  externalLink: b.externalLink || null,
+                  _isLink: !!b.idLink,
+                  _idLink: b.idLink
+                }));
+                setCurrentArticleLinks(items);
+              } else if (currentBook?.id) {
+                const { data } = await ApiUnivers.getBookDetail(universId, currentBook.id);
+                setCurrentBook(data || null);
+                const items = (data?.link || []).map(link => {
+                  const isExternal = typeof link.location === 'string' && link.location.startsWith('http');
+                  return { id: link.id, name: link.name, description: link.description, type: link.type, image: link.image, externalLink: isExternal ? link.location : null, _linkDesc: link.description, _isLink: true };
+                });
+                setCurrentArticleLinks(items);
+              }
+            } catch (error) {
+              console.error('Erreur lors de la suppression du lien:', error);
+              alert('Erreur lors de la suppression du lien');
+            }
+          }}
+          fields={{
+            confirmation: { 
+              type: "html", 
+              label: "", 
+              value: `Êtes-vous sûr de vouloir supprimer le lien vers "<strong>${bookToDelete.name}</strong>" ?` 
+            },
+          }}
+          textButtonValidate="Supprimer"
+        />
+      )}
+
+      {/* Modal de suppression de book */}
+      {openDeleteBook && currentBook && String(currentBook.id) === encyId && (
+        <ModalGeneric
+          name="delete-book"
+          title="Supprimer le livre"
+          isOpen
+          onClose={() => setOpenDeleteBook(false)}
+          handleSubmit={async () => {
+            try {
+              await ApiUnivers.deleteBook(universId, currentBook.id);
+              setOpenDeleteBook(false);
+              navigate(`/univers/${universId}/encyclopedie/all`);
+            } catch (error) {
+              console.error('Erreur lors de la suppression du livre:', error);
+              alert('Suppression impossible');
+            }
+          }}
+          fields={{
+            confirmation: { 
+              type: "html", 
+              label: "", 
+              value: `Êtes-vous sûr de vouloir supprimer le livre "<strong>${currentBook.name}</strong>" ?<br><br><em>Cette action est irréversible.</em>` 
+            },
+          }}
+          textButtonValidate="Supprimer"
         />
       )}
     </div>

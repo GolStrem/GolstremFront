@@ -277,7 +277,52 @@
 
 
 }
-.select-public{
+
+/* Styles pour la croix de suppression sur les cards */
+.UniEncy-card {
+  position: relative;
+}
+
+.UniEncy-card-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.UniEncy-card:hover .UniEncy-card-delete {
+  opacity: 1;
+}
+
+.UniEncy-card-delete:hover {
+  background: rgba(255, 0, 0, 1);
+  transform: scale(1.1);
+}
+
+.UniEncy-card-clickable {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  cursor: pointer;
+}
+.select-public,.select-selectedUniversSearchId,.select-selectedPublicBookId{
   display: flex;
   flex-direction: column;
   margin-bottom: 30px;
@@ -336,9 +381,10 @@
   background-color: var(--jaune);
   color: #000;
 }
-.label-public{
+.label-public,.label-selectedUniversSearchId,.label-selectedPublicBookId{
   margin-left: 0 !important;
   align-self: auto !important;
+  justify-self: unset !important;
 }
 .UniEncy-masonry {
   display: flex;
@@ -475,6 +521,10 @@
   margin: 0;
   width: 100%;
 }
+.master-delete-book,.master-delete-link{
+  min-height: 0 !important;
+
+}
 
 .master-ency-create .selectGeneric.type input[type="text"],
 .master-ency-edit .selectGeneric.type input[type="text"] {
@@ -525,8 +575,9 @@
 .UniEncy-article-empty {
   padding: 16px;
   border-radius: 12px;
-  background: #171717;
+  background: var(--color-input-bg);
   border: 1px dashed #3a3a3a;
+  color: var(--color-text);
 }
 
 /* Modal primary action */
