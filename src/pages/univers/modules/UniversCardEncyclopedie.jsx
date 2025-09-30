@@ -677,8 +677,33 @@ const UniversCardEncyclopedie = () => {
               }
             } else if (values.action === 'Rajouter un article externe du site') {
               if (values.name && values.link) {
+                const payload = {
+                  name: values.name || "",
+                  description: values.description || "",
+                  texte: values.texte || "",
+                  type: values.type || "encyclopédie",
+                  image: values.image || "",
+                  public: values.public === 'oui' ? 1 : 0,
+                  idLink: null,
+                  link: [],
+                  connectArticle: currentBook?.id ?? null,
+                  externalLink: values.link,
+                };
+                await ApiUnivers.createBook(universId, payload);
                 setOpenCreate(false);
-                setOpenArticle({ id: `ext-${Date.now()}`, name: values.name, image: values.image || '', description: values.description || '', type: 'Externe', externalLink: values.link });
+                if (encyId === 'all') {
+                  const { data } = await ApiUnivers.getBooks(universId, { nameBook: search || undefined });
+                  const items = (Array.isArray(data) ? data : []).map(b => ({ id: b.id, name: b.name, description: b.description, type: b.type, image: b.image, externalLink: b.externalLink || null }));
+                  setCurrentArticleLinks(items);
+                } else if (currentBook?.id) {
+                  const { data } = await ApiUnivers.getBookDetail(universId, currentBook.id);
+                  setCurrentBook(data || null);
+                  const items = (data?.link || []).map(link => {
+                    const isExternal = typeof link.location === 'string' && link.location.startsWith('http');
+                    return { id: link.id, name: link.name, description: link.description, type: link.type, image: link.image, externalLink: isExternal ? link.location : null, _linkDesc: link.description, _isLink: true };
+                  });
+                  setCurrentArticleLinks(items);
+                }
               }
             }
           }}
