@@ -5,6 +5,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+/* Background plein écran pour book sans texte */
+.UniEncy-page-bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2; /* ~20% */
+  pointer-events: none;
+  z-index: 0;
+}
+
+.UniEncy-header,
+.UniEncy-title,
+.UniEncy-article-layout,
+.UniEncy-controls,
+.UniEncy-content-separator,
+.UniEncy-masonry {
+  position: relative;
+  z-index: 1;
 }
 
 .UniEncy-title {
@@ -12,7 +33,8 @@
   font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.4rem);
   margin-bottom: 8px;
   color: var(--jaune);
-  margin-top: 50px;
+  margin-top: 0;
+
 }
 
 .UniEncy-intro {
@@ -76,7 +98,7 @@
   float: left;
   width: 500px;
   max-width: 500px;
-  margin: 0 13px 0px 0;
+  margin: 0 30px 0px 0;
 }
 
 .UniEncy-article-image {
@@ -210,18 +232,13 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 80px;
 }
 
 /* Toggle moderne pour les modes */
 .UniEncy-mode {
   display: flex;
-  background: var(--color-input-bg);
-  border-radius: 50px;
-  margin-top: 20px;
-  padding: 6px;
-  
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+
 }
 
 .UniEncy-mode-btn {
@@ -236,7 +253,88 @@
   transition: all 0.2s ease;
   position: relative;
   z-index: 1;
+
 }
+.UniEncy-mode-row{
+  
+  background: var(--color-input-bg);
+  border-radius: 50px;
+  margin-top: 20px;
+  padding: 6px;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.UniEncy-mode-rowtwo{
+  
+  background: var(--color-input-bg);
+  border-radius: 50px;
+  margin-top: 10px;
+  padding: 3px;
+  display: inline-flex;
+  justify-content: flex-start;
+
+
+}
+
+/* Styles pour la croix de suppression sur les cards */
+.UniEncy-card {
+  position: relative;
+}
+
+.UniEncy-card-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.UniEncy-card:hover .UniEncy-card-delete {
+  opacity: 1;
+}
+
+.UniEncy-card-delete:hover {
+  background: rgba(255, 0, 0, 1);
+  transform: scale(1.1);
+}
+
+.UniEncy-card-clickable {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  cursor: pointer;
+}
+.select-public,.select-selectedUniversSearchId,.select-selectedPublicBookId{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  width: 40%;
+  background-color: var(--color-input-bg) !important;
+  margin-bottom: 15px;
+}
+
 
 .UniEncy-mode-btn.active {
   background: var(--jaune);
@@ -283,11 +381,16 @@
   background-color: var(--jaune);
   color: #000;
 }
-
+.label-public,.label-selectedUniversSearchId,.label-selectedPublicBookId{
+  margin-left: 0 !important;
+  align-self: auto !important;
+  justify-self: unset !important;
+}
 .UniEncy-masonry {
   display: flex;
   margin-left: -20px;
   width: 100%;
+  justify-content: space-evenly;
 }
 
 .UniEncy-column {
@@ -398,6 +501,45 @@
 }
 .UniEncy-modal-close:hover { color: var(--jaune); }
 
+/* Scoped overrides for ModalGeneric select+other input in Encyclopedie modals */
+.master-ency-create .selectGeneric.type,
+.master-ency-edit .selectGeneric.type {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  position: static !important;
+}
+
+.master-ency-create .selectGeneric.type .label-type,
+.master-ency-edit .selectGeneric.type .label-type {
+  margin-bottom: 0;
+}
+
+.master-ency-create .selectGeneric.type select,
+.master-ency-edit .selectGeneric.type select {
+  margin: 0;
+  width: 100%;
+}
+.master-delete-book,.master-delete-link{
+  min-height: 0 !important;
+
+}
+
+.master-ency-create .selectGeneric.type input[type="text"],
+.master-ency-edit .selectGeneric.type input[type="text"] {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 30% !important;
+  padding: 8px 10px !important;
+  border-radius: 4px !important;
+  margin-left: 0 !important;
+  margin-top: -20px;
+  z-index: auto !important;
+}
+
 .UniEncy-modal-body {
   padding: 16px 18px 22px;
   display: flex;
@@ -433,8 +575,9 @@
 .UniEncy-article-empty {
   padding: 16px;
   border-radius: 12px;
-  background: #171717;
+  background: var(--color-input-bg);
   border: 1px dashed #3a3a3a;
+  color: var(--color-text);
 }
 
 /* Modal primary action */

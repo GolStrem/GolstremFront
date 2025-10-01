@@ -10,6 +10,33 @@ import StarterKit from "@tiptap/starter-kit";
 import { useTranslation } from "react-i18next";
 
 
+// Detached text editor component to keep hooks out of ModalGeneric render path
+const TextAreaEditor = ({ value, onChange, forceUpdateRef, label, id }) => {
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: value || "",
+    onUpdate: ({ editor }) => {
+      onChange({ target: { value: editor.getHTML() } });
+    },
+  });
+
+  useEffect(() => {
+    if (editor && editor.getHTML() !== value) {
+      editor.commands.setContent(value || "");
+    }
+  }, [value, editor, forceUpdateRef.current]);
+
+  return (
+    <div className={`cf-generic ${id}`}>
+      <label className={`tm-label label-about label-${id}`} htmlFor={id}>
+        {label} :
+      </label>
+      <ToolbarTipTap editor={editor} />
+      <EditorContent editor={editor} className="tiptap-editor" />
+    </div>
+  );
+};
+
 const ModalGeneric = ({ 
 	onClose, 
 	handleSubmit, 
@@ -23,7 +50,8 @@ const ModalGeneric = ({
 	textButtonValidate= 'save',
 	nav = [],
 	noMemory = false,
-	hidePrimary = false
+	hidePrimary = false,
+	onValuesChange
 }) => {
 	if (isOpen !== undefined && !isOpen) return null;
 	
@@ -46,6 +74,11 @@ const ModalGeneric = ({
 		
 		Object.keys(fields).forEach((key) => {
 			const type = fields[key]?.type;
+			if (type === "selectSwitch") {
+				const options = Array.isArray(fields[key]?.value) ? fields[key].value : [];
+				output[key] = initialData[key] ?? fields[key]?.default ?? (options.length ? options[0] : "");
+				return;
+			}
 			if (type === "texteImg+") {
 				// Détecter combien de paires existent déjà dans initialData
 				const textKeyBase = "inputText";
@@ -218,6 +251,8 @@ const ModalGeneric = ({
 	}, [values])
 
 	useEffect(() => {
+		// notifier le parent des valeurs courantes si demandé
+		onValuesChange?.(values);
 		forceUpdateRef.current += 1;
 	}, [values])
 
@@ -364,7 +399,46 @@ const ModalGeneric = ({
 	const renderField = (key, config) => {
 		const id = key;
 		const label = config?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
-		switch (config?.type) {
+			switch (config?.type) {
+			case "selectSwitch": {
+				const opts = Array.isArray(config.value) ? config.value : [];
+				// Ensure default value exists
+				if (values[key] === undefined) {
+					setValues((prev) => ({ ...prev, [key]: config.default ?? (opts[0] ?? "") }));
+				}
+				return (
+					<div key={key} className={`selectSwitch ${key}`}>
+						{config.label !== "" && (
+							<label htmlFor={`select-${id}`} className={`label-${key}`}>{label}</label>
+						)}
+						<select
+							id={`select-${id}`}
+							name={key}
+							className={`filter-select select-${key} select-public`}
+							value={values[key] || ""}
+							onChange={(e) => setValues((prev) => ({ ...prev, [key]: e.target.value }))}
+						>
+						{opts.map((val, idx) => {
+							// Vérifier si cette option doit être affichée selon le behavior
+							const shouldShow = !config.behavior || !config.behavior[val] || config.behavior[val]();
+							return shouldShow ? (
+								<option key={`${key}-opt-${idx}`} value={val}>{val}</option>
+							) : null;
+						})}
+						</select>
+						{/* Render dynamic subfields for the selected option */}
+						{config.cases && config.cases[values[key]] && (
+							<div className={`selectSwitch-case ${key}-${values[key]}`}>
+								{Object.entries(config.cases[values[key]]).map(([subKey, subCfg]) => (
+									<div key={`${key}__${subKey}`} className={`switch-field ${key}__${subKey}`}>
+										{renderField(subKey, subCfg)}
+									</div>
+								))}
+							</div>
+						)}
+					</div>
+				);
+			}
 			case "inputText":
 				return (
 					<div key={key} className={`cf-field short ${key}`}>
@@ -414,28 +488,15 @@ const ModalGeneric = ({
 					</div>
 					);
 			case "textarea":
-				const editor = useEditor({
-					extensions: [StarterKit],
-					content: values[key] || "",
-					onUpdate: ({ editor }) => {
-					handleChange(key)({ target: { value: editor.getHTML() } }); 
-					},
-				});
-
-				useEffect(() => {
-					if (editor && editor.getHTML() !== values[key]) {
-						editor.commands.setContent(values[key] || '');
-					}
-				}, [values[key], editor, forceUpdateRef.current]);
-
 				return (
-					<div key={key} className={`cf-generic ${key}`}>
-						<label className={`tm-label label-about label-${key}`} htmlFor={id}>
-							{t(label)} :
-						</label>
-						 <ToolbarTipTap editor={editor} />
-						<EditorContent editor={editor} className="tiptap-editor" />
-					</div>
+					<TextAreaEditor
+						key={key}
+						value={values[key]}
+						onChange={handleChange(key)}
+						forceUpdateRef={forceUpdateRef}
+						label={t(label)}
+						id={id}
+					/>
 				);
 			case "texteImg+":
 				return (
