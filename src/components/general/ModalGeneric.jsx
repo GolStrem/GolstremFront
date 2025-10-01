@@ -418,9 +418,13 @@ const ModalGeneric = ({
 							value={values[key] || ""}
 							onChange={(e) => setValues((prev) => ({ ...prev, [key]: e.target.value }))}
 						>
-							{opts.map((val, idx) => (
+						{opts.map((val, idx) => {
+							// Vérifier si cette option doit être affichée selon le behavior
+							const shouldShow = !config.behavior || !config.behavior[val] || config.behavior[val]();
+							return shouldShow ? (
 								<option key={`${key}-opt-${idx}`} value={val}>{val}</option>
-							))}
+							) : null;
+						})}
 						</select>
 						{/* Render dynamic subfields for the selected option */}
 						{config.cases && config.cases[values[key]] && (

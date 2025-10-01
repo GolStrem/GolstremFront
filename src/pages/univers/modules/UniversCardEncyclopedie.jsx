@@ -224,9 +224,7 @@ const UniversCardEncyclopedie = () => {
         // Utiliser la route qui retourne directement les univers avec leurs books publics
         const { data } = await ApiUnivers.getUniversWithPublicBooks(universId, {});
         if (!mounted) return;
-        console.log('Univers avec books publics data:', data); // Debug
         const universItems = Array.isArray(data) ? data : [];
-        console.log('Univers items:', universItems); // Debug
         
         // Filtrer les univers qui ont au moins un book public
         const withPublic = universItems.map(u => ({ id: u.idUnivers, name: u.name }));
@@ -237,7 +235,6 @@ const UniversCardEncyclopedie = () => {
           setCurrentUniversName(currentUni.name);
         }
         
-        console.log('Univers avec books publics:', withPublic); // Debug
         setModalUniversList(withPublic);
       } finally {
         setModalUniversLoading(false);
@@ -259,11 +256,9 @@ const UniversCardEncyclopedie = () => {
         // Charger les books de l'univers actuel pour l'action "Chercher"
         const { data } = await ApiUnivers.getBooks(universId, {});
         if (!mounted) return;
-        console.log('Books de l\'univers actuel pour la modale:', data); // Debug
         const items = Array.isArray(data) ? data : [];
         setModalPublicBooks(items.map(b => ({ id: b.id, name: b.name })));
       } catch (err) {
-        console.log('Erreur lors du chargement des books:', err); // Debug
         setModalPublicBooks([]);
       } finally {
         setModalBooksLoading(false);
@@ -303,6 +298,10 @@ const UniversCardEncyclopedie = () => {
     loadUnivers();
     return () => { mounted = false; };
   }, [createAction]);
+
+  function possibleAddLink() {
+    return currentBook !== null;
+  }
 
   // Charger livres publics quand univers sélectionné
   useEffect(() => {
@@ -609,23 +608,19 @@ const UniversCardEncyclopedie = () => {
                 try {
                   setModalBooksLoading(true);
                   // Si c'est notre univers actuel, afficher tous les articles (publics et privés)
-                  console.log("uni.id", uni.id);
                   if (String(uni.id) === String(universId)) {
                     const { data } = await ApiUnivers.getBooks(universId, {});
                     if (!mounted) return;
-                    console.log('Tous les books de notre univers actuel:', data); // Debug
                     const items = Array.isArray(data) ? data : [];
                     setModalPublicBooks(items.map(b => ({ id: b.id, name: b.name })));
                   } else {
                     // Pour les autres univers, utiliser searchInUnivers pour les publics
                     const { data } = await ApiUnivers.getBooks(universId, {searchInUnivers: uni.id});
                     if (!mounted) return;
-                    console.log('Books publics pour univers', uni.name, ':', data); // Debug
                     const items = Array.isArray(data) ? data : [];
                     setModalPublicBooks(items.map(b => ({ id: b.id, name: b.name })));
                   }
                 } catch (err) {
-                  console.log('Erreur lors du chargement des books:', err); // Debug
                   setModalPublicBooks([]);
                 } finally {
                   setModalBooksLoading(false);
@@ -688,6 +683,9 @@ const UniversCardEncyclopedie = () => {
               label: 'Action',
               value: ['Créer un article', 'Chercher un article existant', 'Rajouter un article externe du site'],
               default: 'Créer un article',
+              behavior: {
+                'Chercher un article existant': possibleAddLink
+              },
               cases: {
                 'Créer un article': {
                   name: { type: "inputText", label: "name" },
