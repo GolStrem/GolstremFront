@@ -120,7 +120,7 @@ const Univers = () => {
         if (module.name === 'encyclopedie') {
           CATEGORIES.map(c => {
             if (c.key === 'encyclopedie' && c.to.split('/').at(-1) === 'encyclopedie') {
-              c.to = `${c.to}/${extra.encyclopedie ?? 0}`;
+              c.to = `${c.to}/${extra.encyclopedie ?? 'all'}`;
             }
           });
         }
