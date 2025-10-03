@@ -392,6 +392,20 @@
   width: 100%;
   justify-content: space-evenly;
 }
+.UniEncy-delete-btn{
+  background-color: #ff4757;
+  padding: 10px;
+  text-decoration: none;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.UniEncy-delete-btn:hover{
+  background-color: var(--jaune);
+  color: #000;
+}
 
 .UniEncy-column {
   padding-left: 20px;

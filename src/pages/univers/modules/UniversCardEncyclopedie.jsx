@@ -569,6 +569,24 @@ const UniversCardEncyclopedie = () => {
                 >
                   {openArticle.externalLink ? 'Voir le lien externe' : 'Allez sur la page'}
                 </button>
+                {openArticle.externalLink && (
+                  <button
+                    type="button"
+                    className="UniEncy-delete-btn"
+                    onClick={async () => {
+                      try {
+                        await ApiUnivers.deleteBook(universId, openArticle.id);
+                        setOpenArticle(null);
+                        await loadAndUpdateData();
+                      } catch (error) {
+                        console.error('Erreur lors de la suppression du lien externe:', error);
+                        alert('Erreur lors de la suppression du lien externe');
+                      }
+                    }}
+                  >
+                    Supprimer
+                  </button>
+                )}
               </div>
             </div>
           </div>
