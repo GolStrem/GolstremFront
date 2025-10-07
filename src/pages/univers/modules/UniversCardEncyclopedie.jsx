@@ -3,7 +3,7 @@ import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardEncyclopedie.css";
 import { BackLocation, ModalGeneric } from "@components";
-import { useNavigatePage, PurifyHtml, ApiUnivers } from "@service";
+import { useNavigatePage, PurifyHtml, ApiUnivers, DroitAccess } from "@service";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -36,6 +36,7 @@ const UniversCardEncyclopedie = () => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const loadSequenceRef = useRef(0);
+  const [droits, setDroits] = useState(null);
   // Création avancée: action et listes
   const [createAction, setCreateAction] = useState('create');
   const [universList, setUniversList] = useState([]);
@@ -197,6 +198,23 @@ const UniversCardEncyclopedie = () => {
       resizeObserver.disconnect();
     };
   }, [currentArticle]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadUnivers() {
+      if (!universId) return;
+      try {
+        const res = await ApiUnivers.getDetailUnivers(universId);
+        if (!mounted) return;
+        setDroits(res?.data?.droit ?? null);
+      } catch (_) {
+        if (!mounted) return;
+        setDroits(null);
+      }
+    }
+    loadUnivers();
+    return () => { mounted = false; };
+  }, [universId]);
 
   // Charger le texte complet pour l'aperçu si absent
   useEffect(() => {
@@ -368,6 +386,7 @@ const UniversCardEncyclopedie = () => {
               </button>
             </div>
             <div className="UniEncy-mode-rowtwo">
+            {DroitAccess.hasWriteAccess(droits) && (
               <button
                 type="button"
                 className="UniEncy-mode-btn"
@@ -375,8 +394,10 @@ const UniversCardEncyclopedie = () => {
               >
                 {t('common:create')}
               </button>
+              )}
               {currentBook && String(currentBook.id) === encyId && (
                 <>
+                {DroitAccess.hasWriteAccess(droits) && (
                   <button
                     type="button"
                     className="UniEncy-mode-btn"
@@ -391,6 +412,8 @@ const UniversCardEncyclopedie = () => {
                   >
                     {t('common:edit')}
                   </button>
+                  )}
+                  {DroitAccess.hasWriteAccess(droits) && (
                   <button
                     type="button"
                     className="UniEncy-mode-btn"
@@ -405,6 +428,7 @@ const UniversCardEncyclopedie = () => {
                   >
                     {t('common:delete')}
                   </button>
+                  )}
                 </>
               )}
             </div>
@@ -571,7 +595,8 @@ const UniversCardEncyclopedie = () => {
                 >
                   {openArticle.externalLink ? t('univers:encyclopedie.openExternal') : t('univers:encyclopedie.goToPage')}
                 </button>
-                {openArticle.externalLink && (
+                
+                {openArticle.externalLink && DroitAccess.hasWriteAccess(droits) && (
                   <button
                     type="button"
                     className="UniEncy-delete-btn"
