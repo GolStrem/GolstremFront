@@ -401,7 +401,10 @@
   font-weight: 600;
   margin-left: 10px;
 }
-
+.label-action{
+  font-weight: 600;
+  margin-left: 0 !important;
+}
 .UniEncy-delete-btn:hover{
   background-color: var(--jaune);
   color: #000;

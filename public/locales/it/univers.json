@@ -375,6 +375,54 @@
       "warning": "⚠️ Questa azione è irreversibile."
     }
   }
+  ,
+  "encyclopedie": {
+    "titleDefault": "Enciclopedia",
+    "viewAll": "Vedi tutto",
+    "byCategory": "Per categoria",
+    "searchPlaceholder": "Cerca...",
+    "noText": "Nessun testo per questo articolo.",
+    "openExternal": "Apri link esterno",
+    "goToPage": "Vai alla pagina",
+    "types": ["Enciclopedia", "Categoria", "Creatura", "Oggetto", "Artefatto", "Luogo", "Magia", "Popolo"],
+    "modals": {
+      "create": {
+        "title": "Crea / Cerca / Esterno",
+        "actionLabel": "Azione",
+        "articleCurrent": "Articolo attuale: {{label}}",
+        "actions": {
+          "create": "Crea un articolo",
+          "search": "Cerca un articolo esistente",
+          "addExternal": "Aggiungi un articolo esterno del sito"
+        },
+        "fields": {
+          "name": "Nome",
+          "description": "Descrizione",
+          "texte": "Testo",
+          "image": "Immagine",
+          "type": "Tipo",
+          "public": "Recuperabile per gli altri universi?",
+          "yes": "sì",
+          "no": "no",
+          "selectedUniversSearchId": "Universo",
+          "selectedPublicBookId": "Articolo pubblico",
+          "link": "Link esterno (https://...)"
+        },
+        "noPublicArticles": "— nessun articolo disponibile per questo universo —"
+      },
+      "edit": {
+        "title": "Modifica libro"
+      },
+      "deleteLink": {
+        "title": "Elimina link",
+        "confirm": "Sei sicuro di voler eliminare il link a \u00ab {{name}} \u00bb?"
+      },
+      "deleteBook": {
+        "title": "Elimina libro",
+        "confirm": "Sei sicuro di voler eliminare il libro \u00ab {{name}} \u00bb?\nQuesta azione è irreversibile."
+      }
+    }
+  }
 }
 
 

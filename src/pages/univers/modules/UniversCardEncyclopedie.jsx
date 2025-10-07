@@ -5,6 +5,7 @@ import "./UniversCardEncyclopedie.css";
 import { BackLocation, ModalGeneric } from "@components";
 import { useNavigatePage, PurifyHtml, ApiUnivers } from "@service";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // Data now loaded from API
 
@@ -19,6 +20,7 @@ const breakpointColumnsObj = {
 
 
 const UniversCardEncyclopedie = () => {
+  const { t } = useTranslation();
   const { id: universId, encyId } = useParams();
   const navigate = useNavigatePage();
   const [filter, setFilter] = useState("Tous");
@@ -156,7 +158,7 @@ const UniversCardEncyclopedie = () => {
       try {
         await loadAndUpdateData();
       } catch (e) {
-        setError('Erreur lors du chargement de l\'encyclopédie');
+        setError(t('univers:encyclopedie.loadError', 'Erreur lors du chargement de l\'encyclopédie'));
         setCurrentArticleLinks([]);
         setCurrentBook(null);
       } finally {
@@ -167,7 +169,7 @@ const UniversCardEncyclopedie = () => {
     }
     load();
     return () => controller.abort();
-  }, [universId, encyId, search, viewMode]);
+  }, [universId, encyId, search, viewMode, t]);
 
   const currentArticle = currentBook || null;
   const noTextHasImage = !!(
@@ -347,7 +349,7 @@ const UniversCardEncyclopedie = () => {
                   navigate(`/univers/${universId}/encyclopedie/all`)
                 }}
               >
-                Voir tout
+                {t('univers:encyclopedie.viewAll')}
               </button>
               <button
                 type="button"
@@ -362,7 +364,7 @@ const UniversCardEncyclopedie = () => {
                   }
                 }}
               >
-                Par catégorie
+                {t('univers:encyclopedie.byCategory')}
               </button>
             </div>
             <div className="UniEncy-mode-rowtwo">
@@ -371,7 +373,7 @@ const UniversCardEncyclopedie = () => {
                 className="UniEncy-mode-btn"
               onClick={() => setOpenCreate(true)}
               >
-                Créer
+                {t('common:create')}
               </button>
               {currentBook && String(currentBook.id) === encyId && (
                 <>
@@ -387,7 +389,7 @@ const UniversCardEncyclopedie = () => {
                       setOpenEdit(true);
                     }}
                   >
-                    Éditer
+                    {t('common:edit')}
                   </button>
                   <button
                     type="button"
@@ -401,7 +403,7 @@ const UniversCardEncyclopedie = () => {
                       setOpenDeleteBook(true);
                     }}
                   >
-                    Supprimer
+                    {t('common:delete')}
                   </button>
                 </>
               )}
@@ -413,7 +415,7 @@ const UniversCardEncyclopedie = () => {
 
 
       
-      <h2 className="UniEncy-title">{currentArticle?.name || "Encyclopédie"}</h2>
+      <h2 className="UniEncy-title">{currentArticle?.name || t('univers:encyclopedie.titleDefault')}</h2>
       
       {/* Layout image à gauche, texte à droite */}
       {currentArticle && (
@@ -459,7 +461,7 @@ const UniversCardEncyclopedie = () => {
         <div className="UniEncy-controls">
           <input
             type="text"
-            placeholder="Rechercher..."
+            placeholder={t('univers:encyclopedie.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="UniEncy-search"
@@ -506,7 +508,7 @@ const UniversCardEncyclopedie = () => {
                   setBookToDelete(item);
                   setOpenDeleteLink(true);
                 }}
-                title="Supprimer ce lien"
+                title={t('common:delete')}
               >
                 ×
               </button>
@@ -550,7 +552,7 @@ const UniversCardEncyclopedie = () => {
                 />
               ) : (
                 <div className="UniEncy-article-empty">
-                  <p>Aucun texte pour cet article.</p>
+                  <p>{t('univers:encyclopedie.noText')}</p>
                 </div>
               )}
 
@@ -567,7 +569,7 @@ const UniversCardEncyclopedie = () => {
                     setOpenArticle(null);
                   }}
                 >
-                  {openArticle.externalLink ? 'Voir le lien externe' : 'Allez sur la page'}
+                  {openArticle.externalLink ? t('univers:encyclopedie.openExternal') : t('univers:encyclopedie.goToPage')}
                 </button>
                 {openArticle.externalLink && (
                   <button
@@ -584,7 +586,7 @@ const UniversCardEncyclopedie = () => {
                       }
                     }}
                   >
-                    Supprimer
+                    {t('common:delete')}
                   </button>
                 )}
               </div>
@@ -596,25 +598,26 @@ const UniversCardEncyclopedie = () => {
       {openCreate && (
         <ModalGeneric
           name="ency-create"
-          title="Créer / Chercher / Externe"
+          title={t('univers:encyclopedie.modals.create.title')}
           isOpen
           onClose={() => setOpenCreate(false)}
           initialData={{
-            action: 'Créer un article',
+            action: t('univers:encyclopedie.modals.create.actions.create'),
             type: currentBook?.name ? toTitleCase(currentBook.name) : (viewMode === 'category' ? 'Catégorie' : ''),
             selectedUniversSearchId: currentUniversName,
             selectedPublicBookId: '',
           }}
           onValuesChange={(vals) => {
+            const actionSearch = t('univers:encyclopedie.modals.create.actions.search');
             // Mémoriser le nom de l'univers sélectionné
-            if (vals.action === 'Chercher un article existant') {
+            if (vals.action === actionSearch) {
               const selectedName = vals.selectedUniversSearchId || "";
               setModalSelectedUniversName(selectedName);
             } else {
               setModalSelectedUniversName("");
             }
             // Charger les livres publics quand un univers est sélectionné
-            if (vals.action === 'Chercher un article existant' && vals.selectedUniversSearchId) {
+            if (vals.action === actionSearch && vals.selectedUniversSearchId) {
               const uni = modalUniversList.find(u => u.name === vals.selectedUniversSearchId);
               if (!uni) { 
                 setModalPublicBooks([]); 
@@ -645,26 +648,30 @@ const UniversCardEncyclopedie = () => {
                 }
               })();
               return () => { mounted = false; };
-            } else if (vals.action !== 'Chercher un article existant') {
+            } else if (vals.action !== actionSearch) {
               setModalPublicBooks([]);
             }
           }}
           handleSubmit={async (values) => {
-            if (values.action === 'Créer un article') {
+            const actionCreate = t('univers:encyclopedie.modals.create.actions.create');
+            const actionSearch = t('univers:encyclopedie.modals.create.actions.search');
+            const actionExternal = t('univers:encyclopedie.modals.create.actions.addExternal');
+            const yesLabel = t('univers:encyclopedie.modals.create.fields.yes');
+            if (values.action === actionCreate) {
               const payload = {
                 name: values.name || "",
                 description: values.description || "",
                 texte: values.texte || "",
                 type: values.type || "encyclopédie",
                 image: values.image || "",
-                public: values.public === 'oui' ? 1 : 0,
+                public: values.public === yesLabel ? 1 : 0,
                 idLink: null,
                 link: [],
                 connectArticle: currentBook?.id ?? null,
                 externalLink: null,
               };
               await ApiUnivers.createBook(universId, payload);
-            } else if (values.action === 'Chercher un article existant') {
+            } else if (values.action === actionSearch) {
               // Utiliser la sélection de l'utilisateur ou le premier article disponible par défaut
               const bookToSelect = values.selectedPublicBookId || (modalPublicBooks.length > 0 ? modalPublicBooks[0].name : null);
               if (bookToSelect) {
@@ -674,7 +681,7 @@ const UniversCardEncyclopedie = () => {
                   await ApiUnivers.addBookLink(universId, currentBook.id, { idBook: selectedBook.id });
                 }
               }
-            } else if (values.action === 'Rajouter un article externe du site') {
+            } else if (values.action === actionExternal) {
               if (values.name && values.link) {
                 const payload = {
                   name: values.name || "",
@@ -682,7 +689,7 @@ const UniversCardEncyclopedie = () => {
                   texte: values.texte || "",
                   type: values.type || "encyclopédie",
                   image: values.image || "",
-                  public: values.public === 'oui' ? 1 : 0,
+                  public: values.public === yesLabel ? 1 : 0,
                   idLink: null,
                   link: [],
                   connectArticle: currentBook?.id ?? null,
@@ -695,41 +702,45 @@ const UniversCardEncyclopedie = () => {
             await loadAndUpdateData();
           }}
           fields={{
-            articleActuel: { type: "html", label: "", value: `Article actuel: <strong>${currentBook?.name || (viewMode === 'category' ? 'Catégorie' : 'Voir tout')}</strong>` },
+            articleActuel: { type: "html", label: "", value: `${t('univers:encyclopedie.modals.create.articleCurrent', { label: currentBook?.name || (viewMode === 'category' ? 'Catégorie' : t('univers:encyclopedie.viewAll')) })}` },
             action: {
               type: 'selectSwitch',
-              label: 'Action',
-              value: ['Créer un article', 'Chercher un article existant', 'Rajouter un article externe du site'],
-              default: 'Créer un article',
+              label: t('univers:encyclopedie.modals.create.actionLabel'),
+              value: [
+                t('univers:encyclopedie.modals.create.actions.create'),
+                t('univers:encyclopedie.modals.create.actions.search'),
+                t('univers:encyclopedie.modals.create.actions.addExternal')
+              ],
+              default: t('univers:encyclopedie.modals.create.actions.create'),
               behavior: {
-                'Chercher un article existant': possibleAddLink
+                [t('univers:encyclopedie.modals.create.actions.search')]: possibleAddLink
               },
               cases: {
-                'Créer un article': {
-                  name: { type: "inputText", label: "name" },
-                  description: { type: "textarea", label: "description" },
-                  texte: { type: "textarea", label: "texte" },
-                  image: { type: "inputUrl", label: "image" },
-                  type: { type: "select", label: "type", value: ["encyclopédie","Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple"], another: true },
-                  public: { type: "select", label: "recuperable pour les autres univers ?", value: ["non", "oui"] },
+                [t('univers:encyclopedie.modals.create.actions.create')]: {
+                  name: { type: "inputText", label: t('common:nom') },
+                  description: { type: "textarea", label: t('common:description') },
+                  texte: { type: "textarea", label: t('common:description') },
+                  image: { type: "inputUrl", label: t('common:imgUrl') },
+                  type: { type: "select", label: t('univers:encyclopedie.modals.create.fields.type'), value: ["encyclopédie","Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple"], another: true },
+                  public: { type: "select", label: t('univers:encyclopedie.modals.create.fields.public'), value: [t('univers:encyclopedie.modals.create.fields.no'), t('univers:encyclopedie.modals.create.fields.yes')] },
                 },
-                'Chercher un article existant': {
+                [t('univers:encyclopedie.modals.create.actions.search')]: {
                   selectedUniversSearchId: { 
                     type: 'select', 
-                    label: 'Univers', 
+                    label: t('univers:encyclopedie.modals.create.fields.selectedUniversSearchId'), 
                     value: modalUniversList.map(u => u.name)
                   },
                   selectedPublicBookId: { 
                     type: 'select', 
-                    label: 'Article public', 
-                    value: (modalPublicBooks.length > 0 ? modalPublicBooks.map(b => b.name) : ['pas d\'article disponible pour cet univers'])
+                    label: t('univers:encyclopedie.modals.create.fields.selectedPublicBookId'), 
+                    value: (modalPublicBooks.length > 0 ? modalPublicBooks.map(b => b.name) : [t('univers:encyclopedie.modals.create.noPublicArticles')])
                   }
                 },
-                'Rajouter un article externe du site': {
-                  name: { type: 'inputText', label: 'Nom' },
-                  description: { type: "textarea", label: "description" },
-                  image: { type: 'inputUrl', label: 'Image URL' },
-                  link: { type: 'inputText', label: 'Lien externe (https://...)' },
+                [t('univers:encyclopedie.modals.create.actions.addExternal')]: {
+                  name: { type: 'inputText', label: t('common:nom') },
+                  description: { type: "textarea", label: t('common:description') },
+                  image: { type: 'inputUrl', label: t('common:imgUrl') },
+                  link: { type: 'inputText', label: t('univers:encyclopedie.modals.create.fields.link') },
                 },
               }
             },
@@ -742,7 +753,7 @@ const UniversCardEncyclopedie = () => {
       {openEdit && currentBook && String(currentBook.id) === encyId && (
         <ModalGeneric
           name="ency-edit"
-          title="Éditer le livre"
+          title={t('univers:encyclopedie.modals.edit.title')}
           isOpen
           onClose={() => setOpenEdit(false)}
           initialData={{
@@ -769,12 +780,12 @@ const UniversCardEncyclopedie = () => {
             setCurrentBook(data || null);
           }}
           fields={{
-            name: { type: "inputText", label: "name" },
-            description: { type: "textarea", label: "description" },
-            texte: { type: "textarea", label: "texte" },
-            image: { type: "inputUrl", label: "image" },
-            type: { type: "select", label: "type", value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
-            public: { type: "select", label: "recuperable pour les autres univers ?", value: ["non", "oui"] },
+            name: { type: "inputText", label: t('common:nom') },
+            description: { type: "textarea", label: t('common:description') },
+            texte: { type: "textarea", label: t('common:description') },
+            image: { type: "inputUrl", label: t('common:imgUrl') },
+            type: { type: "select", label: t('univers:encyclopedie.modals.create.fields.type'), value: ["Catégorie","Créature","Objet","Artefact","Lieu","Magie","Peuple","encyclopédie"], another: true },
+            public: { type: "select", label: t('univers:encyclopedie.modals.create.fields.public'), value: [t('univers:encyclopedie.modals.create.fields.no'), t('univers:encyclopedie.modals.create.fields.yes')] },
             idLink: { type: "inputText", label: "idLink" },
             // idLink intentionally omitted in create modal; it is auto-derived if on a book detail
           }}
@@ -788,7 +799,7 @@ const UniversCardEncyclopedie = () => {
       {openDeleteLink && bookToDelete && (
         <ModalGeneric
           name="delete-link"
-          title="Supprimer le lien"
+          title={t('univers:encyclopedie.modals.deleteLink.title')}
           isOpen
           onClose={() => {
             setOpenDeleteLink(false);
@@ -810,10 +821,10 @@ const UniversCardEncyclopedie = () => {
             confirmation: { 
               type: "html", 
               label: "", 
-              value: `Êtes-vous sûr de vouloir supprimer le lien vers "<strong>${bookToDelete.name}</strong>" ?` 
+              value: t('univers:encyclopedie.modals.deleteLink.confirm', { name: bookToDelete.name }) 
             },
           }}
-          textButtonValidate="Supprimer"
+          textButtonValidate={t('common:delete')}
         />
       )}
 
@@ -821,7 +832,7 @@ const UniversCardEncyclopedie = () => {
       {openDeleteBook && currentBook && String(currentBook.id) === encyId && (
         <ModalGeneric
           name="delete-book"
-          title="Supprimer le livre"
+          title={t('univers:encyclopedie.modals.deleteBook.title')}
           isOpen
           onClose={() => setOpenDeleteBook(false)}
           handleSubmit={async () => {
@@ -838,10 +849,10 @@ const UniversCardEncyclopedie = () => {
             confirmation: { 
               type: "html", 
               label: "", 
-              value: `Êtes-vous sûr de vouloir supprimer le livre "<strong>${currentBook.name}</strong>" ?<br><br><em>Cette action est irréversible.</em>` 
+              value: t('univers:encyclopedie.modals.deleteBook.confirm', { name: currentBook.name }) 
             },
           }}
-          textButtonValidate="Supprimer"
+          textButtonValidate={t('common:delete')}
         />
       )}
     </div>
