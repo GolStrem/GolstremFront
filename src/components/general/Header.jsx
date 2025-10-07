@@ -9,7 +9,8 @@ import {
   FaTools,
   FaHome,
   FaUserFriends,
-  FaBell
+  FaBell,
+  FaShoppingBag
 } from "react-icons/fa";
 import { persistor, toggleTheme, logout } from "@store";
 import avatarImg from "@assets/avatar.png";
@@ -85,6 +86,13 @@ const Header = () => {
               onClick={() => navigate("/friends")}
             >
               <FaUserFriends /> {t("general.friends")}
+            </button>
+
+            <button
+              className="dropdown-item"
+              onClick={() => navigate("/shop")}
+            >
+              <FaShoppingBag /> {t("general.shop")}
             </button>
 
             {/* <button

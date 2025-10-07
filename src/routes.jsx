@@ -12,6 +12,7 @@ import LockScreen from './pages/LockScreen';
 import MenuUnivers from './pages/univers/MenuUnivers';
 import Create from './pages/create/Create.jsx';
 import Config from './pages/header/Config.jsx'
+import Shop from './pages/header/Shop.jsx'
 import Notifications from './pages/header/Notifications.jsx'
 import Friends from './pages/header/Friends.jsx'
 import UniversCardInscription  from  './pages/univers/modules/UniversCardInscription';
@@ -58,6 +59,16 @@ const routes = [
       <ProtectedRoute>
         <Layout>
           <Config />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/shop',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <Shop />
         </Layout>
       </ProtectedRoute>
     ),
