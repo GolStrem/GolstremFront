@@ -31,7 +31,8 @@
     text-align: center;
 
     margin: 0 auto;
-    max-width: 1200px; }
+    max-width: 1200px; 
+}
 
   
   .shop-title {
@@ -157,5 +158,112 @@
   
   .offer-button:hover {
     background-color: #ff4c4c;
+  }
+  
+  /* ===== Subscriptions ===== */
+  .shop-subs {
+    margin-top: 48px;
+    text-align: left;
+  }
+  
+  .shop-sub-title {
+    font-size: 1.6rem;
+    margin-bottom: 18px;
+  }
+  
+  .shop-error {
+    background: rgba(255, 76, 76, 0.12);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 76, 76, 0.35);
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin: 0 auto 16px auto;
+    max-width: 560px;
+  }
+  
+  .shop-loading,
+  .shop-empty {
+    opacity: 0.85;
+    font-size: 0.95rem;
+  }
+  
+  .shop-sub-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 760px;
+    display: grid;
+    gap: 12px;
+  }
+  
+  .shop-sub-item {
+    background-color: var(--color-input-bg);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .shop-sub-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  }
+  
+  .shop-sub-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .shop-sub-type {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  
+  .shop-sub-status {
+    font-size: 0.9rem;
+    color: #999;
+  }
+  
+  .shop-sub-status.active {
+    color: #2ecc71;
+  }
+  
+  .shop-sub-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .shop-sub-cancel {
+    background-color: transparent;
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.5);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .shop-sub-cancel:hover:not(:disabled) {
+    background-color: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+  }
+  
+  .shop-sub-cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    .parametre-sidebar{
+      padding-top: 50px;
+      writing-mode:initial !important;
+      transform: none !important;
+    }
   }
   
