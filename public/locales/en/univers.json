@@ -201,6 +201,8 @@
   },
   "board": {
     "title": "Notice Board",
+    "beginAtLabel": "Event starts",
+    "endAtLabel": "Event ends",
     "filters": {
       "type": "Type:",
       "status": "Status:",

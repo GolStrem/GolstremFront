@@ -201,6 +201,8 @@
   },
   "board": {
     "title": "Tableau d'affichage",
+    "beginAtLabel": "Début de l'évènement",
+    "endAtLabel": "Fin de l'évènement",
     "filters": {
       "type": "Type:",
       "status": "Statut:",
