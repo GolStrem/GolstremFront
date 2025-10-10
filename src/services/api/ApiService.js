@@ -94,6 +94,18 @@ const realApi = {
     return api.delete(`/user/friend/${id}`);
   },
 
+  stripeSubscribe(typeSubscription) {
+    return api.post('/stripe/subscribe', { typeSubscription });
+  },
+
+  stripeGetSubscriptions() {
+    return api.get('/stripe/subscribe');
+  },
+
+  stripeCancelSubscription(subscribeId) {
+    return api.delete(`/stripe/subscribe/${subscribeId}`);
+  },
+
   logout,
   getToken,
   setToken,

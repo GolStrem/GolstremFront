@@ -739,7 +739,7 @@ const Univers = () => {
         noClose={true}
         onClose={handleCloseSelectCategories}
         handleSubmit={handleSubmitCategories}
-        initialData={{ selectedModules: listModule }}
+        initialData={{ selectedModules: listModule.map((m) => MODULE_LABELS[m] || m) }}
         fields={categoriesFields}
         name={`univers-select-categories-modal-${universId}`}
         isOpen={isSelectCategoriesOpen}

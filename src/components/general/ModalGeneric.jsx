@@ -400,6 +400,21 @@ const ModalGeneric = ({
 		const id = key;
 		const label = config?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
 			switch (config?.type) {
+			case "inputDateTime": {
+				return (
+					<div key={key} className={`cf-field short ${key}`}>
+						<label className={`tm-label label-fiche label-${key}`} htmlFor={id}>
+							{t(label)} :
+						</label>
+						<input
+							id={id}
+							type="datetime-local"
+							value={values[key] || ""}
+							onChange={handleChange(key)}
+						/>
+					</div>
+				);
+			}
 			case "selectSwitch": {
 				const opts = Array.isArray(config.value) ? config.value : [];
 				// Ensure default value exists
