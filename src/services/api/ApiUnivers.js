@@ -67,6 +67,17 @@ const realApi = {
   // DELETE univers/${idUnivers}/book/link/${idLink}
   removeBookLink: (universId, idLink, payload) => api.delete(`/univers/${universId}/book/link/${idLink}`, { data: payload }),
 
+  // ========== QUEST (Board) ==========
+  // GET univers/${universId}/quest
+  getQuests: (universId, params = {}) => api.get(`/univers/${universId}/quest`, { params }),
+  // GET univers/${universId}/quest/${questId}
+  getQuestDetail: (universId, questId) => api.get(`/univers/${universId}/quest/${questId}`),
+  // POST univers/${universId}/quest
+  createQuest: (universId, payload) => api.post(`/univers/${universId}/quest`, payload),
+  // PUT univers/${universId}/quest/${questId}
+  updateQuest: (universId, questId, payload) => api.put(`/univers/${universId}/quest/${questId}`, payload),
+  // DELETE univers/${universId}/quest/${questId}
+  deleteQuest: (universId, questId) => api.delete(`/univers/${universId}/quest/${questId}`),
 
 };
 

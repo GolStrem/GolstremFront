@@ -232,6 +232,14 @@
     "modal": {
       "createTitle": "Créer un événement",
       "submit": "Créer",
+      "editTitle": "Modifier l’événement",
+      "update": "Mettre à jour",
+      "deleteTitle": "Supprimer l’événement",
+      "deleteAction": "Supprimer",
+      "editAction": "Modifier",
+      "deleteConfirmLabel": "Je confirme la suppression",
+      "deleteConfirmMessage": "Cette action est irréversible.",
+      "deleteSubmit": "Supprimer",
       "fields": {
         "type": "Type",
         "title": "Titre",
@@ -239,6 +247,7 @@
         "status": "Statut :",
         "date": "Date (optionnel)",
         "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "endDate": "Date de fin (optionnel)",
         "image": "URL de l'image"
       },
       "typeOptions": ["Quête", "Événement", "Ouverture"],

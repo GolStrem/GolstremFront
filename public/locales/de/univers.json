@@ -232,6 +232,14 @@
     "modal": {
       "createTitle": "Ereignis erstellen",
       "submit": "Erstellen",
+      "editTitle": "Ereignis bearbeiten",
+      "update": "Aktualisieren",
+      "deleteTitle": "Ereignis löschen",
+      "deleteAction": "Löschen",
+      "editAction": "Bearbeiten",
+      "deleteConfirmLabel": "Ich bestätige die Löschung",
+      "deleteConfirmMessage": "Diese Aktion ist unumkehrbar.",
+      "deleteSubmit": "Löschen",
       "fields": {
         "type": "Typ",
         "title": "Titel",
@@ -239,6 +247,7 @@
         "status": "Status:",
         "date": "Datum (optional)",
         "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "endDate": "Enddatum (optional)",
         "image": "Bild-URL"
       },
       "typeOptions": ["Quest", "Ereignis", "Eröffnung"],

@@ -232,6 +232,14 @@
     "modal": {
       "createTitle": "Create an event",
       "submit": "Create",
+      "editTitle": "Edit event",
+      "update": "Update",
+      "deleteTitle": "Delete event",
+      "deleteAction": "Delete",
+      "editAction": "Edit",
+      "deleteConfirmLabel": "I confirm the deletion",
+      "deleteConfirmMessage": "This action is irreversible.",
+      "deleteSubmit": "Delete",
       "fields": {
         "type": "Type",
         "title": "Title",
@@ -239,6 +247,7 @@
         "status": "Status:",
         "date": "Date (optional)",
         "datePlaceholder": "YYYY-MM-DD HH:MM",
+        "endDate": "End date (optional)",
         "image": "Image URL"
       },
       "typeOptions": ["Quest", "Event", "Opening"],

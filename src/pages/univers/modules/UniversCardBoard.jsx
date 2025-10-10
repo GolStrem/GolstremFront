@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardBoard.css";
 import { BackLocation, BaseModal, ModalGeneric } from "@components";
 import { useTranslation } from "react-i18next";
+import { ApiUnivers, PurifyHtml } from "@service";
+import { useParams } from "react-router-dom";
 
 const TYPE_COLORS = {
   quest: "#3498db",
@@ -21,6 +23,7 @@ const STATUS_COLORS = {
 
 const UniversCardBoard = () => {
   const { t } = useTranslation('univers');
+  const { id: universId } = useParams();
 
   // Filtres basés sur des clés internes; libellés via i18n
   const [filterType, setFilterType] = useState("all"); // all | quest | event | opening
@@ -29,39 +32,151 @@ const UniversCardBoard = () => {
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Données exemple enrichies avec des clés internes
-  const ITEMS_DATA = [
-    { id: 1, typeKey: 'quest',   title: "Quête magique", description: "Résoudre l’énigme du vieux mage.", statusKey: 'waitingPlayer', date: null, image: "https://i.pinimg.com/736x/50/43/61/504361f450ac78d5cfcb3ce09a365d22.jpg" },
-    { id: 2, typeKey: 'event',   title: "Festival annuel", description: "Célébration dans le village central.", statusKey: 'soon', date: "2025-10-05 18:00", image: "https://i.pinimg.com/736x/6f/5b/ad/6f5bad23afe5a1b66e838bcc4bf35925.jpg" },
-    { id: 3, typeKey: 'opening', title: "Nouveau café", description: "Ouverture d’un café artisanal.", statusKey: 'soon', date: "2025-09-20 10:00", image: "https://i.pinimg.com/736x/53/83/d4/5383d4dd98bd9439d458969b81af0a6e.jpg" },
-    { id: 4, typeKey: 'quest',   title: "Chasse au trésor", description: "Trouver les gemmes cachées.", statusKey: 'inProgress', date: null, image: "https://i.pinimg.com/736x/57/38/b8/5738b8c8e930e00dd44ed4370183c3bd.jpg" },
-    { id: 5, typeKey: 'event',   title: "Concert en ville", description: "Performance des musiciens locaux.", statusKey: 'done', date: "2025-09-10 20:00", image: "https://i.pinimg.com/736x/27/38/e9/2738e97cc2938e9b26d8cb34401e8e8c.jpg" },
-    { id: 6, typeKey: 'opening', title: "Nouvelle bibliothèque", description: "Bibliothèque ouverte au public.", statusKey: 'inProgress', date: "2025-09-15 09:00", image: "https://i.pinimg.com/1200x/e7/26/6a/e7266a28eaccf3d24ace89b5094f18e3.jpg" },
-    { id: 7, typeKey: 'event',   title: "Concert en ville", description: "Performance des musiciens locaux.", statusKey: 'done', date: "2025-09-10 20:00", image: "https://i.pinimg.com/736x/27/38/e9/2738e97cc2938e9b26d8cb34401e8e8c.jpg" },
-    { id: 8, typeKey: 'opening', title: "Nouvelle bibliothèque", description: "Bibliothèque ouverte au public.", statusKey: 'inProgress', date: "2025-09-15 09:00", image: "https://i.pinimg.com/1200x/e7/26/6a/e7266a28eaccf3d24ace89b5094f18e3.jpg" },
-    { id: 9, typeKey: 'event',   title: "Festival annuel", description: "Célébration dans le village central.", statusKey: 'soon', date: "2025-10-05 18:00", image: "https://i.pinimg.com/736x/6f/5b/ad/6f5bad23afe5a1b66e838bcc4bf35925.jpg" },
-    { id: 10, typeKey: 'event',  title: "Festival annuel", description: "Célébration dans le village central.", statusKey: 'soon', date: "2025-10-05 18:00", image: "https://i.pinimg.com/736x/6f/5b/ad/6f5bad23afe5a1b66e838bcc4bf35925.jpg" },
-  ];
-
-  // État simulant la réponse API
+  // État issu de l'API
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Simule une requête API pour précharger les données
+  // Mapping statut API <-> clés internes UI
+  const statusIntToKey = useMemo(() => ({
+    0: "waitingPlayer",
+    1: "waiting",
+    2: "soon",
+    3: "inProgress",
+    4: "done",
+  }), []);
+  const statusKeyToInt = useMemo(() => ({
+    waitingPlayer: 0,
+    waiting: 1,
+    soon: 2,
+    inProgress: 3,
+    done: 4,
+  }), []);
+
+  // Helpers mapping Types
+  const typeApiToKey = (apiType) => apiType === 'open' ? 'opening' : apiType; // quest|event|open -> quest|event|opening
+  const typeKeyToApi = (key) => key === 'opening' ? 'open' : key; // opening -> open
+
+  // Helper: formatage vers YYYY-MM-DD HH:MM:SS à partir de diverses entrées (DD/MM/YYYY, YYYY-MM-DD, YYYY-MM-DDTHH:MM, etc.)
+  const formatToSqlDateTime = (input) => {
+    if (!input || typeof input !== 'string') return null;
+    const trimmed = input.trim().replace('T', ' ');
+    if (!trimmed) return null;
+    // DD/MM/YYYY[ HH:MM]
+    const dmy = trimmed.match(/^([0-3]?\d)\/([0-1]?\d)\/(\d{4})(?:\s+([0-2]?\d):([0-5]?\d))?$/);
+    if (dmy) {
+      const dd = String(dmy[1]).padStart(2, '0');
+      const mm = String(dmy[2]).padStart(2, '0');
+      const yyyy = dmy[3];
+      const HH = String(dmy[4] ?? '00').padStart(2, '0');
+      const MM = String(dmy[5] ?? '00').padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${HH}:${MM}:00`;
+    }
+    // YYYY-MM-DD[ HH:MM]
+    const ymd = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+([0-2]?\d):([0-5]?\d))?$/);
+    if (ymd) {
+      const yyyy = ymd[1];
+      const mm = ymd[2];
+      const dd = ymd[3];
+      const HH = String(ymd[4] ?? '00').padStart(2, '0');
+      const MM = String(ymd[5] ?? '00').padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${HH}:${MM}:00`;
+    }
+    // Tentative générique Date()
+    const dt = new Date(trimmed);
+    if (!isNaN(dt.getTime())) {
+      const yyyy = dt.getFullYear();
+      const mm = String(dt.getMonth() + 1).padStart(2, '0');
+      const dd = String(dt.getDate()).padStart(2, '0');
+      const HH = String(dt.getHours()).padStart(2, '0');
+      const MM = String(dt.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${HH}:${MM}:00`;
+    }
+    return null;
+  };
+
+  // Helper: convertir une date SQL/ISO en valeur pour input type="datetime-local" (YYYY-MM-DDTHH:MM)
+  const toDatetimeLocal = (input) => {
+    if (!input) return '';
+    if (typeof input !== 'string') {
+      const d = new Date(input);
+      if (isNaN(d.getTime())) return '';
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const HH = String(d.getHours()).padStart(2, '0');
+      const MM = String(d.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
+    }
+    // SQL like: YYYY-MM-DD HH:MM[:SS]
+    const m1 = input.match(/^(\d{4})-(\d{2})-(\d{2})[ T]([0-2]?\d):([0-5]?\d)(?::\d{2})?/);
+    if (m1) {
+      const yyyy = m1[1];
+      const mm = m1[2];
+      const dd = m1[3];
+      const HH = String(m1[4]).padStart(2, '0');
+      const MM = String(m1[5]).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
+    }
+    // Fallback via Date parsing
+    const d = new Date(input);
+    if (isNaN(d.getTime())) return '';
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const HH = String(d.getHours()).padStart(2, '0');
+    const MM = String(d.getMinutes()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
+  };
+
+  // Helpers mapping libellés <-> clés pour les selects génériques
+  const typeLabels = t('board.filters.typeOptions', { returnObjects: true }); // ["Quête", "Événement", "Ouverture"]
+  const statusLabels = t('board.filters.statusOptions', { returnObjects: true }); // 5 labels dans l'ordre attendu
+  const typeKeyOrder = ["quest", "event", "opening"];
+  const statusKeyOrder = ["waitingPlayer", "inProgress", "done", "waiting", "soon"];
+  const getTypeKeyFromLabel = (label) => {
+    const idx = Array.isArray(typeLabels) ? typeLabels.indexOf(label) : -1;
+    return typeKeyOrder[idx] ?? "quest";
+  };
+  const getStatusKeyFromLabel = (label) => {
+    const idx = Array.isArray(statusLabels) ? statusLabels.indexOf(label) : -1;
+    return statusKeyOrder[idx] ?? "waiting";
+  };
+
+  // Charger les quests depuis l'API
   useEffect(() => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      if (!controller.signal.aborted) {
-        setItems(ITEMS_DATA);
-        setIsLoading(false);
+    let mounted = true;
+    const load = async () => {
+      if (!universId) return;
+      setIsLoading(true);
+      setError("");
+      try {
+        const { data } = await ApiUnivers.getQuests(universId, {});
+        const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        const mapped = list.map((q) => ({
+          id: q.id,
+          typeKey: typeApiToKey(q.type),
+          title: q.name,
+          description: q.description || "",
+          statusKey: statusIntToKey[Number(q.status)] ?? 'waiting',
+          date: q.beginAt || null,
+          endAt: q.endAt || null,
+          image: q.image || "",
+        }));
+        if (mounted) setItems(mapped);
+      } catch (e) {
+        console.error(e);
+        if (mounted) setError('loadError');
+      } finally {
+        if (mounted) setIsLoading(false);
       }
-    }, 600);
-    return () => {
-      controller.abort();
-      clearTimeout(timeoutId);
     };
-  }, []);
+    load();
+    return () => { mounted = false; };
+  }, [universId]);
 
   const now = new Date();
 
@@ -151,7 +266,7 @@ const UniversCardBoard = () => {
               <div className="UniBo-card-image-wrapper">
                 <img src={item.image} alt={item.title} className="UniBo-card-image"/>
                 <div className="UniBo-card-overlay">
-                  <p>{item.description}</p>
+                  <p dangerouslySetInnerHTML={{ __html: PurifyHtml(item.description) }} />
                 </div>
               </div>
               <div className="UniBo-card-content">
@@ -216,7 +331,15 @@ const UniversCardBoard = () => {
                   <span className="uni-preview-date">{new Date(selectedItem.date).toLocaleString()}</span>
                 )}
               </div>
-              <p className="uni-preview-description">{selectedItem.description}</p>
+              <p className="uni-preview-description" dangerouslySetInnerHTML={{ __html: PurifyHtml(selectedItem.description) }} />
+              <div className="uni-preview-actions tm-modal-buttons" style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+                <button className="cf-btn-success" onClick={() => setShowEditModal(true)}>
+                  {t('board.modal.editAction') || 'Modifier'}
+                </button>
+                <button className="cf-btn-danger" onClick={() => setShowDeleteModal(true)}>
+                  {t('board.modal.deleteAction') || 'Supprimer'}
+                </button>
+              </div>
             </div>
           </div>
         </BaseModal>
@@ -226,6 +349,7 @@ const UniversCardBoard = () => {
       {showCreateModal && (
         <ModalGeneric
           onClose={() => setShowCreateModal(false)}
+          noMemory
           name="eventCreate"
           title={t('board.modal.createTitle')}
           fields={{
@@ -252,11 +376,11 @@ const UniversCardBoard = () => {
               key: "unibo-status",
             },
             date: {
-              type: "inputText",
+              type: "inputDateTime",
               label: t('board.modal.fields.date'),
               key: "unibo-date",
-              placeholder: t('board.modal.fields.datePlaceholder')
             },
+
             image: {
               type: "inputUrl",
               label: t('board.modal.fields.image'),
@@ -264,7 +388,150 @@ const UniversCardBoard = () => {
             },
           }}
           textButtonValidate={t('board.modal.submit')}
-          handleSubmit={(values) => { console.log("Nouvel événement créé:", values); setShowCreateModal(false); }}
+          handleSubmit={async (values) => {
+            try {
+              const typeKey = getTypeKeyFromLabel(values.type);
+              const statusKey = getStatusKeyFromLabel(values.status);
+              const payload = {
+                type: typeKeyToApi(typeKey),
+                status: statusKeyToInt[statusKey] ?? 1,
+                name: values.title,
+                image: values.image,
+                description: values.description,
+                beginAt: formatToSqlDateTime(values.date),
+                endAt: formatToSqlDateTime(values.endDate),
+              };
+              await ApiUnivers.createQuest(universId, payload);
+              const { data } = await ApiUnivers.getQuests(universId, {});
+              const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+              setItems(list.map((q) => ({
+                id: q.id,
+                typeKey: typeApiToKey(q.type),
+                title: q.name,
+                description: q.description || "",
+                statusKey: statusIntToKey[Number(q.status)] ?? 'waiting',
+                date: q.beginAt || null,
+                endAt: q.endAt || null,
+                image: q.image || "",
+              })));
+            } finally {
+              setShowCreateModal(false);
+            }
+          }}
+          isOpen
+        />
+      )}
+
+      {/* Modal d'édition (identique à la création, préremplie) */}
+      {showEditModal && selectedItem && (
+        <ModalGeneric
+          onClose={() => setShowEditModal(false)}
+          noMemory
+          name="eventEdit"
+          title={t('board.modal.editTitle')}
+          initialData={{
+            type: typeLabels[typeKeyOrder.indexOf(selectedItem.typeKey)] ?? typeLabels[0],
+            title: selectedItem.title,
+            description: selectedItem.description,
+            status: statusLabels[statusKeyOrder.indexOf(selectedItem.statusKey)] ?? statusLabels[0],
+            date: toDatetimeLocal(selectedItem.date),
+            endDate: toDatetimeLocal(selectedItem.endAt),
+            image: selectedItem.image,
+          }}
+          fields={{
+            type: {
+              type: "select",
+              value: t('board.modal.typeOptions', { returnObjects: true }),
+              label: `${t('board.modal.fields.type')} `,
+              key: "unibo-type",
+            },
+            title: {
+              type: "inputText",
+              label: `${t('board.modal.fields.title')} `,
+              key: "unibo-title",
+            },
+            description: {
+              type: "textarea",
+              label: t('board.modal.fields.description'),
+              key: "unibo-description",
+            },
+            status: {
+              type: "select",
+              value: t('board.modal.statusOptions', { returnObjects: true }),
+              label: `${t('board.modal.fields.status')}`,
+              key: "unibo-status",
+            },
+            date: {
+              type: "inputDateTime",
+              label: t('board.modal.fields.date'),
+              key: "unibo-date",
+            },
+
+            image: {
+              type: "inputUrl",
+              label: t('board.modal.fields.image'),
+              key: "unibo-image",
+            },
+          }}
+          textButtonValidate={t('board.modal.update')}
+          handleSubmit={async (values) => {
+            try {
+              const typeKey = getTypeKeyFromLabel(values.type);
+              const statusKey = getStatusKeyFromLabel(values.status);
+              const payload = {
+                type: typeKeyToApi(typeKey),
+                status: statusKeyToInt[statusKey] ?? 1,
+                name: values.title,
+                image: values.image,
+                description: values.description,
+                beginAt: formatToSqlDateTime(values.date),
+                endAt: formatToSqlDateTime(values.endDate),
+              };
+              await ApiUnivers.updateQuest(universId, selectedItem.id, payload);
+              setItems(prev => prev.map(it => it.id === selectedItem.id ? {
+                ...it,
+                typeKey,
+                title: values.title || it.title,
+                description: values.description || it.description,
+                statusKey,
+                date: values.date || it.date,
+                endAt: values.endDate || it.endAt,
+                image: values.image || it.image,
+              } : it));
+            } finally {
+              setShowEditModal(false);
+              setSelectedItem(null);
+            }
+          }}
+          isOpen
+        />
+      )}
+
+      {/* Modal de suppression (confirmation) */}
+      {showDeleteModal && selectedItem && (
+        <ModalGeneric
+          onClose={() => setShowDeleteModal(false)}
+          noMemory
+          name="eventDelete"
+          title={t('board.modal.deleteTitle')}
+          fields={{
+            confirm: {
+              type: "confirmation",
+              label: t('board.modal.deleteConfirmLabel'),
+              message: t('board.modal.deleteConfirmMessage'),
+            }
+          }}
+          textButtonValidate={t('board.modal.deleteSubmit')}
+          handleSubmit={async (values) => {
+            if (!values.confirm) return; // sécurité
+            try {
+              await ApiUnivers.deleteQuest(universId, selectedItem.id);
+              setItems(prev => prev.filter(it => it.id !== selectedItem.id));
+            } finally {
+              setShowDeleteModal(false);
+              setSelectedItem(null);
+            }
+          }}
           isOpen
         />
       )}

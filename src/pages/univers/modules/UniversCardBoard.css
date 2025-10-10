@@ -220,6 +220,9 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+.master-eventDelete{
+  min-height: 0 !important;
+}
 .uni-preview-type,
 .uni-preview-status {
   padding: 4px 8px;
@@ -236,6 +239,9 @@
 .uni-preview-description {
   color: var(--color-text);
   opacity: .9;
+  overflow: auto;
+  overflow-y: auto;
+  max-height: 75vh;
 }
 
 @media (max-width: 900px) {
