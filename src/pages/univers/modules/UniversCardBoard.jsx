@@ -173,7 +173,7 @@ const UniversCardBoard = () => {
         };
         const params = {
           p: page,
-          limit: 4,
+          limit: 15,
           ...(search ? { search: search.trim() } : {}),
           ...(Object.keys(filterParams).length ? { filter: filterParams } : {}),
         };
