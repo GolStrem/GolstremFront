@@ -201,6 +201,8 @@
   },
   "board": {
     "title": "Bacheca",
+    "beginAtLabel": "Inizio evento",
+    "endAtLabel": "Fine evento",
     "filters": {
       "type": "Tipo:",
       "status": "Stato:",

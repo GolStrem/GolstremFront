@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./UniversCardBoard.css";
-import { BackLocation, BaseModal, ModalGeneric } from "@components";
+import { BackLocation, BaseModal, ModalGeneric, Pagination, SearchBar } from "@components";
 import { useTranslation } from "react-i18next";
 import { ApiUnivers, PurifyHtml } from "@service";
 import { useParams } from "react-router-dom";
@@ -26,6 +26,7 @@ const UniversCardBoard = () => {
   const { id: universId } = useParams();
 
   // Filtres basés sur des clés internes; libellés via i18n
+  // Sélection unique pour type et statut
   const [filterType, setFilterType] = useState("all"); // all | quest | event | opening
   const [filterStatus, setFilterStatus] = useState("all"); // all | waitingPlayer | inProgress | done | waiting | soon
   const [filterDate, setFilterDate] = useState("all"); // all | new | soon
@@ -39,6 +40,9 @@ const UniversCardBoard = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [search, setSearch] = useState("");
 
   // Mapping statut API <-> clés internes UI
   const statusIntToKey = useMemo(() => ({
@@ -54,6 +58,14 @@ const UniversCardBoard = () => {
     soon: 2,
     inProgress: 3,
     done: 4,
+  }), []);
+  // Mapping statut UI -> libellé API attendu pour filtrage serveur
+  const statusKeyToApiName = useMemo(() => ({
+    waitingPlayer: 'pendingPlayer',
+    waiting: 'pending',
+    soon: 'soon',
+    inProgress: 'progress',
+    done: 'end',
   }), []);
 
   // Helpers mapping Types
@@ -132,9 +144,9 @@ const UniversCardBoard = () => {
     return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
   };
 
-  // Helpers mapping libellés <-> clés pour les selects génériques
-  const typeLabels = t('board.filters.typeOptions', { returnObjects: true }); // ["Quête", "Événement", "Ouverture"]
-  const statusLabels = t('board.filters.statusOptions', { returnObjects: true }); // 5 labels dans l'ordre attendu
+  // Helpers mapping libellés <-> clés pour les selects (utiliser les options des modales)
+  const typeLabels = t('board.modal.typeOptions', { returnObjects: true }); // ["Quête", "Événement", "Ouverture"]
+  const statusLabels = t('board.modal.statusOptions', { returnObjects: true }); // 5 labels dans l'ordre attendu
   const typeKeyOrder = ["quest", "event", "opening"];
   const statusKeyOrder = ["waitingPlayer", "inProgress", "done", "waiting", "soon"];
   const getTypeKeyFromLabel = (label) => {
@@ -146,7 +158,7 @@ const UniversCardBoard = () => {
     return statusKeyOrder[idx] ?? "waiting";
   };
 
-  // Charger les quests depuis l'API
+  // Charger les quests depuis l'API (avec pagination, recherche et filtres côté serveur)
   useEffect(() => {
     let mounted = true;
     const load = async () => {
@@ -154,7 +166,18 @@ const UniversCardBoard = () => {
       setIsLoading(true);
       setError("");
       try {
-        const { data } = await ApiUnivers.getQuests(universId, {});
+        const filterParams = {
+          ...(filterType !== 'all' ? { type: typeKeyToApi(filterType) } : {}),
+          ...(filterStatus !== 'all' ? { status: statusKeyToInt[filterStatus] } : {}),
+          ...(filterDate !== 'all' ? { date: filterDate } : {}),
+        };
+        const params = {
+          p: page,
+          limit: 4,
+          ...(search ? { search: search.trim() } : {}),
+          ...(Object.keys(filterParams).length ? { filter: filterParams } : {}),
+        };
+        const { data } = await ApiUnivers.getQuests(universId, params);
         const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
         const mapped = list.map((q) => ({
           id: q.id,
@@ -166,7 +189,19 @@ const UniversCardBoard = () => {
           endAt: q.endAt || null,
           image: q.image || "",
         }));
-        if (mounted) setItems(mapped);
+        if (mounted) {
+          setItems(mapped);
+          // Utiliser le format officiel pagination renvoyé par l'API
+          if (data && typeof data.pagination === 'object') {
+            const total = Number(data.pagination.total) || 0;
+            const limit = Number(data.pagination.limit) || 4;
+            const pagesFromApi = Number(data.pagination.pages);
+            const pages = Number.isFinite(pagesFromApi) && pagesFromApi > 0 ? pagesFromApi : Math.max(1, Math.ceil(total / limit));
+            setTotalPages(pages);
+          } else {
+            setTotalPages(1);
+          }
+        }
       } catch (e) {
         console.error(e);
         if (mounted) setError('loadError');
@@ -176,23 +211,18 @@ const UniversCardBoard = () => {
     };
     load();
     return () => { mounted = false; };
-  }, [universId]);
+  }, [universId, page, search, filterType, filterStatus, filterDate]);
+
+  // Revenir à la page 0 et nettoyer l'affichage quand les filtres/recherche changent
+  useEffect(() => {
+    if (page !== 0) setPage(0);
+    setItems([]);
+    setIsLoading(true);
+  }, [filterType, filterStatus, filterDate, search]);
 
   const now = new Date();
 
-  const filteredItems = items.filter(item => {
-    const matchType = filterType === "all" || item.typeKey === filterType;
-    const matchStatus = filterStatus === "all" || item.statusKey === filterStatus;
-
-    let matchDate = true;
-    if(filterDate === "new") {
-      matchDate = !item.date || new Date(item.date) <= now;
-    } else if(filterDate === "soon") {
-      matchDate = item.date && new Date(item.date) > now;
-    }
-
-    return matchType && matchStatus && matchDate;
-  });
+  // Filtrage côté serveur: on affiche directement les items renvoyés
 
   const breakpointColumnsObj = { default: 3, 1100: 2, 700: 1 };
 
@@ -200,6 +230,14 @@ const UniversCardBoard = () => {
     <div className="UniBo-container">
       <BackLocation />
       <h2 className="UniBo-title">{t('board.title')}</h2>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+        <SearchBar
+          value={search}
+          onChange={(val) => { setSearch(val); setPage(0); }}
+          onClear={() => { setSearch(""); setPage(0); }}
+        />
+      </div>
 
       <div className="UniBo-filters">
         <div className="UniBo-filter-group">
@@ -250,7 +288,7 @@ const UniversCardBoard = () => {
         className="UniBo-masonry-grid"
         columnClassName="UniBo-masonry-grid_column"
       >
-        {filteredItems.map(item => {
+        {items.map(item => {
           const typeLabel = t(`board.filters.typeOptions.${item.typeKey}`);
           const statusLabel = item.statusKey ? t(`board.filters.statusOptions.${item.statusKey}`) : null;
           return (
@@ -296,7 +334,16 @@ const UniversCardBoard = () => {
                     </motion.span>
                   )}
 
-                  {item.date && <span className="UniBo-card-date">{new Date(item.date).toLocaleString()}</span>}
+                  {item.date && (
+                    <span className="UniBo-card-date">
+                      {(t('board.beginAtLabel') || "Début de l'évènement")}: {new Date(item.date).toLocaleString()}
+                    </span>
+                  )}
+                  {item.endAt && (
+                    <span className="UniBo-card-date">
+                      {(t('board.endAtLabel') || "Fin de l'évènement")}: {new Date(item.endAt).toLocaleString()}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -304,6 +351,8 @@ const UniversCardBoard = () => {
         )})}
       </Masonry>
       )}
+
+      <Pagination currentPage={page} totalPages={totalPages} onPageChange={(p) => setPage(p)} />
 
       {/* Bouton flottant + */}
       <button
@@ -328,7 +377,10 @@ const UniversCardBoard = () => {
                   <span className="uni-preview-status" style={{backgroundColor: STATUS_COLORS[selectedItem.statusKey]}}>{t(`board.filters.statusOptions.${selectedItem.statusKey}`)}</span>
                 )}
                 {selectedItem.date && (
-                  <span className="uni-preview-date">{new Date(selectedItem.date).toLocaleString()}</span>
+                  <span className="uni-preview-date">{(t('board.beginAtLabel') || "Début de l'évènement")}: {new Date(selectedItem.date).toLocaleString()}</span>
+                )}
+                {selectedItem.endAt && (
+                  <span className="uni-preview-date">{(t('board.endAtLabel') || "Fin de l'évènement")}: {new Date(selectedItem.endAt).toLocaleString()}</span>
                 )}
               </div>
               <p className="uni-preview-description" dangerouslySetInnerHTML={{ __html: PurifyHtml(selectedItem.description) }} />
@@ -377,8 +429,13 @@ const UniversCardBoard = () => {
             },
             date: {
               type: "inputDateTime",
-              label: t('board.modal.fields.date'),
+              label: "Commence le (optionnel)",
               key: "unibo-date",
+            },
+            endDate: {
+              type: "inputDateTime",
+              label: "Date de fin (optionnel):",
+              key: "unibo-endDate",
             },
 
             image: {
@@ -402,7 +459,13 @@ const UniversCardBoard = () => {
                 endAt: formatToSqlDateTime(values.endDate),
               };
               await ApiUnivers.createQuest(universId, payload);
-              const { data } = await ApiUnivers.getQuests(universId, {});
+              // Recharger avec les mêmes filtres côté serveur
+              const reloadFilter = {
+                ...(filterType !== 'all' ? { type: typeKeyToApi(filterType) } : {}),
+                ...(filterStatus !== 'all' ? { status: statusKeyToApiName[filterStatus] } : {}),
+                ...(filterDate !== 'all' ? { date: filterDate } : {}),
+              };
+              const { data } = await ApiUnivers.getQuests(universId, { p: 0, limit: 4, ...(search ? { search: search.trim() } : {}), ...(Object.keys(reloadFilter).length ? { filter: reloadFilter } : {}) });
               const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
               setItems(list.map((q) => ({
                 id: q.id,
@@ -463,8 +526,13 @@ const UniversCardBoard = () => {
             },
             date: {
               type: "inputDateTime",
-              label: t('board.modal.fields.date'),
+              label: "Commence le (optionnel)",
               key: "unibo-date",
+            },
+            endDate: {
+              type: "inputDateTime",
+              label: "date de fin (optionnel):",
+              key: "unibo-endDate",
             },
 
             image: {

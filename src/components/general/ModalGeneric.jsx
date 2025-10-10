@@ -704,6 +704,13 @@ const ModalGeneric = ({
 		handle()
 	}
 
+    // Désactivation conditionnelle du bouton primaire si des confirmations non cochées existent
+    const hasConfirmationField = Object.values(fields).some((c) => c?.type === "confirmation");
+    const allConfirmationsChecked = Object.entries(fields)
+        .filter(([_, c]) => c?.type === "confirmation")
+        .every(([key]) => values[key] === true);
+    const isPrimaryDisabled = loading || !validateAllUrlFields() || (hasConfirmationField && !allConfirmationsChecked);
+
 	return (
 		<BaseModal onClose={handleClose} className={`tmedit cf-modal-large master-${name}`} noClose={noClose}>
 			{Array.isArray(nav) && nav.length > 0 && (
@@ -721,13 +728,14 @@ const ModalGeneric = ({
 			</form>
 			{error && <span className="tm-error">{error}</span>}
 			<div className="tm-modal-buttons">
-				{!hidePrimary && (
-					<button 
-						className="tm-primary" 
-						onClick={onSubmit} 
-						disabled={loading || !validateAllUrlFields()}
-						title={!validateAllUrlFields() ? t("invalidUrlList") : ""}
-					>
+			{!hidePrimary && (
+                <button 
+                    className="tm-primary" 
+                    onClick={onSubmit} 
+                    disabled={isPrimaryDisabled}
+                    title={!validateAllUrlFields() ? t("invalidUrlList") : (hasConfirmationField && !allConfirmationsChecked ? t("confirmAction") : "")}
+                    style={{ opacity: isPrimaryDisabled ? 0.55 : undefined, filter: isPrimaryDisabled ? 'grayscale(35%)' : undefined, cursor: isPrimaryDisabled ? 'not-allowed' : undefined }}
+                >
 						{loading ? t("saving") : t(textButtonValidate)}
 					</button>
 				)}

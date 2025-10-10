@@ -201,6 +201,8 @@
   },
   "board": {
     "title": "Anschlagtafel",
+    "beginAtLabel": "Beginn des Ereignisses",
+    "endAtLabel": "Ende des Ereignisses",
     "filters": {
       "type": "Typ:",
       "status": "Status:",
