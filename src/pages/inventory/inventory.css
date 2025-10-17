@@ -17,7 +17,7 @@
   .Inv-layout {
     display: grid;
     grid-template-columns: 64px 1fr; /* sidebar fixe: ne pousse pas le contenu */
-    gap: 16px;
+    gap: 15px;
     align-items: start;
   }
   .Inv-sidebar {
