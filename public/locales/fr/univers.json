@@ -479,6 +479,8 @@
         "location": "Emplacement",
         "openAt": "Ouverture",
         "closeAt": "Fermeture",
+        "start": "Début",
+        "end": "Fin",
         "image": "URL de l'image"
       },
       "typeOptions": ["Établissement", "Logement", "Extérieur", "Autre"],

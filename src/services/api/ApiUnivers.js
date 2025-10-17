@@ -50,35 +50,29 @@ const realApi = {
   deleteFicheUnivers: (idFiche) => api.delete (`fiche/${idFiche}/univers`),
 
   // ========== BOOK (Encyclopédie) ==========
-  // GET univers/${idUnivers}/book
+
   getBooks: (universId, params = {}) => api.get(`/univers/${universId}/book`, { params }),
-  // GET univers/${idUnivers}/book/listUnivers
   getUniversWithPublicBooks: (universId, params = {}) => api.get(`/univers/${universId}/book/listUnivers`, { params }),
-  // GET univers/${idUnivers}/book/${idBook}
   getBookDetail: (universId, bookId) => api.get(`/univers/${universId}/book/${bookId}`),
-  // POST univers/${idUnivers}/book
   createBook: (universId, payload) => api.post(`/univers/${universId}/book`, payload),
-  // PUT univers/${idUnivers}/book/${idBook}
   updateBook: (universId, bookId, payload) => api.put(`/univers/${universId}/book/${bookId}`, payload),
-  // DELETE univers/${idUnivers}/book/${idBook}
   deleteBook: (universId, bookId) => api.delete(`/univers/${universId}/book/${bookId}`),
-  // POST univers/${idUnivers}/book/link/${idLink}
   addBookLink: (universId, idLink, payload) => api.post(`/univers/${universId}/book/link/${idLink}`, payload),
-  // DELETE univers/${idUnivers}/book/link/${idLink}
   removeBookLink: (universId, idLink, payload) => api.delete(`/univers/${universId}/book/link/${idLink}`, { data: payload }),
 
   // ========== QUEST (Board) ==========
-  // GET univers/${universId}/quest
   getQuests: (universId, params = {}) => api.get(`/univers/${universId}/quest`, { params }),
-  // GET univers/${universId}/quest/${questId}
   getQuestDetail: (universId, questId) => api.get(`/univers/${universId}/quest/${questId}`),
-  // POST univers/${universId}/quest
   createQuest: (universId, payload) => api.post(`/univers/${universId}/quest`, payload),
-  // PUT univers/${universId}/quest/${questId}
   updateQuest: (universId, questId, payload) => api.put(`/univers/${universId}/quest/${questId}`, payload),
-  // DELETE univers/${universId}/quest/${questId}
   deleteQuest: (universId, questId) => api.delete(`/univers/${universId}/quest/${questId}`),
 
+  // ========== PLACES (Establishments) ==========
+  getPlaces: (universId, params = {}) => api.get(`/univers/${universId}/places`, { params }),
+  createPlace: (universId, payload) => api.post(`/univers/${universId}/places`, payload),
+  updatePlace: (universId, placeId, payload) => api.put(`/univers/${universId}/places/${placeId}`, payload),
+  deletePlace: (universId, placeId) => api.delete(`/univers/${universId}/places/${placeId}`),
+  
 };
 
 const ApiUnivers = realApi;

@@ -57,7 +57,7 @@ const ModalGeneric = ({
 	
 	const [previewSrc, setPreviewSrc] = useState(null);
 	const forceUpdateRef = useRef(0);
-	const { t } = useTranslation("modal");
+    const { t } = useTranslation();
 	
 
 	const [values, setValues] = useState(() => {
@@ -257,6 +257,30 @@ const ModalGeneric = ({
 	}, [values])
 
 	useEffect(() => {
+		// Assurer l'initialisation des champs timeRange (startKey/endKey)
+		const timeRangeFields = Object.entries(fields).filter(([_, c]) => c?.type === "timeRange");
+		if (timeRangeFields.length) {
+			const updates = {};
+			let hasUpdates = false;
+			timeRangeFields.forEach(([_, cfg]) => {
+				const sKey = cfg.startKey;
+				const eKey = cfg.endKey;
+				if (sKey && values[sKey] === undefined) {
+					updates[sKey] = initialData[sKey] ?? "";
+					hasUpdates = true;
+				}
+				if (eKey && values[eKey] === undefined) {
+					updates[eKey] = initialData[eKey] ?? "";
+					hasUpdates = true;
+				}
+			});
+			if (hasUpdates) {
+				setValues((prev) => ({ ...prev, ...updates }));
+			}
+		}
+	}, [fields]);
+
+	useEffect(() => {
 		// S'assure qu'au moins inputText0/inputUrl0 existent si texteImg+ est demandé
 		const hasTexteImg = Object.values(fields).some((c) => c?.type === "texteImg+");
 		if (hasTexteImg && (values.inputText0 === undefined || values.inputUrl0 === undefined)) {
@@ -400,6 +424,67 @@ const ModalGeneric = ({
 		const id = key;
 		const label = config?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
 			switch (config?.type) {
+            case "button": {
+                return (
+                    <div key={key} className={`cf-field short ${key}`}>
+                        {config.label !== "" && (
+                            <label className={`tm-label label-fiche label-${key}`} htmlFor={id}>
+                                {t(label)}
+                            </label>
+                        )}
+                        <button
+                            id={id}
+                            type="button"
+                            className={config.className || "cf-btn-success"}
+                            onClick={(e) => config.onClick?.(e)}
+                            title={config.title}
+                        >
+                            {config.text || "+"}
+                        </button>
+                    </div>
+                );
+            }
+            case "timeRange": {
+                const startKey = config.startKey;
+                const endKey = config.endKey;
+                const options = Array.isArray(config.options) ? config.options : [];
+                const startLabel = config.startLabel ?? "Start";
+                const endLabel = config.endLabel ?? "End";
+                return (
+                    <div key={key} className={`cf-field ${key}`} style={{ display: 'flex', gap: 10, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                        <div className={`cf-field short ${startKey}`} style={{ flex: 1, minWidth: 140 }}>
+                            <label className={`tm-label label-fiche label-${startKey}`} htmlFor={`select-${startKey}`}>
+                                {t(startLabel)} :
+                            </label>
+                            <select
+                                id={`select-${startKey}`}
+                                value={values[startKey] || ""}
+                                onChange={(e) => setValues((prev) => ({ ...prev, [startKey]: e.target.value }))}
+                                className={`filter-select select-${startKey}`}
+                            >
+                                {options.map((opt) => (
+                                    <option key={`${startKey}-${opt}`} value={opt}>{opt}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className={`cf-field short ${endKey}`} style={{ flex: 1, minWidth: 140 }}>
+                            <label className={`tm-label label-fiche label-${endKey}`} htmlFor={`select-${endKey}`}>
+                                {t(endLabel)} :
+                            </label>
+                            <select
+                                id={`select-${endKey}`}
+                                value={values[endKey] || ""}
+                                onChange={(e) => setValues((prev) => ({ ...prev, [endKey]: e.target.value }))}
+                                className={`filter-select select-${endKey}`}
+                            >
+                                {options.map((opt) => (
+                                    <option key={`${endKey}-${opt}`} value={opt}>{opt}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                );
+            }
 			case "inputDateTime": {
 				return (
 					<div key={key} className={`cf-field short ${key}`}>

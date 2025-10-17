@@ -5,12 +5,11 @@ import { motion } from "framer-motion";
 import "./UniversCardEtablissement.css";
 import { BackLocation, BaseModal, ModalGeneric, Pagination, SearchBar } from "@components";
 import { useTranslation } from "react-i18next";
-// import { ApiUnivers } from "@service"; // <-- à réactiver quand l'API sera prête
-import { PurifyHtml } from "@service";
+import { ApiUnivers, PurifyHtml } from "@service";
 import { useParams } from "react-router-dom";
 
 /* =========================================================
-   Données brutes (mock) + utilitaires
+   Constantes + utilitaires
    ========================================================= */
 const TYPE_COLORS = {
   establishment: "#f7d038",
@@ -127,110 +126,58 @@ const formatHuman = (
   return d ? new Intl.DateTimeFormat(locale, opts).format(d) : "";
 };
 
-// Génération d’un dataset brut (images libres Unsplash)
-const IMG = [
-  "https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=1200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1487700160041-babef9c3cb55?q=80&w=1200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1200&auto=format&fit=crop",
-];
-const TYPES = ["establishment", "housing", "outside", "other"];
-const LOCS = ["Quartier du Port", "Vieille Ville", "Place du Marché", "Faubourg Nord"];
-
-const toSql = (d) => {
-  const dt = d instanceof Date ? d : new Date(d);
-  const yyyy = dt.getFullYear();
-  const mm = String(dt.getMonth() + 1).padStart(2, "0");
-  const dd = String(dt.getDate()).padStart(2, "0");
-  const HH = String(dt.getHours()).padStart(2, "0");
-  const MM = String(dt.getMinutes()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd} ${HH}:${MM}:00`;
+const formatHourLabel = (hhmm) => {
+  if (!hhmm || typeof hhmm !== "string") return "";
+  const [h, m] = hhmm.split(":");
+  if (m === "00") return `${h}h`;
+  return `${h}h${m}`;
 };
-const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const makeItem = (i) => {
+// Options d'heures à pas de 30 minutes ("HH:MM")
+const HALF_HOUR_OPTIONS = (() => {
+  const out = [];
+  for (let h = 0; h < 24; h += 1) {
+    out.push(`${String(h).padStart(2, "0")}:00`);
+    out.push(`${String(h).padStart(2, "0")}:30`);
+  }
+  return out;
+})();
+
+// Déduire un statut simple (open/closed/soon) à partir des plages horaires HH:MM
+const computeStatusFromHourRanges = (ranges, soonThresholdMinutes = 120) => {
+  if (!Array.isArray(ranges) || ranges.length === 0) return undefined;
   const now = new Date();
-  const addDays = (n) => toSql(new Date(now.getTime() + n * 86400000));
-  const type = TYPES[i % TYPES.length];
-  const status = ((i + 1) % 3) + 1; // 1..3 (open, closed, soon)
-  const openIn = rand(-15, 15);
-  const closeIn = openIn + rand(1, 20);
-  return {
-    id: String(i + 1),
-    type, // "shop"|"inn"|"guild"|"other"
-    status, // int 1..4
-    name: `Établissement #${i + 1}`,
-    description: `Description de l'établissement #${i + 1}. <br/>Contenu <em>mock</em> de démonstration.`,
-    image: IMG[i % IMG.length],
-    location: LOCS[i % LOCS.length],
-    openAt: addDays(openIn),
-    closeAt: addDays(closeIn),
-    createdAt: addDays(rand(-20, 0)),
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const toMinutes = (hhmm) => {
+    if (typeof hhmm !== "string") return NaN;
+    const [h, m] = hhmm.split(":").map((x) => Number(x));
+    if (Number.isNaN(h) || Number.isNaN(m)) return NaN;
+    return h * 60 + m;
   };
-};
 
-// “Base de données” en mémoire (brute)
-const RAW_DB = Array.from({ length: 28 }, (_, i) => makeItem(i));
-
-// Filtres + pagination en brut
-const applyFilters = (data, params = {}) => {
-  const { search, filter } = params || {};
-  let arr = [...data];
-
-  if (search && search.trim()) {
-    const q = search.trim().toLowerCase();
-    arr = arr.filter(
-      (it) =>
-        (it.name || "").toLowerCase().includes(q) ||
-        (it.location || "").toLowerCase().includes(q) ||
-        (it.description || "").toLowerCase().includes(q)
-    );
+  let nextOpeningIn = Infinity;
+  for (const r of ranges) {
+    if (!Array.isArray(r) || r.length !== 2) continue;
+    const s = toMinutes(r[0]);
+    const e = toMinutes(r[1]);
+    if (Number.isNaN(s) || Number.isNaN(e)) continue;
+    if (s <= nowMinutes && nowMinutes < e) return "open";
+    if (s > nowMinutes) nextOpeningIn = Math.min(nextOpeningIn, s - nowMinutes);
   }
-  if (filter && typeof filter === "object") {
-    if (filter.type) arr = arr.filter((it) => it.type === filter.type);
-    if (filter.status) arr = arr.filter((it) => Number(it.status) === Number(filter.status));
-    if (filter.date === "new") {
-      const now = Date.now();
-      const fourteen = 14 * 86400000;
-      arr = arr.filter((it) => {
-        const d = parseSqlishToDate(it.createdAt);
-        return d && now - d.getTime() <= fourteen;
-      });
-    } else if (filter.date === "soon") {
-      const now = Date.now();
-      const horizon = 10 * 86400000;
-      arr = arr.filter((it) => {
-        const d = parseSqlishToDate(it.openAt);
-        return d && d.getTime() >= now && d.getTime() - now <= horizon;
-      });
-    }
-  }
-
-  // tri par openAt (à venir en premier)
-  arr.sort((a, b) => {
-    const da = parseSqlishToDate(a.openAt)?.getTime() ?? 0;
-    const db = parseSqlishToDate(b.openAt)?.getTime() ?? 0;
-    return db - da;
-  });
-
-  return arr;
+  if (nextOpeningIn <= soonThresholdMinutes) return "soon";
+  return "closed";
 };
 
-const paginate = (arr, p = 0, limit = 15) => {
-  const total = arr.length;
-  const pages = Math.max(1, Math.ceil(total / limit));
-  const start = p * limit;
-  const slice = arr.slice(start, start + limit);
-  return { data: slice, pagination: { total, limit, page: p, pages } };
-};
+// Helpers de pagination locale (fallback si l'API ne renvoie pas d'info)
+const computePages = (total, limit) => Math.max(1, Math.ceil(Number(total || 0) / Number(limit || 15)));
 
 /* =========================================================
    Composant
    ========================================================= */
 const UniversCardEtablissement = () => {
   const { t } = useTranslation("univers");
-  const { id: universId } = useParams(); // non utilisé ici, mais conservé pour la future API
+  const { id: universId } = useParams();
 
   // Filtres (sélection unique)
   const [filterType, setFilterType] = useState("all"); // all | establishment | housing | outside | other
@@ -248,6 +195,12 @@ const UniversCardEtablissement = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
+  // Invalidation pour forcer un rechargement serveur
+  const [reloadTick, setReloadTick] = useState(0);
+
+  // Ranges dynamiques (création/édition)
+  const [createRangeCount, setCreateRangeCount] = useState(1);
+  const [editRangeCount, setEditRangeCount] = useState(0);
 
   // i18n selects
   const typeLabels = useMemo(
@@ -263,51 +216,77 @@ const UniversCardEtablissement = () => {
   const statusKeyOrder = ["open", "closed", "soon"];
 
   const getTypeKeyFromLabel = (label) => {
-    const idx = Array.isArray(typeLabels) ? typeLabels.indexOf(label) : -1;
-    return typeKeyOrder[idx] ?? "other";
+    // 1) Si déjà une clé valide
+    if (typeof label === "string" && typeKeyOrder.includes(label)) return label;
+    // 2) Si c'est un libellé i18n
+    const idxLabel = Array.isArray(typeLabels) ? typeLabels.indexOf(label) : -1;
+    if (idxLabel >= 0) return typeKeyOrder[idxLabel] ?? "other";
+    // 3) Si c'est un index numérique ("0".."3" ou 0..3)
+    const n = Number(label);
+    if (!Number.isNaN(n) && n >= 0 && n < typeKeyOrder.length) return typeKeyOrder[n];
+    return "other";
   };
   const getStatusKeyFromLabel = (label) => {
-    const idx = Array.isArray(statusLabels) ? statusLabels.indexOf(label) : -1;
-    return statusKeyOrder[idx] ?? "open";
+    if (typeof label === "string" && statusKeyOrder.includes(label)) return label;
+    const idxLabel = Array.isArray(statusLabels) ? statusLabels.indexOf(label) : -1;
+    if (idxLabel >= 0) return statusKeyOrder[idxLabel] ?? "open";
+    const n = Number(label);
+    if (!Number.isNaN(n) && n >= 0 && n < statusKeyOrder.length) return statusKeyOrder[n];
+    return "open";
   };
 
-  // Chargement “brut” : on simule un appel serveur en appliquant filtres + pagination
+  // Chargement via API
   useEffect(() => {
     let mounted = true;
     const load = async () => {
       setIsLoading(true);
       setError("");
       try {
-        const filterParams = {
-          ...(filterType !== "all" ? { type: filterType } : {}),
-          ...(filterStatus !== "all" ? { status: statusKeyToInt[filterStatus] } : {}),
-        };
         const params = {
           p: page,
           limit: 15,
-          ...(search ? { search: search.trim() } : {}),
-          ...(Object.keys(filterParams).length ? { filter: filterParams } : {}),
+          ...(filterStatus !== "all" ? { status: filterStatus } : {}),
+          ...(filterType !== "all" ? { type: filterType } : {}),
+          ...(search ? { search: search.trim(), q: search.trim() } : {}),
         };
+        const response = await ApiUnivers.getPlaces(universId, params);
+        const payload = response?.data;
+        const list = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+        const pages = payload?.pagination?.pages
+          || computePages(payload?.pagination?.total ?? list.length, params.limit);
 
-        // “serveur” local
-        const filtered = applyFilters(RAW_DB, params);
-        const res = paginate(filtered, Number(params.p || 0), Number(params.limit || 15));
-
-        const mapped = res.data.map((e) => ({
-          id: e.id,
-          typeKey: e.type,
-          title: e.name,
-          description: e.description || "",
-          statusKey: statusIntToKey[Number(e.status)] ?? "open",
-          openAt: e.openAt || null,
-          closeAt: e.closeAt || null,
-          image: e.image || "",
-          location: e.location || "",
-        }));
+        const mapped = list.map((e) => {
+          const rawStatus = e.status ?? e.state;
+          let statusKey = typeof rawStatus === "number"
+            ? (statusIntToKey[Number(rawStatus)] ?? undefined)
+            : (rawStatus || undefined);
+          const hourRanges = Array.isArray(e.hour)
+            ? e.hour
+                .filter((r) => Array.isArray(r) && r.length === 2 && typeof r[0] === "string" && typeof r[1] === "string")
+                .map((r) => [r[0], r[1]])
+            : [];
+          const typeKey =
+            typeof e.type === "number"
+              ? (typeKeyOrder[e.type] || "other")
+              : (e.type || "other");
+          // Si un filtre status est actif côté UI, on garantit la cohérence d'affichage
+          const requestedStatus = filterStatus !== "all" ? filterStatus : undefined;
+          const derivedStatus = statusKey || requestedStatus || computeStatusFromHourRanges(hourRanges);
+          return {
+            id: e.id ?? e._id ?? String(Math.random()),
+            typeKey,
+            title: e.name || "",
+            description: e.description || "",
+            statusKey: derivedStatus,
+            hourRanges,
+            image: e.image || "",
+            location: e.location || "",
+          };
+        });
 
         if (mounted) {
           setItems(mapped);
-          setTotalPages(res.pagination.pages);
+          setTotalPages(Number(pages || 1));
         }
       } catch (e) {
         console.error(e);
@@ -320,7 +299,7 @@ const UniversCardEtablissement = () => {
     return () => {
       mounted = false;
     };
-  }, [page, search, filterType, filterStatus]);
+  }, [page, search, filterType, filterStatus, reloadTick]);
 
   // Reset page + spinner sur changement filtres/recherche
   useEffect(() => {
@@ -329,76 +308,7 @@ const UniversCardEtablissement = () => {
 
   const breakpointColumnsObj = useMemo(() => ({ default: 3, 1100: 2, 700: 1 }), []);
 
-  // CRUD “brut” (on modifie RAW_DB puis on recharge la vue courante)
-  const reloadCurrent = () => {
-    const filterParams = {
-      ...(filterType !== "all" ? { type: filterType } : {}),
-      ...(filterStatus !== "all" ? { status: statusKeyToInt[filterStatus] } : {}),
-    };
-    const params = {
-      p: 0,
-      limit: 15,
-      ...(search ? { search: search.trim() } : {}),
-      ...(Object.keys(filterParams).length ? { filter: filterParams } : {}),
-    };
-    const filtered = applyFilters(RAW_DB, params);
-    const res = paginate(filtered, Number(params.p || 0), Number(params.limit || 15));
-    const mapped = res.data.map((e) => ({
-      id: e.id,
-      typeKey: e.type,
-      title: e.name,
-      description: e.description || "",
-      statusKey: statusIntToKey[Number(e.status)] ?? "open",
-      openAt: e.openAt || null,
-      closeAt: e.closeAt || null,
-      image: e.image || "",
-      location: e.location || "",
-    }));
-    setItems(mapped);
-    setTotalPages(res.pagination.pages);
-    setPage(0);
-  };
-
-  const createLocal = (payload) => {
-    const nextId = String(
-      RAW_DB.length ? Math.max(...RAW_DB.map((x) => Number(x.id))) + 1 : 1
-    );
-    RAW_DB.unshift({
-      id: nextId,
-      type: payload.type ?? "other",
-      status: Number(payload.status ?? 1),
-      name: payload.name ?? "Sans nom",
-      image: payload.image ?? "",
-      description: payload.description ?? "",
-      location: payload.location ?? "",
-      openAt: payload.openAt ?? toSql(new Date()),
-      closeAt:
-        payload.closeAt ??
-        toSql(new Date(Date.now() + 2 * 86400000)),
-      createdAt: toSql(new Date()),
-    });
-  };
-
-  const updateLocal = (id, payload) => {
-    const idx = RAW_DB.findIndex((x) => String(x.id) === String(id));
-    if (idx === -1) return;
-    RAW_DB[idx] = {
-      ...RAW_DB[idx],
-      type: payload.type ?? RAW_DB[idx].type,
-      status: Number(payload.status ?? RAW_DB[idx].status),
-      name: payload.name ?? RAW_DB[idx].name,
-      image: payload.image ?? RAW_DB[idx].image,
-      description: payload.description ?? RAW_DB[idx].description,
-      location: payload.location ?? RAW_DB[idx].location,
-      openAt: payload.openAt ?? RAW_DB[idx].openAt,
-      closeAt: payload.closeAt ?? RAW_DB[idx].closeAt,
-    };
-  };
-
-  const deleteLocal = (id) => {
-    const i = RAW_DB.findIndex((x) => String(x.id) === String(id));
-    if (i !== -1) RAW_DB.splice(i, 1);
-  };
+  const reloadCurrent = () => setPage(0);
 
   return (
     <div className="UniEt-container">
@@ -520,16 +430,13 @@ const UniversCardEtablissement = () => {
                         </motion.span>
                       )}
 
-                      {item.openAt && (
-                        <span className="UniEt-card-date">
-                          {(t("establishment.openAtLabel") || "Ouvre")} : {formatHuman(item.openAt)}
-                        </span>
-                      )}
-                      {item.closeAt && (
-                        <span className="UniEt-card-date">
-                          {(t("establishment.closeAtLabel") || "Ferme")} : {formatHuman(item.closeAt)}
-                        </span>
-                      )}
+                    {Array.isArray(item.hourRanges) && item.hourRanges.length > 0 && (
+                      <div className="UniEt-card-hours">
+                        {item.hourRanges.map((r, idx) => (
+                          <span key={`${item.id}-hr-${idx}`} className="UniEt-card-date">🕒 {formatHourLabel(r[0])} à {formatHourLabel(r[1])}</span>
+                        ))}
+                      </div>
+                    )}
                     </div>
                   </div>
                 </div>
@@ -582,15 +489,15 @@ const UniversCardEtablissement = () => {
                   </span>
                 )}
                 {selectedItem.openAt && (
-                  <span className="uniet-preview-date">
-                    {(t("establishment.openAtLabel") || "Ouvre")} : {formatHuman(selectedItem.openAt)}
-                  </span>
+                <></>
                 )}
-                {selectedItem.closeAt && (
-                  <span className="uniet-preview-date">
-                    {(t("establishment.closeAtLabel") || "Ferme")} : {formatHuman(selectedItem.closeAt)}
-                  </span>
-                )}
+              {Array.isArray(selectedItem.hourRanges) && selectedItem.hourRanges.length > 0 && (
+                <div className="uniet-preview-hours">
+                  {selectedItem.hourRanges.map((r, idx) => (
+                    <span key={`preview-hr-${idx}`} className="uniet-preview-date">🕒 {formatHourLabel(r[0])} à {formatHourLabel(r[1])}</span>
+                  ))}
+                </div>
+              )}
               </div>
               <p
                 className="uniet-preview-description"
@@ -633,26 +540,29 @@ const UniversCardEtablissement = () => {
               label: t("establishment.modal.fields.description"),
               key: "uniet-description",
             },
-            status: {
-              type: "select",
-              value: statusLabels,
-              label: `${t("establishment.modal.fields.status")} `,
-              key: "uniet-status",
-            },
+            // statut retiré: calculé automatiquement via les horaires
             location: {
               type: "inputText",
               label: t("establishment.modal.fields.location"),
               key: "uniet-location",
             },
-            openAt: {
-              type: "inputDateTime",
-              label: t("establishment.modal.fields.openAt"),
-              key: "uniet-openAt",
-            },
-            closeAt: {
-              type: "inputDateTime",
-              label: t("establishment.modal.fields.closeAt"),
-              key: "uniet-closeAt",
+            ...(Array.from({ length: createRangeCount }).reduce((acc, _, i) => ({
+              ...acc,
+              [`range_${i}`]: {
+                type: "timeRange",
+                startKey: `rangeStart_${i}`,
+                endKey: `rangeEnd_${i}`,
+                options: HALF_HOUR_OPTIONS,
+                startLabel: t("establishment.modal.fields.start"),
+                endLabel: t("establishment.modal.fields.end"),
+              },
+            }), {})),
+            addRange: {
+              type: "button",
+              text: "+",
+              label: "",
+              className: "cf-btn-success",
+              onClick: () => setCreateRangeCount((c) => c + 1),
             },
             image: {
               type: "inputUrl",
@@ -663,20 +573,31 @@ const UniversCardEtablissement = () => {
           textButtonValidate={t("establishment.modal.submit")}
           handleSubmit={async (values) => {
             const typeKey = getTypeKeyFromLabel(values.type);
-            const statusKey = getStatusKeyFromLabel(values.status);
+            const ranges = [];
+            const startRegex = /^rangeStart_(\d+)$/;
+            Object.keys(values).forEach((k) => {
+              const m = k.match(startRegex);
+              if (m) {
+                const idx = m[1];
+                const s = values[`rangeStart_${idx}`];
+                const e = values[`rangeEnd_${idx}`];
+                if (s && e && s < e) ranges.push([s, e]);
+              }
+            });
             const payload = {
-              type: typeKey,
-              status: statusKeyToInt[statusKey] ?? 1,
               name: values.title,
-              image: values.image,
+              type: typeKey,
               description: values.description,
-              location: values.location,
-              openAt: formatToSqlDateTime(values.openAt),
-              closeAt: formatToSqlDateTime(values.closeAt),
+              image: values.image,
+              public: 1,
+              ...(ranges.length ? { date: ranges } : { date: [] }),
             };
-            createLocal(payload);
-            reloadCurrent();
+            await ApiUnivers.createPlace(universId, payload);
+            // Réinitialise sur la première page et force un rechargement
+            setPage(0);
+            setReloadTick((v) => v + 1);
             setShowCreateModal(false);
+            setCreateRangeCount(1);
           }}
           isOpen
         />
@@ -693,11 +614,23 @@ const UniversCardEtablissement = () => {
             type: typeLabels[typeKeyOrder.indexOf(selectedItem.typeKey)] ?? typeLabels[0],
             title: selectedItem.title,
             description: selectedItem.description,
-            status: statusLabels[statusKeyOrder.indexOf(selectedItem.statusKey)] ?? statusLabels[0],
+            // status retiré: calculé automatiquement via les horaires
             location: selectedItem.location,
-            openAt: toDatetimeLocal(selectedItem.openAt),
-            closeAt: toDatetimeLocal(selectedItem.closeAt),
+            ...(Array.isArray(selectedItem.hourRanges)
+              ? selectedItem.hourRanges.reduce((acc, r, i) => ({
+                  ...acc,
+                  [`rangeStart_${i}`]: r?.[0],
+                  [`rangeEnd_${i}`]: r?.[1],
+                }), {})
+              : {}),
             image: selectedItem.image,
+          }}
+          onValuesChange={(vals) => {
+            // Ajuste dynamiquement le nombre de paires pour couvrir toutes les clés initialisées
+            const starts = Object.keys(vals).filter((k) => /^rangeStart_\d+$/.test(k));
+            const maxIdx = starts.reduce((m, k) => Math.max(m, Number(k.split('_')[1]) || 0), -1);
+            const desired = Math.max(maxIdx + 1, Array.isArray(selectedItem.hourRanges) ? selectedItem.hourRanges.length : 0, 1);
+            if (desired !== (editRangeCount || 0)) setEditRangeCount(desired);
           }}
           fields={{
             type: {
@@ -716,26 +649,29 @@ const UniversCardEtablissement = () => {
               label: t("establishment.modal.fields.description"),
               key: "uniet-description",
             },
-            status: {
-              type: "select",
-              value: statusLabels,
-              label: `${t("establishment.modal.fields.status")} `,
-              key: "uniet-status",
-            },
+            // statut retiré: calculé automatiquement via les horaires
             location: {
               type: "inputText",
               label: t("establishment.modal.fields.location"),
               key: "uniet-location",
             },
-            openAt: {
-              type: "inputDateTime",
-              label: t("establishment.modal.fields.openAt"),
-              key: "uniet-openAt",
-            },
-            closeAt: {
-              type: "inputDateTime",
-              label: t("establishment.modal.fields.closeAt"),
-              key: "uniet-closeAt",
+            ...(Array.from({ length: Math.max(editRangeCount || 0, Array.isArray(selectedItem.hourRanges) ? selectedItem.hourRanges.length : 0, 1) }).reduce((acc, _, i) => ({
+              ...acc,
+              [`range_${i}`]: {
+                type: "timeRange",
+                startKey: `rangeStart_${i}`,
+                endKey: `rangeEnd_${i}`,
+                options: HALF_HOUR_OPTIONS,
+                startLabel: t("establishment.modal.fields.start"),
+                endLabel: t("establishment.modal.fields.end"),
+              },
+            }), {})),
+            addRange: {
+              type: "button",
+              text: "+",
+              label: "",
+              className: "cf-btn-success",
+              onClick: () => setEditRangeCount((c) => (c && c > 0 ? c + 1 : Math.max((Array.isArray(selectedItem.hourRanges) ? selectedItem.hourRanges.length : 0), 1) + 1)),
             },
             image: {
               type: "inputUrl",
@@ -746,38 +682,30 @@ const UniversCardEtablissement = () => {
           textButtonValidate={t("establishment.modal.update")}
           handleSubmit={async (values) => {
             const typeKey = getTypeKeyFromLabel(values.type);
-            const statusKey = getStatusKeyFromLabel(values.status);
+            const ranges = [];
+            const startRegex = /^rangeStart_(\d+)$/;
+            Object.keys(values).forEach((k) => {
+              const m = k.match(startRegex);
+              if (m) {
+                const idx = m[1];
+                const s = values[`rangeStart_${idx}`];
+                const e = values[`rangeEnd_${idx}`];
+                if (s && e && s < e) ranges.push([s, e]);
+              }
+            });
             const payload = {
-              type: typeKey,
-              status: statusKeyToInt[statusKey] ?? 1,
               name: values.title,
-              image: values.image,
+              type: typeKey,
               description: values.description,
-              location: values.location,
-              openAt: formatToSqlDateTime(values.openAt),
-              closeAt: formatToSqlDateTime(values.closeAt),
+              image: values.image,
+              public: 1,
+              ...(ranges.length ? { date: ranges } : { date: [] }),
             };
-            updateLocal(selectedItem.id, payload);
-            // mise à jour rapide en front (évite un rechargement complet si tu préfères)
-            setItems((prev) =>
-              prev.map((it) =>
-                it.id === selectedItem.id
-                  ? {
-                      ...it,
-                      typeKey,
-                      title: values.title || it.title,
-                      description: values.description || it.description,
-                      statusKey,
-                      location: values.location ?? it.location,
-                      openAt: payload.openAt ?? it.openAt,
-                      closeAt: payload.closeAt ?? it.closeAt,
-                      image: values.image || it.image,
-                    }
-                  : it
-              )
-            );
+            await ApiUnivers.updatePlace(universId, selectedItem.id, payload);
             setShowEditModal(false);
             setSelectedItem(null);
+            setReloadTick((v) => v + 1);
+            setEditRangeCount(0);
           }}
           isOpen
         />
@@ -800,8 +728,9 @@ const UniversCardEtablissement = () => {
           textButtonValidate={t("establishment.modal.deleteSubmit")}
           handleSubmit={async (values) => {
             if (!values.confirm) return;
-            deleteLocal(selectedItem.id);
-            setItems((prev) => prev.filter((it) => it.id !== selectedItem.id));
+            await ApiUnivers.deletePlace(universId, selectedItem.id);
+            // Rafraîchit depuis le serveur pour refléter la suppression
+            setReloadTick((v) => v + 1);
             setShowDeleteModal(false);
             setSelectedItem(null);
           }}
