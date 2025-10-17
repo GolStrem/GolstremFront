@@ -1,7 +1,8 @@
 import React, { useMemo, useState, useCallback } from "react";
 import "./Inventory.css";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGhostDragAndDrop, ApiFiche } from "@service"; // <-- hook + API fiches
+import { useGhostDragAndDrop, ApiFiche, ApiUnivers } from "@service"; // <-- hook + API fiches + API univers
+import { SearchBar } from "@components"; // <-- composant SearchBar
 
 // ---- Mock dataset ----
 const COLORS = ["#FFD166", "#06D6A0", "#118AB2", "#EF476F", "#A78BFA", "#F59E0B", "#10B981"];
@@ -39,6 +40,9 @@ const Inventory = () => {
   // Fiches (chargées depuis l'API)
   const [profiles, setProfiles] = useState([]);
   const [activeProfileId, setActiveProfileId] = useState(null);
+
+  // États pour les informations univers
+  const [universInfo, setUniversInfo] = useState(null);
 
   // Inventaires par fiche
   const [inventories, setInventories] = useState({});
@@ -156,6 +160,40 @@ const Inventory = () => {
     setSelected((prev) => new Set([...prev].filter((k) => !k.startsWith(`${activeProfileId}:`))));
   };
 
+  // Fonction pour récupérer les informations de l'univers
+  const fetchUniversInfo = async (universId) => {
+    if (!universId) {
+      setUniversInfo(null);
+      return;
+    }
+    
+    try {
+      const response = await ApiUnivers.getDetailUnivers(universId);
+      setUniversInfo({
+        id: universId,
+        name: response.data.name,
+        image: response.data.image
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des infos de l'univers:", error);
+      setUniversInfo(null);
+    }
+  };
+
+  // Fonction pour aller à l'univers
+  const handleGoToUnivers = () => {
+    if (universInfo?.id) {
+      window.location.href = `/univers/${universInfo.id}`;
+    }
+  };
+
+  // Fonction pour aller à la fiche
+  const handleGoToFiche = () => {
+    if (currentProfile?.id) {
+      window.location.href = `/ficheDetail/${currentProfile.id}`;
+    }
+  };
+
   // Charger les fiches de l'utilisateur
   React.useEffect(() => {
     let cancelled = false;
@@ -195,6 +233,15 @@ const Inventory = () => {
     return () => { cancelled = true; };
   }, []);
 
+  // Charger les informations de l'univers quand la fiche active change
+  React.useEffect(() => {
+    if (currentProfile?.universeId) {
+      fetchUniversInfo(currentProfile.universeId);
+    } else {
+      setUniversInfo(null);
+    }
+  }, [currentProfile?.universeId]);
+
   // ------------- DRAG & DROP (avec ton hook) -------------
   // On ajoute data-attrs sur les cartes: data-id et data-tabcourant
   // On détecte l'onglet sous la souris au "mouseup" et on migre.
@@ -211,17 +258,11 @@ const Inventory = () => {
       const draggedFromTab = draggedElement.getAttribute("data-tab");
       if (!draggedId || !draggedFromTab) return;
 
-      // b) où a-t-on lâché ? (sur quel onglet)
-      const el = document.elementFromPoint(event.clientX, event.clientY);
-      const tabBtn = el && el.closest && el.closest(".Inv-tab");
-      const targetTab = tabBtn ? tabBtn.getAttribute("data-tab") : null;
-
-      if (!targetTab || (targetTab !== "personal" && targetTab !== "universe")) {
-        // pas lâché sur un onglet → ne rien faire
-        return;
-      }
-
-      if (draggedFromTab === targetTab) return; // rien à faire
+      // b) Logique simplifiée : basculer vers l'autre onglet si on drag un item
+      const targetTab = draggedFromTab === "personal" ? "universe" : "personal";
+      
+      // Vérifier si l'onglet cible existe
+      if (targetTab === "universe" && !hasUniverseTab) return;
 
       // c) détermination du lot à déplacer : sélection multiple si présente, sinon l'item seul
       const selectedIdsInFromTab = [...selected]
@@ -230,7 +271,9 @@ const Inventory = () => {
 
       const idsToMove = selectedIdsInFromTab.length ? selectedIdsInFromTab : [draggedId];
 
+      // d) Migrer et changer d'onglet
       migrate(idsToMove, draggedFromTab, targetTab);
+      setActiveTab(targetTab);
     },
   });
 
@@ -250,6 +293,7 @@ const Inventory = () => {
                 <span
                   className="Inv-sideLabelOutside"
                   style={{ background: p.color, color: getReadableTextColor(p.color), borderColor: p.color }}
+                  onClick={() => switchProfile(p.id)}
                 >
                   <span className="Inv-sideName">{displayName}</span>
                 </span>
@@ -271,28 +315,20 @@ const Inventory = () => {
 
         <main className="Inv-main">
           <div className="Inv-toolbar">
-        <input
-          className="Inv-search"
-          placeholder="Rechercher un objet…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="Inv-actions">
-          <button className="Inv-btn ghost" onClick={selectAll} title="Tout sélectionner">
-            Tout sélectionner
-          </button>
-          <button className="Inv-btn ghost" onClick={clearSelection} title="Effacer la sélection">
-            Effacer
-          </button>
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              placeholder="Rechercher un objet…"
+              className="Inv-search"
+            />
+            <button className="Inv-btn ghost" onClick={selectAll} title="Tout sélectionner">
+              Tout sélectionner
+            </button>
+            <button className="Inv-btn ghost" onClick={clearSelection} title="Effacer la sélection">
+              Effacer
+            </button>
+          </div>
 
-          <button className="Inv-btn primary" onClick={migrateToOther} title="Vers inventaire univers" disabled={!hasUniverseTab}>
-            Migrer vers Univers →
-          </button>
-          <button className="Inv-btn primary" onClick={migrateToOther} title="Vers inventaire personnel">
-            ← Migrer vers Personnel
-          </button>
-        </div>
-      </div>
 
           <div className="Inv-meta">
             <span>
@@ -333,25 +369,52 @@ const Inventory = () => {
                 <span className="Inv-tag-universe" aria-label="Item d'univers">Univers</span>
               )}
 
-                  <div className="Inv-hover" data-nodrag>
-                    <button
-                      type="button"
-                      className="Inv-mini-btn"
-                      data-nodrag
-                      onClick={(e) => { e.stopPropagation(); migrateOne(item); }}
-                    >
-                      {activeTab === "personal" ? "→ Univ" : "→ Perso"}
-                    </button>
-                  </div>
 
                   <span className="Inv-check" aria-hidden>
-                    {isSelected(item.id) ? "✓" : ""}
+                    {isSelected(item.id, item.origin) ? "✓" : ""}
                   </span>
                 </motion.button>
               ))}
             </AnimatePresence>
           </div>
         </main>
+      </div>
+
+      {/* Tags univers et fiche */}
+      <div className="Inv-global-badges">
+        {universInfo && (
+          <span 
+            className="Inv-badge Inv-univers-badge"
+            onClick={handleGoToUnivers}
+            style={{
+              backgroundImage: universInfo.image ? `url(${universInfo.image})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              color: 'white'
+            }}
+            title={`Aller à l'univers ${universInfo.name}`}
+          >
+            {universInfo.name}
+          </span>
+        )}
+        
+        {currentProfile && (
+          <span 
+            className="Inv-badge Inv-fiche-badge"
+            onClick={handleGoToFiche}
+            style={{
+              backgroundImage: currentProfile.image ? `url(${currentProfile.image})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              color: 'white'
+            }}
+            title={`Aller à la fiche ${currentProfile.name}`}
+          >
+            {currentProfile.name}
+          </span>
+        )}
       </div>
     </div>
   );
