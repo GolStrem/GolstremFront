@@ -435,8 +435,8 @@
     }
   }
   ,
-  "establishment": {
-    "title": "Establishments",
+  "lieux": {
+    "title": "Places",
     "openAtLabel": "Opens",
     "closeAtLabel": "Closes",
     "filters": {
@@ -479,8 +479,8 @@
         "location": "Location",
         "openAt": "Opening",
         "closeAt": "Closing",
-        "start": "Start",
-        "end": "End",
+        "start": "Time",
+        "end": "Time",
         "image": "Image URL"
       },
       "typeOptions": ["Establishment", "Housing", "Outside", "Other"],

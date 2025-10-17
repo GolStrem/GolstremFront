@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import "./UniversCardEtablissement.css";
 import { BackLocation, BaseModal, ModalGeneric, Pagination, SearchBar } from "@components";
 import { useTranslation } from "react-i18next";
-import { ApiUnivers, PurifyHtml } from "@service";
+import { ApiUnivers, PurifyHtml, DroitAccess } from "@service";
 import { useParams } from "react-router-dom";
 
 /* =========================================================
@@ -144,7 +144,7 @@ const HALF_HOUR_OPTIONS = (() => {
 })();
 
 // Déduire un statut simple (open/closed/soon) à partir des plages horaires HH:MM
-const computeStatusFromHourRanges = (ranges, soonThresholdMinutes = 120) => {
+const computeStatusFromHourRanges = (ranges, soonThresholdMinutes = 60) => {
   if (!Array.isArray(ranges) || ranges.length === 0) return undefined;
   const now = new Date();
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -202,13 +202,25 @@ const UniversCardEtablissement = () => {
   const [createRangeCount, setCreateRangeCount] = useState(1);
   const [editRangeCount, setEditRangeCount] = useState(0);
 
+  // Droits d'accès
+  const [droits, setDroits] = useState(null);
+
+  // Initialiser editRangeCount quand un item est sélectionné
+  useEffect(() => {
+    if (selectedItem && Array.isArray(selectedItem.hourRanges)) {
+      setEditRangeCount(Math.max(selectedItem.hourRanges.length, 1));
+    } else {
+      setEditRangeCount(1);
+    }
+  }, [selectedItem]);
+
   // i18n selects
   const typeLabels = useMemo(
-    () => t("establishment.modal.typeOptions", { returnObjects: true }) || [],
+    () => t("lieux.modal.typeOptions", { returnObjects: true }) || [],
     [t]
   ); // ["Boutique","Auberge","Guilde","Autre"]
   const statusLabels = useMemo(
-    () => t("establishment.modal.statusOptions", { returnObjects: true }) || [],
+    () => t("lieux.modal.statusOptions", { returnObjects: true }) || [],
     [t]
   ); // ["Ouvert","Fermé","Bientôt"]
 
@@ -234,6 +246,23 @@ const UniversCardEtablissement = () => {
     if (!Number.isNaN(n) && n >= 0 && n < statusKeyOrder.length) return statusKeyOrder[n];
     return "open";
   };
+
+  // Chargement des droits d'accès
+  useEffect(() => {
+    let mounted = true;
+    const loadUnivers = async () => {
+      try {
+        const res = await ApiUnivers.getDetailUnivers(universId);
+        if (!mounted) return;
+        setDroits(res?.data?.droit ?? null);
+      } catch (_) {
+        if (!mounted) return;
+        setDroits(null);
+      }
+    }
+    loadUnivers();
+    return () => { mounted = false; };
+  }, [universId]);
 
   // Chargement via API
   useEffect(() => {
@@ -313,7 +342,7 @@ const UniversCardEtablissement = () => {
   return (
     <div className="UniEt-container">
       <BackLocation />
-      <h2 className="UniEt-title">{t("establishment.title")}</h2>
+      <h2 className="UniEt-title">{t("lieux.title")}</h2>
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
         <SearchBar
@@ -331,7 +360,7 @@ const UniversCardEtablissement = () => {
 
       <div className="UniEt-filters">
         <div className="UniEt-filter-group">
-          <span className="spanC">{t("establishment.filters.type")}</span>
+          <span className="spanC">{t("lieux.filters.type")}</span>
           {["all", "establishment", "housing", "outside", "other"].map((key) => (
             <button
               key={key}
@@ -340,13 +369,13 @@ const UniversCardEtablissement = () => {
               onClick={() => setFilterType(key)}
               aria-pressed={filterType === key}
             >
-              {t(`establishment.filters.typeOptions.${key}`)}
+              {t(`lieux.filters.typeOptions.${key}`)}
             </button>
           ))}
         </div>
 
         <div className="UniEt-filter-group">
-          <span className="spanC">{t("establishment.filters.status")}</span>
+          <span className="spanC">{t("lieux.filters.status")}</span>
           {["all", "open", "closed", "soon"].map((key) => (
             <button
               key={key}
@@ -355,7 +384,7 @@ const UniversCardEtablissement = () => {
               onClick={() => setFilterStatus(key)}
               aria-pressed={filterStatus === key}
             >
-              {t(`establishment.filters.statusOptions.${key}`)}
+              {t(`lieux.filters.statusOptions.${key}`)}
             </button>
           ))}
         </div>
@@ -372,9 +401,9 @@ const UniversCardEtablissement = () => {
           columnClassName="UniEt-masonry-grid_column"
         >
           {items.map((item) => {
-            const typeLabel = t(`establishment.filters.typeOptions.${item.typeKey}`);
+            const typeLabel = t(`lieux.filters.typeOptions.${item.typeKey}`);
             const statusLabel =
-              item.statusKey && t(`establishment.filters.statusOptions.${item.statusKey}`);
+              item.statusKey && t(`lieux.filters.statusOptions.${item.statusKey}`);
 
             return (
               <motion.div
@@ -449,15 +478,17 @@ const UniversCardEtablissement = () => {
       <Pagination currentPage={page} totalPages={totalPages} onPageChange={(p) => setPage(p)} />
 
       {/* FAB */}
-      <button
-        type="button"
-        className="UniEt-fab"
-        aria-label={t("establishment.fab.aria")}
-        title={t("establishment.fab.title")}
-        onClick={() => setShowCreateModal(true)}
-      >
-        +
-      </button>
+      {DroitAccess.hasWriteAccess(droits) && (
+        <button
+          type="button"
+          className="UniEt-fab"
+        aria-label={t("lieux.fab.aria")}
+        title={t("lieux.fab.title")}
+          onClick={() => setShowCreateModal(true)}
+        >
+          +
+        </button>
+      )}
 
       {/* Modal Preview */}
       {selectedItem && (
@@ -478,14 +509,14 @@ const UniversCardEtablissement = () => {
                   className="uniet-preview-type"
                   style={{ backgroundColor: TYPE_COLORS[selectedItem.typeKey] }}
                 >
-                  {t(`establishment.filters.typeOptions.${selectedItem.typeKey}`)}
+                  {t(`lieux.filters.typeOptions.${selectedItem.typeKey}`)}
                 </span>
                 {selectedItem.statusKey && (
                   <span
                     className="uniet-preview-status"
                     style={{ backgroundColor: STATUS_COLORS[selectedItem.statusKey] }}
                   >
-                    {t(`establishment.filters.statusOptions.${selectedItem.statusKey}`)}
+                    {t(`lieux.filters.statusOptions.${selectedItem.statusKey}`)}
                   </span>
                 )}
                 {selectedItem.openAt && (
@@ -504,12 +535,16 @@ const UniversCardEtablissement = () => {
                 dangerouslySetInnerHTML={{ __html: PurifyHtml(selectedItem.description) }}
               />
               <div className="uniet-preview-actions tm-modal-buttons" style={{ display: "flex", gap: 10, marginTop: 12 }}>
-                <button type="button" className="cf-btn-success" onClick={() => setShowEditModal(true)}>
-                  {t("establishment.modal.editAction") || "Modifier"}
-                </button>
-                <button type="button" className="cf-btn-danger" onClick={() => setShowDeleteModal(true)}>
-                  {t("establishment.modal.deleteAction") || "Supprimer"}
-                </button>
+                {DroitAccess.hasWriteAccess(droits) && (
+                  <button type="button" className="cf-btn-success" onClick={() => setShowEditModal(true)}>
+                    {t("lieux.modal.editAction") || "Modifier"}
+                  </button>
+                )}
+                {DroitAccess.isOwner(droits) && (
+                  <button type="button" className="cf-btn-danger" onClick={() => setShowDeleteModal(true)}>
+                    {t("lieux.modal.deleteAction") || "Supprimer"}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -519,31 +554,34 @@ const UniversCardEtablissement = () => {
       {/* Modal de création */}
       {showCreateModal && (
         <ModalGeneric
-          onClose={() => setShowCreateModal(false)}
+          onClose={() => {
+            setShowCreateModal(false);
+            setCreateRangeCount(1);
+          }}
           noMemory
           name="establishmentCreate"
-          title={t("establishment.modal.createTitle")}
+          title={t("lieux.modal.createTitle")}
           fields={{
             type: {
               type: "select",
               value: typeLabels,
-              label: `${t("establishment.modal.fields.type")} `,
+              label: `${t("lieux.modal.fields.type")} `,
               key: "uniet-type",
             },
             title: {
               type: "inputText",
-              label: `${t("establishment.modal.fields.title")} `,
+              label: `${t("lieux.modal.fields.title")} `,
               key: "uniet-title",
             },
             description: {
               type: "textarea",
-              label: t("establishment.modal.fields.description"),
+              label: t("lieux.modal.fields.description"),
               key: "uniet-description",
             },
             // statut retiré: calculé automatiquement via les horaires
             location: {
               type: "inputText",
-              label: t("establishment.modal.fields.location"),
+              label: t("lieux.modal.fields.location"),
               key: "uniet-location",
             },
             ...(Array.from({ length: createRangeCount }).reduce((acc, _, i) => ({
@@ -553,24 +591,28 @@ const UniversCardEtablissement = () => {
                 startKey: `rangeStart_${i}`,
                 endKey: `rangeEnd_${i}`,
                 options: HALF_HOUR_OPTIONS,
-                startLabel: t("establishment.modal.fields.start"),
-                endLabel: t("establishment.modal.fields.end"),
+                startLabel: t("lieux.modal.fields.start"),
+                endLabel: t("lieux.modal.fields.end"),
+                removeRange: (key) => {
+                  const rangeIndex = parseInt(key.split('_')[1]);
+                  setCreateRangeCount(prev => Math.max(1, prev - 1));
+                },
               },
             }), {})),
             addRange: {
               type: "button",
               text: "+",
               label: "",
-              className: "cf-btn-success",
+              className: "cf-btn-success shoshotel",
               onClick: () => setCreateRangeCount((c) => c + 1),
             },
             image: {
               type: "inputUrl",
-              label: t("establishment.modal.fields.image"),
+              label: t("lieux.modal.fields.image"),
               key: "uniet-image",
             },
           }}
-          textButtonValidate={t("establishment.modal.submit")}
+          textButtonValidate={t("lieux.modal.submit")}
           handleSubmit={async (values) => {
             const typeKey = getTypeKeyFromLabel(values.type);
             const ranges = [];
@@ -606,10 +648,13 @@ const UniversCardEtablissement = () => {
       {/* Modal d'édition */}
       {showEditModal && selectedItem && (
         <ModalGeneric
-          onClose={() => setShowEditModal(false)}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditRangeCount(1);
+          }}
           noMemory
           name="establishmentEdit"
-          title={t("establishment.modal.editTitle")}
+          title={t("lieux.modal.editTitle")}
           initialData={{
             type: typeLabels[typeKeyOrder.indexOf(selectedItem.typeKey)] ?? typeLabels[0],
             title: selectedItem.title,
@@ -636,23 +681,23 @@ const UniversCardEtablissement = () => {
             type: {
               type: "select",
               value: typeLabels,
-              label: `${t("establishment.modal.fields.type")} `,
+              label: `${t("lieux.modal.fields.type")} `,
               key: "uniet-type",
             },
             title: {
               type: "inputText",
-              label: `${t("establishment.modal.fields.title")} `,
+              label: `${t("lieux.modal.fields.title")} `,
               key: "uniet-title",
             },
             description: {
               type: "textarea",
-              label: t("establishment.modal.fields.description"),
+              label: t("lieux.modal.fields.description"),
               key: "uniet-description",
             },
             // statut retiré: calculé automatiquement via les horaires
             location: {
               type: "inputText",
-              label: t("establishment.modal.fields.location"),
+              label: t("lieux.modal.fields.location"),
               key: "uniet-location",
             },
             ...(Array.from({ length: Math.max(editRangeCount || 0, Array.isArray(selectedItem.hourRanges) ? selectedItem.hourRanges.length : 0, 1) }).reduce((acc, _, i) => ({
@@ -662,24 +707,28 @@ const UniversCardEtablissement = () => {
                 startKey: `rangeStart_${i}`,
                 endKey: `rangeEnd_${i}`,
                 options: HALF_HOUR_OPTIONS,
-                startLabel: t("establishment.modal.fields.start"),
-                endLabel: t("establishment.modal.fields.end"),
+                startLabel: t("lieux.modal.fields.start"),
+                endLabel: t("lieux.modal.fields.end"),
+                removeRange: (key) => {
+                  const rangeIndex = parseInt(key.split('_')[1]);
+                  setEditRangeCount(prev => Math.max(1, prev - 1));
+                },
               },
             }), {})),
             addRange: {
               type: "button",
               text: "+",
               label: "",
-              className: "cf-btn-success",
+              className: "cf-btn-success shoshotel",
               onClick: () => setEditRangeCount((c) => (c && c > 0 ? c + 1 : Math.max((Array.isArray(selectedItem.hourRanges) ? selectedItem.hourRanges.length : 0), 1) + 1)),
             },
             image: {
               type: "inputUrl",
-              label: t("establishment.modal.fields.image"),
+              label: t("lieux.modal.fields.image"),
               key: "uniet-image",
             },
           }}
-          textButtonValidate={t("establishment.modal.update")}
+          textButtonValidate={t("lieux.modal.update")}
           handleSubmit={async (values) => {
             const typeKey = getTypeKeyFromLabel(values.type);
             const ranges = [];
@@ -705,7 +754,7 @@ const UniversCardEtablissement = () => {
             setShowEditModal(false);
             setSelectedItem(null);
             setReloadTick((v) => v + 1);
-            setEditRangeCount(0);
+            setEditRangeCount(1);
           }}
           isOpen
         />
@@ -717,15 +766,15 @@ const UniversCardEtablissement = () => {
           onClose={() => setShowDeleteModal(false)}
           noMemory
           name="establishmentDelete"
-          title={t("establishment.modal.deleteTitle")}
+          title={t("lieux.modal.deleteTitle")}
           fields={{
             confirm: {
               type: "confirmation",
-              label: t("establishment.modal.deleteConfirmLabel"),
-              message: t("establishment.modal.deleteConfirmMessage"),
+              label: t("lieux.modal.deleteConfirmLabel"),
+              message: t("lieux.modal.deleteConfirmMessage"),
             },
           }}
-          textButtonValidate={t("establishment.modal.deleteSubmit")}
+          textButtonValidate={t("lieux.modal.deleteSubmit")}
           handleSubmit={async (values) => {
             if (!values.confirm) return;
             await ApiUnivers.deletePlace(universId, selectedItem.id);

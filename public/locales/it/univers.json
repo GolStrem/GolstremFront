@@ -426,8 +426,8 @@
     }
   }
   ,
-  "establishment": {
-    "title": "Strutture",
+  "lieux": {
+    "title": "Luoghi",
     "openAtLabel": "Apre",
     "closeAtLabel": "Chiude",
     "filters": {
@@ -470,6 +470,8 @@
         "location": "Posizione",
         "openAt": "Apertura",
         "closeAt": "Chiusura",
+        "start": "Orario",
+        "end": "Orario",
         "image": "URL immagine"
       },
       "typeOptions": ["Struttura", "Alloggio", "Esterno", "Altro"],

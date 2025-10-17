@@ -435,8 +435,8 @@
     }
   }
   ,
-  "establishment": {
-    "title": "Établissements",
+    "lieux": {
+    "title": "Lieux",
     "openAtLabel": "Ouvre",
     "closeAtLabel": "Ferme",
     "filters": {
@@ -479,8 +479,8 @@
         "location": "Emplacement",
         "openAt": "Ouverture",
         "closeAt": "Fermeture",
-        "start": "Début",
-        "end": "Fin",
+        "start": "Horaire",
+        "end": "Horaire",
         "image": "URL de l'image"
       },
       "typeOptions": ["Établissement", "Logement", "Extérieur", "Autre"],

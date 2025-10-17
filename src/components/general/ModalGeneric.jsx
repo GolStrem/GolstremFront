@@ -452,36 +452,51 @@ const ModalGeneric = ({
                 const endLabel = config.endLabel ?? "End";
                 return (
                     <div key={key} className={`cf-field ${key}`} style={{ display: 'flex', gap: 10, alignItems: 'flex-end', flexWrap: 'wrap' }}>
-                        <div className={`cf-field short ${startKey}`} style={{ flex: 1, minWidth: 140 }}>
-                            <label className={`tm-label label-fiche label-${startKey}`} htmlFor={`select-${startKey}`}>
-                                {t(startLabel)} :
-                            </label>
+                        <div className={`cf-field ${startKey}`}>
+                            {key.includes('range_0') && (
+                                <label className={`tm-label label-fiche label-${startKey}`} htmlFor={`select-${startKey}`}>
+                                    {t(startLabel)} :
+                                </label>
+                            )}
                             <select
                                 id={`select-${startKey}`}
                                 value={values[startKey] || ""}
                                 onChange={(e) => setValues((prev) => ({ ...prev, [startKey]: e.target.value }))}
-                                className={`filter-select select-${startKey}`}
+                                className={`filter-select select-${startKey} time-range-field`}
                             >
                                 {options.map((opt) => (
                                     <option key={`${startKey}-${opt}`} value={opt}>{opt}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className={`cf-field short ${endKey}`} style={{ flex: 1, minWidth: 140 }}>
-                            <label className={`tm-label label-fiche label-${endKey}`} htmlFor={`select-${endKey}`}>
-                                {t(endLabel)} :
-                            </label>
+                        <div className={`cf-field ${endKey}`}>
                             <select
                                 id={`select-${endKey}`}
                                 value={values[endKey] || ""}
                                 onChange={(e) => setValues((prev) => ({ ...prev, [endKey]: e.target.value }))}
-                                className={`filter-select select-${endKey}`}
+                                className={`filter-select select-${endKey} time-range-field`}
                             >
                                 {options.map((opt) => (
                                     <option key={`${endKey}-${opt}`} value={opt}>{opt}</option>
                                 ))}
                             </select>
                         </div>
+                        {!key.includes('range_0') && (
+                            <button
+                                type="button"
+                                className="cf-btn-danger shoshotel lolo"
+                                onClick={() => {
+                                    // Trouver la fonction de suppression dans la config
+                                    const removeRangeFunc = config.removeRange;
+                                    if (removeRangeFunc) {
+                                        removeRangeFunc(key);
+                                    }
+                                }}
+                                
+                            >
+                                -
+                            </button>
+                        )}
                     </div>
                 );
             }

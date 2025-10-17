@@ -435,8 +435,8 @@
     }
   }
   ,
-  "establishment": {
-    "title": "Einrichtungen",
+  "lieux": {
+    "title": "Orte",
     "openAtLabel": "Öffnet",
     "closeAtLabel": "Schließt",
     "filters": {
@@ -479,6 +479,8 @@
         "location": "Ort",
         "openAt": "Öffnung",
         "closeAt": "Schließung",
+        "start": "Zeit",
+        "end": "Zeit",
         "image": "Bild-URL"
       },
       "typeOptions": ["Einrichtung", "Wohnung", "Außen", "Andere"],
