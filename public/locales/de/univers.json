@@ -434,6 +434,59 @@
       }
     }
   }
+  ,
+  "lieux": {
+    "title": "Orte",
+    "openAtLabel": "Öffnet",
+    "closeAtLabel": "Schließt",
+    "filters": {
+      "type": "Typ:",
+      "status": "Status:",
+      "typeOptions": {
+        "all": "Alle",
+        "establishment": "Einrichtung",
+        "housing": "Wohnung",
+        "outside": "Außen",
+        "other": "Andere"
+      },
+      "statusOptions": {
+        "all": "Alle",
+        "open": "Geöffnet",
+        "closed": "Geschlossen",
+        "soon": "Bald"
+      }
+    },
+    "fab": {
+      "aria": "Einrichtung erstellen",
+      "title": "Erstellen"
+    },
+    "modal": {
+      "createTitle": "Einrichtung erstellen",
+      "submit": "Erstellen",
+      "editTitle": "Einrichtung bearbeiten",
+      "update": "Aktualisieren",
+      "deleteTitle": "Einrichtung löschen",
+      "deleteAction": "Löschen",
+      "editAction": "Bearbeiten",
+      "deleteConfirmLabel": "Ich bestätige die Löschung",
+      "deleteConfirmMessage": "Diese Aktion ist unumkehrbar.",
+      "deleteSubmit": "Löschen",
+      "fields": {
+        "type": "Typ",
+        "title": "Titel",
+        "description": "Beschreibung",
+        "status": "Status",
+        "location": "Ort",
+        "openAt": "Öffnung",
+        "closeAt": "Schließung",
+        "start": "Zeit",
+        "end": "Zeit",
+        "image": "Bild-URL"
+      },
+      "typeOptions": ["Einrichtung", "Wohnung", "Außen", "Andere"],
+      "statusOptions": ["Geöffnet", "Geschlossen", "Bald"]
+    }
+  }
 }
 
 

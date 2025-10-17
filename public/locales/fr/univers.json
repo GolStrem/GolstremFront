@@ -434,6 +434,59 @@
       }
     }
   }
+  ,
+    "lieux": {
+    "title": "Lieux",
+    "openAtLabel": "Ouvre",
+    "closeAtLabel": "Ferme",
+    "filters": {
+      "type": "Type :",
+      "status": "Statut :",
+      "typeOptions": {
+        "all": "Tous",
+        "establishment": "Établissement",
+        "housing": "Logement",
+        "outside": "Extérieur",
+        "other": "Autre"
+      },
+      "statusOptions": {
+        "all": "Tous",
+        "open": "Ouvert",
+        "closed": "Fermé",
+        "soon": "Bientôt"
+      }
+    },
+    "fab": {
+      "aria": "Créer un établissement",
+      "title": "Créer"
+    },
+    "modal": {
+      "createTitle": "Créer un établissement",
+      "submit": "Créer",
+      "editTitle": "Modifier l’établissement",
+      "update": "Mettre à jour",
+      "deleteTitle": "Supprimer l’établissement",
+      "deleteAction": "Supprimer",
+      "editAction": "Modifier",
+      "deleteConfirmLabel": "Je confirme la suppression",
+      "deleteConfirmMessage": "Cette action est irréversible.",
+      "deleteSubmit": "Supprimer",
+      "fields": {
+        "type": "Type",
+        "title": "Titre",
+        "description": "Description",
+        "status": "Statut",
+        "location": "Emplacement",
+        "openAt": "Ouverture",
+        "closeAt": "Fermeture",
+        "start": "Horaire",
+        "end": "Horaire",
+        "image": "URL de l'image"
+      },
+      "typeOptions": ["Établissement", "Logement", "Extérieur", "Autre"],
+      "statusOptions": ["Ouvert", "Fermé", "Bientôt"]
+    }
+  }
 }
 
 

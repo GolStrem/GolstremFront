@@ -434,6 +434,59 @@
       }
     }
   }
+  ,
+  "lieux": {
+    "title": "Places",
+    "openAtLabel": "Opens",
+    "closeAtLabel": "Closes",
+    "filters": {
+      "type": "Type:",
+      "status": "Status:",
+      "typeOptions": {
+        "all": "All",
+        "establishment": "Establishment",
+        "housing": "Housing",
+        "outside": "Outside",
+        "other": "Other"
+      },
+      "statusOptions": {
+        "all": "All",
+        "open": "Open",
+        "closed": "Closed",
+        "soon": "Soon"
+      }
+    },
+    "fab": {
+      "aria": "Create establishment",
+      "title": "Create"
+    },
+    "modal": {
+      "createTitle": "Create an establishment",
+      "submit": "Create",
+      "editTitle": "Edit establishment",
+      "update": "Update",
+      "deleteTitle": "Delete establishment",
+      "deleteAction": "Delete",
+      "editAction": "Edit",
+      "deleteConfirmLabel": "I confirm the deletion",
+      "deleteConfirmMessage": "This action is irreversible.",
+      "deleteSubmit": "Delete",
+      "fields": {
+        "type": "Type",
+        "title": "Title",
+        "description": "Description",
+        "status": "Status",
+        "location": "Location",
+        "openAt": "Opening",
+        "closeAt": "Closing",
+        "start": "Time",
+        "end": "Time",
+        "image": "Image URL"
+      },
+      "typeOptions": ["Establishment", "Housing", "Outside", "Other"],
+      "statusOptions": ["Open", "Closed", "Soon"]
+    }
+  }
 }
 
 

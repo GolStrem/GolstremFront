@@ -425,6 +425,59 @@
       }
     }
   }
+  ,
+  "lieux": {
+    "title": "Luoghi",
+    "openAtLabel": "Apre",
+    "closeAtLabel": "Chiude",
+    "filters": {
+      "type": "Tipo:",
+      "status": "Stato:",
+      "typeOptions": {
+        "all": "Tutti",
+        "establishment": "Struttura",
+        "housing": "Alloggio",
+        "outside": "Esterno",
+        "other": "Altro"
+      },
+      "statusOptions": {
+        "all": "Tutti",
+        "open": "Aperto",
+        "closed": "Chiuso",
+        "soon": "Presto"
+      }
+    },
+    "fab": {
+      "aria": "Crea struttura",
+      "title": "Crea"
+    },
+    "modal": {
+      "createTitle": "Crea una struttura",
+      "submit": "Crea",
+      "editTitle": "Modifica struttura",
+      "update": "Aggiorna",
+      "deleteTitle": "Elimina struttura",
+      "deleteAction": "Elimina",
+      "editAction": "Modifica",
+      "deleteConfirmLabel": "Confermo l'eliminazione",
+      "deleteConfirmMessage": "Questa azione è irreversibile.",
+      "deleteSubmit": "Elimina",
+      "fields": {
+        "type": "Tipo",
+        "title": "Titolo",
+        "description": "Descrizione",
+        "status": "Stato",
+        "location": "Posizione",
+        "openAt": "Apertura",
+        "closeAt": "Chiusura",
+        "start": "Orario",
+        "end": "Orario",
+        "image": "URL immagine"
+      },
+      "typeOptions": ["Struttura", "Alloggio", "Esterno", "Altro"],
+      "statusOptions": ["Aperto", "Chiuso", "Presto"]
+    }
+  }
 }
 
 
