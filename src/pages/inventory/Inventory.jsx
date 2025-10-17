@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from "react";
-import "./Inventory.css";
+import "./inventory.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGhostDragAndDrop, ApiFiche, ApiUnivers } from "@service"; // <-- hook + API fiches + API univers
 import { SearchBar } from "@components"; // <-- composant SearchBar
